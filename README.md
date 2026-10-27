@@ -47,7 +47,7 @@ Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in `$PERFORM_VOIC
 
 ## Tag guide
 
-Tested by ear on Fish S2 Pro and Drama 3:
+Tested by ear on Fish S2 Pro (Drama 3 judged better overall in an A/B; its tags not judged one by one):
 
 - Laugh: `[bursts out laughing] [pause] Текст! [laughs uncontrollably]`. Sounds real.
 - Never spell `Ха-ха`: it is read aloud as a word.
