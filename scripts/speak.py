@@ -2,7 +2,8 @@
 # requires-python = ">=3.12,<3.13"
 # dependencies = ["mlx-audio>=0.6.2", "soundfile"]
 # ///
-"""Speak tagged text in a cloned voice with Fish S2 Pro, ElevenLabs-style.
+"""Speak tagged text in a cloned voice, ElevenLabs-style. Engine: Fish Drama 3
+(default) or Fish S2 Pro, see engines.py; each downloads on first use.
 
 Tags go to the model as written, so any free-form tag works:
 
@@ -18,7 +19,7 @@ $PERFORM_VOICES or ./voices, then in the bundled voices (see voices.py).
 
 Usage:
     uv run speak.py script.txt                       # -> script.wav
-    uv run speak.py script.txt out.wav --voice girl --speed 1.2
+    uv run speak.py script.txt out.wav --voice girl --speed 1.2 --engine s2
     echo "[sigh] Ладно." | uv run speak.py - out.wav
 """
 import argparse
@@ -31,9 +32,9 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 
+import engines
 import voices
 
-MODEL = "mlx-community/fish-audio-s2-pro"
 PAUSE = 0.4  # seconds of silence between paragraphs
 
 
@@ -43,6 +44,7 @@ def main():
     p.add_argument("out", nargs="?", help="output wav (default: next to src)")
     p.add_argument("--voice", default="praporshchik", help="voice name (default: praporshchik)")
     p.add_argument("--speed", type=float, default=1.1, help="tempo, pitch kept (default: 1.1)")
+    p.add_argument("--engine", choices=engines.ENGINES, default=engines.DEFAULT)
     args = p.parse_args()
 
     if args.src == "-" and not args.out:
@@ -58,13 +60,12 @@ def main():
     # goes paragraph by paragraph (split on blank lines).
     paragraphs = [" ".join(p.split()) for p in re.split(r"\n\s*\n", text) if p.strip()]
 
-    from mlx_audio.tts.utils import load_model
     from mlx_audio.utils import load_audio
 
-    model = load_model(MODEL)
+    model = engines.load_engine(args.engine)
     sr = model.sample_rate
     ref_audio = load_audio(str(ref), sample_rate=sr)
-    ref_text = ref.with_suffix(".txt").read_text().strip()
+    ref_text = engines.ref_text(args.engine, ref.with_suffix(".txt").read_text().strip())
     silence = np.zeros(int(PAUSE * sr), dtype=np.float32)
     start = time.time()
     pieces = []

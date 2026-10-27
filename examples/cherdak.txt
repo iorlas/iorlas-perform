@@ -1,0 +1,10 @@
+# Чердак: девочка, дед и прапорщик
+girl: [excited] Дедушка, дедушка! Смотри, что я нашла на чердаке!
+starik: [sigh] Опять ты по чердаку лазила? [short pause] Ну, показывай.
+girl: [whisper] Это карта. Тут крестиком что-то отмечено.
+starik: [surprised] Батюшки... [pause] Это же наша старая тушёнка. Я её в восемьдесят пятом закопал.
+{pause 1}
+praporshchik: [shouting] Так, стоять! [provocative, rising intonation] Кто тут без меня клады ищет?
+girl: [nervous] Мы? Мы просто... гуляем.
+praporshchik: [sarcastic question] С картой и лопатой? [bursts out laughing] [pause] Ну вы даёте! [laughs uncontrollably]
+starik: [calm] Садись, служивый. Делим на троих.

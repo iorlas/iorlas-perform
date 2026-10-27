@@ -1,6 +1,6 @@
 ---
 name: voice
-description: Voice a Russian text or scene locally on Apple Silicon with a cloned or designed voice, ElevenLabs-style inline tags (laughs, sighs, whispers, shouting), via Fish S2 Pro on mlx-audio. Use when the user wants text turned into speech audio, a character voice designed from a description, their own voice recorded for cloning, or a story or monologue rendered to a wav. Skip for speech-to-text, cloud TTS, or non-Mac machines.
+description: Voice a Russian text or scene locally on Apple Silicon with a cloned or designed voice, ElevenLabs-style inline tags (laughs, sighs, whispers, shouting), via Fish Drama 3 or Fish S2 Pro on mlx-audio. Use when the user wants text turned into speech audio, a character voice designed from a description, their own voice recorded for cloning, or a story or monologue rendered to a wav. Skip for speech-to-text, cloud TTS, or non-Mac machines.
 ---
 
 # voice
@@ -13,8 +13,9 @@ Scripts live in `${CLAUDE_SKILL_DIR}/../../scripts`; call that `$S` below.
 Check once, stop and tell the user if any is missing:
 - Apple Silicon Mac (`uname -m` = arm64), 32 GB RAM or more.
 - `uv` and `ffmpeg` on PATH.
-- Disk: Fish S2 Pro 10 GB, Qwen VoiceDesign 4.5 GB, downloaded to
-  `~/.cache/huggingface` on first use. First run takes 10-20 min; say so before starting.
+- Disk, only for engines actually used: Drama 3 19.8 GB (default), Fish S2 Pro 10 GB,
+  Qwen VoiceDesign 4.5 GB. Each downloads to `~/.cache/huggingface` on its first use and
+  logs `[perform] first use: downloading ...`; relay that line and say the wait is 20-40 min.
 
 Run model scripts with `uv run` (deps are declared inline in each script) and in the
 background: renders take 2-6x real time, longer when the Mac swaps.
@@ -31,7 +32,16 @@ then `./voices` in the current directory, then the bundled `praporshchik`, `girl
   and stop). Run it in the user's terminal tab, never in a background shell.
 - Never clone a real person's voice from a clip without their consent; design a character instead.
 
+## Engines
+
+`--engine drama3` (default: Fish Drama 3, 3-bit, about real time line by line) or
+`--engine s2` (Fish S2 Pro, ~3x slower). Same tags, same voices.
+
 ## Render
+
+One voice: steps below. Several characters: write a scene, one turn per line
+(`voice: text`, `{pause N}` for silence), and run `uv run $S/scene.py scene.txt out.wav`.
+It also writes `out.timeline.json` with each turn's start and end in seconds.
 
 1. Write the tagged text to a `.txt` file in the user's working directory. Blank lines split
    paragraphs; each paragraph is one model call (one call stops at ~47 s of audio).
@@ -53,5 +63,6 @@ Free-form `[tag]` text passes to the model as written. Tested by ear:
 
 ## Licence
 
-Fish S2 Pro weights are under the Fish Audio Research Licence: research and non-commercial use.
+Fish S2 Pro and Drama 3 weights are under Fish Audio licences (research / community), not open
+for commercial use.
 Say so if the user mentions selling or publishing the audio commercially.

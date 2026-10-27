@@ -22,9 +22,9 @@ import time
 import numpy as np
 import soundfile as sf
 
+import engines
 import voices
 
-MODEL = "mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16"
 
 # Reference line: varied intonation, ~10s, so the clone has something to copy.
 LINE = ("Так, слушай сюда внимательно. Я два раза повторять не буду. "
@@ -65,10 +65,8 @@ def main():
         p.print_usage()
         sys.exit(1)
 
-    from mlx_audio.tts.utils import load_model
-
     out.mkdir(parents=True, exist_ok=True)
-    model = load_model(MODEL)
+    model = engines.load(*engines.VOICE_DESIGN)
     for name, description, line in jobs:
         t = time.time()
         results = list(model.generate_voice_design(
