@@ -1,0 +1,4 @@
+*.wav
+!voices/*.wav
+__pycache__/
+.venv/

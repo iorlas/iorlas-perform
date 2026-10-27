@@ -1,0 +1,12 @@
+{
+  "name": "iorlas-perform",
+  "description": "Local Russian TTS on Apple Silicon: cloned or designed voices, ElevenLabs-style inline tags (laughs, sighs, whispers), Fish S2 Pro via mlx-audio.",
+  "version": "0.1.0",
+  "author": {
+    "name": "iorlas"
+  },
+  "homepage": "https://github.com/iorlas/iorlas-perform",
+  "repository": "https://github.com/iorlas/iorlas-perform",
+  "license": "MIT",
+  "keywords": ["tts", "voice", "russian", "mlx", "audio", "skills"]
+}
