@@ -54,6 +54,9 @@ TEMPLATE = {
 
 What the series is, in two lines: who, where, what kind of funny or scary or sad.
 
+**Engine**: one line, what every episode runs on and where most jokes come from. A premise
+that does not use it is refused (scenario skill, R5).
+
 ## Format
 
 - Length: target minutes per episode (the lint's default structure suits 3-6 min shorts;

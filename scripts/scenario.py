@@ -71,7 +71,7 @@ CAST_LINE = re.compile(r"^([\w-]+)\s*\|\s*(.+)$")
 TAG = re.compile(r"\[([^\]]*)\]")
 NARRATOR = "narrator"
 STRESS = "\u0301"  # combining acute: «пи́дора»
-MARK = re.compile(r"<!--\s*(plant|echo|payoff|beat|length|lint-ok):\s*(.+?)\s*-->")
+MARK = re.compile(r"<!--\s*(plant|echo|payoff|beat|length|laugh|lint-ok):\s*(.+?)\s*-->")
 CHARS_PER_SEC = 11  # spoken characters per second, Drama 3 at --speed 1.1: 2896 in 261 s (an episode)
 
 
@@ -91,6 +91,8 @@ class Rules:
     callback_max: int = 3  # plant, echo, payoff
     button_words: int = 8
     cast_max: int = 6
+    laugh_gap: float = 20  # seconds without a laugh before the listener drifts
+    laughs_per_min: float = 3  # the floor for comedy; a drama profile sets 0
     length: float | None = None  # target minutes; an episode's <!-- length: N --> wins
 
     @classmethod
@@ -432,6 +434,25 @@ def lint_jokes(sc: Scenario) -> list[Issue]:
     return out
 
 
+def lint_laughs(sc: Scenario) -> list[Issue]:
+    """Joke density: a <!-- laugh: WHAT --> before every line meant to get one, none too far apart."""
+    if not sc.rules.laughs_per_min:
+        return []
+    laughs = [n for kind, _, n in sc.marks if kind == "laugh"]
+    if not laughs:
+        return [("warn", 1, "no <!-- laugh: WHAT --> marks: the laughs are not designed, so nobody can count them")]
+    total = seconds_at(sc, 10**9)
+    out: list[Issue] = []
+    if (per_min := len(laughs) / max(total / 60, 0.1)) < sc.rules.laughs_per_min:
+        out.append(
+            ("warn", 1, f"{len(laughs)} laughs in ~{total / 60:.1f} min, {per_min:.1f}/min: aim for {sc.rules.laughs_per_min:g}/min")
+        )
+    for a, b in pairwise([0, *laughs, 10**9]):
+        if (gap := seconds_at(sc, b) - seconds_at(sc, a)) > sc.rules.laugh_gap:
+            out.append(("warn", a or 1, f"~{gap:.0f} s without a laugh after this line: punch up a line in between"))
+    return out
+
+
 def lint_beats(sc: Scenario) -> list[Issue]:
     """The episode template: needed beats present, in order, the ladder at least two rungs."""
     beats = [(key, n) for kind, key, n in sc.marks if kind == "beat"]
@@ -490,7 +511,7 @@ def lint(sc: Scenario) -> list[Issue]:
     elif not sc.cast:
         out.append(("warn", 1, "no cast (## Cast table or @cast): intro checks skipped"))
     else:
-        out += lint_names(sc) + lint_scenes(sc) + lint_jokes(sc) + lint_beats(sc) + lint_pace(sc)
+        out += lint_names(sc) + lint_scenes(sc) + lint_jokes(sc) + lint_laughs(sc) + lint_beats(sc) + lint_pace(sc)
     out = [i for i in out if i[0] == "error" or not any(q in i[2] for q in sc.quiet)]  # <!-- lint-ok: words -->
     return sorted(out, key=lambda x: x[1])
 

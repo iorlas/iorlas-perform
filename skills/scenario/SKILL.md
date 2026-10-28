@@ -9,7 +9,7 @@ Design an episode the way a writers' room does, then write it, check it, and rec
 
 ```
 0 Profile -> 1 Premise -> 2 Cast -> 3 Beat sheet -> 4 Joke map -> 5 Outline check
-  -> 6 Scene plan -> 7 Turns -> 8 Lint -> 9 Doctor -> 10 Approve -> 11 Canon
+  -> 6 Scene plan -> 7 Turns -> 7b Punch-up -> 8 Lint -> 9 Doctor -> 10 Approve -> 11 Canon
 ```
 
 Scripts: `${CLAUDE_SKILL_DIR}/../../scripts`, called `$S` below.
@@ -49,6 +49,11 @@ them in `structure.json` for its genre.
   this file (earlier episodes, the series intro) counts as setup.
 - R4. A pilot introduces the world's premise and the main pair; it does not use every
   character. Later episodes build on the entities and rules in `world.md`, and obey them.
+- R5. **Premise test.** Said as one sentence to someone who knows the series, the logline
+  gets a laugh by itself, and it runs on the series' engine (the profile's Engine line: what
+  every episode is about, the source of most jokes). A premise that needs the episode to be
+  funny, or uses the engine as decoration (an IT series whose plot could happen in a bakery),
+  is refused. A small moral story is not a premise: the stakes escalate.
 
 ## 2. Cast
 
@@ -100,8 +105,8 @@ them in `structure.json` for its genre.
   | setup | ~11% | who, the want, the one rule of the world in play; plant what pays off later |
   | incident | ~5% | "but one day": forces the want into action, with a deadline and a cost |
   | ladder | ~46% | 2-4 rungs (2 at 3 min, 4 at 6 min), each the worst result of the last fix |
-  | turn | ~17% | the peak and the twist; the plant pays off |
-  | button | ~7% | one reaction, then a last line under 9 words, the funny word last |
+  | turn | ~17% | the peak and the twist; the plant pays off; the biggest laugh, never sentiment |
+  | button | ~7% | one reaction, then a last line under 9 words, the funny word last; it pays off the game |
   | tag | ~7% | optional: a runner once more, or a question to the next episode, then out |
 
 - B3. The ladder gets a reversal near its middle: the hero wins something, falsely, so the
@@ -118,6 +123,13 @@ them in `structure.json` for its genre.
 
 ## 4. Joke map
 
+- J0. **Density.** Comedy is a laugh every 15-20 seconds, about 3 a minute (*tunable*:
+  `laugh_gap`, `laughs_per_min`). Plan them in the map, then mark every line meant to get one
+  with `<!-- laugh: WHAT -->` (what the joke is, in a few words); the lint counts them and
+  reports every gap. A line either sets up a laugh, lands one, or moves the plot in a way
+  the next laugh needs; a scene of plot-only lines is rewritten. Vary the joke types (literal
+  misreading, status reversal, a specific absurd detail, an insult, a callback, a sound) so
+  the map is not one trick repeated.
 - J1. 3-5 big beats that escalate, each caused by the one before. The biggest is at the turn.
 - J2. Every callback is planted in this episode, then returns at most twice: an echo that
   changes one thing, and the payoff (*tunable*). The last touch is within ~90 s of the payoff
@@ -131,7 +143,11 @@ them in `structure.json` for its genre.
 - J6. The profile's sharpest moments (its spice) are big beats in this map, not extra gags:
   the sharpest at the turn, given to the least likely speaker.
 - J7. The empathy beat, if the profile asks for one, is one or two human lines inside a ladder
-  rung or at the point of no return, so the turn hurts. Never its own scene, never the button.
+  rung or at the point of no return, so the turn hurts. Never its own scene, never the button,
+  never the turn: a tender turn kills the peak laugh. Undercut it within one line.
+- J8. **The game escalates by different gags.** Each rung shows the game in a new way, so the
+  listener cannot guess the next joke from the last one. A game that has one joke (an old
+  trope, a single twist the ear sees coming) is a sketch, not an episode.
 
 ## 5. Outline check
 
@@ -185,6 +201,23 @@ them in `structure.json` for its genre.
 - T9. **Tags** on every turn, in English. Questions get an intonation tag. Tone falls, laughs,
   pauses, stress marks, numbers and accents follow the voice skill's tag guide.
 
+## 7b. Punch-up
+
+The writers' room pass, after the turns are written and before the lint. A subagent that did
+not write the turns gets the script, the profile and the soul files, and this brief: "You are
+a punch-up writer. For every line: laugh, setup, plot, or flat. For every flat line and every
+weak laugh, write three funnier versions in the character's voice and culture, spoken
+register, then pick one. Find the three places with the longest stretch without a laugh and
+add one. Check the turn is the biggest laugh and the button pays off the game." Apply what
+keeps the structure and the character rules; mark the new laughs.
+
+- U1. A punchline is short and specific: a real brand, a number, a name, a ritual from the
+  character's milieu beats a general word.
+- U2. A narrator line is a joke or it is cut: dry, ending on the funny word, never explaining
+  what the listener already got.
+- U3. The hero acts: digs deeper, bluffs, schemes, escalates. A hero who only reacts or
+  confesses leaves the comedy to everyone else.
+
 ## 8. Lint
 
 ```
@@ -200,7 +233,9 @@ It cannot check whether anything is funny: that is step 9.
 ## 9. Doctor
 
 Give a subagent that did not write the script the scenario, the profile and this file, and
-this brief: "You are a script doctor. Judge harshly, cite rules by number. Report: the game;
+this brief: "You are a script doctor. Judge harshly, cite rules by number. First: is it funny?
+Mark every line laugh / setup / plot / flat, count the laughs per minute against J0, and say
+whether the premise passes R5. Then report: the game;
 the Story Spine with every 'and then'; each beat against B2-B6; the big laughs and whether
 they escalate (J1); each callback (J2-J4); each character against their design (C2-C3);
 lines that sound written rather than spoken, with a more casual version only (T3); the three

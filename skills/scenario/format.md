@@ -72,6 +72,7 @@ Comments the lint reads. Each goes on its own line, before the line it marks.
 | `<!-- plant: KEY -->` | the setup of a callback |
 | `<!-- echo: KEY -->` | the callback returns, changed, between plant and payoff |
 | `<!-- payoff: KEY -->` | the callback pays off; an error without a plant earlier in this file |
+| `<!-- laugh: WHAT -->` | the next line is meant to get a laugh; the lint counts them per minute and reports long gaps (J0) |
 | `<!-- length: 4.5 -->` | target minutes; the lint warns past ±25% |
 | `<!-- lint-ok: words -->` | drops warnings containing these words: an intended exception, with the reason in a comment |
 | `<!-- lint: jingle -->` | a series intro: the who-and-where and structure checks are off |

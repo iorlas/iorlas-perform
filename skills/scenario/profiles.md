@@ -44,7 +44,8 @@ NAME/
 from what the user says, asking only about what changes the story: audience, tone, length,
 narration, intro or not, how sharp. Then, in order:
 
-1. **profile.md**: format and target length; the language register (how people here talk,
+1. **profile.md**: the engine (one line: what every episode runs on, the source of most
+   jokes); format and target length; the language register (how people here talk,
    which jargon and swearing belong); tone with one reference line for the sharpest moment;
    the running-gag cap; acting habits.
 2. **world.md**: setting in concrete, audible details; then **entities**: every thing, place
@@ -142,6 +143,8 @@ for another genre overrides any subset:
 | `callback_max` | 3 | touches per callback: plant, echo, payoff |
 | `button_words` | 8 | the button's last line at most |
 | `cast_max` | 6 | voices per episode |
+| `laugh_gap` | 20 s | longest stretch without a `<!-- laugh -->` mark |
+| `laughs_per_min` | 3 | laughs per minute at least; 0 turns the laugh checks off (drama) |
 
 A thriller might stretch the ladder and drop the button; a sketch show might need only hook,
 turn and button. Change one number at a time and judge by ear.
