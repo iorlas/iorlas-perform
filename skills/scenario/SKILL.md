@@ -146,6 +146,13 @@ how it ends. Rules:
   «короче, типа», a mother «ой». About one per two or three lines, mid-sentence or at the
   start, never inside a punchline. Prefer words over sounds: «э-э» and «ммм» can come out as
   spelled letters.
+- **Transitions.** Rising (calm to angry, quiet to loud) works with stepped tags inside one
+  turn: `[calm] ... [irritated, louder] ... [shouting] ...`. Falling (joy to sadness, loud to
+  quiet) does not: the model stops for a beat at the tag and drops pitch so far that it sounds
+  like another person. For a fall, keep it one breath: no `...` or full stop at the turn, a
+  bridge word instead («Мам, меня повысили — ну, директором завода»), and one tag for the
+  whole arc that ends deflated rather than in tears (`[excited, deflating on the last words]`).
+  Heard on Drama 3; the fix for falls is not yet tested.
 - **Length.** A character may say several sentences in one turn when the moment wants a
   speech: a rant, a confession, a story. Keep one turn under 300 characters (one render caps
   near 47 s); longer speeches continue in the next turn of the same voice with `@0.1`, and
