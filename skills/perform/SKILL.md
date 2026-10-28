@@ -48,7 +48,10 @@ vadik: [panicking] Это плановая миграция!
   | outdoors, storm, roof | `wind` |
 
   `{ambience night 0.5}` = half volume (1 = default, already low and ducked under speech);
-  `{ambience off}` fades to silence. A scene with no `{ambience}` line renders as before.
+  `{ambience off}` fades to silence before the next turn; at the very end it is not needed
+  (the last bed rings 1 s past the last word, then fades). A scene opening on `{ambience}`
+  starts its first word at 1.5 s so the bed is heard first. A scene with no `{ambience}`
+  line renders as before.
 - Phone calls: `palych+phone: Алло?` renders that turn through a telephone band.
 - Spacing: `voice@N:` sets the gap before a turn (default `--gap`); negative overlaps the
   previous turn, for interruptions. `{pause 1-2}` between scenes.
@@ -81,7 +84,8 @@ uv run $S/scene.py <name>.txt <name>.wav [--engine drama3|s2] [--speed 1.1] [--g
 - A first-use model download logs `[perform] first use: downloading ...`; relay it with the size.
 - Drama 3 renders about real time; S2 ~3x slower.
 - `<name>.timeline.json`: per turn `voice`, `text`, `start`, `end` in seconds (`phone: true`
-  on phone turns), then per bed `ambience`, `volume`, `start`, `end`.
+  on phone turns), then per bed `ambience`, `volume`, `start`, `end` (`start` is where its 1.5 s fade-in
+  begins, before the turn).
 - Preview a bed alone: `uv run $S/ambience.py night 10 night.wav`.
 - `--clips DIR` saves each turn as its own wav, for fixing one line or A/B tests.
 

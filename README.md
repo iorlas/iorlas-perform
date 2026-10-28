@@ -57,9 +57,9 @@ Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in `$PERFORM_VOIC
 
 ## Ambience
 
-A scene line `{ambience night}` starts a background bed at the next turn, crossfading
-1.5 s from the previous one; `{ambience rain 0.5}` sets volume (1 = default), `{ambience off}`
-fades out. Beds sit 18 dB under the speech and duck 9 dB more while anyone talks. Put the
+A scene line `{ambience night}` brings in a background bed, crossfading over the 1.5 s
+before the next turn, so it is fully up as that turn starts; `{ambience rain 0.5}` sets volume (1 = default), `{ambience off}`
+fades out before the next turn. Beds sit 18 dB under the speech and duck 9 dB more while anyone talks. Put the
 line before the narrator's scene change ("Ночь. Офис."). `voice+phone: text` renders a turn
 through a telephone band. See [examples/night_shift.txt](examples/night_shift.txt).
 
