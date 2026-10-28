@@ -252,6 +252,8 @@ Read the script as a listener with closed eyes, then answer each:
 For an independent read, give the scenario, the profile and `structure-research.md` to a
 subagent playing a script doctor who has not seen the writing, and ask for these answers
 and the weakest beat.
+Tell it the register from the profile (`profile.md`, Language): its fixes keep spoken,
+casual Russian, and a suggestion that makes a line more formal is dropped.
 
 ## 7. Approve
 
