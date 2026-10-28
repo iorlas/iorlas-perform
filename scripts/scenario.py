@@ -71,7 +71,7 @@ CAST_LINE = re.compile(r"^([\w-]+)\s*\|\s*(.+)$")
 TAG = re.compile(r"\[([^\]]*)\]")
 NARRATOR = "narrator"
 STRESS = "\u0301"  # combining acute: «пи́дора»
-MARK = re.compile(r"<!--\s*(plant|echo|payoff|beat|length|laugh|lint-ok):\s*(.+?)\s*-->")
+MARK = re.compile(r"<!--\s*(plant|echo|payoff|arc|beat|length|laugh|needs|shows|lint-ok):\s*(.+?)\s*-->")
 CHARS_PER_SEC = 11  # spoken characters per second, Drama 3 at --speed 1.1: 2896 in 261 s (an episode)
 
 
@@ -160,6 +160,27 @@ Item = Turn | Pause | Scene | Ambience | Sfx
 
 
 @dataclass
+class Node:
+    """One row of the `## Map`: a want, a lie, an act, a fact... and why it is there."""
+
+    id: str
+    kind: str
+    what: str
+    because: list[str]  # ids of the nodes that motivate or cause it
+    shown: str  # the scene where the listener gets it, or `later: WHERE`
+    line: int
+    who: str = ""  # the voice that acts, says or learns it
+    knows: list[str] = field(default_factory=list)  # ids of what `who` must know first, each with its source
+    via: str = ""  # how it reaches them: room, phone, screen, chat, memory, narration
+
+
+# Kinds that need a reason: something a character does, or something that happens.
+ACTS = {"lie", "act", "choice", "reveal", "turn", "payoff"}
+KINDS = ACTS | {"want", "fear", "fact", "rule", "plant", "arc"}
+VIA = {"room", "phone", "screen", "chat", "memory", "narration"}
+
+
+@dataclass
 class Scenario:
     cast: dict[str, str]  # voice -> description
     scenes: list[Scene]
@@ -169,6 +190,7 @@ class Scenario:
     length: float | None = None  # `<!-- length: 4.5 -->`, target minutes
     quiet: list[str] = field(default_factory=list)  # `<!-- lint-ok: words -->`: warnings containing them are dropped
     rules: Rules = field(default_factory=Rules)
+    story: list[Node] = field(default_factory=list)  # the `## Map` table
 
     @property
     def turns(self) -> list[Turn]:
@@ -232,21 +254,21 @@ def parse_md(text: str) -> Scenario:
     cast: dict[str, str] = {}
     scenes: list[Scene] = []
     items: list[Item] = []
-    in_cast = False
+    story: list[Node] = []
+    cols: list[str] = []  # the map table's header
+    table = None  # "cast", "map" or None while inside a scene
     for n, raw in enumerate(text.splitlines(), 1):
         line = raw.strip()
         if line.startswith("## "):
             title = line[3:].strip()
-            in_cast = title.lower() in ("cast", "роли", "персонажи")
-            if not in_cast:
+            table = {"cast": "cast", "роли": "cast", "персонажи": "cast", "map": "map", "карта": "map"}.get(title.lower())
+            if not table:
                 scenes.append(Scene(title, None, None, n))
                 items.append(scenes[-1])
         elif line.startswith("#") or not line:
             continue
-        elif in_cast and (m := ROW.match(line)):
-            voice, desc = [c.strip().strip("`") for c in m[1].split("|", 1)]
-            if voice.lower() != "voice" and not set(voice) <= set("-: "):
-                cast[voice] = desc.strip().strip("|").strip()
+        elif table and (m := ROW.match(line)):
+            table_row(table, m[1], n, cast=cast, story=story, cols=cols)
         elif m := AMBIENCE.match(line):
             if not scenes:
                 sys.exit(f"line {n}: '> ambience' needs a '## scene' heading above it")
@@ -255,7 +277,43 @@ def parse_md(text: str) -> Scenario:
             items.append(md_item(m[1].strip(), n, len(scenes) - 1))
         elif TURN.match(line) or PAUSE.match(line):
             sys.exit(f"line {n}: turns are list items, write '- {line}'")
-    return Scenario(cast, scenes, items)
+    return Scenario(cast, scenes, items, story=story)
+
+
+def table_row(table: str, row: str, n: int, *, cast: dict[str, str], story: list[Node], cols: list[str]) -> None:
+    if table == "map":
+        if node := map_row(row, n, cols):
+            story.append(node)
+        return
+    voice, desc = [c.strip().strip("`") for c in row.split("|", 1)]
+    if voice.lower() != "voice" and not set(voice) <= set("-: "):
+        cast[voice] = desc.strip().strip("|").strip()
+
+
+def map_row(row: str, n: int, cols: list[str]) -> Node | None:
+    """One map row, by the header's column names; the header fills `cols` and returns None."""
+    cells = [c.strip() for c in row.split("|")]
+    if cells[0].lower() == "id":
+        cols[:] = [c.lower() for c in cells]
+        return None
+    if not cols or set(cells[0]) <= set("-: "):
+        return None
+    cell = dict(zip(cols, cells, strict=False))
+
+    def ids(name: str) -> list[str]:
+        return [b.strip() for b in re.split(r"[,;]", cell.get(name, "")) if b.strip() and b.strip() not in ("-", "—")]
+
+    return Node(
+        cell.get("id", ""),
+        cell.get("kind", "").lower(),
+        cell.get("what", ""),
+        ids("because"),
+        cell.get("shown", ""),
+        n,
+        who=cell.get("who", "").strip("`"),
+        knows=ids("knows"),
+        via=cell.get("via", "").lower(),
+    )
 
 
 def md_item(body: str, n: int, scene: int) -> Turn | Pause | Ambience | Sfx:
@@ -504,6 +562,143 @@ def lint_pace(sc: Scenario) -> list[Issue]:
     return out
 
 
+def scene_of(sc: Scenario, shown: str) -> int | None:
+    """Index of the scene a map node is shown in; None for `later` or no match."""
+    s = shown.lower()
+    if s.startswith("later"):
+        return None
+    titles = [x.title.lower() for x in sc.scenes]
+    if s in titles:
+        return titles.index(s)
+    return next((i for i, x in enumerate(titles) if s in x or x in s), None)
+
+
+def lint_story(sc: Scenario) -> list[Issue]:
+    """The story map: why (motive), when (order), who knows (knowledge), how (means)."""
+    if not sc.story:
+        return [("warn", 1, "no ## Map: list the wants, lies, acts and facts and why each is there (SKILL.md 4a)")]
+    out: list[Issue] = []
+    by_id = {node.id: node for node in sc.story}
+    used = {b for node in sc.story for b in node.because + node.knows}
+    used |= {i for kind, key, _ in sc.marks if kind == "needs" for i in ids(key)}  # a fact a laugh stands on is used
+    for node in sc.story:
+        out += lint_node(sc, node, by_id)
+        if node.kind in {"want", "fear", "fact", "rule", "plant"} and node.id not in used:
+            out.append(("warn", node.line, f"map «{node.id}»: nothing follows from this {node.kind}: an unfired gun, or cut it"))
+    return out
+
+
+def ids(key: str) -> list[str]:
+    return [x for x in re.split(r"[,\s]+", key) if x and x != "-"]
+
+
+def lint_needs(sc: Scenario) -> list[Issue]:
+    """What the listener must already have heard for a laugh to work, and that they have."""
+    if not sc.story:
+        return []
+    by_id = {node.id: node for node in sc.story}
+    turns = sc.turns
+
+    def turn_of(n: int) -> Turn | None:  # a mark on a turn's line, or on its own line before it
+        return next((t for t in turns if t.line >= n), None)
+
+    told: dict[str, int] = {}
+    out: list[Issue] = []
+    for kind, key, n in sc.marks:
+        if kind == "shows" and not (bad := lint_shows(sc, key, turn_of(n), n, by_id)):
+            told.update({i: min(t.line, told.get(i, t.line)) for i in ids(key) if (t := turn_of(n))})  # the first telling counts
+        elif kind == "shows":
+            out += bad
+    needs = {t.line: key for kind, key, n in sc.marks if kind == "needs" and (t := turn_of(n))}
+    for line, key in needs.items():
+        turn = next(t for t in turns if t.line == line)
+        out += [x for i in ids(key) if (x := lint_need(sc, i, turn, by_id, told))]
+    laughs = {t.line for kind, _, n in sc.marks if kind == "laugh" and (t := turn_of(n))}
+    bare = "laugh without <!-- needs: ids -->: what must the listener already know? (`needs: -` for nothing)"
+    return out + [("warn", n, bare) for n in sorted(laughs - needs.keys())]
+
+
+def lint_shows(sc: Scenario, key: str, turn: Turn | None, n: int, by_id: dict[str, Node]) -> list[Issue]:
+    if turn is None:
+        return [("error", n, "<!-- shows: --> goes on the turn that tells the listener")]
+    out: list[Issue] = []
+    for i in ids(key):
+        if i not in by_id:
+            out.append(("error", n, f"shows «{i}»: not in the map"))
+        elif scene_of(sc, by_id[i].shown) != turn.scene:
+            out.append(("error", n, f"shows «{i}»: the map says it is shown in «{by_id[i].shown}», not this scene"))
+    return out
+
+
+def lint_need(sc: Scenario, i: str, turn: Turn, by_id: dict[str, Node], told: dict[str, int]) -> Issue | None:
+    n = turn.line
+    if i not in by_id:
+        return ("error", n, f"needs «{i}»: not in the map")
+    node = by_id[i]
+    s = scene_of(sc, node.shown)
+    if s is None:
+        return ("error", n, f"needs «{i}», but the listener hears it {node.shown or 'never'}: the laugh has nothing to stand on")
+    if s > turn.scene:
+        return ("error", n, f"needs «{i}», heard only in a later scene «{node.shown}»")
+    if s == turn.scene and i not in told:
+        return ("warn", n, f"needs «{i}», told in this same scene: mark the line that tells it with <!-- shows: {i} -->")
+    if s == turn.scene and told[i] > n:  # the same line may tell and pay off
+        return ("error", n, f"needs «{i}», told at line {told[i]}: after the laugh that needs it")
+    return None
+
+
+def issue(node: Node, kind: str, msg: str) -> Issue:
+    return (kind, node.line, f"map «{node.id}»: {msg}")
+
+
+def lint_node(sc: Scenario, node: Node, by_id: dict[str, Node]) -> list[Issue]:
+    return lint_why(sc, node, by_id) + lint_when(sc, node, by_id) + lint_how(sc, node)
+
+
+def lint_why(sc: Scenario, node: Node, by_id: dict[str, Node]) -> list[Issue]:
+    """Motive: every act has a reason, and every node is shown or justified later."""
+    out: list[Issue] = []
+    if node.kind not in KINDS:
+        out.append(issue(node, "error", f"kind «{node.kind}» is not one of {', '.join(sorted(KINDS))}"))
+    if node.kind in ACTS and not node.because:
+        out.append(issue(node, "error", f"this {node.kind} has no reason: why does it happen?"))
+    out += [issue(node, "error", f"«{dep}» is not in the map") for dep in node.because + node.knows if dep not in by_id]
+    shown = node.shown.lower()
+    if shown.startswith("later"):
+        if not shown.removeprefix("later").strip(" :"):
+            out.append(issue(node, "error", "«later» needs where: `later: ep03` or `later: the finale`"))
+    elif scene_of(sc, node.shown) is None:
+        out.append(issue(node, "error", f"shown «{node.shown}» is not a scene of this episode, nor `later: WHERE`"))
+    return out
+
+
+def lint_when(sc: Scenario, node: Node, by_id: dict[str, Node]) -> list[Issue]:
+    """Order: a cause, or what `who` must know, is heard no later than what it explains."""
+    here = scene_of(sc, node.shown)
+    if here is None:
+        return []
+    late = [d for d in node.because + node.knows if d in by_id and (s := scene_of(sc, by_id[d].shown)) is not None and s > here]
+    return [issue(node, "error", f"«{d}» is heard in a later scene than this: the effect comes before its cause") for d in late]
+
+
+def lint_how(sc: Scenario, node: Node) -> list[Issue]:
+    """Means: how it reaches `who`, and whether they are there to get it that way."""
+    out: list[Issue] = []
+    if node.via and node.via not in VIA:
+        out.append(issue(node, "error", f"via «{node.via}» is not one of {', '.join(sorted(VIA))}"))
+    if node.who and node.who != "narrator" and node.who not in sc.cast:
+        out.append(issue(node, "error", f"who «{node.who}» is not in the cast"))
+    here = scene_of(sc, node.shown)
+    if not node.who or here is None:
+        return out
+    turns = [x for x in sc.turns if x.voice == node.who and x.scene == here]
+    if node.via == "room" and turns and all(x.phone for x in turns):
+        out.append(issue(node, "error", f"{node.who} is only on the phone in this scene: they cannot do this in the room"))
+    if node.via == "phone" and not any(x.phone for x in sc.turns if x.scene == here):
+        out.append(issue(node, "error", "via phone, but nobody in this scene is on the phone"))
+    return out
+
+
 def lint(sc: Scenario) -> list[Issue]:
     out = lint_text(sc) + lint_cues(sc.items)
     if sc.jingle:
@@ -512,6 +707,7 @@ def lint(sc: Scenario) -> list[Issue]:
         out.append(("warn", 1, "no cast (## Cast table or @cast): intro checks skipped"))
     else:
         out += lint_names(sc) + lint_scenes(sc) + lint_jokes(sc) + lint_laughs(sc) + lint_beats(sc) + lint_pace(sc)
+        out += lint_story(sc) + lint_needs(sc)
     out = [i for i in out if i[0] == "error" or not any(q in i[2] for q in sc.quiet)]  # <!-- lint-ok: words -->
     return sorted(out, key=lambda x: x[1])
 

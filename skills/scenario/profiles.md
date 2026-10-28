@@ -30,6 +30,8 @@ NAME/
   world.md        setting, entities, rules of the world, running gags, canon so far
   characters.md   cast table, character design, how each one sounds
   relationships.md every pair that makes plots, characters and entities, with a map
+  taste-log.md    raw calibration picks, round by round (see Calibrating taste)
+  arcs.md         series and season cycles, open and fired season guns
   entities/       <id>.md, one soul file per character, object, place or institution
   structure.json  optional: the lint's structure rules for this genre
   levels.json     per-voice loudness and pitch (calibrate.py)
@@ -110,6 +112,24 @@ uv run $S/profiles.py unfact NAME SRC           # remove a source's facts: undo 
 Sources: `epNN` for an episode, `user` for what the user said in chat, `design` for a
 writer's later addition. The design sections are never edited to add a fact, so the file
 always shows what was designed and what came later; folding a fact in is the user's call.
+
+## Calibrating taste
+
+What a profile's audience finds funny is found by asking, not guessed. Show the user one
+moment of an episode in 3-4 variants that differ on one thing only (who delivers the hit,
+the device, the target, the delivery) and every variant meant to be funny. Ask which works
+and why. Repeat until every variant is funny and the user only picks the best.
+
+Keep the reasoning, not the lines:
+
+- `taste-log.md`: the raw picks, dated, one round at a time, with the user's words. Evidence.
+- profile.md, **Taste, calibrated**: numbered principles, each a mechanism named in standard
+  humour-theory terms (superiority, benign violation, incongruity-resolution, dramatic
+  irony, understatement, relief, bisociation, recognition), why it works for this audience,
+  its test, and the rounds that showed it (`r3`). An example appears only as evidence, short.
+  A list of good lines is not a taste: the next writer copies them.
+- Rewrite a principle when a round contradicts it; never append a second one beside it.
+- A "lost every time" list names each failed device with the rule it breaks.
 
 ## structure.json
 

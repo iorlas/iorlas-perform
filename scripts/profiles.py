@@ -39,7 +39,7 @@ from pathlib import Path
 
 PLUGIN = "iorlas-perform"
 MARKETPLACE = "iorlas-marketplace"  # used when running from a checkout, not an install
-FILES = ("profile.md", "world.md", "characters.md", "relationships.md")
+FILES = ("profile.md", "world.md", "characters.md", "relationships.md", "arcs.md")
 FACTS = "## Facts"
 FACT = re.compile(r"^- (\d{4}-\d\d-\d\d) · (\S+) · (.*)$")  # - 2026-10-28 · ep01 · text
 FACTS_HINT = (
@@ -75,6 +75,11 @@ that does not use it is refused (scenario skill, R5).
 - Audience, tone, what is in and out of bounds; how sharp the edgiest moment is, with one
   example line as the reference.
 - Running-gag cap per episode.
+
+## Taste, calibrated
+
+- Numbered principles from calibration rounds (skill: profiles.md, Calibrating taste): the
+  mechanism in humour-theory terms, why it works for this audience, its test, the rounds.
 
 ## Acting
 
@@ -140,6 +145,38 @@ soul file's Connections.
 ## Facts
 
 {facts}""",
+    "arcs.md": """# Arcs
+
+Three cycles. Each episode closes its own story; it also moves the season by one step,
+and the season moves the series. A listener who missed every other episode still follows
+this one.
+
+## Series
+
+What the whole series is about, start to end: where the hero starts, where he ends.
+
+## Season
+
+The season's question, its finale, and one step per episode toward it.
+
+| episode | the step it takes |
+|---|---|
+| | |
+
+## Open guns
+
+Planted with `<!-- arc: KEY -->`, not yet fired. Every gun fires by the season's finale or is
+cut.
+
+| key | planted | what it is | fires in |
+|---|---|---|---|
+| | | | |
+
+## Fired
+
+| key | planted | fired | how |
+|---|---|---|---|
+""",
     "entities/hero.md": """# Имя (`hero`): character
 
 One soul file per entity: a character, or an object, place or institution that is more

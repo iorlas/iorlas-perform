@@ -8,8 +8,8 @@ description: Design and write, or fix, a script for an audio story, radio play o
 Design an episode the way a writers' room does, then write it, check it, and record it.
 
 ```
-0 Profile -> 1 Premise -> 2 Cast -> 3 Beat sheet -> 4 Joke map -> 5 Outline check
-  -> 6 Scene plan -> 7 Turns -> 7b Punch-up -> 8 Lint -> 9 Doctor -> 10 Approve -> 11 Canon
+0 Profile -> 1 Premise -> 2 Cast -> 3 Beat sheet -> 4 Joke map -> 4a Story map -> 5 Outline check
+  -> 6 Scene plan -> 7 Turns -> 7b Punch-up -> 8 Lint -> 8a Listener check -> 9 Doctor -> 10 Approve -> 11 Canon
 ```
 
 Scripts: `${CLAUDE_SKILL_DIR}/../../scripts`, called `$S` below.
@@ -33,8 +33,8 @@ them in `structure.json` for its genre.
   names; with none named and one existing, use it; with several, ask.
 - P2. A new series or world gets a new profile first: `profiles.py new NAME`, then fill it in
   the order in `profiles.md`. Profiles never go into the plugin's repository.
-- P3. Before writing, read `profile.md`, `world.md`, `characters.md`, `relationships.md` and
-  the last two episodes.
+- P3. Before writing, read `profile.md`, `world.md`, `characters.md`, `relationships.md`,
+  `arcs.md` and the last two episodes.
   A profile section that is still a template hint gets filled first, with the user.
 - P4. Set the target length (the profile's, or ask) and write it as `<!-- length: N -->`.
   Budget about 11 spoken characters per second: a 4-minute episode is ~2600 characters.
@@ -47,6 +47,11 @@ them in `structure.json` for its genre.
   join at the turn. Five unrelated gags are not a game.
 - R3. Each episode stands alone: a listener who missed the others follows it. Nothing outside
   this file (earlier episodes, the series intro) counts as setup.
+- R3a. **Three cycles.** An episode is a complete cycle; it also takes one step of the
+  season's cycle, and the season one step of the series' (`arcs.md`). Each episode plants at
+  most two season guns (`<!-- arc: KEY -->`), each a joke or a fact that works in this episode
+  on its own, so a new listener misses nothing, and fires at most two open ones. A fired gun
+  is re-planted in the episode (R3, J4), so its payoff never needs the earlier one.
 - R4. A pilot introduces the world's premise and the main pair; it does not use every
   character. Later episodes build on the entities and rules in `world.md`, and obey them.
 - R5. **Premise test.** Said as one sentence to someone who knows the series, the logline
@@ -54,6 +59,11 @@ them in `structure.json` for its genre.
   every episode is about, the source of most jokes). A premise that needs the episode to be
   funny, or uses the engine as decoration (an IT series whose plot could happen in a bakery),
   is refused. A small moral story is not a premise: the stakes escalate.
+- R5a. **The founding act is motivated on stage.** The hero's first lie, wish or choice, the
+  one the premise runs on, gets in the setup: why he did it, how it grew to what it is now, and
+  why he keeps it. The listener hears all three; none comes from the logline or a comment.
+  Each is consistent with every fact the script states: a checkable fact that breaks a motive
+  (a lie about a thing that did not exist yet) is a plot hole, however good the joke.
 
 ## 2. Cast
 
@@ -122,8 +132,8 @@ them in `structure.json` for its genre.
 - B6. The button is the story's last line and the biggest laugh after the turn; nothing after
   it competes. The tag is the only exception: short, and it never holds a payoff the story
   needs.
-- B7. Episodes close and reset by default. A cliffhanger is a question in the tag, never an
-  unfinished story.
+- B7. Episodes close their story. What carries over is the season's step (R3a), never an
+  unfinished plot; a cliffhanger is a question in the tag at most.
 - B8. Mark every beat in the file with `<!-- beat: NAME -->` before its first line.
 
 ## 4. Joke map
@@ -153,6 +163,46 @@ them in `structure.json` for its genre.
 - J8. **The game escalates by different gags.** Each rung shows the game in a new way, so the
   listener cannot guess the next joke from the last one. A game that has one joke (an old
   trope, a single twist the ear sees coming) is a sketch, not an episode.
+
+## 4a. Story map
+
+The episode's logic as a graph, written before the turns into the file's `## Map` table (syntax
+in `format.md`). Every want, fear, fact, rule of the world, lie, act, choice, plant, reveal and
+turn is a node. Each answers four questions, and the lint checks all four, so a hole is found
+before a line is written:
+
+| question | column | what the lint checks |
+|---|---|---|
+| **why** (motive) | `because` | an act, lie, choice, reveal, turn or payoff names its causes; each exists |
+| **when** (order) | `shown` | every cause, and every thing a character must know, is heard in the same scene or an earlier one |
+| **who knows** (knowledge) | `who`, `knows` | what a character acts on reached them first: the node it came from is in the map and comes no later |
+| **how** (means) | `via` | the way it reaches them is possible: no one in the room who is only on the phone; no phone with nobody on it |
+
+- M1. **Why.** Every act has a reason: a character's want or fear, a fact, a rule, an earlier
+  act. "Because the plot needs it" is not a node.
+- M2. **Shown, or later.** A node is heard in a scene of this episode, or it is
+  `later: WHERE`: justified by what a later scene or episode reveals (a season gun in
+  `arcs.md`). Never only in a comment or the logline (R5a).
+- M3. **When.** Effects never come before their causes. A time jump is a node of its own
+  («прошло восемнадцать лет»), or the listener cannot tell the backstory from now.
+- M4. **Who knows.** For every act, ask how the actor knows what they act on, and put the
+  source in `knows`: an AI that greets the hero by name saw the name somewhere; a mother who
+  asks for the boss by name heard it. A character never acts on what only the listener knows.
+- M5. **How.** For every act, ask how it physically happens (`via`: room, phone, screen,
+  chat, memory, narration). Someone on the phone cannot see or touch; a message needs a
+  channel that still works in this story.
+- M6. **Nothing for nothing.** A want, fear, fact, rule or plant that nothing follows from is
+  an unfired gun: fire it, mark it `arc`, or cut it.
+- M7. **Facts agree.** No two nodes contradict (a lie about a thing that did not exist yet).
+  The lint cannot see this; the doctor checks it, node by node.
+- M8. Keep it short: the 15-45 nodes the story turns on, not every line. When a review or the
+  user finds a hole, add the node that would have caught it.
+- M9. **What the listener knows.** `knows` is what a character knows; `needs` is what the
+  listener must already have heard for a laugh to work. For every laugh, ask: what does this
+  line take for granted? A power («она видит его телефон»), a past event («он его забанил»),
+  a reference. Each is a map node, told in a line before the laugh; `<!-- needs: ids -->` on
+  the laugh, `<!-- shows: id -->` on the telling line when both are in one scene. A
+  prerequisite with no node is the hole: add it, and the line that tells it.
 
 ## 5. Outline check
 
@@ -205,6 +255,13 @@ them in `structure.json` for its genre.
   continues in the next turn of the same voice with `@0.1`.
 - T9. **Tags** on every turn, in English. Questions get an intonation tag. Tone falls, laughs,
   pauses, stress marks, numbers and accents follow the voice skill's tag guide.
+- T10. **Heard once.** The listener hears each line once, without the map, the comments or
+  the writer's intent. A reply to a question is heard as its answer: its first words answer
+  it, or dodge it in a way the listener hears as a dodge. A change of subject says its own
+  verb, never an ellipsis: after «А внутри что?», «И ещё один телефон: вашей маме» is heard
+  as "inside is another phone"; «Ещё поставила вашей маме» is not. A line whose meaning
+  needs its comment or the map fails. A reference is named in full the first time: «как в
+  торте «Наполеон»», not «как «Наполеон»», which is heard as the emperor.
 
 ## 7b. Punch-up
 
@@ -235,12 +292,37 @@ names, scene openings, the scene budget, beats (present, in order, shares, butto
 callbacks (planted, within reach, three touches), questions, tags, pauses and sound cues.
 It cannot check whether anything is funny: that is step 9.
 
+## 8a. Listener check
+
+The lint trusts the map's `shown`; the listener check does not. It asks a reader who has only
+the spoken lines where each fact a laugh `needs` is said aloud.
+
+```
+uv run $S/listen.py run <file>.md
+```
+
+`run` hands the brief to a fresh `claude -p` session with no settings, tools, memory or
+project files: a reader who saw the notes "gets" what a listener does not. Without the
+`claude` CLI, `listen.py brief <file>.md > brief.md`, give `brief.md` alone to a fresh
+subagent (no script, profile or summary), save its JSON, and run
+`listen.py check <file>.md answers.json`.
+
+An error is a laugh resting on a fact no spoken line tells before it: add the line that tells
+it (M9), or cut the laugh. A warning is what the reader did not get on one hearing (T10): fix
+it, or keep it with the reason. Run it again after fixing.
+
 ## 9. Doctor
 
 Give a subagent that did not write the script the scenario, the profile and this file, and
 this brief: "You are a script doctor. Judge harshly, cite rules by number. First: is it funny?
 Mark every line laugh / setup / plot / flat, count the laughs per minute against J0, and say
-whether the premise passes R5. Then report: the game;
+whether the premise passes R5. Check the `## Map` against the turns (M1-M9): a motive, a source of knowledge or a
+channel the map claims but no line says, a fact that contradicts another, an answer that does
+not answer the line before it. Test each laugh against the profile's "Taste, calibrated"
+rules by number: who loses status, and did they earn it? Listen test (T10): read the turns
+with the map and comments hidden; for every reply to a question, write what a listener hears
+it answer, and for every line, what it means heard once; list each line where that differs
+from its comment. Then report: the game;
 the Story Spine with every 'and then'; each beat against B2-B6; the big laughs and whether
 they escalate (J1); each callback (J2-J4); each character against their design (C2-C3);
 lines that sound written rather than spoken, with a more casual version only (T3); the three
@@ -260,6 +342,8 @@ as `episodes/NN-slug.md` in the profile, the next number.
 ## 11. Canon
 
 Once approved, update the profile so the next episode starts from it:
+- `arcs.md`: this episode's season step; every `arc` gun it planted under Open guns, every
+  one it fired moved to Fired.
 - `world.md`: one line under "Canon so far"; new entities and rules, as rows.
 - `characters.md`: new characters. A new entity mentioned more than once gets a soul file.
 - **Facts**, never rewrites: what the episode established about an entity or a pair (a new

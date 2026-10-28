@@ -1,0 +1,106 @@
+"""The listener check: is what each laugh stands on said aloud before it, in the words heard?
+
+The map says where a fact is shown, and the lint trusts it. This check does not: a reader who
+gets only the spoken lines (no tags, comments, map or notes) finds the line that tells each
+fact a laugh needs. The reader must be a fresh agent that never saw the script's notes.
+
+    uv run listen.py run EPISODE.md                     # a fresh `claude -p` session reads it
+    uv run listen.py brief EPISODE.md > brief.md        # or give brief.md, alone, to a fresh agent
+    uv run listen.py check EPISODE.md answers.json      # and check its JSON answer
+"""
+
+import json
+import re
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+import scenario
+
+BRIEF = """You hear a radio comedy once, in order, with no rewind. Below are its spoken lines, numbered,
+then the laughs and the facts each one stands on. For every fact of every laugh, find the
+FIRST spoken line, before or at the laugh, that tells a listener that fact in words they hear.
+Be strict: a fact counts only if a listener who knows nothing else would get it from that
+line; your own knowledge of the world, or a guess at what the writer meant, does not count.
+Also say, in one short English sentence, what a listener hearing the laugh line once would
+not get, or "" when it is clear.
+
+Answer with JSON only, no prose:
+{"laughs": [{"n": LAUGH_LINE, "facts": [{"id": "ID", "told": LINE_OR_NULL, "quote": "the words that tell it"}], "unclear": ""}]}
+"""
+
+
+def spoken(text: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"\[[^\]]*\]", " ", text)).strip()
+
+
+def laughs(sc: scenario.Scenario) -> list[tuple[int, list[str]]]:
+    """(turn number, needed ids) per laugh with needs, turn numbers from 1."""
+    turns = sc.turns
+    by_line = {t.line: i + 1 for i, t in enumerate(turns)}
+
+    def number(n: int) -> int | None:
+        return next((by_line[t.line] for t in turns if t.line >= n), None)
+
+    needs = {k: scenario.ids(key) for kind, key, n in sc.marks if kind == "needs" and (k := number(n))}
+    return sorted((k, v) for k, v in needs.items() if v)
+
+
+def brief(sc: scenario.Scenario) -> str:
+    names = {v: d.split(",")[0].strip() for v, d in sc.cast.items()}
+    lines = [
+        f"{i}. {names.get(t.voice, t.voice)}{' (по телефону)' if t.phone else ''}: {spoken(t.text)}" for i, t in enumerate(sc.turns, 1)
+    ]
+    nodes = {node.id: node.what for node in sc.story}
+    asks = [f"- laugh at line {k}: " + "; ".join(f"{i} = {nodes.get(i, '?')}" for i in ids) for k, ids in laughs(sc)]
+    return BRIEF + "\n## Spoken lines\n\n" + "\n".join(lines) + "\n\n## Laughs and their facts\n\n" + "\n".join(asks) + "\n"
+
+
+def check(sc: scenario.Scenario, answers: dict) -> list[scenario.Issue]:
+    line_of = {i: t.line for i, t in enumerate(sc.turns, 1)}
+    got = {a["n"]: a for a in answers.get("laughs", [])}
+    out: list[scenario.Issue] = []
+    for k, ids in laughs(sc):
+        n, answer = line_of[k], got.get(k)
+        if answer is None:
+            out.append(("error", n, "the reader gave no answer for this laugh: run the check again"))
+            continue
+        told = {f["id"]: f.get("told") for f in answer.get("facts", [])}
+        for i in ids:
+            if told.get(i) is None:
+                out.append(("error", n, f"needs «{i}»: no spoken line before it tells the listener"))
+            elif told[i] > k:
+                out.append(("error", n, f"needs «{i}»: told only at line {line_of.get(told[i], '?')}, after the laugh"))
+        if answer.get("unclear"):
+            out.append(("warn", n, f"heard once: {answer['unclear']}"))
+    return out
+
+
+def read_fresh(text: str, model: str = "sonnet") -> str:
+    """The brief, read by a Claude session with no settings, tools, memory or project files."""
+    with tempfile.TemporaryDirectory() as empty:  # no CLAUDE.md to discover
+        cmd = ["claude", "-p", "--setting-sources", "", "--tools", "", "--no-session-persistence", "--model", model]
+        cmd += ["--system-prompt", "You are a careful, literal first-time listener. Answer with JSON only."]
+        done = subprocess.run(cmd, input=text, capture_output=True, text=True, cwd=empty, check=False)
+    if done.returncode:
+        sys.exit(f"[perform] listen: claude -p failed: {(done.stderr or done.stdout).strip()[:300]}")
+    return done.stdout
+
+
+def main() -> None:
+    mode, src = sys.argv[1], sys.argv[2]
+    sc = scenario.load(src)
+    if mode == "brief":
+        print(brief(sc))
+        return
+    raw = read_fresh(brief(sc)) if mode == "run" else Path(sys.argv[3]).read_text()
+    answers = json.loads(raw[raw.index("{") : raw.rindex("}") + 1])  # tolerate a fence around the JSON
+    issues = check(sc, answers)
+    ok = scenario.report(issues, src)
+    print(f"[perform] listen: {sum(i[0] == 'error' for i in issues)} errors, {sum(i[0] == 'warn' for i in issues)} warnings")
+    sys.exit(0 if ok else 1)
+
+
+if __name__ == "__main__":
+    main()

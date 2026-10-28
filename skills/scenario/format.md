@@ -62,6 +62,38 @@ A scenario is a Markdown file, `NN-slug.md`, that reads as a script on GitHub or
   `cash_register`, `error_beep`. A line that promises a sound («звонит телефон») gets one;
   one or two effects per scene is plenty.
 
+## Map
+
+`## Map` (or `## Карта`), after the cast: the story map (SKILL.md 4a), one row per node. Not read
+aloud; the lint checks it. Columns are found by the header's names, so `who`, `knows` and `via`
+may be left out of a short map and added later.
+
+```
+| id | kind | who | what | because | knows | via | shown |
+|---|---|---|---|---|---|---|---|
+| hide-dvach | want | vadik | at 10, hides from Мама that he lives on Двач | | | narration | Кухня, утро |
+| first-lie | lie | vadik | «программу делаю для переписки» | hide-dvach | | room | Кухня, утро |
+| at-boss | fact | vadik | tells Мама he is at the boss's | mama-calls | | phone | Кабинет, день |
+| to-boss | act | mama | asks for the boss by name | pride | at-boss | phone | Кабинет, день |
+| ban-debt | arc | mikhalych | banned him in 2010 | mod-past | | room | later: arcs.md, the finale |
+```
+
+| column | holds |
+|---|---|
+| `id` | a short name the other columns point to |
+| `kind` | `want`, `fear`, `fact`, `rule` (of the world), `lie`, `act`, `choice`, `plant`, `reveal`, `turn`, `payoff`, `arc` (a season gun) |
+| `who` | the voice that acts, says or learns it (a cast voice, or `narrator`); empty for a world fact |
+| `what` | the node in a few words |
+| `because` | ids of what causes or motivates it, comma-separated; required for lie, act, choice, reveal, turn, payoff |
+| `knows` | ids of what `who` must know first; each must be heard no later |
+| `via` | how it happens or reaches them: `room`, `phone`, `screen`, `chat`, `memory`, `narration` |
+| `shown` | the scene heading where the listener hears it, or `later: WHERE` |
+
+The lint reports: a reason missing or not in the map; a node shown in no scene; `later` with
+no where; a cause or a known thing heard in a later scene than what it explains; a `who`
+outside the cast; `via room` for someone only on the phone there; `via phone` in a scene with
+no phone; a want, fact, rule or plant nothing follows from.
+
 ## Design marks
 
 Comments the lint reads. Each goes on its own line, before the line it marks.
@@ -72,7 +104,10 @@ Comments the lint reads. Each goes on its own line, before the line it marks.
 | `<!-- plant: KEY -->` | the setup of a callback |
 | `<!-- echo: KEY -->` | the callback returns, changed, between plant and payoff |
 | `<!-- payoff: KEY -->` | the callback pays off; an error without a plant earlier in this file |
+| `<!-- arc: KEY -->` | a season gun: planted here, fired in a later episode, listed in the profile's `arcs.md`; not checked as a callback |
 | `<!-- laugh: WHAT -->` | the next line is meant to get a laugh; the lint counts them per minute and reports long gaps (J0) |
+| `<!-- needs: id, id -->` | with every laugh: the map nodes the listener must already have heard for it to work; `needs: -` for none. An error when a node is not in the map, is `later`, or is heard in a later scene; a node from the same scene needs its `shows` mark on an earlier line (M9) |
+| `<!-- shows: id -->` | this line tells the listener that map node; only for nodes a `needs` uses from the same scene |
 | `<!-- length: 4.5 -->` | target minutes; the lint warns past ±25% |
 | `<!-- lint-ok: words -->` | drops warnings containing these words: an intended exception, with the reason in a comment |
 | `<!-- lint: jingle -->` | a series intro: the who-and-where and structure checks are off |
