@@ -92,6 +92,17 @@ how it ends. Rules:
   than one `[short pause]` per turn, never inside a punchline: the model can stretch it to
   2-4 s, and `scene.py` caps silences inside a turn at 0.6 s anyway.
 - **Comedy.** Setup 1-3 lines, punchline short (under 8 words), the funny word last.
+- **Acting inside a line.** A turn is a performance, not a flat sentence. Change tone
+  mid-phrase with a tag where the change happens:
+  `[polite] Конечно, Геннадий Палыч, [suddenly furious] но я вам не нейросеть!`.
+  Use punctuation as intonation anywhere in the line: `!` mid-sentence for a jolt, `?!`
+  for outrage, `...` for a trailing hesitation, `—` for a cut-off or a turn of thought.
+  Aim for at least one shift or jolt in every few lines; a scene of evenly delivered lines
+  sounds read, not played.
+- **Length.** A character may say several sentences in one turn when the moment wants a
+  speech: a rant, a confession, a story. Keep one turn under 300 characters (one render caps
+  near 47 s); longer speeches continue in the next turn of the same voice with `@0.1`, and
+  the tone can change at the split.
 - **Delivery tags** in English on every turn; questions get an intonation tag
   (`[rising intonation]`); laughs as `[bursts out laughing] Текст! [laughs uncontrollably]`;
   no Russian inside brackets, it is read aloud. Turns stay under 300 characters.
