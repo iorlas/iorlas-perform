@@ -25,7 +25,7 @@ each model downloads to `~/.cache/huggingface` on its first use, with a log line
 
 ## Use
 
-Three skills:
+Three skills, around **profiles**:
 
 - `scenario`: writes or fixes a script with radio-drama craft (who speaks, where, when; scenes
   that end on a beat), in the Markdown format below, and lints it.
@@ -39,8 +39,8 @@ Or run the scripts yourself:
 ```bash
 uv run scripts/speak.py examples/shmatko.txt out.wav --voice praporshchik
 uv run scripts/scenario.py story.md                               # lint a script
-uv run scripts/scene.py examples/senior_vadik.txt vadik.wav       # multi-voice + timeline
-uv run scripts/scene.py examples/night_shift.md night.wav         # with ambience beds
+uv run scripts/scene.py examples/cherdak.txt cherdak.wav          # multi-voice + timeline
+uv run scripts/scene.py examples/night_shift.md night.wav         # ambience beds, sound effects
 uv run scripts/design_voice.py boss "A tired 40-year-old Russian office manager, dry sarcasm" --line "Ну и кто это опять сломал?"
 python3 scripts/record_refs.py
 ```
@@ -48,6 +48,7 @@ python3 scripts/record_refs.py
 | script | job |
 |---|---|
 | `speak.py` | tagged text -> wav, voice cloned from one reference |
+| `profiles.py` | list, show and copy profiles |
 | `scenario.py` | scenario format parser and lint: every voice named, every scene placed |
 | `scene.py` | scenario -> wav + `timeline.json`, one render per turn, progress with ETA |
 | `ambience.py` | background beds (`office`, `kitchen`, `evening`, `night`, `rain`, `wind`), crossfade, ducking |
@@ -59,6 +60,32 @@ python3 scripts/record_refs.py
 Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in `$PERFORM_VOICES`, then
 `./voices`, then the bundled `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`
 (designed with Qwen VoiceDesign).
+
+## Profiles
+
+A profile is one series or world in a folder: what the series is and how it should sound,
+the world, the characters, their voices, per-voice levels, and the episodes so far.
+
+```
+profiles/<name>/
+  profile.md     format, tone, humour, acting and writing preferences
+  world.md       setting, rules, running gags, canon so far
+  characters.md  cast table and how each character sounds
+  levels.json    per-voice loudness gain and pitch (calibrate.py)
+  voices/        voice files for the cast
+  episodes/      NN-slug.md scenarios
+```
+
+`scenario` reads the profile before writing an episode and updates it after; `scene.py` takes
+voices from the profile of the file it renders. Your profiles live in `$PERFORM_PROFILES` or
+`./profiles`. The bundled [`senior-vadik`](profiles/senior-vadik) profile is a complete example:
+a comedic Russian series about a fake senior engineer and an AI genie, three episodes in.
+
+```bash
+uv run scripts/profiles.py                    # list profiles
+uv run scripts/profiles.py copy senior-vadik  # copy the example into ./profiles
+uv run scripts/scene.py profiles/senior-vadik/episodes/02-tri-zhelaniya.md ep2.wav
+```
 
 ## Scenario format
 

@@ -18,8 +18,8 @@ the `scenario` skill (`${CLAUDE_SKILL_DIR}/../scenario/SKILL.md`) and come back.
 
 ## 2. Cast
 
-List characters and pick a voice for each: an existing one (`$PERFORM_VOICES`, `./voices`,
-bundled: `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`) or a new design.
+List characters and pick a voice for each: an existing one (the scenario's profile `voices/`,
+then `$PERFORM_VOICES`, `./voices`, then bundled: `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`) or a new design.
 A reused voice under another character's name: copy its `.wav` and `.txt` into `./voices/<name>.*`.
 
 New voice: `uv run $S/design_voice.py NAME "description" --line "Русская фраза в характере"`.

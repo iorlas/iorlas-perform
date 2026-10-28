@@ -2,3 +2,4 @@
 !voices/*.wav
 __pycache__/
 .venv/
+!profiles/*/voices/*.wav

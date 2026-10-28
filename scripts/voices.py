@@ -1,8 +1,9 @@
 """Where voice references live.
 
 A voice is <name>.wav + <name>.txt (exact transcript of the wav).
-Your own voices: $PERFORM_VOICES, else ./voices in the current directory.
-Bundled voices ship in the plugin's voices/ folder and are the fallback.
+Lookup order: the scenario's profile voices (profiles.py), then your own
+voices in $PERFORM_VOICES, else ./voices in the current directory, then the
+bundled voices in the plugin's voices/ folder.
 """
 import os
 from pathlib import Path
@@ -14,14 +15,14 @@ def user_dir() -> Path:
     return Path(os.environ.get("PERFORM_VOICES", "voices")).expanduser()
 
 
-def find(name: str) -> Path | None:
-    for folder in (user_dir(), BUNDLED):
+def find(name: str, first: list[Path] = ()) -> Path | None:
+    for folder in (*first, user_dir(), BUNDLED):
         wav = folder / f"{name}.wav"
         if wav.exists() and wav.with_suffix(".txt").exists():
             return wav
     return None
 
 
-def available() -> list[str]:
-    names = {w.stem for d in (user_dir(), BUNDLED) for w in d.glob("*.wav")}
+def available(first: list[Path] = ()) -> list[str]:
+    names = {w.stem for d in (*first, user_dir(), BUNDLED) for w in d.glob("*.wav")}
     return sorted(names)
