@@ -112,6 +112,9 @@ def main():
     # A scene that opens on a bed lets it fade in before the first word.
     lead = int(ambience.XFADE * sr) if turns and turns[0][0] == "ambience" else 0
     end = lead  # sample where the previous turn (or pause) ends
+    spoken = [t for v, t, _ in turns if v not in ("pause", "ambience")]
+    total_chars, done_chars, done_turns = sum(map(len, spoken)), 0, 0
+    log(f"{len(spoken)} turns, {len(needed)} voices, {total_chars} chars; ETA after the first turn")
     start = time.time()
     for n, (voice, text, gap) in enumerate(turns, 1):
         if voice == "pause":
@@ -122,6 +125,7 @@ def main():
             continue
         voice, phone = voice.removesuffix(PHONE), voice.endswith(PHONE)
         ref_audio, ref_text = refs[voice]
+        t0 = time.time()
         results = model.generate(text=text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
         audio = np.concatenate([np.array(r.audio) for r in results])
         if args.speed != 1.0:
@@ -139,7 +143,13 @@ def main():
         timeline.append({"turn": n, "voice": voice, "text": text,
                          "start": round(at / sr, 3), "end": round((at + len(audio)) / sr, 3)}
                         | ({"phone": True} if phone else {}))
-        print(f"[{n}/{len(turns)}] {voice}: {len(audio) / sr:.1f}s  {text[:50]}", flush=True)
+        # ETA scales the time so far by the characters left: render time follows text length.
+        done_turns, done_chars = done_turns + 1, done_chars + len(text)
+        elapsed = time.time() - start
+        eta = elapsed / done_chars * (total_chars - done_chars)
+        log(f"{done_turns}/{len(spoken)} {done_chars * 100 // total_chars}% {voice}: "
+            f"{len(audio) / sr:.1f}s audio in {time.time() - t0:.1f}s | "
+            f"elapsed {clock(elapsed)}, ETA {clock(eta)} | {text[:40]}")
 
     mix = np.zeros(end, dtype=np.float32)
     for at, audio in placed:
@@ -149,12 +159,24 @@ def main():
         bed, segments = ambience.render(changes, mix, sr)
         mix = np.pad(mix, (0, len(bed) - len(mix))) + bed
         timeline += segments
+        for seg in segments:
+            log(f"ambience: {seg['ambience']} {clock(seg['start'])}-{clock(seg['end'])}")
     peak = np.abs(mix).max()
     if peak > 0.99:  # overlaps can clip
         mix *= 0.99 / peak
     sf.write(dest, mix, sr)
     dest.with_suffix(".timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=2) + "\n")
-    print(f"{dest}: {len(mix) / sr:.1f}s audio in {time.time() - start:.1f}s")
+    took, length = time.time() - start, len(mix) / sr
+    log(f"done: {length:.1f}s audio in {clock(took)} ({length / took:.2f}x real time)")
+    print(f"{dest}: {length:.1f}s audio in {took:.1f}s")
+
+
+def log(msg: str):
+    print(f"[perform] {msg}", flush=True)
+
+
+def clock(secs: float) -> str:
+    return f"{int(secs) // 60}m{int(secs) % 60:02d}s"
 
 
 def trim(audio: np.ndarray, sr: int, keep: float = 0.03) -> np.ndarray:

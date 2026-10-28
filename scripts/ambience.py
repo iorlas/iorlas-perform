@@ -27,6 +27,7 @@ TAIL = 1.0  # seconds the last bed rings on after the last word
 BED_DB = 18  # bed level below the speech
 DUCK_DB = 9  # extra drop while someone speaks
 ATTACK, RELEASE = 0.05, 0.45  # ducking speed, seconds
+HOLD = 25  # 10 ms frames the duck holds after speech stops
 
 
 def shaped(n, sr, rng, lo=None, hi=None, tilt=0.0):
@@ -203,6 +204,8 @@ def ducking(speech: np.ndarray, sr: int) -> tuple[np.ndarray, float]:
     loud = rms[rms > 0.1 * rms.max()] if rms.max() > 0 else rms
     level = float(np.sqrt(np.mean(loud ** 2))) if len(loud) else 0.0
     target = np.clip(rms / (0.3 * level + 1e-12), 0, 1)
+    # Hold: stay down through the short gaps between words.
+    target = np.lib.stride_tricks.sliding_window_view(np.pad(target, (HOLD - 1, 0)), HOLD).max(axis=1)
     up, down = 1 - np.exp(-0.01 / ATTACK), 1 - np.exp(-0.01 / RELEASE)
     env, d = np.empty(frames), 0.0
     for i, x in enumerate(target):
