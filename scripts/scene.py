@@ -81,6 +81,8 @@ import sfx
 import voices
 from scenario import Ambience, Pause, Scenario, Scene, Sfx, Turn
 
+TURN_PEAK = 10 ** (-1 / 20)  # -1 dBFS: the gain may raise a voice, never past clipping
+
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
@@ -152,6 +154,9 @@ def speak_turn(
         audio = phone_line(audio, sr)
     if item.voice in levels:  # one fixed gain per voice, from calibrate.py
         audio = audio * 10 ** (gain_db(levels, item.voice) / 20)
+        # A quiet voice's gain on a shouted line clips: cap the turn's peak instead.
+        if (peak := np.abs(audio).max()) > TURN_PEAK:
+            audio *= TURN_PEAK / peak
     return audio
 
 
