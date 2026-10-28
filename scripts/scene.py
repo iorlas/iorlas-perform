@@ -232,6 +232,11 @@ def main() -> None:
     from mlx_audio.utils import load_audio
 
     model = engines.load_engine(args.engine)
+    # Drama 3 keeps each voice's encoded reference in an LRU of 4: a cast of 5+ voices
+    # alternating would re-encode and re-prefill on every miss. Hold the whole cast.
+    voices: Any = getattr(model, "_voices", None)
+    if hasattr(voices, "_size"):
+        voices._size = max(voices._size, len(needed) + 2)  # noqa: SLF001  # no public setter
     sr = model.sample_rate
     refs: dict[str, tuple[Any, str]] = {}
     for v, wav in voice_wavs.items():
