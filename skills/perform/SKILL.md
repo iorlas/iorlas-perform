@@ -48,5 +48,21 @@ uv run $S/scene.py <name>.txt <name>.wav [--engine drama3|s2] [--speed 1.1] [--g
 - `<name>.timeline.json`: per turn `voice`, `text`, `scene`, `ambience`, `start`, `end` in seconds.
 - `--clips DIR` saves each turn as its own wav, for fixing one line or A/B tests.
 
+## 5. Levels
+
+Voices cloned from different references come out at different loudness. After the first
+render of a profile (or when a voice is added or sounds too loud or quiet), render with
+`--clips DIR` and run:
+
+```
+uv run $S/calibrate.py DIR --profile <name>
+```
+
+It writes `levels.json` into the profile: one gain per voice to a -20 LUFS target, plus each
+voice's median pitch, and reports voices too close in pitch to tell apart. `scene.py` applies
+the gains on every later render, once per voice, so whispers stay quieter than shouts. Hand
+edits that survive recalibration: `offset_db` (a narrator a little under the cast) and
+`semitones` (pitch shift at render; the timbre shifts with it).
+
 Report: audio length, render time, any turn that looks wrong (much shorter than its text
 suggests). Fix a bad turn by rephrasing or re-tagging it and rendering again.

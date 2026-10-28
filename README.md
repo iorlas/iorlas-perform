@@ -48,6 +48,7 @@ python3 scripts/record_refs.py
 |---|---|
 | `speak.py` | tagged text -> wav, voice cloned from one reference |
 | `profiles.py` | list, show and copy profiles |
+| `calibrate.py` | per-voice loudness (LUFS) and pitch from rendered clips -> profile `levels.json` |
 | `scenario.py` | scenario format parser and lint: every voice named, every scene placed |
 | `scene.py` | scenario -> wav + `timeline.json`, one render per turn, progress with ETA |
 | `engines.py` | engine list (`--engine drama3\|s2`), first-use download log |
