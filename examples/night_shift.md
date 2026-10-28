@@ -1,6 +1,6 @@
 # Ночная смена
 
-<!-- Demo of ambience beds (office -> night) and a phone line. -->
+<!-- Demo of ambience beds (office -> night), sound effects and a phone line. -->
 
 ## Cast
 
@@ -23,7 +23,9 @@
 
 - narrator: [low voice] Ночь. Офис. Тишина. Только сверчок за окном и красный дашборд.
 - vadik: [whisper, pleading] Ну давай. Ну пожалуйста. Зелёный. Просто зелёный.
-- narrator@0.12: [dry] В три часа ночи позвонил Геннадий Палыч.
+- {sfx keyboard @-2}
+- narrator@0.12: [dry] В три часа ночи у Вадика зазвонил телефон. Звонил Геннадий Палыч.
+- {sfx phone_ring}
 - praporshchik+phone: [loud, suspicious question, rising intonation] Вадим! Ты почему в три часа ночи в чате пишешь «всё под контролем»?
 - vadik: [panicking] Потому что всё под контролем, Геннадий Палыч!
 - narrator: [dry, deadpan] Под контролем было только одно: сверчок. Он не падал ни разу.

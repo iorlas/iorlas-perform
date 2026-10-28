@@ -51,6 +51,17 @@ A Markdown file, `<name>.md`, that reads as a script when rendered:
   `> ambience night 0.5` is half volume. A scene without one fades the bed out.
 - `- voice+phone: Текст`: a turn heard through a phone. `- {ambience NAME}` changes the bed
   mid-scene.
+
+### Sound effects
+
+When a line promises a sound, give it one: «звонит телефон» -> `- {sfx phone_ring}` right
+before or after that turn. The effect plays after the previous turn and the next turn waits
+for it; `- {sfx modem 0.6 @-1.5}` = 60% volume, starting 1.5 s before the previous turn ends.
+For a line over the effect («Вадим, у тебя телефон звонит!»), give that turn a negative gap.
+Effects: `phone_ring`, `phone_vibrate`, `modem`, `door_open`, `door_close`, `door_knock`,
+`keyboard`, `notify`, `uh_oh` (ICQ-style), `call_join` (someone joins a call), `lighter`,
+`kettle`, `cash_register`, `error_beep`. The lint warns about a sound cue with no effect
+nearby; one or two effects per scene is plenty.
 - Turns are list items, `- voice: Текст`, with the metadata inline:
   `[delivery tag]` for acting, `voice@N:` for the gap before (negative overlaps), and
   `- {pause N}` for a deliberate beat inside a scene (at most 3 s).

@@ -38,8 +38,14 @@ speaks. Beds: office, kitchen, evening, night, rain, wind.
 
 Phone line: `- vadik+phone: Алло?` renders that turn through a telephone band.
 
+Sound effects (sfx.py): `- {sfx phone_ring}` plays an effect after the previous
+turn, spaced like a turn (--gap); `- {sfx modem 0.6 @-1.5}` sets volume and gap,
+a negative gap overlapping the previous turn. The next turn follows the effect;
+give that turn a negative gap to speak over it.
+
 Writes the wav and <out>.timeline.json: start and end of every turn in seconds,
-so screen changes can follow the audio, then one entry per ambience bed.
+so screen changes can follow the audio, then one entry per sound effect and per
+ambience bed.
 
 Silences inside a turn longer than --max-silence (0.6 s) are shortened to it.
 
@@ -62,8 +68,9 @@ import soundfile as sf
 import ambience
 import engines
 import scenario
+import sfx
 import voices
-from scenario import Ambience, Pause, Scene
+from scenario import Ambience, Pause, Scene, Sfx
 
 
 def main():
@@ -88,6 +95,9 @@ def main():
     for name, line in beds:
         if name != "off" and name not in ambience.BEDS:
             sys.exit(f"line {line}: no ambience '{name}', have: off, {', '.join(ambience.BEDS)}")
+    for i in sc.items:
+        if isinstance(i, Sfx) and i.name not in sfx.EFFECTS:
+            sys.exit(f"line {i.line}: no sfx '{i.name}', have: {', '.join(sfx.EFFECTS)}")
     needed = {t.voice for t in sc.turns}
     missing = sorted(v for v in needed if voices.find(v) is None)
     if missing:
@@ -106,7 +116,7 @@ def main():
         args.clips.mkdir(parents=True, exist_ok=True)
 
     # Clips are placed on a timeline, not concatenated, so a negative gap can overlap.
-    placed, timeline = [], []
+    placed, timeline, effects = [], [], []  # effects: (sample, Sfx, audio)
     changes, pending = [], []  # ambience changes: placed (sample, name, volume), waiting for a turn
     # A scenario that opens on a bed lets it fade in before the first word.
     first = sc.items[0] if sc.items else None
@@ -122,7 +132,7 @@ def main():
             end += int(item.secs * sr)
             continue
         if isinstance(item, Scene):
-            if placed:
+            if placed or effects:
                 end += int(args.scene_pause * sr)
             scene = item
             log(f"scene: {item.title}" + (f" | ambience {item.ambience}" if item.ambience else ""))
@@ -131,6 +141,13 @@ def main():
             continue
         if isinstance(item, Ambience):
             pending.append((item.ambience, item.volume or 1.0))
+            continue
+        if isinstance(item, Sfx):  # placed like a turn; its level is set once the speech is known
+            audio = sfx.make(item.name, sr, seed=n)
+            at = max(0, end + int((args.gap if item.gap is None else item.gap) * sr)) if placed or effects else lead
+            effects.append((at, item, audio))
+            end = max(end, at + len(audio))
+            log(f"sfx: {item.name} at {clock(at / sr)}, {len(audio) / sr:.1f}s")
             continue
         voice, text, gap = item.voice, item.text, item.gap
         ref_audio, ref_text = refs[voice]
@@ -146,7 +163,7 @@ def main():
             audio = phone_line(audio, sr)
         if args.clips:
             sf.write(args.clips / f"{n:02d}_{voice}.wav", audio, sr)
-        at = max(0, end + int((args.gap if gap is None else gap) * sr)) if placed else lead
+        at = max(0, end + int((args.gap if gap is None else gap) * sr)) if placed or effects else lead
         changes += [(at, name, vol) for name, vol in pending]
         pending = []
         placed.append((at, audio))
@@ -167,6 +184,12 @@ def main():
     mix = np.zeros(end, dtype=np.float32)
     for at, audio in placed:
         mix[at:at + len(audio)] += audio
+    if effects:
+        gain = (ambience.loudness(mix, sr) or 0.1) * 10 ** (-sfx.SFX_DB / 20)
+        for at, item, audio in effects:
+            mix[at:at + len(audio)] += audio * gain * (item.volume or 1.0)
+            timeline.append({"sfx": item.name, "volume": item.volume or 1.0,
+                             "start": round(at / sr, 3), "end": round((at + len(audio)) / sr, 3)})
     changes += [(end, name, vol) for name, vol in pending]
     if any(name != "off" for _, name, _ in changes):
         bed, segments = ambience.render(changes, mix, sr)

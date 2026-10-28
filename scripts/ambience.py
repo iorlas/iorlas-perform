@@ -195,14 +195,26 @@ def bed(name: str, n: int, sr: int, seed: int = 0) -> np.ndarray:
     return (x / (np.sqrt(np.mean(x ** 2)) + 1e-12)).astype(np.float32)
 
 
+def frame_rms(x: np.ndarray, sr: int) -> np.ndarray:
+    """RMS per 10 ms frame."""
+    hop = sr // 100
+    frames = len(x) // hop + 1
+    return np.sqrt(np.mean(np.pad(x, (0, frames * hop - len(x))).reshape(frames, hop) ** 2, axis=1))
+
+
+def loudness(x: np.ndarray, sr: int) -> float:
+    """RMS over the frames that sound (above 10% of the loudest): silences don't count."""
+    rms = frame_rms(x, sr)
+    loud = rms[rms > 0.1 * rms.max()] if rms.max() > 0 else rms
+    return float(np.sqrt(np.mean(loud ** 2))) if len(loud) else 0.0
+
+
 def ducking(speech: np.ndarray, sr: int) -> tuple[np.ndarray, float]:
     """Per-sample gain (1 in silence, -DUCK_DB while talking) and the speech RMS."""
     hop = sr // 100
-    frames = len(speech) // hop + 1
-    padded = np.pad(speech, (0, frames * hop - len(speech)))
-    rms = np.sqrt(np.mean(padded.reshape(frames, hop) ** 2, axis=1))
-    loud = rms[rms > 0.1 * rms.max()] if rms.max() > 0 else rms
-    level = float(np.sqrt(np.mean(loud ** 2))) if len(loud) else 0.0
+    rms = frame_rms(speech, sr)
+    frames = len(rms)
+    level = loudness(speech, sr)
     target = np.clip(rms / (0.3 * level + 1e-12), 0, 1)
     # Hold: stay down through the short gaps between words.
     target = np.lib.stride_tricks.sliding_window_view(np.pad(target, (HOLD - 1, 0)), HOLD).max(axis=1)

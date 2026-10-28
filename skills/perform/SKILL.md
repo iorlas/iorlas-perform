@@ -46,7 +46,7 @@ uv run $S/scene.py <name>.txt <name>.wav [--engine drama3|s2] [--speed 1.1] [--g
 - A first-use model download logs `[perform] first use: downloading ...`; relay it with the size.
 - Drama 3 renders about real time; S2 ~3x slower.
 - `<name>.timeline.json`: per turn `voice`, `text`, `scene`, `ambience`, `start`, `end` in seconds
-  (`phone: true` on phone turns), then per bed `ambience`, `volume`, `start`, `end` (`start` is
+  (`phone: true` on phone turns), then per effect `sfx`, `volume`, `start`, `end`, then per bed `ambience`, `volume`, `start`, `end` (`start` is
   where its 1.5 s fade-in begins, before the scene's first turn).
 - Beds come from `> ambience NAME` under a scene heading (README, Ambience). Preview one alone:
   `uv run $S/ambience.py night 10 night.wav`.

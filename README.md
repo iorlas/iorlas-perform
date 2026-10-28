@@ -51,6 +51,7 @@ python3 scripts/record_refs.py
 | `scenario.py` | scenario format parser and lint: every voice named, every scene placed |
 | `scene.py` | scenario -> wav + `timeline.json`, one render per turn, progress with ETA |
 | `ambience.py` | background beds (`office`, `kitchen`, `evening`, `night`, `rain`, `wind`), crossfade, ducking |
+| `sfx.py` | one-shot sound effects: phone, modem, door, kettle, lighter, messenger sounds |
 | `engines.py` | engine list (`--engine drama3\|s2`), first-use download log |
 | `design_voice.py` | voice from a text description |
 | `record_refs.py` | guided recording of your own voice, space to start/stop |
@@ -112,6 +113,20 @@ bed mid-scene. `- voice+phone: text` renders a turn through a telephone band. Se
 Beds are synthesized in numpy, nothing downloads: shaped noise for air conditioning, rain,
 wind and traffic, tones for crickets and hum, the bundled voices layered and muffled for
 office chatter and a TV next door. Preview one: `uv run scripts/ambience.py office 10 office.wav`.
+
+## Sound effects
+
+`- {sfx phone_ring}` between turns plays an effect after the previous turn, spaced like a turn;
+the next turn follows it. `- {sfx modem 0.6 @-1.5}` sets volume (1 = default, 8 dB under the
+speech) and gap: a negative gap starts it before the previous turn ends. To speak over an
+effect, give the next turn a negative gap. The lint warns when a line promises a sound
+(«звонит телефон», «стук в дверь», «подключаемся к интернету») with no `{sfx}` next to it.
+
+`phone_ring`, `phone_vibrate`, `modem` (dial-up handshake), `door_open`, `door_close`,
+`door_knock`, `keyboard`, `notify`, `uh_oh` (a messenger "uh-oh" in the spirit of ICQ),
+`call_join`, `lighter` (lighter and a drag), `kettle`, `cash_register`, `error_beep`.
+All synthesized, like the beds; the messenger and call sounds are look-alikes, not samples.
+List and preview: `uv run scripts/sfx.py`, `uv run scripts/sfx.py modem modem.wav`.
 
 ## Tag guide
 

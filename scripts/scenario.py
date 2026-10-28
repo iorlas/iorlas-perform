@@ -23,12 +23,15 @@ optional `> ambience NAME [volume]` line under it sets the background. Turns
 and pauses are list items; other prose and `<!-- comments -->` are notes, not
 read aloud. A turn-shaped line outside a list is an error, so no line is lost.
 `- voice+phone: text` is a turn heard through a phone; `- {ambience NAME
-[volume]}` or `- {ambience off}` changes the bed inside a scene.
+[volume]}` or `- {ambience off}` changes the bed inside a scene; `- {sfx NAME
+[volume] [@gap]}` plays a sound effect between turns, `@-1.5` overlapping the
+previous turn, like a turn's own gap.
 
 A `.txt` file is the older plain format: turns one per line, `{pause N}`, `#`
 comments, an optional `@cast` block (`voice | desc` lines) and `@scene place |
-ambience NAME` headers; `{ambience NAME}` and `voice+phone:` work there too. Files without a cast still parse; the lint then skips
-the checks that need it.
+ambience NAME` headers; `{ambience NAME}`, `{sfx NAME}` and `voice+phone:` work
+there too. Files without a cast still parse; the lint then skips the checks
+that need it.
 
 Lint, from radio-drama craft (stories/research_audio_drama_craft.md in the
 playground): a listener with closed eyes must know who speaks, where and when.
@@ -44,6 +47,7 @@ from pathlib import Path
 TURN = re.compile(r"^([\w-]+)(\+phone)?(?:@(-?[\d.]+))?\s*:\s*(.+)$")
 PAUSE = re.compile(r"^\{pause\s+([\d.]+)\}$")
 BED_CHANGE = re.compile(r"^\{ambience\s+([\w-]+)(?:\s+([\d.]+))?\}$")
+SFX = re.compile(r"^\{sfx\s+([\w-]+)(?:\s+([\d.]+))?(?:\s*@(-?[\d.]+))?\}$")
 SCENE = re.compile(r"^@scene\s+(.+?)(?:\s*\|\s*ambience\s+([\w-]+)(?:\s+([\d.]+))?)?\s*$")
 CAST_LINE = re.compile(r"^([\w-]+)\s*\|\s*(.+)$")
 TAG = re.compile(r"\[([^\]]*)\]")
@@ -75,6 +79,15 @@ class Ambience:
 
 
 @dataclass
+class Sfx:
+    """`{sfx NAME [volume] [@gap]}`: a one-shot effect placed like a turn."""
+    name: str
+    volume: float | None
+    gap: float | None
+    line: int
+
+
+@dataclass
 class Scene:
     title: str
     ambience: str | None
@@ -86,7 +99,7 @@ class Scene:
 class Scenario:
     cast: dict[str, str]  # voice -> description
     scenes: list[Scene]
-    items: list[Turn | Pause | Scene | Ambience]  # in order; Scene marks where it starts
+    items: list[Turn | Pause | Scene | Ambience | Sfx]  # in order; Scene marks where it starts
 
     @property
     def turns(self) -> list[Turn]:
@@ -113,6 +126,8 @@ def parse(text: str) -> Scenario:
             items.append(scene)
         elif m := PAUSE.match(line):
             items.append(Pause(float(m[1]), n))
+        elif m := SFX.match(line):
+            items.append(sfx_item(m, n))
         elif m := BED_CHANGE.match(line):
             items.append(Ambience(m[1], float(m[2]) if m[2] else None, n))
         elif m := TURN.match(line):
@@ -159,6 +174,8 @@ def parse_md(text: str) -> Scenario:
             body = m[1].strip()
             if pm := PAUSE.match(body):
                 items.append(Pause(float(pm[1]), n))
+            elif fm := SFX.match(body):
+                items.append(sfx_item(fm, n))
             elif bm := BED_CHANGE.match(body):
                 items.append(Ambience(bm[1], float(bm[2]) if bm[2] else None, n))
             elif tm := TURN.match(body):
@@ -169,6 +186,29 @@ def parse_md(text: str) -> Scenario:
         elif TURN.match(line) or PAUSE.match(line):
             sys.exit(f"line {n}: turns are list items, write '- {line}'")
     return Scenario(cast, scenes, items)
+
+
+def sfx_item(m: re.Match, n: int) -> Sfx:
+    return Sfx(m[1], float(m[2]) if m[2] else None, float(m[3]) if m[3] else None, n)
+
+
+# Words that promise a sound, and the effect that delivers it. The lint warns when
+# one is spoken with no {sfx} item within CUE_REACH items of the turn.
+CUES = [
+    (r"телефон\w*\s+(?:за)?звон|(?:за)?звон\w*\s+телефон|рингтон", "phone_ring"),
+    (r"вибрир|вибрац", "phone_vibrate"),
+    (r"модем|подключ\w* к интернет|dial-?up", "modem"),
+    (r"стук\w*\s+в\s+двер|стуч\w*\s+в\s+двер|постучал", "door_knock"),
+    (r"(?:открыл|открыв|распахн|скрипн)\w*\s+двер|двер\w*\s+(?:открыл|открыв|распахн|скрипн)", "door_open"),
+    (r"(?:закрыл|закрыв|хлопн)\w*\s+двер|двер\w*\s+(?:закрыл|закрыв|хлопн)", "door_close"),
+    (r"\bаськ|\bicq\b|\bо-оу\b", "uh_oh"),
+    (r"\bзум\w*|\bzoom\b|подключил\w*\s+к\s+(?:звонку|созвону)", "call_join"),
+    (r"зажигалк|закурил|прикурил|затянулся", "lighter"),
+    (r"чайник", "kettle"),
+    (r"\bкасс(?:а|ы|е|у|ой|овый)\b", "cash_register"),
+    (r"уведомлени|пиликн|дзынь", "notify"),
+]
+CUE_REACH = 2
 
 
 def spoken(text: str) -> str:
@@ -209,6 +249,19 @@ def lint(sc: Scenario) -> list[tuple[str, int, str]]:
     for i in sc.items:
         if isinstance(i, Pause) and i.secs > 3:
             warn(i.line, f"{{pause {i.secs:g}}}: over 3 s reads as a dropout")
+
+    # Sound cues: «звонит телефон» with no {sfx} next to it promises a sound that never comes.
+    items = sc.items
+    for k, t in enumerate(items):
+        if not isinstance(t, Turn):
+            continue
+        near = items[max(0, k - CUE_REACH):k + CUE_REACH + 1]
+        if any(isinstance(i, Sfx) for i in near):
+            continue
+        for pattern, effect in CUES:
+            if m := re.search(pattern, spoken(t.text), re.I):
+                warn(t.line, f"«{m[0]}» with no sound: add '- {{sfx {effect}}}' next to this turn")
+                break
 
     if not sc.cast:
         warn(1, "no @cast: intro checks skipped")
