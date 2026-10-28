@@ -14,6 +14,11 @@ Scene format, one turn per line:
 `voice: text` renders the text in that voice (see voices.py), `{pause N}` adds
 N seconds of silence, blank lines and `#` comments are skipped.
 
+Spacing: `voice@0.1: text` sets the gap before that turn, in seconds, instead of
+--gap. A negative gap overlaps the previous turn: `girl@-0.8: Что?!` starts
+0.8 s before the previous turn ends, and the two are mixed. Each clip's silent
+edges are trimmed first, so gaps are exact.
+
 Writes the wav and <out>.timeline.json: start and end of every turn in seconds,
 so screen changes can follow the audio.
 
@@ -37,20 +42,21 @@ import soundfile as sf
 import engines
 import voices
 
-TURN = re.compile(r"^([\w-]+)\s*:\s*(.+)$")
+TURN = re.compile(r"^([\w-]+)(?:@(-?[\d.]+))?\s*:\s*(.+)$")
 PAUSE = re.compile(r"^\{pause\s+([\d.]+)\}$")
 
 
-def parse(text: str) -> list[tuple[str, str | float]]:
+def parse(text: str) -> list[tuple[str, str | float, float | None]]:
+    """Turns as (voice, text, gap before or None); pauses as ("pause", seconds, None)."""
     turns = []
     for n, line in enumerate(text.splitlines(), 1):
         line = line.strip()
         if not line or line.startswith("#"):
             continue
         if m := PAUSE.match(line):
-            turns.append(("pause", float(m[1])))
+            turns.append(("pause", float(m[1]), None))
         elif m := TURN.match(line):
-            turns.append((m[1], m[2]))
+            turns.append((m[1], m[3], float(m[2]) if m[2] else None))
         else:
             sys.exit(f"line {n}: expected 'voice: text' or '{{pause N}}': {line}")
     return turns
@@ -68,7 +74,7 @@ def main():
 
     dest = Path(args.out) if args.out else Path(args.src).with_suffix(".wav")
     turns = parse(Path(args.src).read_text())
-    needed = {v for v, _ in turns if v != "pause"}
+    needed = {v for v, _, _ in turns if v != "pause"}
     missing = sorted(v for v in needed if voices.find(v) is None)
     if missing:
         sys.exit(f"no voice: {', '.join(missing)}\navailable: {', '.join(voices.available())}")
@@ -85,30 +91,47 @@ def main():
     if args.clips:
         args.clips.mkdir(parents=True, exist_ok=True)
 
-    gap = np.zeros(int(args.gap * sr), dtype=np.float32)
-    pieces, timeline, cursor = [], [], 0
+    # Clips are placed on a timeline, not concatenated, so a negative gap can overlap.
+    placed, timeline = [], []
+    end = 0  # sample where the previous turn (or pause) ends
     start = time.time()
-    for n, (voice, text) in enumerate(turns, 1):
+    for n, (voice, text, gap) in enumerate(turns, 1):
         if voice == "pause":
-            pieces.append(np.zeros(int(text * sr), dtype=np.float32))
-            cursor += len(pieces[-1])
+            end += int(text * sr)
             continue
         ref_audio, ref_text = refs[voice]
         results = model.generate(text=text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
         audio = np.concatenate([np.array(r.audio) for r in results])
         if args.speed != 1.0:
             audio = atempo(audio, sr, args.speed)
+        audio = trim(audio, sr)
         if args.clips:
             sf.write(args.clips / f"{n:02d}_{voice}.wav", audio, sr)
+        at = max(0, end + int((args.gap if gap is None else gap) * sr)) if placed else 0
+        placed.append((at, audio))
+        end = max(end, at + len(audio))
         timeline.append({"turn": n, "voice": voice, "text": text,
-                         "start": round(cursor / sr, 3), "end": round((cursor + len(audio)) / sr, 3)})
-        pieces += [audio, gap]
-        cursor += len(audio) + len(gap)
+                         "start": round(at / sr, 3), "end": round((at + len(audio)) / sr, 3)})
         print(f"[{n}/{len(turns)}] {voice}: {len(audio) / sr:.1f}s  {text[:50]}", flush=True)
 
-    sf.write(dest, np.concatenate(pieces), sr)
+    mix = np.zeros(end, dtype=np.float32)
+    for at, audio in placed:
+        mix[at:at + len(audio)] += audio
+    peak = np.abs(mix).max()
+    if peak > 0.99:  # overlaps can clip
+        mix *= 0.99 / peak
+    sf.write(dest, mix, sr)
     dest.with_suffix(".timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=2) + "\n")
-    print(f"{dest}: {cursor / sr:.1f}s audio in {time.time() - start:.1f}s")
+    print(f"{dest}: {end / sr:.1f}s audio in {time.time() - start:.1f}s")
+
+
+def trim(audio: np.ndarray, sr: int, keep: float = 0.03) -> np.ndarray:
+    """Cut silent edges (below 2% of peak), keeping `keep` seconds of margin."""
+    loud = np.where(np.abs(audio) > 0.02 * np.abs(audio).max())[0]
+    if not len(loud):
+        return audio
+    margin = int(keep * sr)
+    return audio[max(0, loud[0] - margin):loud[-1] + margin]
 
 
 def atempo(audio: np.ndarray, sr: int, speed: float) -> np.ndarray:

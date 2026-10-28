@@ -54,7 +54,7 @@ It also writes `out.timeline.json` with each turn's start and end in seconds.
 
 Free-form `[tag]` text passes to the model as written. Tested by ear:
 
-- Laugh: `[bursts out laughing] [pause] Текст! [laughs uncontrollably]`. Sounds real.
+- Laugh: `[bursts out laughing] Текст! [laughs uncontrollably]`. Sounds real.
 - Never spell `ха-ха`: it is read aloud as a word.
 - `[laughing]`, `[laughing tone]`, `[giggles]` alone: weak or no laugh.
 - Questions come out flat without help: tag the delivery, e.g. `[provocative, rising intonation]`,

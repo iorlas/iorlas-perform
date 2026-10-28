@@ -27,8 +27,15 @@ vadik: [panicking] Это плановая миграция!
   `[suspicious, sarcastic question]`. One idea per turn; split long monologues into turns
   of 1-3 sentences (each turn is one render, ~47 s cap).
 - Questions: tag the intonation (`[provocative, rising intonation]`), or they come out flat.
-- Laughs: `[bursts out laughing] [pause] Текст! [laughs uncontrollably]`. Never spell "ха-ха".
+- Laughs: `[bursts out laughing] Текст! [laughs uncontrollably]`. Never spell "ха-ха".
 - Russian text only inside turns; no bracketed Russian, it is read aloud.
+- Narrate like a book. The narrator speaks on every scene change (where, what is around,
+  one concrete detail ending on a punchline), every time jump ("Утро.", "В пятницу, в шесть
+  вечера"), and when a new voice enters (who they are, how they appear). Once two speakers
+  are introduced and trading lines, drop attributions; add «— сказал Вадик» only where it
+  adds a beat. Attribution turns get a short gap: `narrator@0.12:`.
+- Spacing: `voice@N:` sets the gap before a turn (default `--gap`); negative overlaps the
+  previous turn, for interruptions. `{pause 1-2}` between scenes.
 - Writing a story from an idea: keep it short first (15-25 turns, ~2 min), adult humour when
   asked for humour: irony, deadpan narrator, specific absurd details, a punchline at the end.
 

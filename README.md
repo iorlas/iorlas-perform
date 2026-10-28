@@ -4,7 +4,7 @@ Local Russian text-to-speech on Apple Silicon, as a Claude Code plugin. Write te
 ElevenLabs-style tags, get a wav in a cloned or designed voice, laughs included.
 
 ```
-[excited] Так, рядовой, стоять! [bursts out laughing] [pause] Он аж папочку уронил! [laughs uncontrollably]
+[excited] Так, рядовой, стоять! [bursts out laughing] Он аж папочку уронил! [laughs uncontrollably]
 ```
 
 Engines: [Fish Drama 3](https://huggingface.co/fishaudio/drama-3) (default, 3-bit MLX) or
@@ -57,7 +57,7 @@ Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in `$PERFORM_VOIC
 
 Tested by ear on Fish S2 Pro (Drama 3 judged better overall in an A/B; its tags not judged one by one):
 
-- Laugh: `[bursts out laughing] [pause] Текст! [laughs uncontrollably]`. Sounds real.
+- Laugh: `[bursts out laughing] Текст! [laughs uncontrollably]`. Sounds real.
 - Never spell `Ха-ха`: it is read aloud as a word.
 - `[laughing]`, `[laughing tone]`, `[giggles]` alone: weak or no laugh.
 - Questions (not yet judged by ear): tag the delivery, e.g. `[provocative, rising intonation]`.
