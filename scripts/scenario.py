@@ -1,20 +1,32 @@
-"""Scenario format: a cast block, scene headers and turns. Parser and lint.
+"""Scenario format: a cast, scenes and turns, in Markdown. Parser and lint.
 
-    # Title
-    @cast
-    vadik     | Вадик, 28, тимлид третью неделю
-    mikhalych | Михалыч, старый сисадмин, курит у сервера Зинаида
+    # Сеньор Вадик. Часть 2
 
-    @scene Офис, утро | ambience office
-    narrator: [calm] Утро. Офис...
-    vadik@0.2: [nervous] Сделаем.
-    {pause 2}
+    ## Cast
 
-`@cast` lists every voice except `narrator`: `voice | Name, who they are`. The
-words before the first comma are the names the lint looks for. `@scene place,
-time | ambience NAME [volume]` starts a scene; the ambience part is optional.
-Turns and `{pause N}` are as before; files without `@cast` or `@scene` still
-parse, and the lint then skips the checks that need them.
+    | voice | who |
+    |---|---|
+    | vadik | Вадик, 28, тимлид третью неделю |
+    | mikhalych | Михалыч, старый сисадмин, курит у сервера Зинаида |
+
+    ## Офис, утро
+    > ambience office
+
+    - narrator: [calm] Утро. Офис...
+    - vadik@0.2: [nervous] Сделаем.
+    - {pause 2}
+
+`## Cast` is a table of every voice except `narrator`: voice, then `Name, who
+they are`. The words before the first comma are the names the lint looks for.
+Every other `##` heading starts a scene, its title the place and time; an
+optional `> ambience NAME [volume]` line under it sets the background. Turns
+and pauses are list items; other prose and `<!-- comments -->` are notes, not
+read aloud. A turn-shaped line outside a list is an error, so no line is lost.
+
+A `.txt` file is the older plain format: turns one per line, `{pause N}`, `#`
+comments, an optional `@cast` block (`voice | desc` lines) and `@scene place |
+ambience NAME` headers. Files without a cast still parse; the lint then skips
+the checks that need it.
 
 Lint, from radio-drama craft (stories/research_audio_drama_craft.md in the
 playground): a listener with closed eyes must know who speaks, where and when.
@@ -93,6 +105,52 @@ def parse(text: str) -> Scenario:
             items.append(Turn(m[1], m[3], float(m[2]) if m[2] else None, n, len(scenes) - 1))
         else:
             sys.exit(f"line {n}: expected 'voice: text', '{{pause N}}', '@cast' or '@scene ...': {line}")
+    return Scenario(cast, scenes, items)
+
+
+def load(path: str | Path) -> Scenario:
+    path = Path(path)
+    text = path.read_text()
+    return parse_md(text) if path.suffix in (".md", ".markdown") else parse(text)
+
+
+ITEM = re.compile(r"^[-*]\s+(.+)$")
+AMBIENCE = re.compile(r"^>\s*ambience\s+([\w-]+)(?:\s+([\d.]+))?\s*$")
+ROW = re.compile(r"^\|(.+)\|$")
+
+
+def parse_md(text: str) -> Scenario:
+    # Comments become blank lines, so line numbers in lint messages stay right.
+    text = re.sub(r"<!--.*?-->", lambda m: "\n" * m[0].count("\n"), text, flags=re.S)
+    cast, scenes, items, in_cast = {}, [], [], False
+    for n, line in enumerate(text.splitlines(), 1):
+        line = line.strip()
+        if line.startswith("## "):
+            title = line[3:].strip()
+            in_cast = title.lower() in ("cast", "роли", "персонажи")
+            if not in_cast:
+                scenes.append(Scene(title, None, None, n))
+                items.append(scenes[-1])
+        elif line.startswith("#") or not line:
+            continue
+        elif in_cast and (m := ROW.match(line)):
+            voice, desc = [c.strip().strip("`") for c in m[1].split("|", 1)]
+            if voice.lower() != "voice" and not set(voice) <= set("-: "):
+                cast[voice] = desc.strip().strip("|").strip()
+        elif m := AMBIENCE.match(line):
+            if not scenes:
+                sys.exit(f"line {n}: '> ambience' needs a '## scene' heading above it")
+            scenes[-1].ambience, scenes[-1].volume = m[1], float(m[2]) if m[2] else None
+        elif m := ITEM.match(line):
+            body = m[1].strip()
+            if pm := PAUSE.match(body):
+                items.append(Pause(float(pm[1]), n))
+            elif tm := TURN.match(body):
+                items.append(Turn(tm[1], tm[3], float(tm[2]) if tm[2] else None, n, len(scenes) - 1))
+            else:
+                sys.exit(f"line {n}: list item is not 'voice: text' or '{{pause N}}': {body}")
+        elif TURN.match(line) or PAUSE.match(line):
+            sys.exit(f"line {n}: turns are list items, write '- {line}'")
     return Scenario(cast, scenes, items)
 
 
@@ -180,7 +238,7 @@ def report(issues, src: str) -> bool:
 
 if __name__ == "__main__":
     src = sys.argv[1]
-    issues = lint(parse(Path(src).read_text()))
+    issues = lint(load(src))
     ok = report(issues, src)
     print(f"[perform] lint: {sum(l == 'error' for l, _, _ in issues)} errors, "
           f"{sum(l == 'warn' for l, _, _ in issues)} warnings")

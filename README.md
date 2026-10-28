@@ -28,7 +28,7 @@ each model downloads to `~/.cache/huggingface` on its first use, with a log line
 Three skills:
 
 - `scenario`: writes or fixes a script with radio-drama craft (who speaks, where, when; scenes
-  that end on a beat), in the `@cast` / `@scene` format below, and lints it.
+  that end on a beat), in the Markdown format below, and lints it.
 - `/perform`: renders a ready scenario (given only an idea, it runs `scenario` first). Casts voices
   (designing new ones when needed), shows you the text, and on your yes renders a wav plus
   `timeline.json`.
@@ -38,7 +38,7 @@ Or run the scripts yourself:
 
 ```bash
 uv run scripts/speak.py examples/shmatko.txt out.wav --voice praporshchik
-uv run scripts/scenario.py examples/senior_vadik.txt              # lint a script
+uv run scripts/scenario.py story.md                               # lint a script
 uv run scripts/scene.py examples/senior_vadik.txt vadik.wav       # multi-voice + timeline
 uv run scripts/design_voice.py boss "A tired 40-year-old Russian office manager, dry sarcasm" --line "Ну и кто это опять сломал?"
 python3 scripts/record_refs.py
@@ -59,22 +59,35 @@ Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in `$PERFORM_VOIC
 
 ## Scenario format
 
-```
-@cast
-vadik  | Вадик, 28, тимлид третью неделю
-palych | Геннадий Палыч, IT-директор
+A Markdown file that reads as a script on GitHub or in any editor:
 
-@scene Офис, утро | ambience office
-narrator: [calm, storyteller] Утро. Офис. Вадик третью неделю тимлид.
-palych: [loud] Вадим! Тимлид без команды — это просто лид!
-vadik@0.2: [nervous, too fast] Сделаем, Геннадий Палыч.
-{pause 1}
+```markdown
+# Сеньор Вадик
+
+## Cast
+
+| voice | who |
+|---|---|
+| vadik | Вадик, 28, тимлид третью неделю |
+| palych | Геннадий Палыч, IT-директор |
+
+## Офис, утро
+
+> ambience office
+
+- narrator: [calm, storyteller] Утро. Офис. Вадик третью неделю тимлид.
+- palych: [loud] Вадим! Тимлид без команды — это просто лид!
+- vadik@0.2: [nervous, too fast] Сделаем, Геннадий Палыч.
+- {pause 1}
 ```
 
-`@cast` names each voice; the lint checks every character is named before or in their first
-line and again when they return after a scene away. `@scene` adds a scene pause and, with the
-ambience branch, a background bed. `voice@N:` sets the gap before a turn, negative overlaps.
-Files with only turns and `{pause N}` still render.
+- The cast table names each voice. The lint checks every character is named before or in
+  their first line, and again when they return after a scene away.
+- Each `##` heading is a scene: a scene pause and, with the ambience branch, a background bed
+  from `> ambience`.
+- Only list items are read aloud, with inline metadata: `[acting tag]`, `voice@N:` for the gap
+  before a turn (negative overlaps), `{pause N}`.
+- Older `.txt` scene files (one turn per line) still render.
 
 ## Tag guide
 

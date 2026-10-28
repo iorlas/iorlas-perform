@@ -1,6 +1,6 @@
 ---
 name: perform
-description: Render a ready scenario file (@cast, @scene, tagged turns) into a multi-voice Russian audio scene, local on Apple Silicon. Casts each character to a bundled or newly designed voice, lints, then renders with scene.py (Fish Drama 3) to a wav plus a timeline.json. Use for "/perform", "render this scenario", "voice this scene". Writing or fixing the script itself is the scenario skill; given only an idea, run scenario first. For a single voice reading a text, use the voice skill.
+description: Render a ready Markdown scenario file (cast table, ## scenes, tagged turns as list items) into a multi-voice Russian audio scene, local on Apple Silicon. Casts each character to a bundled or newly designed voice, lints, then renders with scene.py (Fish Drama 3) to a wav plus a timeline.json. Use for "/perform", "render this scenario", "voice this scene". Writing or fixing the script itself is the scenario skill; given only an idea, run scenario first. For a single voice reading a text, use the voice skill.
 ---
 
 # perform
@@ -13,8 +13,8 @@ and the tag guide are in the `voice` skill (`${CLAUDE_SKILL_DIR}/../voice/SKILL.
 
 Input is a ready scenario file in the `scenario` format. Run `uv run $S/scenario.py <file>`
 first. Given an idea, a draft or pasted text instead, or on lint errors, write or fix it with
-the `scenario` skill (`${CLAUDE_SKILL_DIR}/../scenario/SKILL.md`) and come back. Old flat files
-(turns and `{pause N}` only) still render; the lint then skips the intro checks.
+the `scenario` skill (`${CLAUDE_SKILL_DIR}/../scenario/SKILL.md`) and come back. Older `.txt` files
+(plain turns, `{pause N}`, optional `@cast`/`@scene`) still render; without a cast the lint skips the intro checks.
 
 ## 2. Cast
 
