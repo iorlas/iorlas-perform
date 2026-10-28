@@ -22,6 +22,7 @@ Usage:
     uv run speak.py script.txt out.wav --voice girl --speed 1.2 --engine s2
     echo "[sigh] Ладно." | uv run speak.py - out.wav
 """
+
 import argparse
 import re
 import subprocess
@@ -38,7 +39,7 @@ import voices
 PAUSE = 0.4  # seconds of silence between paragraphs
 
 
-def main():
+def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("src", help="text file, or - for stdin")
     p.add_argument("out", nargs="?", help="output wav (default: next to src)")
@@ -68,10 +69,13 @@ def main():
     ref_text = engines.ref_text(args.engine, ref.with_suffix(".txt").read_text().strip())
     silence = np.zeros(int(PAUSE * sr), dtype=np.float32)
     start = time.time()
-    pieces = []
+    pieces: list[np.ndarray] = []
     for n, para in enumerate(paragraphs, 1):
         results = model.generate(
-            text=para, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048,
+            text=para,
+            ref_audio=ref_audio,
+            ref_text=ref_text,
+            max_tokens=2048,
         )
         audio = np.concatenate([np.array(r.audio) for r in results])
         pieces += [audio, silence]
@@ -81,8 +85,7 @@ def main():
         # atempo keeps pitch; the model's own speed option resamples and raises it
         tmp = dest.with_suffix(".tmp.wav")
         subprocess.run(
-            ["ffmpeg", "-loglevel", "error", "-y", "-i", str(dest),
-             "-filter:a", f"atempo={args.speed}", str(tmp)],
+            ["ffmpeg", "-loglevel", "error", "-y", "-i", str(dest), "-filter:a", f"atempo={args.speed}", str(tmp)],
             check=True,
         )
         tmp.replace(dest)

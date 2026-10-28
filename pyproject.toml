@@ -9,6 +9,7 @@
 
 [tool.ruff]
 target-version = "py312"
+src = ["scripts"]  # the scripts import their siblings by path: sort them as first-party
 line-length = 140
 output-format = "concise"
 
@@ -37,6 +38,18 @@ ignore = [
     "INP001",  # scripts/ is a folder of scripts, not a package
     "PLC0415", # mlx_audio, librosa and pyloudnorm import lazily so --help and the lint stay fast
     "RUF001", "RUF002", "RUF003",  # Russian text in strings, docstrings and comments is the point
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Relaxations are written down here, never silent.
+"scripts/ambience.py" = [
+    "PLR0917",  # the DSP helpers read (n, sr, rng, ...) like numpy signatures; call sites name the tail
+]
+"scripts/sfx.py" = [
+    "ARG001",  # every effect is called as fn(sr, rng) from EFFECTS, whether or not it draws noise
+]
+"scripts/scene.py" = [
+    "C901", "PLR0912", "PLR0915",  # main() is one pass over the scenario in order, with the progress logs; helpers hold the rest
 ]
 
 [tool.ruff.lint.mccabe]

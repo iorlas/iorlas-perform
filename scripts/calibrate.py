@@ -29,6 +29,7 @@ not per line, so a whisper stays quieter than a shout.
 Usage: uv run calibrate.py CLIPS_DIR [CLIPS_DIR ...] --profile NAME|DIR [--target -20]
        uv run calibrate.py CLIPS_DIR --dry-run      print, write nothing
 """
+
 import argparse
 import json
 import re
@@ -36,6 +37,7 @@ import sys
 from datetime import datetime
 from itertools import pairwise
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import soundfile as sf
@@ -61,18 +63,12 @@ def measure(wav: Path) -> tuple[float, float] | None:
     return lufs, float(np.median(f0)) if len(f0) else float("nan")
 
 
-def main():
-    p = argparse.ArgumentParser()
-    p.add_argument("clips", nargs="+", type=Path)
-    p.add_argument("--profile", help="profile name or folder to write levels.json into")
-    p.add_argument("--target", type=float, default=-20.0, help="target loudness per voice, LUFS")
-    p.add_argument("--dry-run", action="store_true")
-    args = p.parse_args()
-
+def collect(clips: list[Path]) -> dict[str, list[tuple[float, float]]]:
+    """(LUFS, f0) of every clip per voice, with what scene.py applied to each clip undone."""
     # scene.py --clips writes clips.json: the gain, pitch shift and phone filter each clip got.
     # Undo them here so a recalibration measures the raw voice, not the last calibration.
     per_voice: dict[str, list[tuple[float, float]]] = {}
-    for folder in args.clips:
+    for folder in clips:
         applied = json.loads((folder / "clips.json").read_text()) if (folder / "clips.json").exists() else {}
         for wav in sorted(folder.glob("*.wav")):
             got = applied.get(wav.name, {})
@@ -80,28 +76,42 @@ def main():
                 continue  # a phone-filtered clip says nothing about the voice's level
             lufs, f0 = r[0] - got.get("gain_db", 0), r[1] / 2 ** (got.get("semitones", 0) / 12)
             per_voice.setdefault(m[1], []).append((lufs, f0))
+    return per_voice
+
+
+def main() -> None:
+    p = argparse.ArgumentParser()
+    p.add_argument("clips", nargs="+", type=Path)
+    p.add_argument("--profile", help="profile name or folder to write levels.json into")
+    p.add_argument("--target", type=float, default=-20.0, help="target loudness per voice, LUFS")
+    p.add_argument("--dry-run", action="store_true")
+    args = p.parse_args()
+
+    per_voice = collect(args.clips)
     if not per_voice:
         sys.exit("no NN_voice.wav clips found (render with scene.py --clips DIR)")
 
     dest = None
-    old = {}
+    old: dict[str, dict[str, Any]] = {}
     if args.profile:
         prof = profiles.writable(args.profile)
         dest = prof / "levels.json"
         if dest.exists():
             old = json.loads(dest.read_text()).get("voices", {})
 
-    voices = {}
+    voices: dict[str, dict[str, Any]] = {}
     for v, rs in sorted(per_voice.items()):
         lufs = float(np.median([r[0] for r in rs]))
         f0s = [r[1] for r in rs if np.isfinite(r[1])]
         mine = old.get(v, {})
-        voices[v] = {"lufs": round(lufs, 1),
-                     "gain_db": round(float(np.clip(args.target - lufs, -12, 12)), 1),
-                     "f0_hz": round(float(np.median(f0s))) if f0s else None,
-                     "clips": len(rs),
-                     "offset_db": mine.get("offset_db", 0),
-                     "semitones": mine.get("semitones", 0)}
+        voices[v] = {
+            "lufs": round(lufs, 1),
+            "gain_db": round(float(np.clip(args.target - lufs, -12, 12)), 1),
+            "f0_hz": round(float(np.median(f0s))) if f0s else None,
+            "clips": len(rs),
+            "offset_db": mine.get("offset_db", 0),
+            "semitones": mine.get("semitones", 0),
+        }
     for v, mine in old.items():  # voices with no clips this run keep their old entry
         voices.setdefault(v, mine)
 
@@ -114,10 +124,19 @@ def main():
             print(f"close pitch: {a} {fa} Hz and {b} {fb} Hz; keep them apart in fast exchanges")
 
     if dest and not args.dry_run:
-        dest.write_text(json.dumps({"target_lufs": args.target,
-                                    "measured": str(datetime.now().astimezone().date()),
-                                    "from": [str(c) for c in args.clips],
-                                    "voices": voices}, ensure_ascii=False, indent=2) + "\n")
+        dest.write_text(
+            json.dumps(
+                {
+                    "target_lufs": args.target,
+                    "measured": str(datetime.now().astimezone().date()),
+                    "from": [str(c) for c in args.clips],
+                    "voices": voices,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n"
+        )
         print(dest)
 
 

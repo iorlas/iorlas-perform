@@ -15,6 +15,7 @@ Usage:
     uv run design_voice.py NAME "description in English" [--line "Русская фраза"] [--profile DIR]
     uv run design_voice.py --presets        # re-make the bundled voices
 """
+
 import argparse
 import sys
 import time
@@ -26,10 +27,8 @@ import engines
 import profiles
 import voices
 
-
 # Reference line: varied intonation, ~10s, so the clone has something to copy.
-LINE = ("Так, слушай сюда внимательно. Я два раза повторять не буду. "
-        "Ну что, понял? Вот и молодец, давай, иди работай.")
+LINE = "Так, слушай сюда внимательно. Я два раза повторять не буду. Ну что, понял? Вот и молодец, давай, иди работай."
 
 PRESETS = {
     "praporshchik": (
@@ -48,7 +47,7 @@ PRESETS = {
 }
 
 
-def main():
+def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("name", nargs="?")
     p.add_argument("description", nargs="?")
@@ -73,9 +72,13 @@ def main():
     model = engines.load(*engines.VOICE_DESIGN)
     for name, description, line in jobs:
         t = time.time()
-        results = list(model.generate_voice_design(
-            text=line, language="Russian", instruct=description,
-        ))
+        results = list(
+            model.generate_voice_design(
+                text=line,
+                language="Russian",
+                instruct=description,
+            )
+        )
         audio = np.concatenate([np.array(r.audio) for r in results])
         sf.write(out / f"{name}.wav", audio, model.sample_rate)
         (out / f"{name}.txt").write_text(line + "\n")

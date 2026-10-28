@@ -8,6 +8,7 @@ Keys after a take: space = next, p = play back, r = redo, q = quit.
 
 Usage: python3 record_refs.py
 """
+
 import re
 import subprocess
 import sys
@@ -21,18 +22,16 @@ import voices
 REFS = voices.user_dir()
 
 PROMPTS = [
-    ("calm", "спокойно, как будто объясняешь другу",
-     "Знаешь, я тут подумал. Давай не будем спешить, разберёмся во всём спокойно, по порядку."),
-    ("happy", "радостно, с улыбкой",
-     "Да ладно! Серьёзно? Это же просто потрясающе, я так рад за тебя, честное слово!"),
-    ("angry", "зло, на повышенных тонах",
-     "Я тебе сто раз говорил, не трогай мои вещи! Сколько можно? Это уже переходит все границы!"),
-    ("sad", "грустно, тихо, медленно",
-     "Мне правда жаль, что так вышло. Я думал, у нас всё получится, но, видимо, не судьба."),
-    ("whisper", "шёпотом, как будто секрет",
-     "Тише, не шуми. Они ещё здесь, за дверью. Просто иди за мной и ничего не говори."),
-    ("excited", "быстро, с азартом",
-     "Слушай, слушай, ты не поверишь, что сейчас было! Мы выиграли, мы реально выиграли!"),
+    (
+        "calm",
+        "спокойно, как будто объясняешь другу",
+        "Знаешь, я тут подумал. Давай не будем спешить, разберёмся во всём спокойно, по порядку.",
+    ),
+    ("happy", "радостно, с улыбкой", "Да ладно! Серьёзно? Это же просто потрясающе, я так рад за тебя, честное слово!"),
+    ("angry", "зло, на повышенных тонах", "Я тебе сто раз говорил, не трогай мои вещи! Сколько можно? Это уже переходит все границы!"),
+    ("sad", "грустно, тихо, медленно", "Мне правда жаль, что так вышло. Я думал, у нас всё получится, но, видимо, не судьба."),
+    ("whisper", "шёпотом, как будто секрет", "Тише, не шуми. Они ещё здесь, за дверью. Просто иди за мной и ничего не говори."),
+    ("excited", "быстро, с азартом", "Слушай, слушай, ты не поверишь, что сейчас было! Мы выиграли, мы реально выиграли!"),
 ]
 
 BOLD, DIM, RED, GREEN, RESET = "\033[1m", "\033[2m", "\033[31m", "\033[32m", "\033[0m"
@@ -60,7 +59,9 @@ def wait_for(allowed: str) -> str:
 def pick_mic() -> str:
     out = subprocess.run(
         ["ffmpeg", "-hide_banner", "-f", "avfoundation", "-list_devices", "true", "-i", ""],
-        capture_output=True, text=True, check=False,  # ffmpeg exits non-zero after listing: that is how it lists
+        capture_output=True,
+        text=True,
+        check=False,  # ffmpeg exits non-zero after listing: that is how it lists
     ).stderr
     audio = out.split("audio devices:")[-1]
     mics = re.findall(r"\[(\d+)\] (.+)", audio)
@@ -74,8 +75,7 @@ def pick_mic() -> str:
 
 def record(mic: str, wav: Path) -> float:
     proc = subprocess.Popen(
-        ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
-         "-f", "avfoundation", "-i", f":{mic}", "-ac", "1", "-ar", "24000", str(wav)],
+        ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "avfoundation", "-i", f":{mic}", "-ac", "1", "-ar", "24000", str(wav)],
         stdin=subprocess.PIPE,
     )
     start = time.time()
@@ -85,7 +85,7 @@ def record(mic: str, wav: Path) -> float:
     return time.time() - start
 
 
-def main():
+def main() -> None:
     REFS.mkdir(parents=True, exist_ok=True)
     mic = pick_mic()
     i = 0

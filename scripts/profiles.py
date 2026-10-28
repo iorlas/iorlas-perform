@@ -16,6 +16,7 @@ Usage: uv run profiles.py                 list profiles
        uv run profiles.py new NAME        create an empty profile in ./profiles
        uv run profiles.py copy NAME       copy a bundled profile into ./profiles
 """
+
 import os
 import shutil
 import sys
@@ -27,10 +28,15 @@ INTRO = "00-intro.md"  # played before every episode by scene.py
 
 
 TEMPLATE = {
-    "profile.md": "# {name}\n\nWhat the series is, in two lines.\n\n## Format\n\n- Episode length, intro or not, narration style.\n\n"
-                  "## Tone and humour\n\n- Audience, tone, what is in and out of bounds.\n\n## Acting\n\n- Delivery habits, laughs, accents.\n",
-    "world.md": "# World\n\n## Setting\n\n- Where and when.\n\n## Rules of the world\n\n-\n\n## Running gags\n\n-\n\n## Canon so far\n\n",
-    "characters.md": "# Characters\n\n| voice | who |\n|---|---|\n| hero | Имя, кто это |\n\n## How each one sounds\n\n- **Имя** (`hero`): voice, tics, fillers.\n",
+    "profile.md": (
+        "# {name}\n\nWhat the series is, in two lines.\n\n## Format\n\n- Episode length, intro or not, narration style.\n\n"
+        "## Tone and humour\n\n- Audience, tone, what is in and out of bounds.\n\n## Acting\n\n- Delivery habits, laughs, accents.\n"
+    ),
+    "world.md": ("# World\n\n## Setting\n\n- Where and when.\n\n## Rules of the world\n\n-\n\n## Running gags\n\n-\n\n## Canon so far\n\n"),
+    "characters.md": (
+        "# Characters\n\n| voice | who |\n|---|---|\n| hero | Имя, кто это |\n\n"
+        "## How each one sounds\n\n- **Имя** (`hero`): voice, tics, fillers.\n"
+    ),
 }
 
 
@@ -66,7 +72,7 @@ def of(path: str | Path) -> Path | None:
 
 
 def available() -> list[tuple[str, Path]]:
-    seen = {}
+    seen: dict[str, Path] = {}
     for folder in (user_dir(), BUNDLED):
         for p in sorted(folder.glob("*/profile.md")):
             seen.setdefault(p.parent.name, p.parent)
@@ -77,7 +83,7 @@ def episodes(profile: Path) -> list[Path]:
     return sorted((profile / "episodes").glob("*.md"))
 
 
-def main():
+def main() -> None:
     args = sys.argv[1:]
     if not args:
         for name, path in available():

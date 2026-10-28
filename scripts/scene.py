@@ -57,12 +57,14 @@ Usage: uv run scene.py scene.md [out.wav] [--gap 0.35] [--speed 1.1]
 Engines (engines.py): drama3 (default, Fish Drama 3 3-bit) or s2 (Fish S2 Pro).
 Each model downloads on its first use, with a log line saying so.
 """
+
 import argparse
 import json
 import subprocess
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import soundfile as sf
@@ -73,28 +75,26 @@ import profiles
 import scenario
 import sfx
 import voices
-from scenario import Ambience, Pause, Scene, Sfx
+from scenario import Ambience, Pause, Scenario, Scene, Sfx, Turn
 
 
-def main():
+def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
     p.add_argument("src")
     p.add_argument("out", nargs="?")
     p.add_argument("--gap", type=float, default=0.35, help="silence between turns, seconds")
     p.add_argument("--speed", type=float, default=1.1, help="tempo, pitch kept (default: 1.1)")
     p.add_argument("--engine", choices=engines.ENGINES, default=engines.DEFAULT)
-    p.add_argument("--max-silence", type=float, default=0.6,
-                   help="shorten silences inside a turn to this, seconds (0: keep)")
+    p.add_argument("--max-silence", type=float, default=0.6, help="shorten silences inside a turn to this, seconds (0: keep)")
     p.add_argument("--scene-pause", type=float, default=1.5, help="silence before each scene, seconds")
     p.add_argument("--no-lint", action="store_true", help="render even when the lint finds errors")
     p.add_argument("--clips", type=Path, help="also save each turn as <dir>/NN_voice.wav")
     p.add_argument("--no-intro", action="store_true", help="skip the profile's episodes/00-intro.md")
-    args = p.parse_args()
+    return p.parse_args()
 
-    dest = Path(args.out) if args.out else Path(args.src).with_suffix(".wav")
-    sc = scenario.load(args.src)
-    if not scenario.report(scenario.lint(sc), args.src) and not args.no_lint:
-        sys.exit("[perform] lint errors: fix them or pass --no-lint")
+
+def check_names(sc: Scenario) -> None:
+    """Exit on a bed or an effect that does not exist, before the model loads."""
     beds = [(i.ambience, i.line) for i in sc.items if isinstance(i, (Scene, Ambience)) and i.ambience]
     for name, line in beds:
         if name != "off" and name not in ambience.BEDS:
@@ -102,6 +102,99 @@ def main():
     for i in sc.items:
         if isinstance(i, Sfx) and i.name not in sfx.EFFECTS:
             sys.exit(f"line {i.line}: no sfx '{i.name}', have: {', '.join(sfx.EFFECTS)}")
+
+
+def read_levels(profile: Path, needed: set[str]) -> dict[str, dict[str, Any]]:
+    """The profile's per-voice levels.json (from calibrate.py), logged for the voices in use."""
+    log(f"profile: {profile.name} ({profile})")
+    if not (profile / "levels.json").exists():
+        return {}
+    levels = json.loads((profile / "levels.json").read_text()).get("voices", {})
+    log(
+        "levels: "
+        + ", ".join(
+            f"{v} {gain_db(levels, v):+.1f} dB" + (f" {levels[v]['semitones']:+g} st" if levels[v].get("semitones") else "")
+            for v in sorted(needed)
+            if v in levels
+        )
+    )
+    return levels
+
+
+def find_voices(needed: set[str], first: list[Path]) -> dict[str, Path]:
+    """Reference wav per voice; exits naming every voice that has none."""
+    found = {v: voices.find(v, first) for v in needed}
+    missing = sorted(v for v, wav in found.items() if wav is None)
+    if missing:
+        sys.exit(f"no voice: {', '.join(missing)}\navailable: {', '.join(voices.available(first))}")
+    return {v: wav for v, wav in found.items() if wav is not None}
+
+
+def speak_turn(
+    model: engines.TTSModel, item: Turn, ref: tuple[Any, str], args: argparse.Namespace, levels: dict[str, dict[str, Any]]
+) -> np.ndarray:
+    """One turn as audio: generated, tempo and pitch set, edges trimmed, silences squashed, phone band, voice gain."""
+    sr = model.sample_rate
+    ref_audio, ref_text = ref
+    results = model.generate(text=item.text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
+    audio = np.concatenate([np.array(r.audio) for r in results])
+    if args.speed != 1.0 or semitones_of(levels, item.voice):
+        audio = atempo(audio, sr, args.speed, semitones_of(levels, item.voice))
+    audio = trim(audio, sr)
+    if args.max_silence:
+        audio = squash(audio, sr, args.max_silence)
+    if item.phone:
+        audio = phone_line(audio, sr)
+    if item.voice in levels:  # one fixed gain per voice, from calibrate.py
+        audio = audio * 10 ** (gain_db(levels, item.voice) / 20)
+    return audio
+
+
+def mix_down(
+    placed: list[tuple[int, np.ndarray]],
+    effects: list[tuple[int, Sfx, np.ndarray]],
+    changes: list[tuple[int, str, float]],
+    end: int,
+    sr: int,
+    *,
+    timeline: list[dict[str, Any]],
+) -> np.ndarray:
+    """Speech, effects at SFX_DB under it, then the beds; effects and beds are added to the timeline."""
+    mix = np.zeros(end, dtype=np.float32)
+    for at, audio in placed:
+        mix[at : at + len(audio)] += audio
+    if effects:
+        gain = (ambience.loudness(mix, sr) or 0.1) * 10 ** (-sfx.SFX_DB / 20)
+        for at, item, audio in effects:
+            mix[at : at + len(audio)] += audio * gain * (item.volume or 1.0)
+            timeline.append(
+                {
+                    "sfx": item.name,
+                    "volume": item.volume or 1.0,
+                    "start": round(at / sr, 3),
+                    "end": round((at + len(audio)) / sr, 3),
+                }
+            )
+    if any(name != "off" for _, name, _ in changes):
+        bed, segments = ambience.render(changes, mix, sr)
+        mix = np.pad(mix, (0, len(bed) - len(mix))) + bed
+        timeline += segments
+        for seg in segments:
+            log(f"ambience: {seg['ambience']} {clock(seg['start'])}-{clock(seg['end'])}")
+    peak = np.abs(mix).max()
+    if peak > 0.99:  # overlaps can clip
+        mix *= 0.99 / peak
+    return mix
+
+
+def main() -> None:
+    args = parse_args()
+
+    dest = Path(args.out) if args.out else Path(args.src).with_suffix(".wav")
+    sc = scenario.load(args.src)
+    if not scenario.report(scenario.lint(sc), args.src) and not args.no_lint:
+        sys.exit("[perform] lint errors: fix them or pass --no-lint")
+    check_names(sc)
     profile = profiles.of(args.src)
     intro = profile / "episodes" / profiles.INTRO if profile else None
     if intro and intro.exists() and not args.no_intro and Path(args.src).resolve() != intro.resolve():
@@ -109,42 +202,34 @@ def main():
         log(f"intro: {intro.name}")
     needed = {t.voice for t in sc.turns}
     first = [profile / "voices"] if profile else []
-    levels = {}
-    if profile:
-        log(f"profile: {profile.name} ({profile})")
-        if (profile / "levels.json").exists():
-            levels = json.loads((profile / "levels.json").read_text()).get("voices", {})
-            log("levels: " + ", ".join(
-                f"{v} {gain_db(levels, v):+.1f} dB" + (f" {levels[v]['semitones']:+g} st" if levels[v].get("semitones") else "")
-                for v in sorted(needed) if v in levels))
-    missing = sorted(v for v in needed if voices.find(v, first) is None)
-    if missing:
-        sys.exit(f"no voice: {', '.join(missing)}\navailable: {', '.join(voices.available(first))}")
+    levels = read_levels(profile, needed) if profile else {}
+    voice_wavs = find_voices(needed, first)
 
     from mlx_audio.utils import load_audio
 
     model = engines.load_engine(args.engine)
     sr = model.sample_rate
-    refs = {}
-    for v in needed:
-        wav = voices.find(v, first)
+    refs: dict[str, tuple[Any, str]] = {}
+    for v, wav in voice_wavs.items():
         transcript = wav.with_suffix(".txt").read_text().strip()
         refs[v] = (load_audio(str(wav), sample_rate=sr), engines.ref_text(args.engine, transcript))
-    clip_log = {}  # what was applied to each clip, so calibrate.py can measure the raw voice
+    clip_log: dict[str, dict[str, Any]] = {}  # what was applied to each clip, so calibrate.py can measure the raw voice
     if args.clips:
         args.clips.mkdir(parents=True, exist_ok=True)
 
     # Clips are placed on a timeline, not concatenated, so a negative gap can overlap.
-    placed, timeline, effects = [], [], []  # effects: (sample, Sfx, audio)
-    changes, pending = [], []  # ambience changes: placed (sample, name, volume), waiting for a turn
+    placed: list[tuple[int, np.ndarray]] = []
+    timeline: list[dict[str, Any]] = []
+    effects: list[tuple[int, Sfx, np.ndarray]] = []
+    changes: list[tuple[int, str, float]] = []  # ambience changes: placed (sample, name, volume)
+    pending: list[tuple[str, float]] = []  # ambience changes waiting for a turn
     # A scenario that opens on a bed lets it fade in before the first word.
-    first = sc.items[0] if sc.items else None
-    lead = int(ambience.XFADE * sr) if isinstance(first, (Scene, Ambience)) and first.ambience else 0
+    opener = sc.items[0] if sc.items else None
+    lead = int(ambience.XFADE * sr) if isinstance(opener, (Scene, Ambience)) and opener.ambience else 0
     end = lead  # sample where the previous turn (or pause) ends
     turns = sc.turns
     total_chars, done_chars, done_turns = sum(len(t.text) for t in turns), 0, 0
-    log(f"{len(turns)} turns, {len(sc.scenes)} scenes, {len(needed)} voices, {total_chars} chars; "
-        f"ETA after the first turn")
+    log(f"{len(turns)} turns, {len(sc.scenes)} scenes, {len(needed)} voices, {total_chars} chars; ETA after the first turn")
     start, scene = time.time(), None
     for n, item in enumerate(sc.items, 1):
         if isinstance(item, Pause):
@@ -169,61 +254,45 @@ def main():
             log(f"sfx: {item.name} at {clock(at / sr)}, {len(audio) / sr:.1f}s")
             continue
         voice, text, gap = item.voice, item.text, item.gap
-        ref_audio, ref_text = refs[voice]
         t0 = time.time()
-        results = model.generate(text=text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
-        audio = np.concatenate([np.array(r.audio) for r in results])
-        semitones = levels.get(voice, {}).get("semitones", 0)
-        if args.speed != 1.0 or semitones:
-            audio = atempo(audio, sr, args.speed, semitones)
-        audio = trim(audio, sr)
-        if args.max_silence:
-            audio = squash(audio, sr, args.max_silence)
-        if item.phone:
-            audio = phone_line(audio, sr)
-        if voice in levels:  # one fixed gain per voice, from calibrate.py
-            audio = audio * 10 ** (gain_db(levels, voice) / 20)
+        audio = speak_turn(model, item, refs[voice], args, levels)
         if args.clips:
             sf.write(args.clips / f"{n:02d}_{voice}.wav", audio, sr)
-            clip_log[f"{n:02d}_{voice}.wav"] = {"voice": voice, "gain_db": gain_db(levels, voice) if voice in levels else 0,
-                                               "semitones": semitones, "phone": item.phone}
+            clip_log[f"{n:02d}_{voice}.wav"] = {
+                "voice": voice,
+                "gain_db": gain_db(levels, voice) if voice in levels else 0,
+                "semitones": semitones_of(levels, voice),
+                "phone": item.phone,
+            }
         at = max(0, end + int((args.gap if gap is None else gap) * sr)) if placed or effects else lead
         changes += [(at, name, vol) for name, vol in pending]
         pending = []
         placed.append((at, audio))
         end = max(end, at + len(audio))
-        timeline.append({"turn": n, "voice": voice, "text": text,
-                         "scene": scene.title if scene else None,
-                         "ambience": scene.ambience if scene else None,
-                         "start": round(at / sr, 3), "end": round((at + len(audio)) / sr, 3)}
-                        | ({"phone": True} if item.phone else {}))
+        timeline.append(
+            {
+                "turn": n,
+                "voice": voice,
+                "text": text,
+                "scene": scene.title if scene else None,
+                "ambience": scene.ambience if scene else None,
+                "start": round(at / sr, 3),
+                "end": round((at + len(audio)) / sr, 3),
+            }
+            | ({"phone": True} if item.phone else {})
+        )
         # ETA scales the time so far by the characters left: render time follows text length.
         done_turns, done_chars = done_turns + 1, done_chars + len(text)
         elapsed = time.time() - start
         eta = elapsed / done_chars * (total_chars - done_chars)
-        log(f"{done_turns}/{len(turns)} {done_chars * 100 // total_chars}% {voice}: "
+        log(
+            f"{done_turns}/{len(turns)} {done_chars * 100 // total_chars}% {voice}: "
             f"{len(audio) / sr:.1f}s audio in {time.time() - t0:.1f}s | "
-            f"elapsed {clock(elapsed)}, ETA {clock(eta)} | {text[:40]}")
+            f"elapsed {clock(elapsed)}, ETA {clock(eta)} | {text[:40]}"
+        )
 
-    mix = np.zeros(end, dtype=np.float32)
-    for at, audio in placed:
-        mix[at:at + len(audio)] += audio
-    if effects:
-        gain = (ambience.loudness(mix, sr) or 0.1) * 10 ** (-sfx.SFX_DB / 20)
-        for at, item, audio in effects:
-            mix[at:at + len(audio)] += audio * gain * (item.volume or 1.0)
-            timeline.append({"sfx": item.name, "volume": item.volume or 1.0,
-                             "start": round(at / sr, 3), "end": round((at + len(audio)) / sr, 3)})
     changes += [(end, name, vol) for name, vol in pending]
-    if any(name != "off" for _, name, _ in changes):
-        bed, segments = ambience.render(changes, mix, sr)
-        mix = np.pad(mix, (0, len(bed) - len(mix))) + bed
-        timeline += segments
-        for seg in segments:
-            log(f"ambience: {seg['ambience']} {clock(seg['start'])}-{clock(seg['end'])}")
-    peak = np.abs(mix).max()
-    if peak > 0.99:  # overlaps can clip
-        mix *= 0.99 / peak
+    mix = mix_down(placed, effects, changes, end, sr, timeline=timeline)
     sf.write(dest, mix, sr)
     if args.clips:
         (args.clips / "clips.json").write_text(json.dumps(clip_log, indent=2) + "\n")
@@ -233,7 +302,7 @@ def main():
     print(f"{dest}: {length:.1f}s audio in {took:.1f}s")
 
 
-def log(msg: str):
+def log(msg: str) -> None:
     print(f"[perform] {msg}", flush=True)
 
 
@@ -247,7 +316,7 @@ def trim(audio: np.ndarray, sr: int, keep: float = 0.03) -> np.ndarray:
     if not len(loud):
         return audio
     margin = int(keep * sr)
-    return audio[max(0, loud[0] - margin):loud[-1] + margin]
+    return audio[max(0, loud[0] - margin) : loud[-1] + margin]
 
 
 def squash(audio: np.ndarray, sr: int, longest: float, step: float = 0.01) -> np.ndarray:
@@ -258,18 +327,23 @@ def squash(audio: np.ndarray, sr: int, longest: float, step: float = 0.01) -> np
     """
     hop = int(step * sr)
     frames = len(audio) // hop
-    quiet = np.abs(audio[:frames * hop]).reshape(frames, hop).max(axis=1) < 0.02 * np.abs(audio).max()
-    keep, run, out = int(longest / step), 0, []
+    quiet = np.abs(audio[: frames * hop]).reshape(frames, hop).max(axis=1) < 0.02 * np.abs(audio).max()
+    keep, run = int(longest / step), 0
+    out: list[np.ndarray] = []
     for i, q in enumerate(quiet):
         run = run + 1 if q else 0
         if run <= keep:
-            out.append(audio[i * hop:(i + 1) * hop])
-    out.append(audio[frames * hop:])
+            out.append(audio[i * hop : (i + 1) * hop])
+    out.append(audio[frames * hop :])
     return np.concatenate(out)
 
 
-def gain_db(levels: dict, voice: str) -> float:
+def gain_db(levels: dict[str, dict[str, Any]], voice: str) -> float:
     return levels[voice].get("gain_db", 0) + levels[voice].get("offset_db", 0)
+
+
+def semitones_of(levels: dict[str, dict[str, Any]], voice: str) -> float:
+    return levels.get(voice, {}).get("semitones", 0)
 
 
 def atempo(audio: np.ndarray, sr: int, speed: float, semitones: float = 0) -> np.ndarray:
@@ -291,9 +365,10 @@ def phone_line(audio: np.ndarray, sr: int) -> np.ndarray:
 
 def ffmpeg(audio: np.ndarray, sr: int, filters: str) -> np.ndarray:
     out = subprocess.run(
-        ["ffmpeg", "-loglevel", "error", "-f", "f32le", "-ar", str(sr), "-ac", "1", "-i", "-",
-         "-filter:a", filters, "-f", "f32le", "-"],
-        input=audio.astype(np.float32).tobytes(), capture_output=True, check=True,
+        ["ffmpeg", "-loglevel", "error", "-f", "f32le", "-ar", str(sr), "-ac", "1", "-i", "-", "-filter:a", filters, "-f", "f32le", "-"],
+        input=audio.astype(np.float32).tobytes(),
+        capture_output=True,
+        check=True,
     ).stdout
     return np.frombuffer(out, dtype=np.float32)
 
