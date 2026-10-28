@@ -28,8 +28,9 @@ uv run $S/profiles.py new NAME     # a new profile from the template
 NAME/
   profile.md      format, length, language, tone and spice, intro, acting taste
   world.md        setting, entities, rules of the world, running gags, canon so far
-  characters.md   cast table, character design, relationships, how each one sounds
-  characters/     <voice>.md, one soul file per character: what makes them them
+  characters.md   cast table, character design, how each one sounds
+  relationships.md every pair that makes plots, characters and entities, with a map
+  entities/       <id>.md, one soul file per character, object, place or institution
   structure.json  optional: the lint's structure rules for this genre
   levels.json     per-voice loudness and pitch (calibrate.py)
   voices/         <voice>.wav + <voice>.txt
@@ -53,33 +54,59 @@ narration, intro or not, how sharp. Then, in order:
    - The cast table.
    - **Design**: for each character, what they want, their flaw, their comic lens (how they
      misread the world), what they do to the hero, and their status relative to the hero.
-   - **Relationships**: the pairs that make the episodes. For each pair: what goes on, the
-     recurring move, who starts high, what flips it.
    - How each one sounds: voice, tics, fillers.
-   - **Soul files**, `characters/<voice>.md`, one per main character (template below).
+   - **relationships.md**: the pairs that make the episodes, character with character and
+     character with entity. For each pair: what goes on, the recurring move, who starts
+     high, what flips it.
+   - **Soul files**, `entities/<id>.md`, one per character and per entity that is more than a
+     name in the story (template below).
 4. **Voices**: one per character, `design_voice.py NAME "description" --line "..." --profile NAME`.
 5. **Intro** (optional): `episodes/00-intro.md` with `<!-- lint: jingle -->`.
 6. After the first render, calibrate levels (perform skill, step 5).
 
-## Character soul files
+## Entity soul files
 
-The tables say what a character does; the soul file says who they are, so any writer
-produces lines only they would say. `profiles.py new` writes `characters/hero.md` as the
-template; copy it per character. Sections:
+The tables say what an entity does; the soul file says what it is, so any writer produces
+lines and moments only it could make. A character is an entity with a voice; an object (a
+server), a place (a factory) or an institution (a company) gets the same file, with how it
+sounds in place of speech. `profiles.py new` writes `entities/hero.md` as the template.
+Sections:
 
-1. **Core**: who they are, what makes them them, in one paragraph.
-2. **Charm**: why the listener loves them despite everything, concretely.
-3. **Want, fear, wound.**
-4. **Comic lens**: how they misread the world; their go-to move under pressure.
-5. **Culture**: the real subcultures they come from (an imageboard generation, the army,
-   a profession, a city, a decade), and what each gives them: words, reflexes, references;
-   what they would never know or say. Real references only, never invented slang.
-6. **Speech**: rhythm and pace (normal unless the character is defined by it), vocabulary,
-   fillers, slang density, swearing; how they lie, panic, ask, brag, apologise; words they
-   never use.
-7. **Lines that are them** (about 8) and **lines that are not them** (about 5, with why).
-8. **Voice direction**: delivery tags that fit and tags to avoid, for the TTS engine.
-9. **With each main character**: how they talk to them, status, what they hide.
+1. **Core**: what it is and what makes it it, in one paragraph.
+2. **Charm**: why the listener loves it, concretely.
+3. **Want, fear, wound** for a character; **plot function and rule** for a thing or place.
+4. **Comic lens**: how it misreads the world, or what comedy it makes.
+5. **Culture**: the real subcultures it comes from (an imageboard generation, the army, a
+   trade, a city, a decade) and what each gives it; what it would never know or say.
+6. **Milieu**: what surrounds such a person or thing in real life: the type, their objects,
+   places, rituals, sayings, smells and sounds; what makes them work and what breaks them.
+7. **Speech** (or how it sounds): rhythm and pace (normal unless defined by it), vocabulary,
+   fillers, slang; the explicit-language rule (which words, how often, with whom never); how
+   it lies, panics, asks, brags; words it never uses.
+8. **Lines that are it** (about 10) and **lines that are not it** (about 5, with why).
+9. **Voice direction**: delivery tags that fit and to avoid; for a thing, its beds and effects.
+10. **Connections**: to each main character and entity: status, what it hides, what it wants.
+
+Real references only, never invented slang; mark anything invented as such.
+
+## Facts
+
+What episodes and conversations add to an entity or a pair after the design goes under
+`## Facts` at the end of its file, one dated line with its source, oldest first:
+
+```
+- 2026-11-02 · ep02 · Боится лифтов с 2019-го: застрял с Палычем на 40 минут.
+```
+
+```
+uv run $S/profiles.py fact NAME ID SRC "text"   # ID is an entity file, or relationships
+uv run $S/profiles.py facts NAME [SRC]          # list, all or one source
+uv run $S/profiles.py unfact NAME SRC           # remove a source's facts: undo an episode
+```
+
+Sources: `epNN` for an episode, `user` for what the user said in chat, `design` for a
+writer's later addition. The design sections are never edited to add a fact, so the file
+always shows what was designed and what came later; folding a fact in is the user's call.
 
 ## structure.json
 

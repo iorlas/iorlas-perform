@@ -81,7 +81,7 @@ import sfx
 import voices
 from scenario import Ambience, Pause, Scenario, Scene, Sfx, Turn
 
-ONSET_RETRIES = 2
+ONSET_RETRIES = 3
 TURN_PEAK = 10 ** (-1 / 20)  # -1 dBFS: the gain may raise a voice, never past clipping
 
 
@@ -144,14 +144,17 @@ def speak_turn(
     """One turn as audio: generated, tempo and pitch set, edges trimmed, silences squashed, phone band, voice gain."""
     sr = model.sample_rate
     ref_audio, ref_text = ref
+    # The model sometimes drops a line's first sound: the clip starts mid-word. Sampling
+    # differs per call, so generate again, and keep the softest start if none is clean.
+    takes = []
     for attempt in range(1 + ONSET_RETRIES):
         results = model.generate(text=item.text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
-        audio = np.concatenate([np.array(r.audio) for r in results])
-        if not cut_onset(audio, sr):
+        takes.append(np.concatenate([np.array(r.audio) for r in results]))
+        if not cut_onset(takes[-1], sr):
             break
-        # The model sometimes drops a line's first sound: the clip starts mid-word. Sampling
-        # differs per call, so generate again.
-        log(f"{item.voice} line {item.line}: starts mid-sound, the first syllable is cut; try {attempt + 2}")
+        more = "trying again" if attempt < ONSET_RETRIES else "kept the softest start: rephrase the line"
+        log(f"{item.voice} line {item.line}: starts mid-sound, the first syllable is cut; {more}")
+    audio = min(takes, key=lambda t: onset_level(t, sr))
     if args.speed != 1.0 or semitones_of(levels, item.voice):
         audio = atempo(audio, sr, args.speed, semitones_of(levels, item.voice))
     audio = trim(audio, sr)
@@ -333,10 +336,15 @@ def clock(secs: float) -> str:
     return f"{int(secs) // 60}m{int(secs) % 60:02d}s"
 
 
+def onset_level(audio: np.ndarray, sr: int) -> float:
+    """The loudest sample of the first 10 ms, relative to the peak."""
+    peak = np.abs(audio).max()
+    return float(np.abs(audio[: sr // 100]).max() / peak) if peak > 0 else 0.0
+
+
 def cut_onset(audio: np.ndarray, sr: int) -> bool:
     """True when the first 10 ms are already loud (over 5% of the peak): no lead-in, a clipped first sound."""
-    peak = np.abs(audio).max()
-    return bool(peak > 0 and np.abs(audio[: sr // 100]).max() > 0.05 * peak)
+    return onset_level(audio, sr) > 0.05
 
 
 def trim(audio: np.ndarray, sr: int, keep: float = 0.03) -> np.ndarray:

@@ -78,7 +78,9 @@ unless you pass `--keep-data`, so back it up or set `$PERFORM_PROFILES`.
 <name>/
   profile.md      format, length, language, tone, intro, acting taste
   world.md        setting, entities, rules, running gags, canon so far
-  characters.md   cast, character design, relationships, how each one sounds
+  characters.md   cast, character design, how each one sounds
+  relationships.md every pair that makes plots, with a map
+  entities/      one soul file per character, object, place; dated facts at the end
   structure.json  optional: tunes the structure lint for the genre
   levels.json     per-voice loudness and pitch (calibrate.py)
   voices/         voice files for the cast

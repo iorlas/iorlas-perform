@@ -486,11 +486,11 @@ def lint_pace(sc: Scenario) -> list[Issue]:
 def lint(sc: Scenario) -> list[Issue]:
     out = lint_text(sc) + lint_cues(sc.items)
     if sc.jingle:
-        return sorted(out, key=lambda x: x[1])
-    if not sc.cast:
+        pass
+    elif not sc.cast:
         out.append(("warn", 1, "no cast (## Cast table or @cast): intro checks skipped"))
-        return sorted(out, key=lambda x: x[1])
-    out += lint_names(sc) + lint_scenes(sc) + lint_jokes(sc) + lint_beats(sc) + lint_pace(sc)
+    else:
+        out += lint_names(sc) + lint_scenes(sc) + lint_jokes(sc) + lint_beats(sc) + lint_pace(sc)
     out = [i for i in out if i[0] == "error" or not any(q in i[2] for q in sc.quiet)]  # <!-- lint-ok: words -->
     return sorted(out, key=lambda x: x[1])
 

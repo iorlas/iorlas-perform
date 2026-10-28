@@ -33,7 +33,8 @@ them in `structure.json` for its genre.
   names; with none named and one existing, use it; with several, ask.
 - P2. A new series or world gets a new profile first: `profiles.py new NAME`, then fill it in
   the order in `profiles.md`. Profiles never go into the plugin's repository.
-- P3. Before writing, read `profile.md`, `world.md`, `characters.md` and the last two episodes.
+- P3. Before writing, read `profile.md`, `world.md`, `characters.md`, `relationships.md` and
+  the last two episodes.
   A profile section that is still a template hint gets filled first, with the user.
 - P4. Set the target length (the profile's, or ask) and write it as `<!-- length: N -->`.
   Budget about 11 spoken characters per second: a 4-minute episode is ~2600 characters.
@@ -53,15 +54,18 @@ them in `structure.json` for its genre.
 
 - C1. 3-4 speaking roles, 6 at most (*tunable*), copied from `characters.md` into `## Cast`.
   A new character gets a row in `characters.md` first, and a voice.
-- C2. Pick the pair under pressure from the relationships table: the two with the most
+- C2. Pick the pair under pressure from `relationships.md`: the two with the most
   opposite comic lenses. Write down who starts high in status and the line that flips it.
   Status flips at least once in the episode; the best episodes flip it at the turn.
 - C3. Each character acts from their design: what they want, their flaw, how they misread
   the world, what they do to the hero. A line none of these explains is cut.
-- C3a. Read each cast member's soul file, `characters/<voice>.md`, before writing their lines:
-  their core, charm, culture, speech and the lines that are and are not them. Every line
-  passes "would only this character say it, this way?". A character without a file gets one
-  first (the template in `profiles.md`).
+- C3a. Read the soul file, `entities/<id>.md`, of every character and entity the episode
+  uses before writing: core, charm, culture, milieu, speech, the lines that are and are not
+  them. Every line passes "would only this character say it, this way?". Every entity that is
+  more than a name in the story (a character, an object like a server, a place like a
+  factory, an institution like a company) gets a soul file first (template in `profiles.md`).
+- C3b. Edge comes from the soul file: each character's explicit-language rule (which words,
+  how often, with whom never) is followed, so the profile's spice lands in the right mouth.
 - C4. Every character has a tic the ear tracks: a rhythm or a set of fillers, used every few
   lines. A catchphrase is different: rare, once an episode at most.
 - C5. Contrast voices in age, pitch, pace and accent; two similar voices in a fast exchange
@@ -201,7 +205,14 @@ as `episodes/NN-slug.md` in the profile, the next number.
 
 Once approved, update the profile so the next episode starts from it:
 - `world.md`: one line under "Canon so far"; new entities and rules, as rows.
-- `characters.md`: new characters, and what changed about old ones.
+- `characters.md`: new characters. A new entity mentioned more than once gets a soul file.
+- **Facts**, never rewrites: what the episode established about an entity or a pair (a new
+  past, a habit, a name, a change between two characters) is one dated line, with the episode
+  as source: `profiles.py fact NAME vadik ep02 "Боится лифтов с 2019-го"`, or `relationships`
+  for a pair. The design sections above stay as written, so every addition shows when and
+  where it came from, and `profiles.py unfact NAME ep02` takes an episode's facts back out.
+  A fact the user states in chat gets the source `user`. Folding facts into the design is the
+  user's call.
 - `profile.md`: every preference the user stated while writing or listening ("too many
   scenes", "casual spoken language"), in their words. The profile is where preferences live.
 
