@@ -102,8 +102,14 @@ def main():
     needed = {t.voice for t in sc.turns}
     profile = profiles.of(args.src)
     first = [profile / "voices"] if profile else []
+    levels = {}
     if profile:
         log(f"profile: {profile.name} ({profile})")
+        if (profile / "levels.json").exists():
+            levels = json.loads((profile / "levels.json").read_text()).get("voices", {})
+            log("levels: " + ", ".join(
+                f"{v} {gain_db(levels, v):+.1f} dB" + (f" {levels[v]['semitones']:+g} st" if levels[v].get("semitones") else "")
+                for v in sorted(needed) if v in levels))
     missing = sorted(v for v in needed if voices.find(v, first) is None)
     if missing:
         sys.exit(f"no voice: {', '.join(missing)}\navailable: {', '.join(voices.available(first))}")
@@ -159,13 +165,16 @@ def main():
         t0 = time.time()
         results = model.generate(text=text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
         audio = np.concatenate([np.array(r.audio) for r in results])
-        if args.speed != 1.0:
-            audio = atempo(audio, sr, args.speed)
+        semitones = levels.get(voice, {}).get("semitones", 0)
+        if args.speed != 1.0 or semitones:
+            audio = atempo(audio, sr, args.speed, semitones)
         audio = trim(audio, sr)
         if args.max_silence:
             audio = squash(audio, sr, args.max_silence)
         if item.phone:
             audio = phone_line(audio, sr)
+        if voice in levels:  # one fixed gain per voice, from calibrate.py
+            audio = audio * 10 ** (gain_db(levels, voice) / 20)
         if args.clips:
             sf.write(args.clips / f"{n:02d}_{voice}.wav", audio, sr)
         at = max(0, end + int((args.gap if gap is None else gap) * sr)) if placed or effects else lead
@@ -247,9 +256,18 @@ def squash(audio: np.ndarray, sr: int, longest: float, step: float = 0.01) -> np
     return np.concatenate(out)
 
 
-def atempo(audio: np.ndarray, sr: int, speed: float) -> np.ndarray:
-    """Tempo change with pitch kept; per turn so the timeline stays exact."""
-    return ffmpeg(audio, sr, f"atempo={speed}")
+def gain_db(levels: dict, voice: str) -> float:
+    return levels[voice].get("gain_db", 0) + levels[voice].get("offset_db", 0)
+
+
+def atempo(audio: np.ndarray, sr: int, speed: float, semitones: float = 0) -> np.ndarray:
+    """Tempo change with pitch kept; per turn so the timeline stays exact.
+
+    semitones shifts the pitch (and timbre) by resampling, then corrects the tempo.
+    """
+    ratio = 2 ** (semitones / 12)
+    chain = f"asetrate={sr * ratio:.0f},aresample={sr},atempo={speed / ratio:.5f}" if semitones else f"atempo={speed}"
+    return ffmpeg(audio, sr, chain)
 
 
 def phone_line(audio: np.ndarray, sr: int) -> np.ndarray:
