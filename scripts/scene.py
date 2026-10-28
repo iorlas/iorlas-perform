@@ -4,20 +4,24 @@
 # ///
 """Render a multi-voice scene: one line per speaker turn, each in its own voice.
 
-Scenario format (scenario.py), a cast block, scene headers and turns:
+Scenario format (scenario.py), Markdown: a cast table, a heading per scene,
+turns as list items:
 
-    @cast
-    girl   | Маша, внучка
-    starik | Дед Егор
+    ## Cast
+    | voice | who |
+    |---|---|
+    | girl | Маша, внучка |
+    | starik | Дед Егор |
 
-    @scene Чердак, вечер | ambience night
-    narrator: [calm] Вечер. Чердак. Маша нашла коробку.
-    girl: [excited] Дедушка, смотри, что я нашла!
-    starik: [sigh] Опять ты по чердаку лазила?
+    ## Чердак, вечер
+    > ambience night
+    - narrator: [calm] Вечер. Чердак. Маша нашла коробку.
+    - girl: [excited] Дедушка, смотри, что я нашла!
+    - starik: [sigh] Опять ты по чердаку лазила?
 
 `voice: text` renders the text in that voice (see voices.py), `{pause N}` adds
-N seconds of silence, `@scene` adds --scene-pause before every scene but the
-first, blank lines and `#` comments are skipped. The lint runs first: errors
+N seconds of silence, a scene heading adds --scene-pause before every scene but
+the first. `.txt` files use the older one-turn-per-line format. The lint runs first: errors
 stop the render before the model loads (--no-lint skips it).
 
 Spacing: `voice@0.1: text` sets the gap before that turn, in seconds, instead of
@@ -25,21 +29,21 @@ Spacing: `voice@0.1: text` sets the gap before that turn, in seconds, instead of
 0.8 s before the previous turn ends, and the two are mixed. Each clip's silent
 edges are trimmed first, so gaps are exact.
 
-Ambience (ambience.py): `@scene ... | ambience night` puts a background bed
-under that scene, crossfading from the previous one so it is fully up as the
+Ambience (ambience.py): `> ambience night` under a scene heading (`.txt`:
+`@scene ... | ambience night`) puts a background bed under that scene, crossfading from the previous one so it is fully up as the
 scene's first turn starts; `ambience rain 0.5` sets its volume (1 = default,
-low under speech). A scene without ambience fades the bed out. `{ambience NAME}`
-or `{ambience off}` changes the bed mid-scene. The bed ducks while anyone
+low under speech). A scene without ambience fades the bed out. `- {ambience NAME}`
+or `- {ambience off}` changes the bed mid-scene. The bed ducks while anyone
 speaks. Beds: office, kitchen, evening, night, rain, wind.
 
-Phone line: `vadik+phone: Алло?` renders that turn through a telephone band.
+Phone line: `- vadik+phone: Алло?` renders that turn through a telephone band.
 
 Writes the wav and <out>.timeline.json: start and end of every turn in seconds,
 so screen changes can follow the audio, then one entry per ambience bed.
 
 Silences inside a turn longer than --max-silence (0.6 s) are shortened to it.
 
-Usage: uv run scene.py scene.txt [out.wav] [--gap 0.35] [--speed 1.1]
+Usage: uv run scene.py scene.md [out.wav] [--gap 0.35] [--speed 1.1]
                        [--max-silence 0.6] [--engine drama3|s2] [--clips DIR]
 
 Engines (engines.py): drama3 (default, Fish Drama 3 3-bit) or s2 (Fish S2 Pro).
@@ -71,13 +75,13 @@ def main():
     p.add_argument("--engine", choices=engines.ENGINES, default=engines.DEFAULT)
     p.add_argument("--max-silence", type=float, default=0.6,
                    help="shorten silences inside a turn to this, seconds (0: keep)")
-    p.add_argument("--scene-pause", type=float, default=1.5, help="silence before each @scene, seconds")
+    p.add_argument("--scene-pause", type=float, default=1.5, help="silence before each scene, seconds")
     p.add_argument("--no-lint", action="store_true", help="render even when the lint finds errors")
     p.add_argument("--clips", type=Path, help="also save each turn as <dir>/NN_voice.wav")
     args = p.parse_args()
 
     dest = Path(args.out) if args.out else Path(args.src).with_suffix(".wav")
-    sc = scenario.parse(Path(args.src).read_text())
+    sc = scenario.load(args.src)
     if not scenario.report(scenario.lint(sc), args.src) and not args.no_lint:
         sys.exit("[perform] lint errors: fix them or pass --no-lint")
     beds = [(i.ambience, i.line) for i in sc.items if isinstance(i, (Scene, Ambience)) and i.ambience]

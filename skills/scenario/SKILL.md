@@ -1,6 +1,6 @@
 ---
 name: scenario
-description: Write or fix a script for an audio story, radio play or narrated multi-voice scene, using radio-drama craft so a listener with closed eyes always knows who speaks, where and when, and no scene feels cut off. Output is a lint-clean scenario file in the /perform format (@cast, @scene, tagged turns), ready to render. Use for "write a scenario", "script this story", "fix this script", "part 2 of the story", or as step 1 of /perform. For rendering, use perform; for a single voice reading text, use voice.
+description: Write or fix a script for an audio story, radio play or narrated multi-voice scene, using radio-drama craft so a listener with closed eyes always knows who speaks, where and when, and no scene feels cut off. Output is a lint-clean Markdown scenario file (.md: cast table, a ## heading per scene, turns as list items with inline tags), ready for /perform. Use for "write a scenario", "script this story", "fix this script", "part 2 of the story", or as step 1 of /perform. For rendering, use perform; for a single voice reading text, use voice.
 ---
 
 # scenario
@@ -11,33 +11,51 @@ Scripts: `${CLAUDE_SKILL_DIR}/../../scripts`, called `$S` below. The rules with 
 
 ## Format
 
-```
+A Markdown file, `<name>.md`, that reads as a script when rendered:
+
+```markdown
 # Сеньор Вадик. Часть 2: Три желания
-# world: stories/WORLD.md
 
-@cast
-vadik     | Вадик, 28, тимлид третью неделю, битард под прикрытием
-palych    | Геннадий Палыч, IT-директор, бывший начальник склада
-mikhalych | Михалыч, старый сисадмин, курит у сервера Зинаида
+<!-- world: stories/WORLD.md -->
 
-@scene Офис, утро | ambience office
-narrator: [calm, storyteller] Утро. Офис. Вадик третью неделю тимлид.
-palych: [loud] Вадим! Тимлид без команды — это просто лид!
-vadik@0.2: [nervous, too fast] Сделаем, Геннадий Палыч.
+## Cast
 
-@scene Курилка, вечер | ambience rain
-narrator: [warm, ironic] Вечер. Курилка. Михалыч, старый сисадмин, курил под дождём.
+| voice | who |
+|---|---|
+| vadik | Вадик, 28, тимлид третью неделю, битард под прикрытием |
+| palych | Геннадий Палыч, IT-директор, бывший начальник склада |
+| mikhalych | Михалыч, старый сисадмин, курит у сервера Зинаида |
+
+## Офис, утро
+
+> ambience office
+
+- narrator: [calm, storyteller] Утро. Офис. Вадик третью неделю тимлид.
+- palych: [loud] Вадим! Тимлид без команды — это просто лид!
+- vadik@0.2: [nervous, too fast] Сделаем, Геннадий Палыч.
+
+## Курилка, вечер
+
+> ambience wind
+
+- narrator: [warm, ironic] Вечер. Курилка. Михалыч, старый сисадмин, курил на ветру.
 ```
 
-- `@cast`: every voice except `narrator`, as `voice | Имя, кто это`. The words before the first
-  comma are the names the lint looks for in the text. The voice name is the voice file name.
-- `@scene place, time | ambience NAME`: one per scene. The renderer adds a scene pause before it.
-  Beds: `office`, `kitchen` (flat, home), `evening` (city, outside), `night`, `rain` (street,
-  courtyard), `wind`; `ambience night 0.5` is half volume. No ambience = the bed fades out.
-- `voice+phone: Текст`: a turn heard through a phone. `{ambience NAME}` changes the bed mid-scene.
-  The header is never read aloud, so the narrator still says where and when.
-- Turns: `voice: [delivery tag] Текст`, `voice@N:` for the gap before (negative overlaps),
-  `{pause N}` for a deliberate beat inside a scene (at most 3 s). `#` lines are comments.
+- `# Title`, then `## Cast`: a table of every voice except `narrator`, `voice | Имя, кто это`.
+  The words before the first comma are the names the lint looks for in the text. The voice
+  name is the voice file name.
+- Every other `## heading` is a scene, titled with place and time. The renderer adds a scene
+  pause before it. The heading is never read aloud, so the narrator still says where and when.
+- `> ambience NAME [volume]` under a scene heading sets its background bed: `office`,
+  `kitchen` (flat, home), `evening` (city, outside), `night`, `rain` (street, courtyard), `wind`.
+  `> ambience night 0.5` is half volume. A scene without one fades the bed out.
+- `- voice+phone: Текст`: a turn heard through a phone. `- {ambience NAME}` changes the bed
+  mid-scene.
+- Turns are list items, `- voice: Текст`, with the metadata inline:
+  `[delivery tag]` for acting, `voice@N:` for the gap before (negative overlaps), and
+  `- {pause N}` for a deliberate beat inside a scene (at most 3 s).
+- Notes for the writer go in `<!-- comments -->` or plain paragraphs; only list items are
+  read aloud. A turn written outside a list is an error, so no line goes missing.
 
 ## 1. Premise
 
@@ -86,11 +104,11 @@ how it ends. Rules:
 ## 5. Lint
 
 ```
-uv run $S/scenario.py <name>.txt
+uv run $S/scenario.py <name>.md
 ```
 
 Fix every error, then every warning, or keep a warning only when it is intended (say why in
-a `#` comment). `scene.py` runs the same lint before rendering.
+an `<!-- -->` comment). `scene.py` runs the same lint before rendering.
 
 ## 6. Self-check
 

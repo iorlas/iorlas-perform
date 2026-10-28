@@ -1,6 +1,6 @@
 ---
 name: perform
-description: Render a ready scenario file (@cast, @scene, tagged turns) into a multi-voice Russian audio scene, local on Apple Silicon. Casts each character to a bundled or newly designed voice, lints, then renders with scene.py (Fish Drama 3) to a wav plus a timeline.json. Use for "/perform", "render this scenario", "voice this scene". Writing or fixing the script itself is the scenario skill; given only an idea, run scenario first. For a single voice reading a text, use the voice skill.
+description: Render a ready Markdown scenario file (cast table, ## scenes, tagged turns as list items) into a multi-voice Russian audio scene, local on Apple Silicon. Casts each character to a bundled or newly designed voice, lints, then renders with scene.py (Fish Drama 3) to a wav plus a timeline.json. Use for "/perform", "render this scenario", "voice this scene". Writing or fixing the script itself is the scenario skill; given only an idea, run scenario first. For a single voice reading a text, use the voice skill.
 ---
 
 # perform
@@ -13,8 +13,8 @@ and the tag guide are in the `voice` skill (`${CLAUDE_SKILL_DIR}/../voice/SKILL.
 
 Input is a ready scenario file in the `scenario` format. Run `uv run $S/scenario.py <file>`
 first. Given an idea, a draft or pasted text instead, or on lint errors, write or fix it with
-the `scenario` skill (`${CLAUDE_SKILL_DIR}/../scenario/SKILL.md`) and come back. Old flat files
-(turns and `{pause N}` only) still render; the lint then skips the intro checks.
+the `scenario` skill (`${CLAUDE_SKILL_DIR}/../scenario/SKILL.md`) and come back. Older `.txt` files
+(plain turns, `{pause N}`, optional `@cast`/`@scene`) still render; without a cast the lint skips the intro checks.
 
 ## 2. Cast
 
@@ -48,7 +48,7 @@ uv run $S/scene.py <name>.txt <name>.wav [--engine drama3|s2] [--speed 1.1] [--g
 - `<name>.timeline.json`: per turn `voice`, `text`, `scene`, `ambience`, `start`, `end` in seconds
   (`phone: true` on phone turns), then per bed `ambience`, `volume`, `start`, `end` (`start` is
   where its 1.5 s fade-in begins, before the scene's first turn).
-- Beds come from `@scene ... | ambience NAME` (README, Ambience). Preview one alone:
+- Beds come from `> ambience NAME` under a scene heading (README, Ambience). Preview one alone:
   `uv run $S/ambience.py night 10 night.wav`.
 - `--clips DIR` saves each turn as its own wav, for fixing one line or A/B tests.
 
