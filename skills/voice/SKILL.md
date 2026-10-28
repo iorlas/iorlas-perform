@@ -1,6 +1,6 @@
 ---
 name: voice
-description: Voice a Russian text or scene locally on Apple Silicon with a cloned or designed voice, ElevenLabs-style inline tags (laughs, sighs, whispers, shouting), via Fish Drama 3 or Fish S2 Pro on mlx-audio. Use when the user wants text turned into speech audio, a character voice designed from a description, their own voice recorded for cloning, or a story or monologue rendered to a wav. Skip for speech-to-text, cloud TTS, or non-Mac machines.
+description: One speaker reading a Russian text, locally on Apple Silicon, with a cloned or designed voice and ElevenLabs-style inline tags (laughs, sighs, whispers, shouting), via Fish Drama 3 or Fish S2 Pro on mlx-audio. Also designs a character voice from a description, records the user's own voice for cloning, and holds the tag guide and requirements the other skills use. Use for a single voice: a monologue, a narration, a voice sample. Several characters, a scene or an episode go to perform; writing a script goes to scenario. Skip for speech-to-text, cloud TTS, or non-Mac machines.
 ---
 
 # voice
@@ -18,19 +18,23 @@ Check once, stop and tell the user if any is missing:
   logs `[perform] first use: downloading ...`; relay that line and say the wait is 20-40 min.
 
 Run model scripts with `uv run` (deps are declared inline in each script) and in the
-background: renders take 2-6x real time, longer when the Mac swaps.
+background: Drama 3 renders about real time, S2 about 3x slower, and both are several times
+slower when the Mac swaps (another model loaded, a second render running).
 
 ## Voices
 
-A voice is `<name>.wav` + `<name>.txt` (exact transcript). Lookup: `$PERFORM_VOICES`,
-then `./voices` in the current directory, then the bundled `narrator`, `vadik`, `rajesh`,
-`praporshchik`, `girl`, `starik`. For multi-voice scenes use the `perform` skill.
+A voice is `<name>.wav` + `<name>.txt` (exact transcript). Lookup: the scenario's profile
+`voices/` (see `scenario`), then `$PERFORM_VOICES` (else `./voices` in the current directory),
+then the bundled `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`.
 
-- Design one: `uv run $S/design_voice.py NAME "English description" --line "Русская фраза в характере"`.
+- Design one: `uv run $S/design_voice.py NAME "English description" --line "Русская фраза в характере" [--profile NAME]`.
+  With `--profile` it goes into that profile's `voices/`, otherwise into `$PERFORM_VOICES` or `./voices`.
   Fish copies the reference's delivery, not only its timbre: describe personality and
   mannerisms (drawls, giggles, speaks fast when excited), and write the line in character.
 - Record the user's own: `python3 $S/record_refs.py` needs a real terminal (space to start
-  and stop). Run it in the user's terminal tab, never in a background shell.
+  and stop). Run it in the user's terminal tab, never in a background shell. It records one
+  reference per mood (calm, happy, angry, sad, whisper, excited) into `$PERFORM_VOICES` or
+  `./voices`; copy the one to use into a profile's `voices/` by hand.
 - Never clone a real person's voice from a clip without their consent; design a character instead.
 
 ## Engines
@@ -40,9 +44,7 @@ then `./voices` in the current directory, then the bundled `narrator`, `vadik`, 
 
 ## Render
 
-One voice: steps below. Several characters: write a scene, one turn per line
-(`voice: text`, `{pause N}` for silence, `{ambience NAME}` for a background bed), and run `uv run $S/scene.py scene.txt out.wav`.
-It also writes `out.timeline.json` with each turn's start and end in seconds.
+One voice: steps below. Several characters, a scene or an episode: use `perform`.
 
 1. Write the tagged text to a `.txt` file in the user's working directory. Blank lines split
    paragraphs; each paragraph is one model call (one call stops at ~47 s of audio).

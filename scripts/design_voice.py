@@ -65,10 +65,7 @@ def main():
         jobs = [(args.name, args.description, args.line)]
         out = voices.user_dir()
         if args.profile:
-            prof = profiles.find(args.profile) or Path(args.profile)
-            if not (prof / "profile.md").exists():
-                sys.exit(f"no profile: {args.profile}")
-            out = prof / "voices"
+            out = profiles.writable(args.profile) / "voices"
     else:
         p.print_usage()
         sys.exit(1)

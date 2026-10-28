@@ -3,3 +3,5 @@
 __pycache__/
 .venv/
 !profiles/*/voices/*.wav
+*.timeline.json
+.claude/

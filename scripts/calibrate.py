@@ -68,20 +68,24 @@ def main():
     p.add_argument("--dry-run", action="store_true")
     args = p.parse_args()
 
+    # scene.py --clips writes clips.json: the gain, pitch shift and phone filter each clip got.
+    # Undo them here so a recalibration measures the raw voice, not the last calibration.
     per_voice: dict[str, list[tuple[float, float]]] = {}
     for folder in args.clips:
+        applied = json.loads((folder / "clips.json").read_text()) if (folder / "clips.json").exists() else {}
         for wav in sorted(folder.glob("*.wav")):
-            if (m := CLIP.match(wav.name)) and (r := measure(wav)) and np.isfinite(r[0]):
-                per_voice.setdefault(m[1], []).append(r)
+            got = applied.get(wav.name, {})
+            if got.get("phone") or not (m := CLIP.match(wav.name)) or not (r := measure(wav)) or not np.isfinite(r[0]):
+                continue  # a phone-filtered clip says nothing about the voice's level
+            lufs, f0 = r[0] - got.get("gain_db", 0), r[1] / 2 ** (got.get("semitones", 0) / 12)
+            per_voice.setdefault(m[1], []).append((lufs, f0))
     if not per_voice:
         sys.exit("no NN_voice.wav clips found (render with scene.py --clips DIR)")
 
     dest = None
     old = {}
     if args.profile:
-        prof = profiles.find(args.profile) or Path(args.profile)
-        if not (prof / "profile.md").exists():
-            sys.exit(f"no profile: {args.profile}")
+        prof = profiles.writable(args.profile)
         dest = prof / "levels.json"
         if dest.exists():
             old = json.loads(dest.read_text()).get("voices", {})

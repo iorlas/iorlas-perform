@@ -16,7 +16,7 @@
     - vadik@0.2: [nervous] Сделаем.
     - {pause 2}
 
-`## Cast` is a table of every voice except `narrator`: voice, then `Name, who
+`## Cast` (or `## Роли`, `## Персонажи`) is a table of every voice except `narrator`: voice, then `Name, who
 they are`. The words before the first comma are the names the lint looks for.
 Every other `##` heading starts a scene, its title the place and time; an
 optional `> ambience NAME [volume]` line under it sets the background. Turns
@@ -33,8 +33,9 @@ ambience NAME` headers; `{ambience NAME}`, `{sfx NAME}` and `voice+phone:` work
 there too. Files without a cast still parse; the lint then skips the checks
 that need it.
 
-Lint, from radio-drama craft (stories/research_audio_drama_craft.md in the
-playground): a listener with closed eyes must know who speaks, where and when.
+Lint, from radio-drama craft (skills/scenario/craft.md): a listener with closed
+eyes must know who speaks, where and when. A file with `<!-- lint: jingle -->`
+(a series intro) skips the who-and-where checks.
 Errors stop a render; warnings are printed.
 
 Usage: uv run scenario.py scene.txt   (exit 1 on errors)
@@ -140,7 +141,9 @@ def parse(text: str) -> Scenario:
 def load(path: str | Path) -> Scenario:
     path = Path(path)
     text = path.read_text()
-    return parse_md(text) if path.suffix in (".md", ".markdown") else parse(text)
+    sc = parse_md(text) if path.suffix in (".md", ".markdown") else parse(text)
+    sc.jingle = "<!-- lint: jingle -->" in text
+    return sc
 
 
 ITEM = re.compile(r"^[-*]\s+(.+)$")
@@ -263,11 +266,13 @@ def lint(sc: Scenario) -> list[tuple[str, int, str]]:
                 warn(t.line, f"«{m[0]}» with no sound: add '- {{sfx {effect}}}' next to this turn")
                 break
 
+    if getattr(sc, "jingle", False):
+        return sorted(out, key=lambda x: x[1])
     if not sc.cast:
-        warn(1, "no @cast: intro checks skipped")
+        warn(1, "no cast (## Cast table or @cast): intro checks skipped")
         return sorted(out, key=lambda x: x[1])
     for v in sorted({t.voice for t in turns} - set(sc.cast) - {NARRATOR}):
-        err(next(t.line for t in turns if t.voice == v), f"{v} speaks but is not in @cast")
+        err(next(t.line for t in turns if t.voice == v), f"{v} speaks but is not in the cast")
 
     # Who is speaking: a voice is named before or in its first line, and again in a
     # scene it returns to after missing the previous one.

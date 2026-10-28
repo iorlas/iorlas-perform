@@ -41,7 +41,9 @@ uv run scripts/speak.py examples/shmatko.txt out.wav --voice praporshchik
 uv run scripts/scenario.py story.md                               # lint a script
 uv run scripts/scene.py examples/cherdak.txt cherdak.wav          # multi-voice + timeline
 uv run scripts/scene.py examples/night_shift.md night.wav         # ambience beds, sound effects
-uv run scripts/design_voice.py boss "A tired 40-year-old Russian office manager, dry sarcasm" --line "Ну и кто это опять сломал?"
+uv run scripts/design_voice.py boss "A tired 40-year-old Russian office manager, dry sarcasm" --line "Ну и кто это опять сломал?" --profile my-series
+uv run scripts/scene.py story.md story.wav --clips clips/       # also save each turn
+uv run scripts/calibrate.py clips/ --profile my-series          # per-voice levels
 python3 scripts/record_refs.py
 ```
 
@@ -58,8 +60,8 @@ python3 scripts/record_refs.py
 | `design_voice.py` | voice from a text description |
 | `record_refs.py` | guided recording of your own voice, space to start/stop |
 
-Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in `$PERFORM_VOICES`, then
-`./voices`, then the bundled `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`
+Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in the scenario's profile
+`voices/`, then `$PERFORM_VOICES` (else `./voices`), then the bundled `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`
 (designed with Qwen VoiceDesign).
 
 ## Profiles
@@ -84,6 +86,7 @@ a comedic Russian series about a fake senior engineer and an AI genie, three epi
 
 ```bash
 uv run scripts/profiles.py                    # list profiles
+uv run scripts/profiles.py new my-series      # start a profile from a template
 uv run scripts/profiles.py copy senior-vadik  # copy the example into ./profiles
 uv run scripts/scene.py profiles/senior-vadik/episodes/02-tri-zhelaniya.md ep2.wav
 ```
@@ -158,7 +161,8 @@ List and preview: `uv run scripts/sfx.py`, `uv run scripts/sfx.py modem modem.wa
 
 ## Tag guide
 
-Tested by ear on Fish S2 Pro (Drama 3 judged better overall in an A/B; its tags not judged one by one):
+First tested by ear on Fish S2 Pro; Drama 3, the default, won the A/B and has rendered every
+tag below in the example episodes since:
 
 - Laugh: `[bursts out laughing] Текст! [laughs uncontrollably]`. Sounds real.
 - Never spell `Ха-ха`: it is read aloud as a word.
@@ -168,7 +172,6 @@ Tested by ear on Fish S2 Pro (Drama 3 judged better overall in an A/B; its tags 
 ## Roadmap
 
 - Per-word timings in `timeline.json` (forced alignment).
-- Overlapping speech: turns that start before the previous one ends.
 
 ## Licence
 

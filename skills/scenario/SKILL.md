@@ -27,8 +27,19 @@ profiles/<name>/
 - `uv run $S/profiles.py` lists profiles: `$PERFORM_PROFILES`, `./profiles`, then the bundled
   examples (read-only; `profiles.py copy NAME` copies one into `./profiles`).
 - Pick the profile the user names. With none named and one existing, use it; with several, ask.
-  A new series gets a new profile: write `profile.md`, `world.md` and `characters.md` from what
-  the user says, ask only about what changes the story (tone, audience, length).
+- A new series gets a new profile, in this order:
+  1. `uv run $S/profiles.py new NAME` makes `./profiles/NAME/` (or under `$PERFORM_PROFILES`)
+     with template `profile.md`, `world.md`, `characters.md`. `profile.md` marks the folder
+     as a profile; scripts find voices and levels by it.
+  2. Fill the three files from what the user says; ask only about what changes the story
+     (tone, audience, length, intro or not).
+  3. Design each character's voice into it: `design_voice.py NAME "..." --line "..." --profile NAME`.
+  4. Write episodes inside `episodes/`, so the renderer finds the profile. An intro, if the
+     series has one, is `episodes/00-intro.md` with `<!-- lint: jingle -->`; `scene.py` plays it
+     before every episode.
+  5. After the first render, calibrate levels (perform, step 5).
+- To build on the bundled example, `profiles.py copy senior-vadik` first: an installed plugin's
+  folder is replaced on update.
 - Read `profile.md`, `world.md`, `characters.md` and the last two episodes before writing.
   The profile's preferences override this skill's defaults where they conflict.
 - The bundled `senior-vadik` profile is a full example: copy its shape, not its jokes.
@@ -159,7 +170,7 @@ how it ends. Rules:
   the tone can change at the split.
 - **Delivery tags** in English on every turn; questions get an intonation tag
   (`[rising intonation]`); laughs as `[bursts out laughing] Текст! [laughs uncontrollably]`;
-  no Russian inside brackets, it is read aloud. Turns stay under 300 characters.
+  no Russian inside brackets, it is read aloud.
 - **Accents.** A foreign accent comes from writing that character's Russian in their style of
   Latin transliteration (Indian: `Bhai, oo naas v Bangalore...`), plus an accent tag.
 

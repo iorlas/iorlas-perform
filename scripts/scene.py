@@ -21,7 +21,9 @@ turns as list items:
 
 `voice: text` renders the text in that voice (see voices.py), `{pause N}` adds
 N seconds of silence, a scene heading adds --scene-pause before every scene but
-the first. `.txt` files use the older one-turn-per-line format. The lint runs first: errors
+the first. `.txt` files use the older one-turn-per-line format. A scenario inside a profile
+gets the profile's voices, levels.json and, unless --no-intro, its
+episodes/00-intro.md played first. The lint runs first: errors
 stop the render before the model loads (--no-lint skips it).
 
 Spacing: `voice@0.1: text` sets the gap before that turn, in seconds, instead of
@@ -86,6 +88,7 @@ def main():
     p.add_argument("--scene-pause", type=float, default=1.5, help="silence before each scene, seconds")
     p.add_argument("--no-lint", action="store_true", help="render even when the lint finds errors")
     p.add_argument("--clips", type=Path, help="also save each turn as <dir>/NN_voice.wav")
+    p.add_argument("--no-intro", action="store_true", help="skip the profile's episodes/00-intro.md")
     args = p.parse_args()
 
     dest = Path(args.out) if args.out else Path(args.src).with_suffix(".wav")
@@ -99,8 +102,12 @@ def main():
     for i in sc.items:
         if isinstance(i, Sfx) and i.name not in sfx.EFFECTS:
             sys.exit(f"line {i.line}: no sfx '{i.name}', have: {', '.join(sfx.EFFECTS)}")
-    needed = {t.voice for t in sc.turns}
     profile = profiles.of(args.src)
+    intro = profile / "episodes" / profiles.INTRO if profile else None
+    if intro and intro.exists() and not args.no_intro and Path(args.src).resolve() != intro.resolve():
+        sc.items = scenario.load(intro).items + sc.items  # the series intro opens every episode
+        log(f"intro: {intro.name}")
+    needed = {t.voice for t in sc.turns}
     first = [profile / "voices"] if profile else []
     levels = {}
     if profile:
@@ -123,6 +130,7 @@ def main():
         wav = voices.find(v, first)
         transcript = wav.with_suffix(".txt").read_text().strip()
         refs[v] = (load_audio(str(wav), sample_rate=sr), engines.ref_text(args.engine, transcript))
+    clip_log = {}  # what was applied to each clip, so calibrate.py can measure the raw voice
     if args.clips:
         args.clips.mkdir(parents=True, exist_ok=True)
 
@@ -177,6 +185,8 @@ def main():
             audio = audio * 10 ** (gain_db(levels, voice) / 20)
         if args.clips:
             sf.write(args.clips / f"{n:02d}_{voice}.wav", audio, sr)
+            clip_log[f"{n:02d}_{voice}.wav"] = {"voice": voice, "gain_db": gain_db(levels, voice) if voice in levels else 0,
+                                               "semitones": semitones, "phone": item.phone}
         at = max(0, end + int((args.gap if gap is None else gap) * sr)) if placed or effects else lead
         changes += [(at, name, vol) for name, vol in pending]
         pending = []
@@ -215,6 +225,8 @@ def main():
     if peak > 0.99:  # overlaps can clip
         mix *= 0.99 / peak
     sf.write(dest, mix, sr)
+    if args.clips:
+        (args.clips / "clips.json").write_text(json.dumps(clip_log, indent=2) + "\n")
     dest.with_suffix(".timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=2) + "\n")
     took, length = time.time() - start, len(mix) / sr
     log(f"done: {length:.1f}s audio in {clock(took)} ({length / took:.2f}x real time)")

@@ -19,10 +19,12 @@ the `scenario` skill (`${CLAUDE_SKILL_DIR}/../scenario/SKILL.md`) and come back.
 ## 2. Cast
 
 List characters and pick a voice for each: an existing one (the scenario's profile `voices/`,
-then `$PERFORM_VOICES`, `./voices`, then bundled: `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`) or a new design.
+then `$PERFORM_VOICES` (else `./voices`), then bundled: `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`) or a new design.
 A reused voice under another character's name: copy its `.wav` and `.txt` into `./voices/<name>.*`.
 
-New voice: `uv run $S/design_voice.py NAME "description" --line "Русская фраза в характере"`.
+New voice: `uv run $S/design_voice.py NAME "description" --line "Русская фраза в характере" --profile <name>`
+(without `--profile` it lands in `./voices`, which a profile episode still finds, but the profile
+is then incomplete).
 The description carries personality and mannerisms, not only age and pitch; the line is 8-12 s,
 in character, with no brackets.
 
@@ -36,11 +38,13 @@ Show the user the script as readable text (character names, no tags) and the cas
 Run in the background, then send the wav and timeline:
 
 ```
-uv run $S/scene.py <name>.txt <name>.wav [--engine drama3|s2] [--speed 1.1] [--gap 0.35]
+uv run $S/scene.py <name>.md <name>.wav [--engine drama3|s2] [--speed 1.1] [--gap 0.35]
                   [--scene-pause 1.5] [--max-silence 0.6] [--no-lint]
 ```
 
 - The lint runs first; errors stop the render before the model loads.
+- Inside a profile, the episode gets the profile's voices and `levels.json`, and the profile's
+  `episodes/00-intro.md` plays first (`--no-intro` to skip; the intro file itself renders alone).
 - Progress: one `[perform]` line per turn with percent, elapsed time and ETA.
 
 - A first-use model download logs `[perform] first use: downloading ...`; relay it with the size.
@@ -61,6 +65,12 @@ render of a profile (or when a voice is added or sounds too loud or quiet), rend
 ```
 uv run $S/calibrate.py DIR --profile <name>
 ```
+
+Use clips from the current scene.py: it writes `clips.json` next to them with the gain, pitch
+shift and phone filter each clip got, and calibrate.py undoes them, so recalibrating with a
+`levels.json` in place is safe; phone-filtered turns are skipped. Clips without `clips.json`
+are taken as raw. A bundled profile in an installed plugin is read-only: `profiles.py copy`
+it first.
 
 It writes `levels.json` into the profile: one gain per voice to a -20 LUFS target, plus each
 voice's median pitch, and reports voices too close in pitch to tell apart. `scene.py` applies

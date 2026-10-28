@@ -1,0 +1,58 @@
+# Lint and type-check config only: the scripts are standalone `uv run` scripts with inline
+# dependencies (PEP 723), not a package. Rules follow the shelf's blueprint (~/Workspaces/shelf,
+# pyproject.toml), with the relaxations its tools/** scripts get: CLI scripts print, call
+# ffmpeg by name, import heavy engines lazily, and import their siblings by path.
+#
+#   uvx ruff check scripts && uvx ruff format --check scripts
+#   uv run --with pyrefly --with numpy --with soundfile --with librosa --with pyloudnorm \
+#          --with mlx-audio pyrefly check
+
+[tool.ruff]
+target-version = "py312"
+line-length = 140
+output-format = "concise"
+
+[tool.ruff.format]
+exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = [
+    "F", "E", "W",
+    "PLC", "PLE", "PLR", "PLW",
+    "B", "BLE", "TRY", "RSE", "EM", "RET", "SIM", "C4", "C90", "PIE", "FURB", "FLY",
+    "ANN", "UP", "FA", "TC", "PYI",
+    "I", "TID", "ICN", "A", "N", "SLF",
+    "S", "DTZ", "LOG", "G", "T10", "ASYNC", "PTH", "FBT", "ISC",
+    "ERA", "ARG", "RUF",
+]
+ignore = [
+    "ANN401",  # Any in variadic args
+    "PLR0913", # deep functions take many args
+    "PLR2004", # magic values: audio code is full of honest constants (24000 Hz, 0.02 of peak)
+    "ISC001",  # the formatter owns implicit concat
+    "TRY003",  # EM covers the real concern
+    "S603",    # subprocess without a shell: ffmpeg, by design
+    "S607",    # ffmpeg by name on PATH, on purpose
+    "T201",    # CLI scripts: printing is their job
+    "INP001",  # scripts/ is a folder of scripts, not a package
+    "PLC0415", # mlx_audio, librosa and pyloudnorm import lazily so --help and the lint stay fast
+    "RUF001", "RUF002", "RUF003",  # Russian text in strings, docstrings and comments is the point
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 12
+
+[tool.pyrefly]
+project-includes = ["scripts"]
+search-path = ["scripts"]  # the scripts import their siblings by path
+use-ignore-files = false
+preset = "strict"
+
+[tool.pyrefly.errors]
+deprecated = "error"
+unnecessary-type-conversion = "error"
+unannotated-return = "error"
+unused-ignore = "error"
+unnecessary-comparison = "error"
+implicit-bool = false
+unused-call-result = false
