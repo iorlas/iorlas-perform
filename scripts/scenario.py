@@ -325,6 +325,8 @@ def lint_text(sc: Scenario) -> list[Issue]:
         if any(re.search(r"[а-яё]", tag, re.IGNORECASE) for tag in TAG.findall(t.text)):
             out.append(("error", t.line, "Russian inside [tag]: it is read aloud"))
         tags = " ".join(TAG.findall(t.text)).lower()
+        if re.search(r"\b(?:too |very )?(?:fast|rapid|quick(?:ly)?|hurried)\b", tags):
+            out.append(("warn", t.line, "speed tag: speech comes out machine-gunned; play panic or hurry in words and breaks"))
         if not tags:
             out.append(("warn", t.line, "no [delivery tag]: the line comes out read, not played"))
         if "?" in spoken(t.text) and not re.search(r"intonation|question", tags):

@@ -81,6 +81,7 @@ import sfx
 import voices
 from scenario import Ambience, Pause, Scenario, Scene, Sfx, Turn
 
+ONSET_RETRIES = 2
 TURN_PEAK = 10 ** (-1 / 20)  # -1 dBFS: the gain may raise a voice, never past clipping
 
 
@@ -143,8 +144,14 @@ def speak_turn(
     """One turn as audio: generated, tempo and pitch set, edges trimmed, silences squashed, phone band, voice gain."""
     sr = model.sample_rate
     ref_audio, ref_text = ref
-    results = model.generate(text=item.text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
-    audio = np.concatenate([np.array(r.audio) for r in results])
+    for attempt in range(1 + ONSET_RETRIES):
+        results = model.generate(text=item.text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
+        audio = np.concatenate([np.array(r.audio) for r in results])
+        if not cut_onset(audio, sr):
+            break
+        # The model sometimes drops a line's first sound: the clip starts mid-word. Sampling
+        # differs per call, so generate again.
+        log(f"{item.voice} line {item.line}: starts mid-sound, the first syllable is cut; try {attempt + 2}")
     if args.speed != 1.0 or semitones_of(levels, item.voice):
         audio = atempo(audio, sr, args.speed, semitones_of(levels, item.voice))
     audio = trim(audio, sr)
@@ -324,6 +331,12 @@ def log(msg: str) -> None:
 
 def clock(secs: float) -> str:
     return f"{int(secs) // 60}m{int(secs) % 60:02d}s"
+
+
+def cut_onset(audio: np.ndarray, sr: int) -> bool:
+    """True when the first 10 ms are already loud (over 5% of the peak): no lead-in, a clipped first sound."""
+    peak = np.abs(audio).max()
+    return bool(peak > 0 and np.abs(audio[: sr // 100]).max() > 0.05 * peak)
 
 
 def trim(audio: np.ndarray, sr: int, keep: float = 0.03) -> np.ndarray:

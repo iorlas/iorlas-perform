@@ -29,6 +29,7 @@ NAME/
   profile.md      format, length, language, tone and spice, intro, acting taste
   world.md        setting, entities, rules of the world, running gags, canon so far
   characters.md   cast table, character design, relationships, how each one sounds
+  characters/     <voice>.md, one soul file per character: what makes them them
   structure.json  optional: the lint's structure rules for this genre
   levels.json     per-voice loudness and pitch (calibrate.py)
   voices/         <voice>.wav + <voice>.txt
@@ -55,9 +56,30 @@ narration, intro or not, how sharp. Then, in order:
    - **Relationships**: the pairs that make the episodes. For each pair: what goes on, the
      recurring move, who starts high, what flips it.
    - How each one sounds: voice, tics, fillers.
+   - **Soul files**, `characters/<voice>.md`, one per main character (template below).
 4. **Voices**: one per character, `design_voice.py NAME "description" --line "..." --profile NAME`.
 5. **Intro** (optional): `episodes/00-intro.md` with `<!-- lint: jingle -->`.
 6. After the first render, calibrate levels (perform skill, step 5).
+
+## Character soul files
+
+The tables say what a character does; the soul file says who they are, so any writer
+produces lines only they would say. `profiles.py new` writes `characters/hero.md` as the
+template; copy it per character. Sections:
+
+1. **Core**: who they are, what makes them them, in one paragraph.
+2. **Charm**: why the listener loves them despite everything, concretely.
+3. **Want, fear, wound.**
+4. **Comic lens**: how they misread the world; their go-to move under pressure.
+5. **Culture**: the real subcultures they come from (an imageboard generation, the army,
+   a profession, a city, a decade), and what each gives them: words, reflexes, references;
+   what they would never know or say. Real references only, never invented slang.
+6. **Speech**: rhythm and pace (normal unless the character is defined by it), vocabulary,
+   fillers, slang density, swearing; how they lie, panic, ask, brag, apologise; words they
+   never use.
+7. **Lines that are them** (about 8) and **lines that are not them** (about 5, with why).
+8. **Voice direction**: delivery tags that fit and tags to avoid, for the TTS engine.
+9. **With each main character**: how they talk to them, status, what they hide.
 
 ## structure.json
 

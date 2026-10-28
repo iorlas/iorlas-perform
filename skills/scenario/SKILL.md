@@ -58,6 +58,10 @@ them in `structure.json` for its genre.
   Status flips at least once in the episode; the best episodes flip it at the turn.
 - C3. Each character acts from their design: what they want, their flaw, how they misread
   the world, what they do to the hero. A line none of these explains is cut.
+- C3a. Read each cast member's soul file, `characters/<voice>.md`, before writing their lines:
+  their core, charm, culture, speech and the lines that are and are not them. Every line
+  passes "would only this character say it, this way?". A character without a file gets one
+  first (the template in `profiles.md`).
 - C4. Every character has a tic the ear tracks: a rhythm or a set of fillers, used every few
   lines. A catchphrase is different: rare, once an episode at most.
 - C5. Contrast voices in age, pitch, pace and accent; two similar voices in a fast exchange
@@ -150,6 +154,10 @@ them in `structure.json` for its genre.
   about one per two or three lines, never inside a punchline.
 - T6. **Comedy.** Setup 1-3 lines, punchline short, the funny word last. After a big laugh, a
   short breath (a reaction, a narrator line) before the next setup.
+- T6a. **Speed.** People talk at a normal pace, panicking ones too: panic, hurry and
+  excitement live in the words, repetitions and breaks («Стой. Стой! Картошку?!»), never in a
+  speed tag (`fast`, `too fast`, `rapid`: the lint warns). A rare exception is a
+  deliberate gag, marked `<!-- lint-ok: speed tag -->` with the reason.
 - T7. **Pacing.** Gaps 0.2-0.4 s between lines (`voice@0.2:`); 0.4-0.6 s before a punchline.
   `{pause N}` only for a deliberate beat, at most 3 s.
 - T8. **Length.** A turn may be a speech of several sentences; under 300 characters, longer

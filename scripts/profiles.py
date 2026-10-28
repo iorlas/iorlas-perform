@@ -4,6 +4,7 @@
       profile.md      what the series is: format, length, language, tone, intro, acting taste
       world.md        setting, entities, rules of the world, running gags, canon so far
       characters.md   cast table, character design, relationships, how each one sounds
+      characters/     <voice>.md soul files: core, charm, culture, speech, lines that are them
       structure.json  optional: tunes the lint's structure rules for this genre (scenario.Rules)
       levels.json     per-voice loudness and pitch, written by calibrate.py
       voices/         <voice>.wav + <voice>.txt for this cast
@@ -108,7 +109,50 @@ the names the lint looks for.
 
 ## How each one sounds
 
-- **Имя** (`hero`): voice, tics, fillers, catchphrase (rare).
+- **Имя** (`hero`): voice, tics, fillers, catchphrase (rare). The soul is in `characters/hero.md`.
+""",
+    "characters/hero.md": """# Имя (`hero`)
+
+## Core
+
+Who they are and what makes them them, in one paragraph.
+
+## Charm
+
+Why the listener loves them despite everything.
+
+## Want, fear, wound
+
+-
+
+## Comic lens
+
+How they misread the world; their go-to move under pressure.
+
+## Culture
+
+The real subcultures they come from and what each gives them; what they would never know.
+
+## Speech
+
+Rhythm and pace, vocabulary, fillers, slang, swearing; how they lie, panic, ask, brag,
+apologise; words they never use.
+
+## Lines that are them
+
+-
+
+## Lines that are not them
+
+- (and why)
+
+## Voice direction
+
+Delivery tags that fit, tags to avoid.
+
+## With each main character
+
+-
 """,
 }
 
@@ -170,7 +214,7 @@ def main() -> None:
         dest = user_dir() / args[1]
         if dest.exists():
             sys.exit(f"already exists: {dest}")
-        for sub in ("voices", "episodes", "renders"):
+        for sub in ("voices", "episodes", "renders", "characters"):
             (dest / sub).mkdir(parents=True)
         for f, body in TEMPLATE.items():
             (dest / f).write_text(body.format(name=args[1]))
