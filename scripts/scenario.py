@@ -43,6 +43,11 @@ earlier in the same file is an error: the listener never heard the setup (a
 series intro does not count). A plant with no payoff is a warning. Scenes are
 budgeted by length: over max(2, 0.7 per minute) is a warning, since listeners
 cannot see a cut.
+
+Beats: `<!-- beat: NAME -->` before the line a beat starts on, from the episode
+template (skills/scenario/SKILL.md): hook, setup, incident, ladder (two or
+more), turn, button, tag. Beats out of order, an unknown name, or a missing
+hook, incident, turn, button or second ladder rung are warnings.
 Errors stop a render; warnings are printed.
 
 Usage: uv run scenario.py scene.txt   (exit 1 on errors)
@@ -51,6 +56,7 @@ Usage: uv run scenario.py scene.txt   (exit 1 on errors)
 import re
 import sys
 from dataclasses import dataclass, field
+from itertools import pairwise
 from pathlib import Path
 
 TURN = re.compile(r"^([\w-]+)(\+phone)?(?:@(-?[\d.]+))?\s*:\s*(.+)$")
@@ -61,7 +67,9 @@ SCENE = re.compile(r"^@scene\s+(.+?)(?:\s*\|\s*ambience\s+([\w-]+)(?:\s+([\d.]+)
 CAST_LINE = re.compile(r"^([\w-]+)\s*\|\s*(.+)$")
 TAG = re.compile(r"\[([^\]]*)\]")
 NARRATOR = "narrator"
-MARK = re.compile(r"<!--\s*(plant|payoff):\s*(.+?)\s*-->")
+MARK = re.compile(r"<!--\s*(plant|payoff|beat):\s*(.+?)\s*-->")
+BEATS = ("hook", "setup", "incident", "ladder", "turn", "button", "tag")  # the episode template, in order
+NEEDED = ("hook", "incident", "turn", "button")
 CHARS_PER_SEC = 15  # measured: episode 03, 3887 characters of turns, 261 s rendered
 SCENES_PER_MIN = 0.7
 
@@ -345,11 +353,30 @@ def lint_jokes(sc: Scenario) -> list[Issue]:
     for kind, key, n in sc.marks:
         if kind == "plant":
             planted.add(key)
+        elif kind != "payoff":
+            continue
         elif key not in planted:
             out.append(("error", n, f"payoff «{key}» has no plant before it in this episode: the listener never heard the setup"))
         else:
             paid.add(key)
     out += [("warn", n, f"plant «{key}» is never paid off") for kind, key, n in sc.marks if kind == "plant" and key not in paid]
+    return out
+
+
+def lint_beats(sc: Scenario) -> list[Issue]:
+    """The episode template: needed beats present, in order, the ladder at least two rungs."""
+    beats = [(key, n) for kind, key, n in sc.marks if kind == "beat"]
+    if not beats:
+        return [("warn", 1, "no <!-- beat: NAME --> marks: the episode's structure is not designed")]
+    out: list[Issue] = [("warn", n, f"unknown beat «{key}»; beats: {', '.join(BEATS)}") for key, n in beats if key not in BEATS]
+    known = [(key, n) for key, n in beats if key in BEATS]
+    out += [
+        ("warn", n, f"beat «{key}» comes after «{prev}»") for (prev, _), (key, n) in pairwise(known) if BEATS.index(key) < BEATS.index(prev)
+    ]
+    names = [key for key, _ in known]
+    out += [("warn", 1, f"no «{key}» beat") for key in NEEDED if key not in names]
+    if names.count("ladder") < 2:
+        out.append(("warn", 1, f"{names.count('ladder')} ladder rung(s): heighten at least twice"))
     return out
 
 
@@ -375,7 +402,7 @@ def lint(sc: Scenario) -> list[Issue]:
     if not sc.cast:
         out.append(("warn", 1, "no cast (## Cast table or @cast): intro checks skipped"))
         return sorted(out, key=lambda x: x[1])
-    out += lint_names(sc) + lint_scenes(sc) + lint_jokes(sc) + lint_pace(sc)
+    out += lint_names(sc) + lint_scenes(sc) + lint_jokes(sc) + lint_beats(sc) + lint_pace(sc)
     return sorted(out, key=lambda x: x[1])
 
 

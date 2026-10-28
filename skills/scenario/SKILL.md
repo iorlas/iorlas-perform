@@ -109,6 +109,29 @@ nearby; one or two effects per scene is plenty. The senior-vadik episodes in
 From the profile's world and canon, write down in 3 lines: what the hero wants, what goes
 wrong, the twist. Every episode stands alone: a listener who missed the last one must follow it.
 
+Then design the episode's structure. Short comedy runs on a sketch spine (premise,
+heightening, blow) with a kishōtenketsu turn (the twist that recontextualises) and a sitcom
+hook and tag; Freytag's falling action shrinks to one line. Beats, with shares of a ~4.5 min
+episode (the shares are an assumption to tune by ear):
+
+| beat | share | what it does |
+|---|---|---|
+| hook | ~6% | the narrator states the unusual thing or the want; the listener knows why to stay |
+| setup | ~11% | who, the want, the one rule of the world in play; plant what pays off later |
+| incident | ~5% | "but one day": the event that forces the want into action, often with a deadline |
+| ladder | ~46% | 2-4 rungs (2 at 3 min, 4 at 6 min), each the worst result of the last fix; a reversal near the middle, a point of no return near 3/4 |
+| turn | ~17% | the peak and the twist; the plant pays off; a fair twist, its clue heard in the first minute |
+| button | ~7% | one reaction and a last line under 8 words, the funny word last |
+| tag | ~7% | optional: the runner once more, or a question for the next episode, then the sting |
+
+Write the beat sheet first, one line per beat, as a Story Spine: "once... every day... but
+one day... because of that... because of that... until finally... and ever since". Each
+"and then" is a broken link: rewrite it as "because of that". Episodes close and reset by
+default; a cliffhanger only as a question in the tag. Devices that fit shorts: a planted
+object or phrase (Chekhov's gun), rule of three (two set a pattern, the third breaks it), a
+deadline stated in the setup, a reversal, a fair-play twist. Mark each beat in the scenario
+with `<!-- beat: NAME -->` before its first line; the lint checks they are all there and in order.
+
 Then, before any scene, the design (research and sources: `structure-research.md`):
 - **The game**, one sentence: the first unusual thing, and the rule "if this is true, what
   else is true?" that each scene heightens. One game per episode, two at most. Five unrelated
@@ -200,6 +223,10 @@ how it ends. Rules:
   no Russian inside brackets, it is read aloud.
 - **Accents.** A foreign accent comes from writing that character's Russian in their style of
   Latin transliteration (Indian: `Bhai, oo naas v Bangalore...`), plus an accent tag.
+- **Stress marks.** A combining acute (U+0301) after the stressed vowel fixes a word the
+  model stresses wrong: «Пи́дора отве́т». Use them only on words heard wrong in a render, one
+  or two per line: each mark also adds emphasis, so a line full of them sounds over-acted.
+  Heard on Drama 3 (intro takes, 2026-10-28).
 
 ## 5. Lint
 

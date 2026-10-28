@@ -180,3 +180,109 @@ Ending
 - Find Russian KVN/"Квартет И"/"Уральские пельмени" writing guidance (not found via search; likely video interviews).
 - BBC Writersroom radio comedy toolkit and BCG Pro "Six of the best" are paywalled/blocked from this fetcher.
 - Calibrate all [assumption] numbers (scenes per minute, joke rate, callback distance) by A/B listening to two renders of the same script.
+
+---
+
+## 6. Episode structures for shorts
+
+Gathered 2026-10-28 by web search + Wikipedia fetch. Harmon circle: see s.0/1, not repeated. Search-summary sources are secondary; runtime shares are [assumption] unless stated. No source found giving beat percentages for a 3-6 min piece.
+
+### 6.1 Candidate structures
+
+**Sitcom (22 min half-hour)**
+- Order: cold open/teaser, acts, tag. Teaser = 1-5 min mini-act before the credits. [TV Tropes Teaser via search](https://tvtropes.org/pmwiki/pmwiki.php/Main/Teaser)
+- 22-24 min runtime, acts originally cut by ad breaks; 60s-80s = teaser + 2 acts + tag; today often cold open + 4 acts. [NoFilmSchool](https://nofilmschool.com/how-to-write-a-sitcom), [Fiveable summary](https://fiveable.me/tv-writing/unit-1/sitcoms/study-guide/6Idkg9KvIDaOywMa) (study guides, low trust)
+- Tag: short scene after main story; sometimes a cliffhanger/next-episode setup. [same Fiveable]
+- Escalation: a "point of no return" ~3/4 through, where nothing can get worse, forces the exit; "make your characters make things worse". [BCG sitcom rules](https://comedy.co.uk/pro/inside_track/the-10-rules-of-sitcom-writing), [BCG scenes](https://comedy.co.uk/pro/inside_track/how-to-structure-sitcom-scenes)
+- Schur: same beat twice in a row bores; beat 2 must be bigger. [Ferriss page](https://rosetta.to/u/timferriss/the-fundamentals-of-sitcom-writing-and-teaching-moments-from-the-office)
+- Shrunk to 4.5 min [assumption]: 1 mini-act of cold open + 1 act + tag. Act breaks drop out (they were ad breaks, not craft); keep the 3/4 no-return point.
+
+**Freytag's pyramid (exposition, rising action, climax/peripeteia, falling action, denouement)**
+- 5 stages from tragedy, Freytag 1863; peripeteia sits AT the climax; "catastrophe" was Freytag's word for the end, "denouement" is later. [Dramatic structure mirror](https://bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze.ipfs.ipfs.hypha.coop/wiki/Dramatic_structure), [Utrecht dramaturgy DB](https://dramaturgydatabase.hum.uu.nl/record/die-technik-des-dramas/)
+- Freytag did not treat comedy; modern writers apply it to comedy anyway. [same mirror]
+- Why falling action shrinks in comedy [assumption, synthesis]: after the biggest laugh nothing is left to pay; sources say sketches end on a button/blackout right after the peak (6.1 sketch), Seinfeld ends on callback or ironic twist (s.2.4). So: falling action = 1 line (reaction) + button; denouement = the button itself.
+
+**Kishōtenketsu (4 beats, 4-panel yonkoma)**
+- Ki intro (characters, setting); Shō development (follows leads toward the twist, no major change); Ten twist = the crux/climax; Ketsu conclusion (also "ochi", the ending). [Wikipedia](https://en.wikipedia.org/wiki/Kish%C5%8Dtenketsu)
+- Not conflict-centred; conflict can be present (Parasite). Withholds a major element until Ten, which can shift the genre. [Wikipedia]
+- Twist = reframing, not a complication. [search summary](https://filmlifestyle.com/what-is-kishotenketsu/) (blog, low trust)
+- Fit [assumption]: perfect for a gag where the reveal recontextualises the first two beats (e.g. what looked like X was Y). Weak when the engine is two characters fighting.
+
+**Sketch (premise, heightening, peak, button)**
+- "What if?" premise = the game; first unusual thing, repeats bigger, causes a real problem, peaks. Heightening = consequences worsen, not volume. [search summary of sketch guides](https://www.skillshare.com/en/blog/how-to-write-sketch-comedy-a-guide/) (low trust)
+- Ending names: blowout (peak absurdity) then blackout (final joke/exit); button = quick funny ending; reversal/twist when audience thinks it knows the pattern. [same summary]
+- Stage sketch: ~1 min exposition + setup, then conflict, then climax. [БРЭ](https://bigenc.ru/c/sketch-shou-74b5ee) (s.1)
+- Game, heightening, rule of three: s.2.1-2.2, not repeated.
+
+**Pixar / Story Spine (8 sentences)**
+- Once upon a time ___. Every day ___. But one day ___. Because of that ___. (repeat) Because of that ___. Until finally ___. And ever since then ___. Optional: "the moral is ___". [SessionLab](https://www.sessionlab.com/methods/story-spine), [NPR interview with inventor](https://www.npr.org/transcripts/nx-s1-5750619)
+- Origin: Kenn Adams (improv, Synergy Theater); reached Pixar via Rebecca Stockley teaching improv there. Adams says Pixar's success does not depend on it. [NPR](https://www.npr.org/transcripts/nx-s1-5750619) (one blog credits Emma Coats; unconfirmed)
+- Fit: strong as a 1-line-per-beat pitch test. "Because of that" chain = causal escalation = our R3.5 chain rule. [assumption on link]
+
+**Save the Cat compressed**
+- Screenplay targets (110 p): opening image p1, theme stated p5, set-up p1-10, catalyst p12, debate p12-25, break into two p25; novel version: set-up 1-10%, catalyst ~10%, midpoint 50%, finale 80-99%, final image 99-100%. Treat as guardrails. [Filmdaft](https://filmdaft.com/save-the-cat-beat-sheet/), [Reedsy](https://blog.reedsy.com/guide/story-structure/save-the-cat-beat-sheet)
+- All is Lost ~p75 (~68%) is from general knowledge, not confirmed by the fetched sources.
+- Compression [assumption]: catalyst at ~10% = 27 s of 270 s; midpoint 50% = 2:15; all-is-lost ~68% = 3:03; finale from 80% = 3:36. In 4.5 min drop Debate, Fun and Games, B-story, Dark Night as separate beats; keep opening image, catalyst, midpoint, all-is-lost, finale, final image.
+
+**Anime/shonen episode**
+- Segment order (fan diagram): recap, cold open (avant-title), OP (~1.5 min), Part A, eyecatch/ad break, Part B, ED, optional after-credits scene, next-episode preview (PV). [japanesewithanime diagram](https://media.japanesewithanime.com/images/1738/parts-of-an-anime-episode.png/), [Anime Glossary](https://wotaku.netlify.app/glossary/anime)
+- No source gave the minutes split of a 24-min episode. [gap]
+- Take-aways [assumption]: Part A ends on a turn that makes you stay through the break (mid-episode hook); next-episode preview = a promise, not a plot; episodes are standalone-ish arcs inside a larger one. Fixed OP/eyecatch/ED are branding, not craft; audio equivalent is a signature sting.
+
+### 6.2 What suits 3-6 min audio (verdicts)
+- Kishōtenketsu: DO for single-gag episodes (reveal in beat 3 reframes beats 1-2). REFUSE as the only engine for dialogue comedy with 3-5 voices; no conflict means no scene-to-scene fuel.
+- Sketch (premise, 3x heightening, peak, button): DO, backbone. Matches game-of-scene (s.2.1), already adopted in this file.
+- Story Spine: DO as a 8-line pitch/check before writing, not as runtime allocation.
+- Freytag: pitch-level only. Five stages with falling action cannot fit in 4.5 min; keep exposition + rising + peak, fold the rest into the button.
+- Save the Cat: borrow midpoint (reversal at ~50%) and all-is-lost; do not use the 15 beats.
+- Sitcom: borrow cold open (hook) + tag + the 3/4 point of no return; drop acts.
+- Anime: borrow Part A/B hook at midpoint and the signature sting; skip the rest.
+
+Recommended hybrid: sketch spine + kishōtenketsu twist + sitcom hook/tag. Shares for 270 s [assumption; all numbers untested, calibrate by ear]:
+```
+0:00  15s  6%   HOOK/teaser   narrator: the unusual thing or the want, in 1-2 lines (cold open)
+0:15  30s 11%   SETUP (ki)    who, want, the one rule of the world; plant the Chekhov object/phrase
+0:45  15s  5%   INCITING      "but one day": the unusual thing hits (game starts)
+1:00 125s 46%   LADDER (shō)  3 heightenings, ~40s each: plan -> complication -> worse; each caused by the last
+                              (beat 2 around 2:15 = midpoint reversal; point of no return ~3:20)
+3:05  45s 17%   TURN (ten)    peak + twist/peripeteia; payoff of the planted object
+3:50  20s  7%   BUTTON (ketsu) reaction line + final line, <= 8 words
+4:10  20s  7%   TAG/STINGER  runner or next-episode hint, then sting
+4:30
+```
+- Falling action = 1 reaction line inside the button, not a scene.
+- Scale for 3 min: ladder 2 beats; 6 min: 4 beats, never a second game.
+
+### 6.3 Series-level devices
+- Cliffhanger vs closed: cliffhanger = unresolved precarious situation at end of an instalment to bring audiences back; film serials resolved it at the start of the next; American primetime rarely used them before 1980 (Dallas "Who shot J.R."); some shows died unresolved (Twin Peaks). [Wikipedia](https://en.wikipedia.org/wiki/Cliffhanger)
+- Reset button: sitcoms restore status quo so episodes can be rerun in any order (syndication); less common once streaming/story arcs spread. [Wikipedia](https://en.wikipedia.org/wiki/Reset_button_technique), [TV Tropes](https://tvtropes.org/pmwiki/pmwiki.php/Main/ResetButton)
+- Verdict for us [assumption]: closed episode + reset by default (listener may start anywhere; payoff must be in-episode, s.2.5). Serial hook lives ONLY in the tag, as a question, never as a needed plot resolution. A cliffhanger inside a 4.5 min piece costs the listener a week of waiting for a joke; REFUSE as default.
+- Runner/end tag across episodes: s.2.3, s.3.7, s.3.8. Tag = place for the cross-episode runner. [assumption]
+- Chekhov's gun: an element should be necessary; never show the loaded rifle unless it fires; modern use = early element whose significance emerges later. [Wikipedia](https://en.wikipedia.org/wiki/Chekhov%27s_gun) Gun pays off; foreshadowing may not; an unpaid setup reads as a red herring; keep the plant low-key. [Jericho Writers](https://jerichowriters.com/what-is-chekhovs-gun/), [Write Practice](https://thewritepractice.com/checkovs-gun/)
+- MacGuffin: object/event that drives plot and motivates characters, little significance itself; Hitchcock: spies want it, audience does not care. [Wikipedia](https://en.wikipedia.org/wiki/MacGuffin) Use [assumption]: the thing everyone chases in the ladder; the joke is what chasing does, so keep its identity trivial and interchangeable across episodes.
+- Ticking clock/deadline: BCG point of no return at ~3/4 gives a built-in deadline shape. [BCG](https://comedy.co.uk/pro/inside_track/the-10-rules-of-sitcom-writing) Audio use [assumption]: state the deadline in the setup in a sound-able way (time announcements, a countdown voice).
+- Reversal (peripeteia) and reveal (anagnorisis): Freytag places peripeteia at the climax. [mirror](https://bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze.ipfs.ipfs.hypha.coop/wiki/Dramatic_structure) Anagnorisis: no fetched source; [assumption] = a character or the listener learns the true identity/meaning (a ten-beat reveal in kishōtenketsu terms).
+- Rule of three (comic triple): two items set pattern, third breaks it, third funniest, quick timing. [Wikipedia](https://en.wikipedia.org/wiki/Rule_of_three_(writing))
+- Fair-play twist: real clues given, solution obvious in hindsight; ideal reveal "surprising and inevitable"; reversals in comedy must be set up and paid off almost instantly to get a laugh. [17 Rules of Mystery](https://medium.com/the-coffeelicious/17-rules-of-mystery-89cc35cda659), [mystery conventions](https://pvliesdonk.github.io/if-craft-corpus/corpus-docs/genre-conventions/mystery_conventions), [Cheeky Monkey comic storytelling](https://www.cheekymonkeycomedy.com/?p=299)
+- Twist test [assumption]: the clue is spoken in setup as a throwaway, in the first 60 s of the episode, within ~90 s of the payoff or re-touched; a listener replaying the episode should hear it.
+
+### 6.4 Expanding one idea into an episode
+- Sourced: escalation follows the story's own logic and the characters' established behaviour; make characters make things worse; predictability is the enemy of escalation. [BCG rules](https://comedy.co.uk/pro/inside_track/the-10-rules-of-sitcom-writing), [Comedy Bizarre](https://comedybizarre.substack.com/p/how-to-make-your-humor-heighten)
+- Improv "if this is true, what else is true?" and agree-and-commit: s.2.1 (Script Magazine). "Yes, and" itself: no source fetched here; [assumption] it is that agree-and-commit step.
+- Series expansion (One Piece etc.): no source found for how a long-running series expands an idea. [gap]
+- Escalation ladder worksheet [assumption, synthesis of the above]:
+```
+premise      : X wants Y, but the world has rule R
+rung 1 (plan): X tries the obvious way; R makes it cost something small
+rung 2       : X fixes it with a worse move (character's inappropriate response); cost grows, a second person is dragged in
+rung 3       : fix #2 backfires at scale; point of no return
+turn         : the planted object / phrase pays off; the situation is reframed (ten)
+button       : cost made personal, <= 8 words
+```
+- Each rung must be caused by the previous one (chain rule R3.5), change one dimension only (stakes, people, scale, medium; R2.4), and the worst thing that could happen to THIS character, not generic disaster. Test: pitch it as a Story Spine; if a "because of that" is really "and then", rewrite.
+- Generating the premise [assumption]: pick the character's filter (s.4.1), pick the rule R that most punishes it, list 10 consequences of R, order by size; the best 3 are rungs, the 11th (the one that reframes) is the twist.
+
+### 6.5 Gaps
+- No source for beat percentages in 3-6 min audio or radio-comedy shorts; BBC radio comedy guides blocked earlier. Shares in 6.2 are untested.
+- No source on One Piece or manga/anime episode-to-arc planning; no source on anagnorisis beyond Freytag/Aristotle name.
+- Kishōtenketsu summaries are blog-level; Wikipedia is the best source reached.
