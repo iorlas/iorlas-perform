@@ -7,6 +7,7 @@ fact a laugh needs. The reader must be a fresh agent that never saw the script's
     uv run listen.py run EPISODE.md                     # a fresh `claude -p` session reads it
     uv run listen.py brief EPISODE.md > brief.md        # or give brief.md, alone, to a fresh agent
     uv run listen.py check EPISODE.md answers.json      # and check its JSON answer
+    uv run listen.py rules EPISODE.md [opus|codex]      # word order, punch delivery, unexplained choices (T13-T15)
 """
 
 import json
@@ -28,6 +29,28 @@ not get, or "" when it is clear.
 
 Answer with JSON only, no prose:
 {"laughs": [{"n": LAUGH_LINE, "facts": [{"id": "ID", "told": LINE_OR_NULL, "quote": "the words that tell it"}], "unclear": ""}]}
+"""
+
+
+RULES = """You hear a Russian radio comedy once, in order, with no rewind. Below are its lines, numbered,
+with the delivery tags the voice actor gets in [brackets]. Check EVERY line against these rules and
+report each line that breaks one. Be strict and literal; your own knowledge of the world does not
+fill a gap the listener has.
+
+- T13 word order: a statement that opens with a question word («Что это, она не знала»); or two
+  nouns that touch but are not one phrase, so the ear fuses them («мой сеньор интеллект внедрил»
+  is heard as «сеньор интеллект»).
+- T14 punch delivery (not for a deadpan narrator, whose even voice is the joke): the line's last
+  sentence turns against what came before it in the same line
+  (a warning that ends as an insult, a boast that ends as a confession, a polite line that ends as
+  a jab), but no new delivery tag stands before it, so it is voiced like the setup. [beat] or
+  [pause] alone is not a new delivery.
+- T15 unexplained choice: a character picks or asks for a specific thing (a source, a person, a
+  tool, a place) and a first-time listener has not heard, by that line, what it is or why that one.
+
+Answer with JSON only, no prose:
+{"findings": [{"n": LINE, "rule": "T13|T14|T15", "quote": "the words",
+  "why": "one short English sentence", "fix": "the line rewritten in Russian, with tags"}]}
 """
 
 
@@ -57,6 +80,13 @@ def brief(sc: scenario.Scenario) -> str:
     return BRIEF + "\n## Spoken lines\n\n" + "\n".join(lines) + "\n\n## Laughs and their facts\n\n" + "\n".join(asks) + "\n"
 
 
+def rules_brief(sc: scenario.Scenario) -> str:
+    """Every line with its tags, for the rules a listener hears but the lint cannot count."""
+    names = {v: d.split(",")[0].strip() for v, d in sc.cast.items()}
+    lines = [f"{i}. {names.get(t.voice, t.voice)}{' (по телефону)' if t.phone else ''}: {t.text}" for i, t in enumerate(sc.turns, 1)]
+    return RULES + "\n## Lines\n\n" + "\n".join(lines) + "\n"
+
+
 def check(sc: scenario.Scenario, answers: dict) -> list[scenario.Issue]:
     line_of = {i: t.line for i, t in enumerate(sc.turns, 1)}
     got = {a["n"]: a for a in answers.get("laughs", [])}
@@ -78,8 +108,17 @@ def check(sc: scenario.Scenario, answers: dict) -> list[scenario.Issue]:
 
 
 def read_fresh(text: str, model: str = "sonnet") -> str:
-    """The brief, read by a Claude session with no settings, tools, memory or project files."""
-    with tempfile.TemporaryDirectory() as empty:  # no CLAUDE.md to discover
+    """The brief, read by a session with no settings, tools, memory or project files.
+
+    `codex` reads it with GPT instead: a reader from another model family misses other things.
+    """
+    with tempfile.TemporaryDirectory() as empty:  # no CLAUDE.md or AGENTS.md to discover
+        if model == "codex":
+            cmd = ["codex", "exec", "--skip-git-repo-check", "-s", "read-only", "-o", f"{empty}/answer", "-"]
+            done = subprocess.run(cmd, input=text, capture_output=True, text=True, cwd=empty, check=False)
+            if done.returncode:
+                sys.exit(f"[perform] listen: codex exec failed: {(done.stderr or done.stdout).strip()[-300:]}")
+            return Path(f"{empty}/answer").read_text()
         cmd = ["claude", "-p", "--setting-sources", "", "--tools", "", "--no-session-persistence", "--model", model]
         cmd += ["--system-prompt", "You are a careful, literal first-time listener. Answer with JSON only."]
         done = subprocess.run(cmd, input=text, capture_output=True, text=True, cwd=empty, check=False)
@@ -93,6 +132,14 @@ def main() -> None:
     sc = scenario.load(src)
     if mode == "brief":
         print(brief(sc))
+        return
+    if mode == "rules":  # findings to judge, not errors: the reader is wrong often enough
+        raw = read_fresh(rules_brief(sc), sys.argv[3] if len(sys.argv) > 3 else "sonnet")
+        found = json.loads(raw[raw.index("{") : raw.rindex("}") + 1]).get("findings", [])
+        line_of = {i: t.line for i, t in enumerate(sc.turns, 1)}
+        for f in found:
+            print(f"{src}:{line_of.get(f['n'], '?')}: {f['rule']} «{f['quote']}»: {f['why']}\n    fix: {f['fix']}")
+        print(f"[perform] listen rules: {len(found)} findings to judge")
         return
     raw = read_fresh(brief(sc)) if mode == "run" else Path(sys.argv[3]).read_text()
     answers = json.loads(raw[raw.index("{") : raw.rindex("}") + 1])  # tolerate a fence around the JSON

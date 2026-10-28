@@ -18,6 +18,7 @@ Scripts: `${CLAUDE_SKILL_DIR}/../../scripts`, called `$S` below.
 |---|---|
 | this file | the process and every rule, numbered (P1, B3, ...) so a review can cite them |
 | `${CLAUDE_SKILL_DIR}/format.md` | the file syntax: cast, scenes, turns, ambience, effects, design marks |
+| `${CLAUDE_SKILL_DIR}/ledger.md` | every line a listener stumbled on, its cause and the rule it produced: read before writing; add each new one |
 | `${CLAUDE_SKILL_DIR}/profiles.md` | where profiles live, their layout, filling a new one, `structure.json` |
 | `${CLAUDE_SKILL_DIR}/craft.md`, `structure-research.md` | the sources behind the rules |
 | the `voice` skill | delivery tags and what the TTS engine does with them |
@@ -262,6 +263,38 @@ before a line is written:
   as "inside is another phone"; «Ещё поставила вашей маме» is not. A line whose meaning
   needs its comment or the map fails. A reference is named in full the first time: «как в
   торте «Наполеон»», not «как «Наполеон»», which is heard as the emperor.
+- T11. **Say the link, leave the conclusion.** A joke is a chain: A, so B, so the absurd C.
+  The listener may finish the last step in their head (taste: deflation by a checkable fact),
+  never a middle one. Every link a joke stands on is said in words, with its verb: «Вадик
+  честно посчитал Двач» drops the link (counted it as what? since when?), so the ear gets a
+  riddle; «с шестнадцати лет он каждую ночь сидел на Дваче. Его он и записал в стаж» says
+  it, and «Двенадцать лет в высоконагруженном проекте» then lands. Test: retell the joke to
+  someone in one sentence; every word the retelling needs that the line lacks is the hole.
+- T12. **Spoken length.** People on TV talk in full sentences and explain themselves, then hit
+  short: in «Волшебный участок» about half the sentences are 1-3 words and 8% are 10 or more,
+  and half the turns are 10+ words. Setups get whole spoken sentences, with the redundancy
+  speech has (repeating the noun, «то есть», «короче», «в смысле»); only the punch is short.
+  A script of fragments («Так. Значит. Клиент.») reads fine and is lost by ear. The lint warns
+  past 55% short sentences or under 5% long ones in dialogue (*tunable*: `clipped_max`,
+  `long_min`); a character whose tic is fragments (Палыч) keeps it, the others carry the length.
+- T13. **Speech word order.** A statement never opens with a question word: «Что это, она не
+  знала» is voiced as a question that stops halfway. Say «Она не знала, что это». The lint
+  warns on a sentence that starts with что, кто, как... and ends with a full stop. Two nouns
+  never touch when they are not one phrase: «мой сеньор интеллект внедрил» is heard as «сеньор
+  интеллект»; the verb goes between them, «мой сеньор — внедрил интеллект».
+- T14. **The punch gets its own delivery.** A punch that turns against its setup (a warning
+  that ends as an insult, a boast that ends as a confession) is its own turn with its own tag
+  and a gap: one tag over the whole turn voices the punch like the setup, and `[beat]` alone
+  does not change it. «Так что думай, что говоришь.» / `[dry, offhand]` «Хотя ты не умеешь.»
+  A small turn (polite to needling) takes a new tag inline; a reversal (warning to insult)
+  takes its own turn. A deadpan narrator is the exception: the even voice is the joke.
+  `listen.py rules` has a fresh reader check T13-T15 over every line; its findings are
+  judged, not applied: about half are wrong (narrator lines, a mother's care read as insult).
+- T15. **Every choice says its reason.** When a character picks a thing (a source, a person,
+  a tool), the line says why that one and where it comes from, unless the listener already
+  heard it: «Добавь письма Палыча!» is a riddle (what letters? why his?); «у меня в почте
+  письма от Палыча, официальные, штук сто. На них учи!» carries it. A choice's reason is an
+  `act`'s `because` in the map, and it is heard, like a laugh's `needs`.
 
 ## 7b. Punch-up
 

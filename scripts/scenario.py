@@ -93,6 +93,10 @@ class Rules:
     cast_max: int = 6
     laugh_gap: float = 20  # seconds without a laugh before the listener drifts
     laughs_per_min: float = 3  # the floor for comedy; a drama profile sets 0
+    # Dialogue sentence lengths, from «Волшебный участок» S01 (2188 sentences): 49% are 1-3 words,
+    # 8% are 10 or more. A script far shorter reads as telegraph: the ear loses the links.
+    clipped_max: float = 0.55  # share of 1-3 word sentences in dialogue, at most
+    long_min: float = 0.05  # share of 10+ word sentences in dialogue, at least
     length: float | None = None  # target minutes; an episode's <!-- length: N --> wins
 
     @classmethod
@@ -547,6 +551,42 @@ def lint_beats(sc: Scenario) -> list[Issue]:
     return out
 
 
+def lint_spoken_length(sc: Scenario) -> list[Issue]:
+    """Sentence lengths against real TV dialogue: setups need full sentences, only punches are short."""
+    lengths = [
+        len(re.findall(r"\w+", x))
+        for t in sc.turns
+        if t.voice != "narrator"
+        for x in re.split(r"(?<=[.!?…])\s+", spoken(t.text))
+        if re.search(r"\w", x)
+    ]
+    if len(lengths) < 40:
+        return []
+    clipped = sum(n <= 3 for n in lengths) / len(lengths)
+    long = sum(n >= 10 for n in lengths) / len(lengths)
+    out: list[Issue] = []
+    if clipped > sc.rules.clipped_max:
+        out.append(("warn", 1, f"{clipped:.0%} of dialogue sentences are 1-3 words (TV: ~49%): join setups into spoken sentences (T12)"))
+    if long < sc.rules.long_min:
+        out.append(
+            ("warn", 1, f"{long:.0%} of dialogue sentences are 10+ words (TV: ~8%): people explain at length before the punch (T12)")
+        )
+    return out
+
+
+QUESTION_WORD = re.compile(r"(Что|Кто|Где|Куда|Откуда|Когда|Как|Зачем|Почему|Сколько|Как(?:ой|ая|ое|ие)|Ч(?:ей|ья|ьё|ьи))\b")
+
+
+def lint_question_order(sc: Scenario) -> list[Issue]:
+    """A statement that opens with a question word: the voice starts a question, then drops it (T13)."""
+    out: list[Issue] = []
+    for t in sc.turns:
+        for x in re.split(r"(?<=[.!?…])\s+", spoken(t.text)):
+            if QUESTION_WORD.match(x.lstrip("«— ")) and x.rstrip("»").endswith((".", "…")):
+                out.append(("warn", t.line, f"«{x}» opens like a question and ends as a statement: put the clause in speech order (T13)"))
+    return out
+
+
 def lint_pace(sc: Scenario) -> list[Issue]:
     """Scene budget by length: each cut costs an audio listener a reorientation."""
     minutes = sum(len(spoken(t.text)) for t in sc.turns) / CHARS_PER_SEC / 60
@@ -707,7 +747,7 @@ def lint(sc: Scenario) -> list[Issue]:
         out.append(("warn", 1, "no cast (## Cast table or @cast): intro checks skipped"))
     else:
         out += lint_names(sc) + lint_scenes(sc) + lint_jokes(sc) + lint_laughs(sc) + lint_beats(sc) + lint_pace(sc)
-        out += lint_story(sc) + lint_needs(sc)
+        out += lint_story(sc) + lint_needs(sc) + lint_spoken_length(sc) + lint_question_order(sc)
     out = [i for i in out if i[0] == "error" or not any(q in i[2] for q in sc.quiet)]  # <!-- lint-ok: words -->
     return sorted(out, key=lambda x: x[1])
 

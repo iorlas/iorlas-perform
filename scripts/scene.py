@@ -70,6 +70,7 @@ import time
 from pathlib import Path
 from typing import Any
 
+import mlx.core as mx
 import numpy as np
 import soundfile as sf
 
@@ -85,9 +86,15 @@ from scenario import Ambience, Pause, Scenario, Scene, Sfx, Turn
 
 ONSET_RETRIES = 3
 SPEECH_RETRIES = 2  # takes that say the wrong words (a repeat, skipped words): render again
+SUSPECT = 1.15  # a take this much longer than the voice's usual pace per character gets transcribed
+PACE_SAMPLES = 2  # takes per voice transcribed anyway, to learn its pace
+MLX_CACHE = 1 << 30  # bytes MLX may keep in its buffer cache: the rest goes back, so the system does not swap
+TAKES_VERSION = "1"  # bump when a change to rendering makes old cached takes wrong
 EDGE_IN, EDGE_OUT = 0.01, 0.06  # seconds of fade on each clip's edges: no hiss switching on and off
 TURN_PEAK = 10 ** (-1 / 20)  # -1 dBFS: the gain may raise a voice, never past clipping
-STAGES = dict.fromkeys(("load", "warm-up", "lines", "mix", "master"), 0.0)  # seconds, for the closing log line
+STAGES = dict.fromkeys(("load", "warm-up", "lines", "asr", "mix", "master"), 0.0)  # seconds, for the closing log line
+PACE: dict[str, list[float]] = {}  # voice -> seconds per spoken character of its accepted takes
+COUNTS = dict.fromkeys(("cached", "rendered", "heard"), 0)  # turns from the take cache, rendered, transcribed
 RETRIES = [0, 0]  # onset and speech retries this run
 
 
@@ -102,6 +109,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--scene-pause", type=float, default=1.5, help="silence before each scene, seconds")
     p.add_argument("--no-lint", action="store_true", help="render even when the lint finds errors")
     p.add_argument("--clips", type=Path, help="also save each turn as <dir>/NN_voice.wav")
+    p.add_argument("--fresh", action="store_true", help="render every turn again instead of reusing cached takes")
     p.add_argument(
         "--no-check-speech", dest="check_speech", action="store_false", help="skip transcribing each take (repeats, skipped words)"
     )
@@ -153,6 +161,11 @@ def speak_turn(
 ) -> np.ndarray:
     """One turn as audio: generated, tempo and pitch set, edges trimmed, silences squashed, phone band, voice gain."""
     sr = model.sample_rate
+    path = args.takes / f"{take_key(item, args, levels)}.wav"
+    if path.exists() and not args.fresh:  # the same line, voice and settings as a past run
+        COUNTS["cached"] += 1
+        return sf.read(path, dtype="float32")[0]
+    COUNTS["rendered"] += 1
     audio = said_right(model, item, ref, args)
     if args.speed != 1.0 or semitones_of(levels, item.voice):
         audio = atempo(audio, sr, args.speed, semitones_of(levels, item.voice))
@@ -166,7 +179,26 @@ def speak_turn(
         # A quiet voice's gain on a shouted line clips: cap the turn's peak instead.
         if (peak := np.abs(audio).max()) > TURN_PEAK:
             audio *= TURN_PEAK / peak
+    sf.write(path, audio, sr)
     return audio
+
+
+def take_key(item: Turn, args: argparse.Namespace, levels: dict[str, dict[str, Any]]) -> str:
+    """Everything a finished turn's sound depends on, hashed: change any of it and the turn renders again."""
+    parts = [
+        TAKES_VERSION,
+        args.engine,
+        item.voice,
+        args.ref_hashes.get(item.voice, ""),
+        item.text,
+        item.phone,
+        args.speed,
+        args.max_silence,
+        semitones_of(levels, item.voice),
+        gain_db(levels, item.voice) if item.voice in levels else 0,
+        args.check_speech,
+    ]
+    return hashlib.sha256(json.dumps(parts, ensure_ascii=False).encode()).hexdigest()[:24]
 
 
 def take(model: engines.TTSModel, item: Turn, ref: tuple[Any, str]) -> np.ndarray:
@@ -191,18 +223,35 @@ def said_right(model: engines.TTSModel, item: Turn, ref: tuple[Any, str], args: 
     """A take that says the line's words: the model sometimes reads a line, or its tail, twice."""
     sr = model.sample_rate
     tried: list[tuple[float, np.ndarray]] = []
+    chars = max(1, len(scenario.spoken(item.text)))
     for attempt in range(1 + (SPEECH_RETRIES if args.check_speech else 0)):
         audio = take(model, item, ref)
-        if not args.check_speech:
+        pace = len(audio) / sr / chars
+        if not args.check_speech or not suspect(item.voice, pace):
+            PACE.setdefault(item.voice, []).append(pace)
             return audio
+        t0 = time.time()
         wrong, match = heard.problem(item.text, text := heard.transcribe(audio, sr))
+        STAGES["asr"] += time.time() - t0
+        COUNTS["heard"] += 1
         if not wrong:
+            PACE.setdefault(item.voice, []).append(pace)
             return audio
         RETRIES[1] += 1
         tried.append((match, audio))
         more = "trying again" if attempt < SPEECH_RETRIES else "kept the closest take: listen to it, rephrase the line"
         log(f"{item.voice} line {item.line}: {wrong} (heard «{text[:80]}»); {more}")
     return max(tried, key=lambda x: x[0])[1]
+
+
+def suspect(voice: str, pace: float) -> bool:
+    """Worth transcribing: one of the voice's first takes, or slower per character than its usual pace.
+
+    A repeat (the model reading a line or its tail twice) makes the take long for its text, so a
+    take at the voice's usual pace is not transcribed; the first few are, to learn that pace.
+    """
+    seen = PACE.get(voice, [])
+    return len(seen) < PACE_SAMPLES or pace > SUSPECT * float(np.median(seen))
 
 
 def mix_down(
@@ -293,6 +342,7 @@ def render(
         voice, text, gap = item.voice, item.text, item.gap
         t0 = time.time()
         audio = speak_turn(model, item, refs[voice], args, levels)
+        mx.clear_cache()  # freed buffers go back to the system between turns, not kept for the next one
         took = time.time() - t0
         STAGES["lines"] += took
         if args.clips:
@@ -419,7 +469,11 @@ def main() -> None:
     voices: Any = getattr(model, "_voices", None)
     if hasattr(voices, "_size"):
         voices._size = max(voices._size, len(needed) + 2)  # noqa: SLF001  # no public setter
+    mx.set_cache_limit(MLX_CACHE)
     sr = model.sample_rate
+    args.ref_hashes = {v: hashlib.sha256(w.read_bytes() + w.with_suffix(".txt").read_bytes()).hexdigest() for v, w in voice_wavs.items()}
+    args.takes = dest.parent / ".takes"  # finished turns by content hash, shared by every episode rendered here
+    args.takes.mkdir(parents=True, exist_ok=True)
     refs: dict[str, tuple[Any, str]] = {}
     for v, wav in voice_wavs.items():
         transcript = wav.with_suffix(".txt").read_text().strip()
@@ -462,6 +516,7 @@ def main() -> None:
         "stages: "
         + " | ".join(f"{k} {clock(v)}" for k, v in STAGES.items() if v)
         + f" | onset retries {RETRIES[0]} | speech retries {RETRIES[1]}"
+        + f" | turns cached {COUNTS['cached']}, rendered {COUNTS['rendered']}, transcribed {COUNTS['heard']}"
     )
     log(f"done: {length:.1f}s audio in {clock(took)} ({length / took:.2f}x real time)")
     print(f"{dest}: {length:.1f}s audio in {took:.1f}s")
