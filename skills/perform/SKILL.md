@@ -65,8 +65,8 @@ Defaults in the mix, and why (sources and gaps in `${CLAUDE_SKILL_DIR}/sound-des
 - Effects: 8 dB under speech, placed like a turn. Put the effect right before the line that
   answers it («звонит телефон» → `{sfx phone_ring}` → «Алло!»), never on top of a word.
 - Phone voices: `voice+phone:` band-limits the line like a phone call.
-- Episode: target -16 LUFS integrated, true peak -1 dBTP, the podcast norm (being added:
-  `bd show iorlas-perform-xn0`).
+- Episode: scene.py ends at -16 LUFS integrated, true peak -1 dBTP, the podcast norm
+  (`--loudness`, 0 keeps the mix level). Its `[perform] loudness:` line gives before and after.
 
 ## 5. Levels
 

@@ -56,6 +56,7 @@ python3 scripts/record_refs.py
 | `scene.py` | scenario -> wav + `timeline.json`, one render per turn, progress with ETA |
 | `ambience.py` | background beds (`office`, `kitchen`, `evening`, `night`, `rain`, `wind`), crossfade, ducking |
 | `sfx.py` | one-shot sound effects: phone, modem, door, kettle, lighter, messenger sounds |
+| `master.py` | final loudness: episode to -16 LUFS, true peak -1 dBTP (`scene.py --loudness`) |
 | `engines.py` | engine list (`--engine drama3\|s2`), first-use download log |
 | `design_voice.py` | voice from a text description |
 | `record_refs.py` | guided recording of your own voice, space to start/stop |

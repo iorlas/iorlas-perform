@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.12,<3.13"
-# dependencies = ["mlx-audio>=0.6.2", "soundfile"]
+# dependencies = ["mlx-audio>=0.6.2", "soundfile", "pyloudnorm", "scipy"]
 # ///
 """Render a multi-voice scene: one line per speaker turn, each in its own voice.
 
@@ -51,8 +51,11 @@ ambience bed.
 
 Silences inside a turn longer than --max-silence (0.6 s) are shortened to it.
 
+The finished mix is brought to --loudness (-16 LUFS, true peak -1 dBTP: master.py);
+--loudness 0 keeps the level as mixed.
+
 Usage: uv run scene.py scene.md [out.wav] [--gap 0.35] [--speed 1.1]
-                       [--max-silence 0.6] [--engine drama3|s2] [--clips DIR]
+                       [--max-silence 0.6] [--loudness -16] [--engine drama3|s2] [--clips DIR]
 
 Engines (engines.py): drama3 (default, Fish Drama 3 3-bit) or s2 (Fish S2 Pro).
 Each model downloads on its first use, with a log line saying so.
@@ -71,6 +74,7 @@ import soundfile as sf
 
 import ambience
 import engines
+import master
 import profiles
 import scenario
 import sfx
@@ -89,6 +93,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--scene-pause", type=float, default=1.5, help="silence before each scene, seconds")
     p.add_argument("--no-lint", action="store_true", help="render even when the lint finds errors")
     p.add_argument("--clips", type=Path, help="also save each turn as <dir>/NN_voice.wav")
+    p.add_argument("--loudness", type=float, default=master.DEFAULT_LUFS, help="episode loudness, LUFS (0: keep as mixed)")
     p.add_argument("--no-intro", action="store_true", help="skip the profile's episodes/00-intro.md")
     return p.parse_args()
 
@@ -293,6 +298,9 @@ def main() -> None:
 
     changes += [(end, name, vol) for name, vol in pending]
     mix = mix_down(placed, effects, changes, end, sr, timeline=timeline)
+    if args.loudness:
+        mix, before, after, peak = master.normalize(mix, sr, args.loudness)
+        log(f"loudness: {before:.1f} -> {after:.1f} LUFS, true peak {peak:.1f} dBTP")
     sf.write(dest, mix, sr)
     if args.clips:
         (args.clips / "clips.json").write_text(json.dumps(clip_log, indent=2) + "\n")
