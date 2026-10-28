@@ -37,6 +37,7 @@ Or run the scripts yourself:
 ```bash
 uv run scripts/speak.py examples/shmatko.txt out.wav --voice praporshchik
 uv run scripts/scene.py examples/senior_vadik.txt vadik.wav       # multi-voice + timeline
+uv run scripts/scene.py examples/night_shift.txt night.wav        # with ambience beds
 uv run scripts/design_voice.py boss "A tired 40-year-old Russian office manager, dry sarcasm" --line "Ну и кто это опять сломал?"
 python3 scripts/record_refs.py
 ```
@@ -45,6 +46,7 @@ python3 scripts/record_refs.py
 |---|---|
 | `speak.py` | tagged text -> wav, voice cloned from one reference |
 | `scene.py` | `voice: text` scene -> wav + `timeline.json`, one render per turn |
+| `ambience.py` | background beds (`office`, `kitchen`, `evening`, `night`, `rain`, `wind`), crossfade, ducking |
 | `engines.py` | engine list (`--engine drama3\|s2`), first-use download log |
 | `design_voice.py` | voice from a text description |
 | `record_refs.py` | guided recording of your own voice, space to start/stop |
@@ -52,6 +54,18 @@ python3 scripts/record_refs.py
 Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in `$PERFORM_VOICES`, then
 `./voices`, then the bundled `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`
 (designed with Qwen VoiceDesign).
+
+## Ambience
+
+A scene line `{ambience night}` starts a background bed at the next turn, crossfading
+1.5 s from the previous one; `{ambience rain 0.5}` sets volume (1 = default), `{ambience off}`
+fades out. Beds sit 18 dB under the speech and duck 9 dB more while anyone talks. Put the
+line before the narrator's scene change ("Ночь. Офис."). `voice+phone: text` renders a turn
+through a telephone band. See [examples/night_shift.txt](examples/night_shift.txt).
+
+Beds are synthesized in numpy, nothing downloads: shaped noise for air conditioning, rain,
+wind and traffic, tones for crickets and hum, the bundled voices layered and muffled for
+office chatter and a TV next door. Preview one: `uv run scripts/ambience.py office 10 office.wav`.
 
 ## Tag guide
 

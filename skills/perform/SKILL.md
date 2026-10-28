@@ -34,6 +34,22 @@ vadik: [panicking] Это плановая миграция!
   вечера"), and when a new voice enters (who they are, how they appear). Once two speakers
   are introduced and trading lines, drop attributions; add «— сказал Вадик» only where it
   adds a beat. Attribution turns get a short gap: `narrator@0.12:`.
+- Ambience: on every scene change, put `{ambience NAME}` on the line before the narrator's
+  announcement ("Ночь. Офис."). The bed crossfades in over 1.5 s and is up as the line
+  starts. Pick by place and time:
+
+  | scene | bed |
+  |---|---|
+  | office, open space, day | `office` (chatter, keyboards, air conditioner) |
+  | kitchen, flat, home | `kitchen` (fridge hum, TV through the wall) |
+  | evening, outside, city | `evening` (traffic, a few crickets) |
+  | night, outside or by a window | `night` (crickets, distant cars, wind) |
+  | rain, street, courtyard | `rain` (rain in a Saint Petersburg courtyard) |
+  | outdoors, storm, roof | `wind` |
+
+  `{ambience night 0.5}` = half volume (1 = default, already low and ducked under speech);
+  `{ambience off}` fades to silence. A scene with no `{ambience}` line renders as before.
+- Phone calls: `palych+phone: Алло?` renders that turn through a telephone band.
 - Spacing: `voice@N:` sets the gap before a turn (default `--gap`); negative overlaps the
   previous turn, for interruptions. `{pause 1-2}` between scenes.
 - Writing a story from an idea: keep it short first (15-25 turns, ~2 min), adult humour when
@@ -64,7 +80,9 @@ uv run $S/scene.py <name>.txt <name>.wav [--engine drama3|s2] [--speed 1.1] [--g
 
 - A first-use model download logs `[perform] first use: downloading ...`; relay it with the size.
 - Drama 3 renders about real time; S2 ~3x slower.
-- `<name>.timeline.json`: per turn `voice`, `text`, `start`, `end` in seconds.
+- `<name>.timeline.json`: per turn `voice`, `text`, `start`, `end` in seconds (`phone: true`
+  on phone turns), then per bed `ambience`, `volume`, `start`, `end`.
+- Preview a bed alone: `uv run $S/ambience.py night 10 night.wav`.
 - `--clips DIR` saves each turn as its own wav, for fixing one line or A/B tests.
 
 Report: audio length, render time, any turn that looks wrong (much shorter than its text

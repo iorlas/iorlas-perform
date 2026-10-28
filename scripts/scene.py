@@ -19,8 +19,15 @@ Spacing: `voice@0.1: text` sets the gap before that turn, in seconds, instead of
 0.8 s before the previous turn ends, and the two are mixed. Each clip's silent
 edges are trimmed first, so gaps are exact.
 
+Ambience (ambience.py): `{ambience night}` puts a background bed under the scene
+from the next turn on, crossfading from the previous bed; `{ambience rain 0.5}`
+sets its volume (1 = default, low under speech), `{ambience off}` fades it out.
+The bed ducks while anyone speaks. Beds: office, kitchen, evening, night, rain, wind.
+
+Phone line: `vadik+phone: Алло?` renders that turn through a telephone band.
+
 Writes the wav and <out>.timeline.json: start and end of every turn in seconds,
-so screen changes can follow the audio.
+so screen changes can follow the audio, then one entry per ambience bed.
 
 Usage: uv run scene.py scene.txt [out.wav] [--gap 0.35] [--speed 1.1]
                        [--engine drama3|s2] [--clips DIR]
@@ -39,15 +46,19 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 
+import ambience
 import engines
 import voices
 
-TURN = re.compile(r"^([\w-]+)(?:@(-?[\d.]+))?\s*:\s*(.+)$")
+TURN = re.compile(r"^([\w-]+(?:\+phone)?)(?:@(-?[\d.]+))?\s*:\s*(.+)$")
 PAUSE = re.compile(r"^\{pause\s+([\d.]+)\}$")
+AMBIENCE = re.compile(r"^\{ambience\s+([\w-]+)(?:\s+([\d.]+))?\}$")
+PHONE = "+phone"
 
 
 def parse(text: str) -> list[tuple[str, str | float, float | None]]:
-    """Turns as (voice, text, gap before or None); pauses as ("pause", seconds, None)."""
+    """Turns as (voice, text, gap before or None); pauses as ("pause", seconds, None);
+    bed changes as ("ambience", name, volume)."""
     turns = []
     for n, line in enumerate(text.splitlines(), 1):
         line = line.strip()
@@ -55,6 +66,10 @@ def parse(text: str) -> list[tuple[str, str | float, float | None]]:
             continue
         if m := PAUSE.match(line):
             turns.append(("pause", float(m[1]), None))
+        elif m := AMBIENCE.match(line):
+            if m[1] != "off" and m[1] not in ambience.BEDS:
+                sys.exit(f"line {n}: no ambience '{m[1]}', have: off, {', '.join(ambience.BEDS)}")
+            turns.append(("ambience", m[1], float(m[2]) if m[2] else 1.0))
         elif m := TURN.match(line):
             turns.append((m[1], m[3], float(m[2]) if m[2] else None))
         else:
@@ -74,7 +89,7 @@ def main():
 
     dest = Path(args.out) if args.out else Path(args.src).with_suffix(".wav")
     turns = parse(Path(args.src).read_text())
-    needed = {v for v, _, _ in turns if v != "pause"}
+    needed = {v.removesuffix(PHONE) for v, _, _ in turns if v not in ("pause", "ambience")}
     missing = sorted(v for v in needed if voices.find(v) is None)
     if missing:
         sys.exit(f"no voice: {', '.join(missing)}\navailable: {', '.join(voices.available())}")
@@ -93,36 +108,53 @@ def main():
 
     # Clips are placed on a timeline, not concatenated, so a negative gap can overlap.
     placed, timeline = [], []
-    end = 0  # sample where the previous turn (or pause) ends
+    changes, pending = [], []  # ambience changes: placed (sample, name, volume), waiting for a turn
+    # A scene that opens on a bed lets it fade in before the first word.
+    lead = int(ambience.XFADE * sr) if turns and turns[0][0] == "ambience" else 0
+    end = lead  # sample where the previous turn (or pause) ends
     start = time.time()
     for n, (voice, text, gap) in enumerate(turns, 1):
         if voice == "pause":
             end += int(text * sr)
             continue
+        if voice == "ambience":
+            pending.append((text, gap))
+            continue
+        voice, phone = voice.removesuffix(PHONE), voice.endswith(PHONE)
         ref_audio, ref_text = refs[voice]
         results = model.generate(text=text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
         audio = np.concatenate([np.array(r.audio) for r in results])
         if args.speed != 1.0:
             audio = atempo(audio, sr, args.speed)
+        if phone:
+            audio = phone_line(audio, sr)
         audio = trim(audio, sr)
         if args.clips:
             sf.write(args.clips / f"{n:02d}_{voice}.wav", audio, sr)
-        at = max(0, end + int((args.gap if gap is None else gap) * sr)) if placed else 0
+        at = max(0, end + int((args.gap if gap is None else gap) * sr)) if placed else lead
+        changes += [(at, name, vol) for name, vol in pending]
+        pending = []
         placed.append((at, audio))
         end = max(end, at + len(audio))
         timeline.append({"turn": n, "voice": voice, "text": text,
-                         "start": round(at / sr, 3), "end": round((at + len(audio)) / sr, 3)})
+                         "start": round(at / sr, 3), "end": round((at + len(audio)) / sr, 3)}
+                        | ({"phone": True} if phone else {}))
         print(f"[{n}/{len(turns)}] {voice}: {len(audio) / sr:.1f}s  {text[:50]}", flush=True)
 
     mix = np.zeros(end, dtype=np.float32)
     for at, audio in placed:
         mix[at:at + len(audio)] += audio
+    changes += [(end, name, vol) for name, vol in pending]
+    if changes:
+        bed, segments = ambience.render(changes, mix, sr)
+        mix = np.pad(mix, (0, len(bed) - len(mix))) + bed
+        timeline += segments
     peak = np.abs(mix).max()
     if peak > 0.99:  # overlaps can clip
         mix *= 0.99 / peak
     sf.write(dest, mix, sr)
     dest.with_suffix(".timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=2) + "\n")
-    print(f"{dest}: {end / sr:.1f}s audio in {time.time() - start:.1f}s")
+    print(f"{dest}: {len(mix) / sr:.1f}s audio in {time.time() - start:.1f}s")
 
 
 def trim(audio: np.ndarray, sr: int, keep: float = 0.03) -> np.ndarray:
@@ -135,10 +167,21 @@ def trim(audio: np.ndarray, sr: int, keep: float = 0.03) -> np.ndarray:
 
 
 def atempo(audio: np.ndarray, sr: int, speed: float) -> np.ndarray:
-    """Tempo change with pitch kept, via ffmpeg; per turn so the timeline stays exact."""
+    """Tempo change with pitch kept; per turn so the timeline stays exact."""
+    return ffmpeg(audio, sr, f"atempo={speed}")
+
+
+def phone_line(audio: np.ndarray, sr: int) -> np.ndarray:
+    """A voice heard through a phone: 300-3400 Hz band, slightly overdriven."""
+    audio = ffmpeg(audio, sr, "highpass=f=300,highpass=f=300,lowpass=f=3400,lowpass=f=3400")
+    peak = np.abs(audio).max() or 1.0
+    return np.tanh(2.5 * audio / peak) * peak / np.tanh(2.5)
+
+
+def ffmpeg(audio: np.ndarray, sr: int, filters: str) -> np.ndarray:
     out = subprocess.run(
         ["ffmpeg", "-loglevel", "error", "-f", "f32le", "-ar", str(sr), "-ac", "1", "-i", "-",
-         "-filter:a", f"atempo={speed}", "-f", "f32le", "-"],
+         "-filter:a", filters, "-f", "f32le", "-"],
         input=audio.astype(np.float32).tobytes(), capture_output=True, check=True,
     ).stdout
     return np.frombuffer(out, dtype=np.float32)

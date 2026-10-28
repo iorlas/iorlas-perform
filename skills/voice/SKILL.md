@@ -41,7 +41,7 @@ then `./voices` in the current directory, then the bundled `narrator`, `vadik`, 
 ## Render
 
 One voice: steps below. Several characters: write a scene, one turn per line
-(`voice: text`, `{pause N}` for silence), and run `uv run $S/scene.py scene.txt out.wav`.
+(`voice: text`, `{pause N}` for silence, `{ambience NAME}` for a background bed), and run `uv run $S/scene.py scene.txt out.wav`.
 It also writes `out.timeline.json` with each turn's start and end in seconds.
 
 1. Write the tagged text to a `.txt` file in the user's working directory. Blank lines split

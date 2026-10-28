@@ -1,0 +1,14 @@
+# Ночная смена: demo of ambience beds (office -> night) and a phone line
+# voices: narrator, vadik, praporshchik (Палыч, on the phone)
+
+{ambience office}
+narrator: [calm, ironic] Пятница. Офис. Шесть вечера. Все обсуждают выходные, и только Вадик смотрит в монитор.
+vadik: [nervous, too fast] Последний деплой. Пять минут. И домой.
+narrator@0.12: [dry] Это была его главная ошибка за неделю.
+{pause 1}
+{ambience night}
+narrator: [low voice] Ночь. Офис. Тишина. Только сверчок за окном и красный дашборд.
+vadik: [whisper, pleading] Ну давай. Ну пожалуйста. Зелёный. Просто зелёный.
+praporshchik+phone: [loud, suspicious] Вадим! Ты почему в три часа ночи в чате пишешь «всё под контролем»?
+vadik: [panicking] Потому что всё под контролем, Геннадий Палыч!
+narrator: [dry, deadpan] Под контролем было только одно: сверчок. Он не падал ни разу.
