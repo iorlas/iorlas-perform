@@ -84,8 +84,13 @@ them in `structure.json` for its genre.
     and their reaction to someone else's word is a tool («Не выражайся!»).
   - **Source**: a character with no language of its own (an AI, a child, a parrot) has no
     swear words; what it says, it learned from someone in the story, and it says where.
-  - **Function**: a verdict, a sigh, an order or a quote; one word per line, never a stream.
-    Cut it if the line loses nothing.
+  - **Function**: a verdict, a sigh, an order or a quote, usually one word per line. A full
+    stream is for a real peak, from a character whose milieu explodes that way (a boss at
+    3 a.m.), and it stays until something in the scene changes the mood. Cut a word if the
+    line loses nothing.
+- C3c. **Every line is a speech act with a reason**: said to someone, for something, the way a
+  person would. A tonal switch (a shout, then calm) needs a cause in the scene; a device is
+  never the cause.
   The profile's sharpest moment goes to the least likely mouth that its rules allow (J6).
 - C4. Every character has a tic the ear tracks: a rhythm or a set of fillers, used every few
   lines. A catchphrase is different: rare, once an episode at most.
