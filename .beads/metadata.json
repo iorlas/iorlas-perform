@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "iorlas_perform",
+  "project_id": "971d304f-7749-4993-a72d-7ef4f38e8d5b"
+}
