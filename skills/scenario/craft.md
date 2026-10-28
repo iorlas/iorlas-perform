@@ -1,5 +1,8 @@
 # Audio drama craft: who, where, when
 
+> Sources for radio-drama craft. The rules themselves live in `SKILL.md`; where a number here differs
+> from SKILL.md, SKILL.md wins: it is tuned by ear on rendered episodes.
+
 Sourced rules behind the scenario skill and the lint in `scripts/scenario.py`, gathered 2026-10-28.
 
 Coverage note: bbc.co.uk was blocked to my fetcher; Crook, Hand, Teddern (book), Night Vale and The Truth text were not retrievable. Rules below come from reachable sources. "[assumption]" marks numbers no source gives; test by ear.
@@ -26,7 +29,7 @@ Coverage note: bbc.co.uk was blocked to my fetcher; Crook, Hand, Teddern (book),
 - Use a music curtain, a tone change, a narrator line, or a cross-fade. [Ruya Sonic](https://ruyasonic.com/wrt_time_transitions.htm)
 - Ambience works as the "setting paragraph". [Writer's Digest](https://writersdigest.com/world-building-with-sound-10-audio-tips-for-fiction-writers)
 - Set place in the first line of dialogue plus one sound. [BCG forum/Arrowsmith summary](https://www.firstwriter.com/articles/?GUID=3135)
-- Prefer several short scenes; start mid-action, leave once the purpose is served. [Thorpe](https://www.goodreads.com/author_blog_posts/14739435-top-tips-for-creating-an-audio-drama)
+- Start mid-action, leave once the purpose is served. [Thorpe](https://www.goodreads.com/author_blog_posts/14739435-top-tips-for-creating-an-audio-drama) (Thorpe also says "prefer several short scenes"; superseded by the scene budget in SKILL.md, measured on a 6-scene episode that felt choppy.)
 - Narration: if over word budget, "cut narration first". [Thorpe](https://www.goodreads.com/author_blog_posts/14739435-top-tips-for-creating-an-audio-drama)
 
 ## 4. Pacing and silence

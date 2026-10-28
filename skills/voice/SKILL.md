@@ -63,6 +63,23 @@ Free-form `[tag]` text passes to the model as written. Tested by ear:
   `[challenging]`, `[sarcastic question]`.
 - Others: `[sigh]` `[whisper]` `[shouting]` `[excited]` `[sad]` `[angry]` `[surprised]`
   `[chuckle]` `[inhale]` `[pause]` `[short pause]` `[emphasis]`.
+- Pauses: `[pause]` and `[short pause]` can stretch to 2-4 s; `scene.py` caps silences inside a
+  turn at 0.6 s (`--max-silence`). One per turn at most, never inside a punchline.
+- Tone changes inside one turn: rising (calm to angry, quiet to loud) works with stepped tags,
+  `[calm] ... [irritated, louder] ... [shouting] ...`. Falling (joy to tears, loud to quiet)
+  does not: the model stops at the tag and drops pitch so far it sounds like another person.
+  For a fall, keep one breath (a bridge word, no full stop at the change) and one tag for the
+  arc (`[excited, deflating on the last words]`), or split it into two turns. Drama 3.
+- One tag per job: `[cheerful] ... [booming radio ad announcer] ...`, not one tag that
+  narrates the change.
+- Stress: a combining acute (U+0301) after the stressed vowel fixes a misstressed word,
+  «Пи́дора отве́т». Each mark also adds emphasis: only on words heard wrong, two per line at most.
+- Length: one render caps near 47 s, about 300 characters; split longer speeches.
+- Fillers: words come out as words («ну», «короче», «ой»); sounds like «э-э», «ммм» can come out
+  spelled. Numbers, Latin letters and abbreviations («$40k», «QR») may be read oddly: write
+  them as said («сорок тысяч долларов», «кьюар-код») when a render gets them wrong.
+- Foreign accents: write the character's Russian in their Latin transliteration
+  (`Bhai, oo naas v Bangalore...`) plus an accent tag.
 
 ## Licence
 

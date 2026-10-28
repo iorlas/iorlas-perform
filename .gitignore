@@ -2,7 +2,6 @@
 !voices/*.wav
 __pycache__/
 .venv/
-!profiles/*/voices/*.wav
 *.timeline.json
 .claude/
 
@@ -12,4 +11,5 @@ __pycache__/
 .beads-credential-key
 .beads/proxieddb/
 *.gate.lock*
-profiles/*/drafts/
+# Profiles are user data: they live in the plugin's data folder (scripts/profiles.py), never here.
+profiles/

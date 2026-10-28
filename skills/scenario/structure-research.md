@@ -1,5 +1,8 @@
 # Structure research: scenes, jokes, flow, cast
 
+> Sources for comedy and episode structure. The rules themselves live in `SKILL.md`; where a number here differs
+> from SKILL.md, SKILL.md wins: it is tuned by ear on rendered episodes.
+
 Gathered 2026-10-28. Complements `craft.md` (audio mechanics); nothing repeated from it.
 
 ## Source quality (read first)

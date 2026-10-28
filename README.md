@@ -50,7 +50,7 @@ python3 scripts/record_refs.py
 | script | job |
 |---|---|
 | `speak.py` | tagged text -> wav, voice cloned from one reference |
-| `profiles.py` | list, show and copy profiles |
+| `profiles.py` | where profiles live; list, show, create from the template |
 | `calibrate.py` | per-voice loudness (LUFS) and pitch from rendered clips -> profile `levels.json` |
 | `scenario.py` | scenario format parser and lint: every voice named, every scene placed |
 | `scene.py` | scenario -> wav + `timeline.json`, one render per turn, progress with ETA |
@@ -68,64 +68,41 @@ Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in the scenario's
 ## Profiles
 
 A profile is one series or world in a folder: what the series is and how it should sound,
-the world, the characters, their voices, per-voice levels, and the episodes so far.
+its world and entities, the characters and their relationships, their voices, per-voice
+levels, and the episodes so far. Profiles are your own work: they live outside this repo, in
+the plugin's data folder (`~/.claude/plugins/data/iorlas-perform-<marketplace>/profiles`, kept
+across updates) or in `$PERFORM_PROFILES`. Uninstalling the plugin deletes its data folder
+unless you pass `--keep-data`, so back it up or set `$PERFORM_PROFILES`.
 
 ```
-profiles/<name>/
-  profile.md     format, tone, humour, acting and writing preferences
-  world.md       setting, rules, running gags, canon so far
-  characters.md  cast table and how each character sounds
-  levels.json    per-voice loudness gain and pitch (calibrate.py)
-  voices/        voice files for the cast
-  episodes/      NN-slug.md scenarios
+<name>/
+  profile.md      format, length, language, tone, intro, acting taste
+  world.md        setting, entities, rules, running gags, canon so far
+  characters.md   cast, character design, relationships, how each one sounds
+  structure.json  optional: tunes the structure lint for the genre
+  levels.json     per-voice loudness and pitch (calibrate.py)
+  voices/         voice files for the cast
+  episodes/       NN-slug.md scenarios; 00-intro.md plays before each
+  renders/        rendered episodes
 ```
-
-`scenario` reads the profile before writing an episode and updates it after; `scene.py` takes
-voices from the profile of the file it renders. Your profiles live in `$PERFORM_PROFILES` or
-`./profiles`. The bundled [`senior-vadik`](profiles/senior-vadik) profile is a complete example:
-a comedic Russian series about a fake senior engineer and an AI genie, three episodes in.
 
 ```bash
-uv run scripts/profiles.py                    # list profiles
-uv run scripts/profiles.py new my-series      # start a profile from a template
-uv run scripts/profiles.py copy senior-vadik  # copy the example into ./profiles
-uv run scripts/scene.py profiles/senior-vadik/episodes/02-tri-zhelaniya.md ep2.wav
+uv run scripts/profiles.py                 # where profiles live, and which exist
+uv run scripts/profiles.py new my-series   # a profile with every section the skill reads
 ```
+
+`scenario` designs an episode from the profile and updates it after; `scene.py` takes voices,
+levels and the intro from the profile of the file it renders. See
+[skills/scenario/profiles.md](skills/scenario/profiles.md).
 
 ## Scenario format
 
-A Markdown file that reads as a script on GitHub or in any editor:
-
-```markdown
-# Сеньор Вадик
-
-## Cast
-
-| voice | who |
-|---|---|
-| vadik | Вадик, 28, тимлид третью неделю |
-| palych | Геннадий Палыч, IT-директор |
-
-## Офис, утро
-
-> ambience office
-
-- narrator: [calm, storyteller] Утро. Офис. Вадик третью неделю тимлид.
-- palych: [loud] Вадим! Тимлид без команды — это просто лид!
-- vadik@0.2: [nervous, too fast] Сделаем, Геннадий Палыч.
-- {pause 1}
-```
-
-- The cast table names each voice. The lint checks every character is named before or in
-  their first line, and again when they return after a scene away.
-- Each `##` heading is a scene: a scene pause and a background bed from `> ambience NAME`
-  (see Ambience).
-- Only list items are read aloud, with inline metadata: `[acting tag]`, `voice@N:` for the gap
-  before a turn (negative overlaps), `{pause N}`.
-- Joke map: `<!-- plant: KEY -->` before a setup line, `<!-- payoff: KEY -->` before its
-  payoff. A payoff with no plant earlier in the episode is a lint error; the lint also warns
-  when an episode has more scenes than its length can carry (about 0.7 per minute).
-- Older `.txt` scene files (one turn per line) still render.
+A Markdown file that reads as a script on GitHub or in any editor: a cast table, a `##`
+heading per scene with an optional `> ambience NAME`, turns as list items with inline tags,
+and design marks the lint reads (`<!-- beat: hook -->`, `<!-- plant: KEY -->`,
+`<!-- payoff: KEY -->`). Full syntax: [skills/scenario/format.md](skills/scenario/format.md).
+The `scenario` skill holds the writing process and its rules: premise and game, beat sheet,
+joke map, scene plan, turns, lint, a script-doctor review, canon.
 
 ## Ambience
 

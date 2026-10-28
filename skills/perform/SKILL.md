@@ -81,8 +81,7 @@ uv run $S/calibrate.py DIR --profile <name>
 Use clips from the current scene.py: it writes `clips.json` next to them with the gain, pitch
 shift and phone filter each clip got, and calibrate.py undoes them, so recalibrating with a
 `levels.json` in place is safe; phone-filtered turns are skipped. Clips without `clips.json`
-are taken as raw. A bundled profile in an installed plugin is read-only: `profiles.py copy`
-it first.
+are taken as raw.
 
 It writes `levels.json` into the profile: one gain per voice to a -20 LUFS target, plus each
 voice's median pitch, and reports voices too close in pitch to tell apart. `scene.py` applies

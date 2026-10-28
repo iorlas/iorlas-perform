@@ -200,12 +200,15 @@ def mix_down(
 def main() -> None:
     args = parse_args()
 
-    dest = Path(args.out) if args.out else Path(args.src).with_suffix(".wav")
+    profile = profiles.of(args.src)
+    # A profile's episodes render into its renders/ folder; anything else renders next to itself.
+    default = profile / "renders" / Path(args.src).with_suffix(".wav").name if profile else Path(args.src).with_suffix(".wav")
+    dest = Path(args.out) if args.out else default
+    dest.parent.mkdir(parents=True, exist_ok=True)
     sc = scenario.load(args.src)
     if not scenario.report(scenario.lint(sc), args.src) and not args.no_lint:
         sys.exit("[perform] lint errors: fix them or pass --no-lint")
     check_names(sc)
-    profile = profiles.of(args.src)
     intro = profile / "episodes" / profiles.INTRO if profile else None
     if intro and intro.exists() and not args.no_intro and Path(args.src).resolve() != intro.resolve():
         sc.items = scenario.load(intro).items + sc.items  # the series intro opens every episode
