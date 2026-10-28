@@ -54,6 +54,7 @@ Usage: uv run scenario.py scene.txt   (exit 1 on errors)
 """
 
 import json
+import math
 import re
 import sys
 from dataclasses import dataclass, field
@@ -468,7 +469,7 @@ def lint_beats(sc: Scenario) -> list[Issue]:
 def lint_pace(sc: Scenario) -> list[Issue]:
     """Scene budget by length: each cut costs an audio listener a reorientation."""
     minutes = sum(len(spoken(t.text)) for t in sc.turns) / CHARS_PER_SEC / 60
-    budget = max(2, round(minutes * sc.rules.scenes_per_min))
+    budget = max(2, math.ceil(minutes * sc.rules.scenes_per_min))
     out: list[Issue] = []
     if (target := sc.length or sc.rules.length) and abs(minutes - target) > 0.25 * target:
         out.append(("warn", 1, f"~{minutes:.1f} min against a {target:g} min target (±25%)"))
