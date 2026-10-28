@@ -25,9 +25,11 @@ each model downloads to `~/.cache/huggingface` on its first use, with a log line
 
 ## Use
 
-Two skills:
+Three skills:
 
-- `/perform`: give a scenario or an idea. Claude writes the tagged scene, casts voices
+- `scenario`: writes or fixes a script with radio-drama craft (who speaks, where, when; scenes
+  that end on a beat), in the `@cast` / `@scene` format below, and lints it.
+- `/perform`: give a scenario or an idea. Claude writes the script with `scenario`, casts voices
   (designing new ones when needed), shows you the text, and on your yes renders a wav plus
   `timeline.json`.
 - `voice`: one voice reading a text, voice design, recording your own voice.
@@ -36,6 +38,7 @@ Or run the scripts yourself:
 
 ```bash
 uv run scripts/speak.py examples/shmatko.txt out.wav --voice praporshchik
+uv run scripts/scenario.py examples/senior_vadik.txt              # lint a script
 uv run scripts/scene.py examples/senior_vadik.txt vadik.wav       # multi-voice + timeline
 uv run scripts/design_voice.py boss "A tired 40-year-old Russian office manager, dry sarcasm" --line "Ну и кто это опять сломал?"
 python3 scripts/record_refs.py
@@ -44,7 +47,8 @@ python3 scripts/record_refs.py
 | script | job |
 |---|---|
 | `speak.py` | tagged text -> wav, voice cloned from one reference |
-| `scene.py` | `voice: text` scene -> wav + `timeline.json`, one render per turn |
+| `scenario.py` | scenario format parser and lint: every voice named, every scene placed |
+| `scene.py` | scenario -> wav + `timeline.json`, one render per turn, progress with ETA |
 | `engines.py` | engine list (`--engine drama3\|s2`), first-use download log |
 | `design_voice.py` | voice from a text description |
 | `record_refs.py` | guided recording of your own voice, space to start/stop |
@@ -52,6 +56,25 @@ python3 scripts/record_refs.py
 Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in `$PERFORM_VOICES`, then
 `./voices`, then the bundled `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`
 (designed with Qwen VoiceDesign).
+
+## Scenario format
+
+```
+@cast
+vadik  | Вадик, 28, тимлид третью неделю
+palych | Геннадий Палыч, IT-директор
+
+@scene Офис, утро | ambience office
+narrator: [calm, storyteller] Утро. Офис. Вадик третью неделю тимлид.
+palych: [loud] Вадим! Тимлид без команды — это просто лид!
+vadik@0.2: [nervous, too fast] Сделаем, Геннадий Палыч.
+{pause 1}
+```
+
+`@cast` names each voice; the lint checks every character is named before or in their first
+line and again when they return after a scene away. `@scene` adds a scene pause and, with the
+ambience branch, a background bed. `voice@N:` sets the gap before a turn, negative overlaps.
+Files with only turns and `{pause N}` still render.
 
 ## Tag guide
 

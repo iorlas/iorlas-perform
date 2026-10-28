@@ -4,15 +4,21 @@
 # ///
 """Render a multi-voice scene: one line per speaker turn, each in its own voice.
 
-Scene format, one turn per line:
+Scenario format (scenario.py), a cast block, scene headers and turns:
 
+    @cast
+    girl   | Маша, внучка
+    starik | Дед Егор
+
+    @scene Чердак, вечер | ambience attic
+    narrator: [calm] Вечер. Чердак. Маша нашла коробку.
     girl: [excited] Дедушка, смотри, что я нашла!
     starik: [sigh] Опять ты по чердаку лазила?
-    {pause 1.5}
-    praporshchik: [shouting] Так, что тут происходит?
 
 `voice: text` renders the text in that voice (see voices.py), `{pause N}` adds
-N seconds of silence, blank lines and `#` comments are skipped.
+N seconds of silence, `@scene` adds --scene-pause before every scene but the
+first, blank lines and `#` comments are skipped. The lint runs first: errors
+stop the render before the model loads (--no-lint skips it).
 
 Spacing: `voice@0.1: text` sets the gap before that turn, in seconds, instead of
 --gap. A negative gap overlaps the previous turn: `girl@-0.8: Что?!` starts
@@ -22,15 +28,16 @@ edges are trimmed first, so gaps are exact.
 Writes the wav and <out>.timeline.json: start and end of every turn in seconds,
 so screen changes can follow the audio.
 
+Silences inside a turn longer than --max-silence (0.6 s) are shortened to it.
+
 Usage: uv run scene.py scene.txt [out.wav] [--gap 0.35] [--speed 1.1]
-                       [--engine drama3|s2] [--clips DIR]
+                       [--max-silence 0.6] [--engine drama3|s2] [--clips DIR]
 
 Engines (engines.py): drama3 (default, Fish Drama 3 3-bit) or s2 (Fish S2 Pro).
 Each model downloads on its first use, with a log line saying so.
 """
 import argparse
 import json
-import re
 import subprocess
 import sys
 import time
@@ -40,26 +47,9 @@ import numpy as np
 import soundfile as sf
 
 import engines
+import scenario
 import voices
-
-TURN = re.compile(r"^([\w-]+)(?:@(-?[\d.]+))?\s*:\s*(.+)$")
-PAUSE = re.compile(r"^\{pause\s+([\d.]+)\}$")
-
-
-def parse(text: str) -> list[tuple[str, str | float, float | None]]:
-    """Turns as (voice, text, gap before or None); pauses as ("pause", seconds, None)."""
-    turns = []
-    for n, line in enumerate(text.splitlines(), 1):
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        if m := PAUSE.match(line):
-            turns.append(("pause", float(m[1]), None))
-        elif m := TURN.match(line):
-            turns.append((m[1], m[3], float(m[2]) if m[2] else None))
-        else:
-            sys.exit(f"line {n}: expected 'voice: text' or '{{pause N}}': {line}")
-    return turns
+from scenario import Pause, Scene
 
 
 def main():
@@ -69,12 +59,18 @@ def main():
     p.add_argument("--gap", type=float, default=0.35, help="silence between turns, seconds")
     p.add_argument("--speed", type=float, default=1.1, help="tempo, pitch kept (default: 1.1)")
     p.add_argument("--engine", choices=engines.ENGINES, default=engines.DEFAULT)
+    p.add_argument("--max-silence", type=float, default=0.6,
+                   help="shorten silences inside a turn to this, seconds (0: keep)")
+    p.add_argument("--scene-pause", type=float, default=1.5, help="silence before each @scene, seconds")
+    p.add_argument("--no-lint", action="store_true", help="render even when the lint finds errors")
     p.add_argument("--clips", type=Path, help="also save each turn as <dir>/NN_voice.wav")
     args = p.parse_args()
 
     dest = Path(args.out) if args.out else Path(args.src).with_suffix(".wav")
-    turns = parse(Path(args.src).read_text())
-    needed = {v for v, _, _ in turns if v != "pause"}
+    sc = scenario.parse(Path(args.src).read_text())
+    if not scenario.report(scenario.lint(sc), args.src) and not args.no_lint:
+        sys.exit("[perform] lint errors: fix them or pass --no-lint")
+    needed = {t.voice for t in sc.turns}
     missing = sorted(v for v in needed if voices.find(v) is None)
     if missing:
         sys.exit(f"no voice: {', '.join(missing)}\navailable: {', '.join(voices.available())}")
@@ -94,14 +90,22 @@ def main():
     # Clips are placed on a timeline, not concatenated, so a negative gap can overlap.
     placed, timeline = [], []
     end = 0  # sample where the previous turn (or pause) ends
-    spoken = [t for v, t, _ in turns if v != "pause"]
-    total_chars, done_chars, done_turns = sum(map(len, spoken)), 0, 0
-    log(f"{len(spoken)} turns, {len(needed)} voices, {total_chars} chars; ETA after the first turn")
-    start = time.time()
-    for n, (voice, text, gap) in enumerate(turns, 1):
-        if voice == "pause":
-            end += int(text * sr)
+    turns = sc.turns
+    total_chars, done_chars, done_turns = sum(len(t.text) for t in turns), 0, 0
+    log(f"{len(turns)} turns, {len(sc.scenes)} scenes, {len(needed)} voices, {total_chars} chars; "
+        f"ETA after the first turn")
+    start, scene = time.time(), None
+    for n, item in enumerate(sc.items, 1):
+        if isinstance(item, Pause):
+            end += int(item.secs * sr)
             continue
+        if isinstance(item, Scene):
+            if placed:
+                end += int(args.scene_pause * sr)
+            scene = item
+            log(f"scene: {item.title}" + (f" | ambience {item.ambience}" if item.ambience else ""))
+            continue
+        voice, text, gap = item.voice, item.text, item.gap
         ref_audio, ref_text = refs[voice]
         t0 = time.time()
         results = model.generate(text=text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
@@ -109,18 +113,22 @@ def main():
         if args.speed != 1.0:
             audio = atempo(audio, sr, args.speed)
         audio = trim(audio, sr)
+        if args.max_silence:
+            audio = squash(audio, sr, args.max_silence)
         if args.clips:
             sf.write(args.clips / f"{n:02d}_{voice}.wav", audio, sr)
         at = max(0, end + int((args.gap if gap is None else gap) * sr)) if placed else 0
         placed.append((at, audio))
         end = max(end, at + len(audio))
         timeline.append({"turn": n, "voice": voice, "text": text,
+                         "scene": scene.title if scene else None,
+                         "ambience": scene.ambience if scene else None,
                          "start": round(at / sr, 3), "end": round((at + len(audio)) / sr, 3)})
         # ETA scales the time so far by the characters left: render time follows text length.
         done_turns, done_chars = done_turns + 1, done_chars + len(text)
         elapsed = time.time() - start
         eta = elapsed / done_chars * (total_chars - done_chars)
-        log(f"{done_turns}/{len(spoken)} {done_chars * 100 // total_chars}% {voice}: "
+        log(f"{done_turns}/{len(turns)} {done_chars * 100 // total_chars}% {voice}: "
             f"{len(audio) / sr:.1f}s audio in {time.time() - t0:.1f}s | "
             f"elapsed {clock(elapsed)}, ETA {clock(eta)} | {text[:40]}")
 
@@ -152,6 +160,24 @@ def trim(audio: np.ndarray, sr: int, keep: float = 0.03) -> np.ndarray:
         return audio
     margin = int(keep * sr)
     return audio[max(0, loud[0] - margin):loud[-1] + margin]
+
+
+def squash(audio: np.ndarray, sr: int, longest: float, step: float = 0.01) -> np.ndarray:
+    """Shorten silent runs inside a clip (below 2% of peak) to `longest` seconds.
+
+    The model sometimes stops for 2-4 s at a dash or a [short pause] tag; on a
+    timeline that reads as dead air, not as acting.
+    """
+    hop = int(step * sr)
+    frames = len(audio) // hop
+    quiet = np.abs(audio[:frames * hop]).reshape(frames, hop).max(axis=1) < 0.02 * np.abs(audio).max()
+    keep, run, out = int(longest / step), 0, []
+    for i, q in enumerate(quiet):
+        run = run + 1 if q else 0
+        if run <= keep:
+            out.append(audio[i * hop:(i + 1) * hop])
+    out.append(audio[frames * hop:])
+    return np.concatenate(out)
 
 
 def atempo(audio: np.ndarray, sr: int, speed: float) -> np.ndarray:

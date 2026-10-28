@@ -5,39 +5,16 @@ description: Turn a scenario, story idea or plain dialogue into a finished multi
 
 # perform
 
-Scenario -> tagged scene -> cast -> approval -> render -> wav + timeline.
+Scenario (scenario skill) -> cast -> approval -> lint + render -> wav + timeline.
 Scripts: `${CLAUDE_SKILL_DIR}/../../scripts`, called `$S` below. Requirements, voices, engines
 and the tag guide are in the `voice` skill (`${CLAUDE_SKILL_DIR}/../voice/SKILL.md`); read it first.
 
 ## 1. Script
 
-Input is a file, pasted text, or only an idea. Write `<name>.txt` in the user's working directory
-in scene format, one turn per line:
-
-```
-# Title
-narrator: [dry, deadpan] В понедельник Вадика повысили.
-vadik: [panicking] Это плановая миграция!
-{pause 1}
-```
-
-- `voice: text`; the voice name is the character's voice file name. `{pause N}` = N seconds of
-  silence, use it for scene changes. `#` lines are comments.
-- Every turn starts with a delivery tag, free-form English: `[nervous, too fast]`,
-  `[suspicious, sarcastic question]`. One idea per turn; split long monologues into turns
-  of 1-3 sentences (each turn is one render, ~47 s cap).
-- Questions: tag the intonation (`[provocative, rising intonation]`), or they come out flat.
-- Laughs: `[bursts out laughing] Текст! [laughs uncontrollably]`. Never spell "ха-ха".
-- Russian text only inside turns; no bracketed Russian, it is read aloud.
-- Narrate like a book. The narrator speaks on every scene change (where, what is around,
-  one concrete detail ending on a punchline), every time jump ("Утро.", "В пятницу, в шесть
-  вечера"), and when a new voice enters (who they are, how they appear). Once two speakers
-  are introduced and trading lines, drop attributions; add «— сказал Вадик» only where it
-  adds a beat. Attribution turns get a short gap: `narrator@0.12:`.
-- Spacing: `voice@N:` sets the gap before a turn (default `--gap`); negative overlaps the
-  previous turn, for interruptions. `{pause 1-2}` between scenes.
-- Writing a story from an idea: keep it short first (15-25 turns, ~2 min), adult humour when
-  asked for humour: irony, deadpan narrator, specific absurd details, a punchline at the end.
+Input is a file, pasted text, or only an idea. Write or fix the script with the `scenario`
+skill (`${CLAUDE_SKILL_DIR}/../scenario/SKILL.md`): it covers the format (`@cast`, `@scene`,
+tagged turns), the radio-drama rules, the lint and the self-check. Old flat files (turns and
+`{pause N}` only) still render; the lint then skips the intro checks.
 
 ## 2. Cast
 
@@ -60,11 +37,15 @@ Run in the background, then send the wav and timeline:
 
 ```
 uv run $S/scene.py <name>.txt <name>.wav [--engine drama3|s2] [--speed 1.1] [--gap 0.35]
+                  [--scene-pause 1.5] [--max-silence 0.6] [--no-lint]
 ```
+
+- The lint runs first; errors stop the render before the model loads.
+- Progress: one `[perform]` line per turn with percent, elapsed time and ETA.
 
 - A first-use model download logs `[perform] first use: downloading ...`; relay it with the size.
 - Drama 3 renders about real time; S2 ~3x slower.
-- `<name>.timeline.json`: per turn `voice`, `text`, `start`, `end` in seconds.
+- `<name>.timeline.json`: per turn `voice`, `text`, `scene`, `ambience`, `start`, `end` in seconds.
 - `--clips DIR` saves each turn as its own wav, for fixing one line or A/B tests.
 
 Report: audio length, render time, any turn that looks wrong (much shorter than its text
