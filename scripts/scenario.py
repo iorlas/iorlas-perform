@@ -53,11 +53,13 @@ Errors stop a render; warnings are printed.
 Usage: uv run scenario.py scene.txt   (exit 1 on errors)
 """
 
+import json
 import re
 import sys
 from dataclasses import dataclass, field
 from itertools import pairwise
 from pathlib import Path
+from typing import Any
 
 TURN = re.compile(r"^([\w-]+)(\+phone)?(?:@(-?[\d.]+))?\s*:\s*(.+)$")
 PAUSE = re.compile(r"^\{pause\s+([\d.]+)\}$")
@@ -67,11 +69,45 @@ SCENE = re.compile(r"^@scene\s+(.+?)(?:\s*\|\s*ambience\s+([\w-]+)(?:\s+([\d.]+)
 CAST_LINE = re.compile(r"^([\w-]+)\s*\|\s*(.+)$")
 TAG = re.compile(r"\[([^\]]*)\]")
 NARRATOR = "narrator"
-MARK = re.compile(r"<!--\s*(plant|payoff|beat):\s*(.+?)\s*-->")
-BEATS = ("hook", "setup", "incident", "ladder", "turn", "button", "tag")  # the episode template, in order
-NEEDED = ("hook", "incident", "turn", "button")
-CHARS_PER_SEC = 15  # measured: episode 03, 3887 characters of turns, 261 s rendered
-SCENES_PER_MIN = 0.7
+STRESS = "\u0301"  # combining acute: «пи́дора»
+MARK = re.compile(r"<!--\s*(plant|echo|payoff|beat|length|lint-ok):\s*(.+?)\s*-->")
+CHARS_PER_SEC = 11  # spoken characters per second, Drama 3 at --speed 1.1: 2896 in 261 s (an episode)
+
+
+@dataclass
+class Rules:
+    """Structure the lint holds a scenario to. Defaults suit short comedy; a profile tunes them in
+    structure.json (any subset of these fields) for its genre."""
+
+    beats: tuple[str, ...] = ("hook", "setup", "incident", "ladder", "turn", "button", "tag")  # in order
+    needed: tuple[str, ...] = ("hook", "incident", "turn", "button")
+    shares: dict[str, float] = field(  # of the runtime; a beat past twice or under half its share is reported
+        default_factory=lambda: {"hook": 0.06, "setup": 0.11, "incident": 0.05, "ladder": 0.46, "turn": 0.17, "button": 0.07, "tag": 0.07}
+    )
+    min_rungs: int = 2
+    scenes_per_min: float = 0.7  # a cut costs a listener a reorientation
+    callback_reach: float = 90  # seconds from a plant or echo to its payoff before the listener forgets
+    callback_max: int = 3  # plant, echo, payoff
+    button_words: int = 8
+    cast_max: int = 6
+    length: float | None = None  # target minutes; an episode's <!-- length: N --> wins
+
+    @classmethod
+    def of(cls, path: str | Path) -> "Rules":
+        """Defaults, overridden by the structure.json of the profile the file belongs to."""
+        import profiles
+
+        prof = profiles.of(path)
+        f = prof / "structure.json" if prof else None
+        if not f or not f.exists():
+            return cls()
+        data: dict[str, Any] = json.loads(f.read_text())
+        if unknown := set(data) - set(cls.__dataclass_fields__):
+            sys.exit(f"{f}: unknown fields {', '.join(sorted(unknown))}")
+        fields: dict[str, Any] = {k: tuple(v) if isinstance(v, list) else v for k, v in data.items()}
+        rules = cls(**fields)
+        rules.shares = {**cls().shares, **data.get("shares", {})}
+        return rules
 
 
 @dataclass
@@ -126,7 +162,10 @@ class Scenario:
     scenes: list[Scene]
     items: list[Item]  # in order; Scene marks where it starts
     jingle: bool = False  # `<!-- lint: jingle -->`, set by load()
-    marks: list[tuple[str, str, int]] = field(default_factory=list)  # (plant|payoff, key, line)
+    marks: list[tuple[str, str, int]] = field(default_factory=list)  # (kind, key, line) from <!-- kind: key -->
+    length: float | None = None  # `<!-- length: 4.5 -->`, target minutes
+    quiet: list[str] = field(default_factory=list)  # `<!-- lint-ok: words -->`: warnings containing them are dropped
+    rules: Rules = field(default_factory=Rules)
 
     @property
     def turns(self) -> list[Turn]:
@@ -173,6 +212,9 @@ def load(path: str | Path) -> Scenario:
     sc = parse_md(text) if path.suffix in (".md", ".markdown") else parse(text)
     sc.jingle = "<!-- lint: jingle -->" in text
     sc.marks = [(m[1], m[2], text.count("\n", 0, m.start()) + 1) for m in MARK.finditer(text)]
+    sc.length = next((float(key) for kind, key, _ in sc.marks if kind == "length"), None)
+    sc.quiet = [key for kind, key, _ in sc.marks if kind == "lint-ok"]
+    sc.rules = Rules.of(path)
     return sc
 
 
@@ -260,9 +302,16 @@ def names(desc: str) -> list[str]:
 
 
 def mentions(text: str, who: list[str]) -> bool:
-    """Any name, allowing a Russian case ending: Михалыч matches Михалыча, Михалычу."""
+    """Any name as a whole word, allowing a Russian case ending: Михалыч matches Михалыча,
+    Мама matches Мам and маму; Стас does not match старый, Вадик does not match Вадим."""
     low = spoken(text).lower()
-    return any(re.search(rf"\b{re.escape(w.lower()[: max(3, len(w) - 1)])}", low) for w in who)
+    return any(re.search(rf"\b{re.escape(stem(w))}\w{{0,3}}\b", low) for w in who)
+
+
+def stem(name: str) -> str:
+    """A name without its final vowel or soft sign, the part every case form keeps."""
+    low = name.lower()
+    return low[:-1] if low[-1] in "аяоеыйь" and len(low) > 3 else low
 
 
 Issue = tuple[str, int, str]  # (level, line, message), level "error" or "warn"
@@ -275,12 +324,16 @@ def lint_text(sc: Scenario) -> list[Issue]:
         if any(re.search(r"[а-яё]", tag, re.IGNORECASE) for tag in TAG.findall(t.text)):
             out.append(("error", t.line, "Russian inside [tag]: it is read aloud"))
         tags = " ".join(TAG.findall(t.text)).lower()
-        if spoken(t.text).rstrip("»\"' ").endswith("?") and not re.search(r"intonation|question", tags):
+        if not tags:
+            out.append(("warn", t.line, "no [delivery tag]: the line comes out read, not played"))
+        if "?" in spoken(t.text) and not re.search(r"intonation|question", tags):
             out.append(("warn", t.line, "question without an intonation tag: comes out flat"))
-        if len(re.findall(r"\[(?:short )?pause\]", t.text)) > 1:
+        if len(re.findall(r"\[(?:short |long )?pause\]", t.text)) > 1:
             out.append(("warn", t.line, "several [pause] tags in one turn: dead air"))
         if re.search(r"bursts out laughing\]\s*\[(?:short )?pause\]", t.text):
             out.append(("warn", t.line, "[pause] after a burst laugh: too much spacing"))
+        if (marks := spoken(t.text).count(STRESS)) > 2:
+            out.append(("warn", t.line, f"{marks} stress marks: each adds emphasis, keep them to the words heard wrong"))
         if len(spoken(t.text)) > 300:
             out.append(("warn", t.line, f"{len(spoken(t.text))} characters: split it, one render caps near 47 s"))
     for i in sc.items:
@@ -292,6 +345,7 @@ def lint_text(sc: Scenario) -> list[Issue]:
 def lint_cues(items: list[Item]) -> list[Issue]:
     """Sound cues: «звонит телефон» with no {sfx} next to it promises a sound that never comes."""
     out: list[Issue] = []
+    warned: set[tuple[int, str]] = set()  # (scene, effect): once per scene is enough
     for k, t in enumerate(items):
         if not isinstance(t, Turn):
             continue
@@ -299,7 +353,8 @@ def lint_cues(items: list[Item]) -> list[Issue]:
         if any(isinstance(i, Sfx) for i in near):
             continue
         for pattern, effect in CUES:
-            if m := re.search(pattern, spoken(t.text), re.IGNORECASE):
+            if (m := re.search(pattern, spoken(t.text), re.IGNORECASE)) and (t.scene, effect) not in warned:
+                warned.add((t.scene, effect))
                 out.append(("warn", t.line, f"«{m[0]}» with no sound: add '- {{sfx {effect}}}' next to this turn"))
                 break
     return out
@@ -345,20 +400,31 @@ def lint_scenes(sc: Scenario) -> list[Issue]:
     return out
 
 
+def seconds_at(sc: Scenario, line: int) -> float:
+    """Estimated time a line of the file is heard, from the characters spoken before it."""
+    return sum(len(spoken(t.text)) for t in sc.turns if t.line < line) / CHARS_PER_SEC
+
+
 def lint_jokes(sc: Scenario) -> list[Issue]:
-    """Every payoff has its plant earlier in the same episode."""
+    """Callbacks: a plant before every echo and payoff, the last touch within reach, three touches at most."""
     out: list[Issue] = []
-    planted: set[str] = set()
+    last: dict[str, int] = {}  # key -> line of its latest plant or echo
+    count: dict[str, int] = {}
     paid: set[str] = set()
     for kind, key, n in sc.marks:
-        if kind == "plant":
-            planted.add(key)
-        elif kind != "payoff":
+        if kind not in ("plant", "echo", "payoff"):
             continue
-        elif key not in planted:
-            out.append(("error", n, f"payoff «{key}» has no plant before it in this episode: the listener never heard the setup"))
-        else:
+        count[key] = count.get(key, 0) + 1
+        if kind != "plant" and key not in last:
+            out.append(("error", n, f"{kind} «{key}» has no plant before it in this episode: the listener never heard the setup"))
+            continue
+        if kind == "payoff" and (gap := seconds_at(sc, n) - seconds_at(sc, last[key])) > sc.rules.callback_reach:
+            out.append(("warn", n, f"payoff «{key}» ~{gap:.0f} s after its last touch: echo it in between"))
+        if kind == "payoff":
             paid.add(key)
+        last[key] = n
+        if count[key] == sc.rules.callback_max + 1:
+            out.append(("warn", n, f"«{key}» returns a {count[key]}th time: past plant, echo, payoff it wears out"))
     out += [("warn", n, f"plant «{key}» is never paid off") for kind, key, n in sc.marks if kind == "plant" and key not in paid]
     return out
 
@@ -368,31 +434,50 @@ def lint_beats(sc: Scenario) -> list[Issue]:
     beats = [(key, n) for kind, key, n in sc.marks if kind == "beat"]
     if not beats:
         return [("warn", 1, "no <!-- beat: NAME --> marks: the episode's structure is not designed")]
-    out: list[Issue] = [("warn", n, f"unknown beat «{key}»; beats: {', '.join(BEATS)}") for key, n in beats if key not in BEATS]
-    known = [(key, n) for key, n in beats if key in BEATS]
+    out: list[Issue] = [
+        ("warn", n, f"unknown beat «{key}»; beats: {', '.join(sc.rules.beats)}") for key, n in beats if key not in sc.rules.beats
+    ]
+    known = [(key, n) for key, n in beats if key in sc.rules.beats]
     out += [
-        ("warn", n, f"beat «{key}» comes after «{prev}»") for (prev, _), (key, n) in pairwise(known) if BEATS.index(key) < BEATS.index(prev)
+        ("warn", n, f"beat «{key}» comes after «{prev}»")
+        for (prev, _), (key, n) in pairwise(known)
+        if sc.rules.beats.index(key) < sc.rules.beats.index(prev)
     ]
     names = [key for key, _ in known]
-    out += [("warn", 1, f"no «{key}» beat") for key in NEEDED if key not in names]
-    if names.count("ladder") < 2:
+    out += [("warn", 1, f"no «{key}» beat") for key in sc.rules.needed if key not in names]
+    out += [("warn", n, f"a second «{key}» beat") for k, (key, n) in enumerate(known) if key != "ladder" and key in names[:k]]
+    if names.count("ladder") < sc.rules.min_rungs:
         out.append(("warn", 1, f"{names.count('ladder')} ladder rung(s): heighten at least twice"))
+    total = seconds_at(sc, 10**9) or 1
+    spent: dict[str, float] = {}
+    for (key, n), (_, nxt) in pairwise([*known, ("", 10**9)]):
+        spent[key] = spent.get(key, 0) + seconds_at(sc, nxt) - seconds_at(sc, n)
+    for key, secs in spent.items():
+        share = sc.rules.shares.get(key)
+        if share and not share / 2 <= secs / total <= share * 2:
+            out.append(("warn", 1, f"beat «{key}» ~{secs:.0f} s, {secs / total:.0%} of the episode against ~{share:.0%}"))
+    if "button" in names:  # the button's last turn is the punchline: short, the funny word last
+        start = dict(reversed(known))["button"]
+        end = next((n for k, n in known if n > start), 10**9)
+        inside = [t for t in sc.turns if start < t.line < end]
+        if inside and (words := len(spoken(inside[-1].text).split())) > sc.rules.button_words:
+            out.append(("warn", inside[-1].line, f"button ends on {words} words: keep the last line under {sc.rules.button_words + 1}"))
     return out
 
 
 def lint_pace(sc: Scenario) -> list[Issue]:
     """Scene budget by length: each cut costs an audio listener a reorientation."""
-    minutes = sum(len(t.text) for t in sc.turns) / CHARS_PER_SEC / 60
-    budget = max(2, round(minutes * SCENES_PER_MIN))
+    minutes = sum(len(spoken(t.text)) for t in sc.turns) / CHARS_PER_SEC / 60
+    budget = max(2, round(minutes * sc.rules.scenes_per_min))
+    out: list[Issue] = []
+    if (target := sc.length or sc.rules.length) and abs(minutes - target) > 0.25 * target:
+        out.append(("warn", 1, f"~{minutes:.1f} min against a {target:g} min target (±25%)"))
+    if len(sc.cast) > sc.rules.cast_max:
+        out.append(("warn", 1, f"{len(sc.cast)} voices in the cast: over {sc.rules.cast_max} the ear loses them"))
     if len(sc.scenes) > budget:
-        return [
-            (
-                "warn",
-                sc.scenes[0].line,
-                f"{len(sc.scenes)} scenes in ~{minutes:.1f} min, budget {budget}: merge scenes that do not cross a threshold",
-            )
-        ]
-    return []
+        too_many = f"{len(sc.scenes)} scenes in ~{minutes:.1f} min, budget {budget}: merge scenes that do not cross a threshold"
+        out.append(("warn", sc.scenes[0].line, too_many))
+    return out
 
 
 def lint(sc: Scenario) -> list[Issue]:
@@ -403,6 +488,7 @@ def lint(sc: Scenario) -> list[Issue]:
         out.append(("warn", 1, "no cast (## Cast table or @cast): intro checks skipped"))
         return sorted(out, key=lambda x: x[1])
     out += lint_names(sc) + lint_scenes(sc) + lint_jokes(sc) + lint_beats(sc) + lint_pace(sc)
+    out = [i for i in out if i[0] == "error" or not any(q in i[2] for q in sc.quiet)]  # <!-- lint-ok: words -->
     return sorted(out, key=lambda x: x[1])
 
 
