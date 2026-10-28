@@ -109,6 +109,24 @@ nearby; one or two effects per scene is plenty. The senior-vadik episodes in
 From the profile's world and canon, write down in 3 lines: what the hero wants, what goes
 wrong, the twist. Every episode stands alone: a listener who missed the last one must follow it.
 
+Then, before any scene, the design (research and sources: `structure-research.md`):
+- **The game**, one sentence: the first unusual thing, and the rule "if this is true, what
+  else is true?" that each scene heightens. One game per episode, two at most. Five unrelated
+  gags are not a game.
+- **Pairs.** Pick one or two relationships from `characters.md` to put under pressure; each
+  scene puts a pair with opposite comic lenses together, and status flips at least once.
+- **Entities.** Build on the entities in `world.md` and obey their rules every time. A new
+  one gets a row there first: what it is, its plot function, who it touches, its rule.
+- **Joke map**: 3-5 big beats that escalate, each caused by the one before. Every callback is
+  planted inside this episode, at most ~90 s before its payoff or touched again in between;
+  the series intro does not count as a plant. A callback appears at most three times (plant,
+  variant, payoff), and each return changes one thing. One runner (a small repeated bit) may
+  mirror the main game, 2-3 times. Mark them in the scenario:
+  `<!-- plant: нет -->` before the setup line, `<!-- payoff: нет -->` before the payoff;
+  the lint errors on a payoff with no plant.
+- **Chain test**: delete any middle beat; the next one should break. A beat that survives
+  its neighbour's deletion is a topic change, not a chain: cut it or connect it.
+
 ## 2. Cast
 
 - Take characters from `characters.md`; copy their rows into the episode's `## Cast`. A new
@@ -122,13 +140,22 @@ wrong, the twist. Every episode stands alone: a listener who missed the last one
 
 Before any dialogue, list scenes as one line each: place, time, who is in it, its purpose,
 how it ends. Rules:
-- At most 4 speakers per scene. Several short scenes beat one long one.
+- **Few scenes.** About 0.7 per minute: 2-3 for a 3-4 minute episode, 3-4 for 5-6 minutes
+  (the lint warns over budget). A listener cannot see a cut, and each one costs a
+  reorientation. A scene change must cross a threshold: a time jump, a reveal the old room
+  cannot hold, or an arrival that is itself the joke. Otherwise bring the beat into the
+  current scene, by phone, a door, or a character walking in.
+- Every scene moves the game; a scene that only visits a character (an empathy beat, a
+  cameo) is folded into a scene that moves it.
+- At most 4 speakers per scene.
 - Each scene starts mid-action and leaves once its purpose is served.
 - Each scene ends on a decision, an image or a reveal; the story's last line is the payoff
   and lands on its last word. Nothing trails off.
 - A new scene does not open with the character who closed the last one (the narrator
   is the exception).
-- Joke context is planted a scene earlier, never explained inside the joke.
+- Joke context is planted earlier, never explained inside the joke.
+- After a big laugh, a short beat of breathing room (a narrator line, a reaction) before
+  the next setup.
 
 ## 4. Turns
 
@@ -189,9 +216,15 @@ Read the script as a listener with closed eyes, then answer each:
 1. Can I tell who speaks in every line, from the voice, a name or the tic?
 2. Does every scene say where and when in its first narrator line?
 3. Does every scene end on a decision, image or reveal, not trail off?
-4. Is each joke's context planted before it?
-5. Is any line there only for the writer, explaining what the listener already knows? Cut it.
-6. Does the last line land on its last word?
+4. Is each joke's context planted before it, in this episode? Is every callback marked?
+5. Does each scene cross a threshold? Could two scenes be one?
+6. Does every beat cause the next (the chain test)? Which beat survives deletion?
+7. Is any line there only for the writer, explaining what the listener already knows? Cut it.
+8. Does the last line land on its last word?
+
+For an independent read, give the scenario, the profile and `structure-research.md` to a
+subagent playing a script doctor who has not seen the writing, and ask for these answers
+and the weakest beat.
 
 ## 7. Approve
 

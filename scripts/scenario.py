@@ -36,6 +36,13 @@ that need it.
 Lint, from radio-drama craft (skills/scenario/craft.md): a listener with closed
 eyes must know who speaks, where and when. A file with `<!-- lint: jingle -->`
 (a series intro) skips the who-and-where checks.
+
+Jokes: `<!-- plant: KEY -->` before the line that sets a joke up and
+`<!-- payoff: KEY -->` before the line that pays it off. A payoff with no plant
+earlier in the same file is an error: the listener never heard the setup (a
+series intro does not count). A plant with no payoff is a warning. Scenes are
+budgeted by length: over max(2, 0.7 per minute) is a warning, since listeners
+cannot see a cut.
 Errors stop a render; warnings are printed.
 
 Usage: uv run scenario.py scene.txt   (exit 1 on errors)
@@ -43,7 +50,7 @@ Usage: uv run scenario.py scene.txt   (exit 1 on errors)
 
 import re
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 TURN = re.compile(r"^([\w-]+)(\+phone)?(?:@(-?[\d.]+))?\s*:\s*(.+)$")
@@ -54,6 +61,9 @@ SCENE = re.compile(r"^@scene\s+(.+?)(?:\s*\|\s*ambience\s+([\w-]+)(?:\s+([\d.]+)
 CAST_LINE = re.compile(r"^([\w-]+)\s*\|\s*(.+)$")
 TAG = re.compile(r"\[([^\]]*)\]")
 NARRATOR = "narrator"
+MARK = re.compile(r"<!--\s*(plant|payoff):\s*(.+?)\s*-->")
+CHARS_PER_SEC = 15  # measured: episode 03, 3887 characters of turns, 261 s rendered
+SCENES_PER_MIN = 0.7
 
 
 @dataclass
@@ -108,6 +118,7 @@ class Scenario:
     scenes: list[Scene]
     items: list[Item]  # in order; Scene marks where it starts
     jingle: bool = False  # `<!-- lint: jingle -->`, set by load()
+    marks: list[tuple[str, str, int]] = field(default_factory=list)  # (plant|payoff, key, line)
 
     @property
     def turns(self) -> list[Turn]:
@@ -153,6 +164,7 @@ def load(path: str | Path) -> Scenario:
     text = path.read_text()
     sc = parse_md(text) if path.suffix in (".md", ".markdown") else parse(text)
     sc.jingle = "<!-- lint: jingle -->" in text
+    sc.marks = [(m[1], m[2], text.count("\n", 0, m.start()) + 1) for m in MARK.finditer(text)]
     return sc
 
 
@@ -325,6 +337,37 @@ def lint_scenes(sc: Scenario) -> list[Issue]:
     return out
 
 
+def lint_jokes(sc: Scenario) -> list[Issue]:
+    """Every payoff has its plant earlier in the same episode."""
+    out: list[Issue] = []
+    planted: set[str] = set()
+    paid: set[str] = set()
+    for kind, key, n in sc.marks:
+        if kind == "plant":
+            planted.add(key)
+        elif key not in planted:
+            out.append(("error", n, f"payoff «{key}» has no plant before it in this episode: the listener never heard the setup"))
+        else:
+            paid.add(key)
+    out += [("warn", n, f"plant «{key}» is never paid off") for kind, key, n in sc.marks if kind == "plant" and key not in paid]
+    return out
+
+
+def lint_pace(sc: Scenario) -> list[Issue]:
+    """Scene budget by length: each cut costs an audio listener a reorientation."""
+    minutes = sum(len(t.text) for t in sc.turns) / CHARS_PER_SEC / 60
+    budget = max(2, round(minutes * SCENES_PER_MIN))
+    if len(sc.scenes) > budget:
+        return [
+            (
+                "warn",
+                sc.scenes[0].line,
+                f"{len(sc.scenes)} scenes in ~{minutes:.1f} min, budget {budget}: merge scenes that do not cross a threshold",
+            )
+        ]
+    return []
+
+
 def lint(sc: Scenario) -> list[Issue]:
     out = lint_text(sc) + lint_cues(sc.items)
     if sc.jingle:
@@ -332,7 +375,7 @@ def lint(sc: Scenario) -> list[Issue]:
     if not sc.cast:
         out.append(("warn", 1, "no cast (## Cast table or @cast): intro checks skipped"))
         return sorted(out, key=lambda x: x[1])
-    out += lint_names(sc) + lint_scenes(sc)
+    out += lint_names(sc) + lint_scenes(sc) + lint_jokes(sc) + lint_pace(sc)
     return sorted(out, key=lambda x: x[1])
 
 

@@ -122,6 +122,9 @@ A Markdown file that reads as a script on GitHub or in any editor:
   (see Ambience).
 - Only list items are read aloud, with inline metadata: `[acting tag]`, `voice@N:` for the gap
   before a turn (negative overlaps), `{pause N}`.
+- Joke map: `<!-- plant: KEY -->` before a setup line, `<!-- payoff: KEY -->` before its
+  payoff. A payoff with no plant earlier in the episode is a lint error; the lint also warns
+  when an episode has more scenes than its length can carry (about 0.7 per minute).
 - Older `.txt` scene files (one turn per line) still render.
 
 ## Ambience
