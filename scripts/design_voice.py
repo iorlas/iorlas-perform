@@ -16,7 +16,6 @@ Usage:
     uv run design_voice.py --presets        # re-make the bundled voices
 """
 import argparse
-from pathlib import Path
 import sys
 import time
 

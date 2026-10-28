@@ -33,7 +33,8 @@ import argparse
 import json
 import re
 import sys
-from datetime import date
+from datetime import datetime
+from itertools import pairwise
 from pathlib import Path
 
 import numpy as np
@@ -108,13 +109,13 @@ def main():
     for v, x in voices.items():
         print(f"{v:12} {x.get('clips', 0):>5} {x['lufs']:>6} {x['gain_db']:>+6} {x['f0_hz'] or '-':>6}")
     pitched = sorted((x["f0_hz"], v) for v, x in voices.items() if x.get("f0_hz"))
-    for (fa, a), (fb, b) in zip(pitched, pitched[1:]):
+    for (fa, a), (fb, b) in pairwise(pitched):
         if fb / fa < 1.10:
             print(f"close pitch: {a} {fa} Hz and {b} {fb} Hz; keep them apart in fast exchanges")
 
     if dest and not args.dry_run:
         dest.write_text(json.dumps({"target_lufs": args.target,
-                                    "measured": str(date.today()),
+                                    "measured": str(datetime.now().astimezone().date()),
                                     "from": [str(c) for c in args.clips],
                                     "voices": voices}, ensure_ascii=False, indent=2) + "\n")
         print(dest)

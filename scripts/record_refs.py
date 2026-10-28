@@ -14,6 +14,7 @@ import sys
 import termios
 import time
 import tty
+from pathlib import Path
 
 import voices
 
@@ -59,7 +60,7 @@ def wait_for(allowed: str) -> str:
 def pick_mic() -> str:
     out = subprocess.run(
         ["ffmpeg", "-hide_banner", "-f", "avfoundation", "-list_devices", "true", "-i", ""],
-        capture_output=True, text=True,
+        capture_output=True, text=True, check=False,  # ffmpeg exits non-zero after listing: that is how it lists
     ).stderr
     audio = out.split("audio devices:")[-1]
     mics = re.findall(r"\[(\d+)\] (.+)", audio)
@@ -110,7 +111,7 @@ def main():
             print(f"  {DIM}space = next, p = play, r = redo, q = quit{RESET}", flush=True)
             k = wait_for(" prq")
             if k == "p":
-                subprocess.run(["afplay", str(wav)])
+                subprocess.run(["afplay", str(wav)], check=False)  # a failed playback is not fatal
                 continue
             break
         if k == "q":
