@@ -37,7 +37,9 @@ A scenario is a Markdown file, `NN-slug.md`, that reads as a script on GitHub or
 - Every other `## heading` is a scene, titled with place and time. The renderer adds a scene
   pause before it. The heading is never read aloud, so the narrator still says where and when.
 - `> ambience NAME [volume]` under a scene heading: the background bed for that scene,
-  crossfaded from the last. Beds: `office`, `kitchen` (flat, home), `evening` (city outside),
+  crossfaded from the last. Every bed fades: in before the scene's first word, across into the
+  next bed, out after the last word; effects (`{sfx}`) play as recorded, a phone ring starts
+  at once. Give an intro or a jingle a bed too: without one its gaps drop to digital silence. Beds: `office`, `kitchen` (flat, home), `evening` (city outside),
   `night`, `rain` (street, courtyard), `wind`. `> ambience night 0.5` is half volume. A scene
   without one fades the bed out.
 - Notes for the writer go in `<!-- comments -->` or plain paragraphs; only list items are read

@@ -82,6 +82,7 @@ import voices
 from scenario import Ambience, Pause, Scenario, Scene, Sfx, Turn
 
 ONSET_RETRIES = 3
+EDGE_IN, EDGE_OUT = 0.01, 0.06  # seconds of fade on each clip's edges: no hiss switching on and off
 TURN_PEAK = 10 ** (-1 / 20)  # -1 dBFS: the gain may raise a voice, never past clipping
 
 
@@ -348,12 +349,20 @@ def cut_onset(audio: np.ndarray, sr: int) -> bool:
 
 
 def trim(audio: np.ndarray, sr: int, keep: float = 0.03) -> np.ndarray:
-    """Cut silent edges (below 2% of peak), keeping `keep` seconds of margin."""
+    """Cut silent edges (below 2% of peak), keeping `keep` seconds of margin, then fade both ends.
+
+    Each clip carries the model's faint hiss; a hard edge switches it on and off between
+    turns. The fades (EDGE_IN, EDGE_OUT) blend it into the bed or the silence.
+    """
     loud = np.where(np.abs(audio) > 0.02 * np.abs(audio).max())[0]
     if not len(loud):
         return audio
     margin = int(keep * sr)
-    return audio[max(0, loud[0] - margin) : loud[-1] + margin]
+    out = audio[max(0, loud[0] - margin) : loud[-1] + margin].copy()
+    fin, fout = min(int(EDGE_IN * sr), len(out) // 4), min(int(EDGE_OUT * sr), len(out) // 4)
+    out[:fin] *= np.linspace(0, 1, fin)
+    out[len(out) - fout :] *= np.linspace(1, 0, fout)
+    return out
 
 
 def squash(audio: np.ndarray, sr: int, longest: float, step: float = 0.01) -> np.ndarray:

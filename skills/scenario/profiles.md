@@ -80,9 +80,11 @@ Sections:
    trade, a city, a decade) and what each gives it; what it would never know or say.
 6. **Milieu**: what surrounds such a person or thing in real life: the type, their objects,
    places, rituals, sayings, smells and sounds; what makes them work and what breaks them.
+   This is where the edge comes from: the closer a line is to it, the sharper.
 7. **Speech** (or how it sounds): rhythm and pace (normal unless defined by it), vocabulary,
-   fillers, slang; the explicit-language rule (which words, how often, with whom never); how
-   it lies, panics, asks, brags; words it never uses.
+   fillers, slang; how it lies, panics, asks, brags; words it never uses. The edge (SKILL.md
+   C3b): what of its culture it says out loud, then its explicit-language rule: kit, dose,
+   targets, never with, stance (for, or against), source (whom it learned from, if anyone).
 8. **Lines that are it** (about 10) and **lines that are not it** (about 5, with why).
 9. **Voice direction**: delivery tags that fit and to avoid; for a thing, its beds and effects.
 10. **Connections**: to each main character and entity: status, what it hides, what it wants.

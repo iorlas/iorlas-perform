@@ -171,8 +171,9 @@ what breaks them. Real references only.
 
 ## Speech (or how it sounds)
 
-Rhythm and pace, vocabulary, fillers, slang; explicit language: which words, how often,
-and with whom never. How it lies, panics, asks, brags, apologises; words it never uses.
+Rhythm and pace, vocabulary, fillers, slang. How it lies, panics, asks, brags, apologises;
+words it never uses. Edge: what of its culture it says out loud. Explicit language: its own
+words, how often, at whom, never with whom; for or against it; learned from whom, if anyone.
 
 ## Lines that are it
 

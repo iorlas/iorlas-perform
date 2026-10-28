@@ -64,8 +64,24 @@ them in `structure.json` for its genre.
   them. Every line passes "would only this character say it, this way?". Every entity that is
   more than a name in the story (a character, an object like a server, a place like a
   factory, an institution like a company) gets a soul file first (template in `profiles.md`).
-- C3b. Edge comes from the soul file: each character's explicit-language rule (which words,
-  how often, with whom never) is followed, so the profile's spice lands in the right mouth.
+- C3b. **Edge is closeness to the culture that makes the character**: the words, habits,
+  rituals, cruelties and references of their real milieu, said the way such a person really
+  says them. A mother's edge is the blunt remark about his weight at the table; a sysadmin's,
+  the verdict on a pipe; an imageboard user's, the thread. Explicit language is one tool of
+  it, never the whole, and the soul file sets it per character:
+  - **Kit**: their own words, not "swearing" in general.
+  - **Dose**: how often, per scene and per episode.
+  - **Targets**: at things, at situations, at people, at themselves.
+  - **Never with**: who they never swear in front of. Breaking it, or nearly (the boss walks
+    in mid-word), is where the joke is.
+  - **Stance**: some characters are against it: polite, of higher standing, or feeling so (a
+    mother, a courteous boss, a snob). They never swear; their edge comes from their culture,
+    and their reaction to someone else's word is a tool («Не выражайся!»).
+  - **Source**: a character with no language of its own (an AI, a child, a parrot) has no
+    swear words; what it says, it learned from someone in the story, and it says where.
+  - **Function**: a verdict, a sigh, an order or a quote; one word per line, never a stream.
+    Cut it if the line loses nothing.
+  The profile's sharpest moment goes to the least likely mouth that its rules allow (J6).
 - C4. Every character has a tic the ear tracks: a rhythm or a set of fillers, used every few
   lines. A catchphrase is different: rare, once an episode at most.
 - C5. Contrast voices in age, pitch, pace and accent; two similar voices in a fast exchange

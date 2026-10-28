@@ -26,7 +26,7 @@ import voices
 
 SR = 24000
 XFADE = 1.5  # seconds, crossfade between beds
-TAIL = 1.0  # seconds the last bed rings on after the last word
+TAIL = 2.0  # seconds the last bed rings on after the last word, fading out
 BED_DB = 21  # bed level below the speech
 DUCK_DB = 9  # extra drop while someone speaks
 ATTACK, RELEASE = 0.05, 0.45  # ducking speed, seconds
