@@ -1,20 +1,20 @@
 ---
 name: perform
-description: Turn a scenario, story idea or plain dialogue into a finished multi-voice Russian audio scene, one command, local on Apple Silicon. Claude writes or annotates the script (speakers, emotions, pauses, emphasis, laughs), casts each character to a bundled or newly designed voice, shows the text for approval, then renders it with scene.py (Fish Drama 3) to a wav plus a timeline.json for screen changes. Use for "/perform", "voice this scene", "make an audio story", "radio play", "audio drama". For a single voice reading a text, use the voice skill instead.
+description: Render a ready scenario file (@cast, @scene, tagged turns) into a multi-voice Russian audio scene, local on Apple Silicon. Casts each character to a bundled or newly designed voice, lints, then renders with scene.py (Fish Drama 3) to a wav plus a timeline.json. Use for "/perform", "render this scenario", "voice this scene". Writing or fixing the script itself is the scenario skill; given only an idea, run scenario first. For a single voice reading a text, use the voice skill.
 ---
 
 # perform
 
-Scenario (scenario skill) -> cast -> approval -> lint + render -> wav + timeline.
+Ready scenario -> cast -> approval -> lint + render -> wav + timeline. Writing the script is the `scenario` skill.
 Scripts: `${CLAUDE_SKILL_DIR}/../../scripts`, called `$S` below. Requirements, voices, engines
 and the tag guide are in the `voice` skill (`${CLAUDE_SKILL_DIR}/../voice/SKILL.md`); read it first.
 
-## 1. Script
+## 1. Scenario
 
-Input is a file, pasted text, or only an idea. Write or fix the script with the `scenario`
-skill (`${CLAUDE_SKILL_DIR}/../scenario/SKILL.md`): it covers the format (`@cast`, `@scene`,
-tagged turns), the radio-drama rules, the lint and the self-check. Old flat files (turns and
-`{pause N}` only) still render; the lint then skips the intro checks.
+Input is a ready scenario file in the `scenario` format. Run `uv run $S/scenario.py <file>`
+first. Given an idea, a draft or pasted text instead, or on lint errors, write or fix it with
+the `scenario` skill (`${CLAUDE_SKILL_DIR}/../scenario/SKILL.md`) and come back. Old flat files
+(turns and `{pause N}` only) still render; the lint then skips the intro checks.
 
 ## 2. Cast
 

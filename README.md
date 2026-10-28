@@ -29,7 +29,7 @@ Three skills:
 
 - `scenario`: writes or fixes a script with radio-drama craft (who speaks, where, when; scenes
   that end on a beat), in the `@cast` / `@scene` format below, and lints it.
-- `/perform`: give a scenario or an idea. Claude writes the script with `scenario`, casts voices
+- `/perform`: renders a ready scenario (given only an idea, it runs `scenario` first). Casts voices
   (designing new ones when needed), shows you the text, and on your yes renders a wav plus
   `timeline.json`.
 - `voice`: one voice reading a text, voice design, recording your own voice.
