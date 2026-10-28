@@ -73,3 +73,6 @@
 
 sync:
     remote: "git+https://github.com/iorlas/iorlas-perform.git"
+export:
+    auto: true
+    git-add: true

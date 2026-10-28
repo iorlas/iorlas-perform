@@ -56,6 +56,18 @@ uv run $S/scene.py <name>.md <name>.wav [--engine drama3|s2] [--speed 1.1] [--ga
   `uv run $S/ambience.py night 10 night.wav`.
 - `--clips DIR` saves each turn as its own wav, for fixing one line or A/B tests.
 
+## Sound design
+
+Defaults in the mix, and why (sources and gaps in `${CLAUDE_SKILL_DIR}/sound-design.md`):
+- Voices: one calibrated gain per voice to -20 LUFS (step 5), so no character jumps out.
+- Beds: 24 dB under speech, ducking 9 dB more while anyone talks, 1.5 s crossfade at scene
+  changes. Practice puts beds 12-18 dB under; the level is open (`bd show iorlas-perform-42d`).
+- Effects: 8 dB under speech, placed like a turn. Put the effect right before the line that
+  answers it («звонит телефон» → `{sfx phone_ring}` → «Алло!»), never on top of a word.
+- Phone voices: `voice+phone:` band-limits the line like a phone call.
+- Episode: target -16 LUFS integrated, true peak -1 dBTP, the podcast norm (being added:
+  `bd show iorlas-perform-xn0`).
+
 ## 5. Levels
 
 Voices cloned from different references come out at different loudness. After the first
