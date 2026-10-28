@@ -26,6 +26,10 @@ gets the profile's voices, levels.json and, unless --no-intro, its
 episodes/00-intro.md played first. The lint runs first: errors
 stop the render before the model loads (--no-lint skips it).
 
+One voice, one person: every turn of a voice is sampled from that voice's own fixed
+seed, so its lines stay closer to one another and a re-render repeats them exactly;
+a retry moves the seed. --free-seed samples each turn freely, as before.
+
 Spacing: `voice@0.1: text` sets the gap before that turn, in seconds, instead of
 --gap. A negative gap overlaps the previous turn: `girl@-0.8: Что?!` starts
 0.8 s before the previous turn ends, and the two are mixed. Each clip's silent
@@ -67,6 +71,7 @@ import json
 import subprocess
 import sys
 import time
+import zlib
 from pathlib import Path
 from typing import Any
 
@@ -89,7 +94,7 @@ SPEECH_RETRIES = 2  # takes that say the wrong words (a repeat, skipped words): 
 SUSPECT = 1.15  # a take this much longer than the voice's usual pace per character gets transcribed
 PACE_SAMPLES = 2  # takes per voice transcribed anyway, to learn its pace
 MLX_CACHE = 1 << 30  # bytes MLX may keep in its buffer cache: the rest goes back, so the system does not swap
-TAKES_VERSION = "1"  # bump when a change to rendering makes old cached takes wrong
+TAKES_VERSION = "2"  # bump when a change to rendering makes old cached takes wrong; 2: fixed seed per voice
 EDGE_IN, EDGE_OUT = 0.01, 0.06  # seconds of fade on each clip's edges: no hiss switching on and off
 TURN_PEAK = 10 ** (-1 / 20)  # -1 dBFS: the gain may raise a voice, never past clipping
 STAGES = dict.fromkeys(("load", "warm-up", "lines", "asr", "mix", "master"), 0.0)  # seconds, for the closing log line
@@ -110,6 +115,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--no-lint", action="store_true", help="render even when the lint finds errors")
     p.add_argument("--clips", type=Path, help="also save each turn as <dir>/NN_voice.wav")
     p.add_argument("--fresh", action="store_true", help="render every turn again instead of reusing cached takes")
+    p.add_argument("--free-seed", action="store_true", help="sample each turn freely instead of from its voice's fixed seed")
     p.add_argument(
         "--no-check-speech", dest="check_speech", action="store_false", help="skip transcribing each take (repeats, skipped words)"
     )
@@ -197,18 +203,32 @@ def take_key(item: Turn, args: argparse.Namespace, levels: dict[str, dict[str, A
         semitones_of(levels, item.voice),
         gain_db(levels, item.voice) if item.voice in levels else 0,
         args.check_speech,
+        args.free_seed,
     ]
     return hashlib.sha256(json.dumps(parts, ensure_ascii=False).encode()).hexdigest()[:24]
 
 
-def take(model: engines.TTSModel, item: Turn, ref: tuple[Any, str]) -> np.ndarray:
-    """One generation of a turn with a clean start."""
+def seed_of(voice: str, retry: int) -> int:
+    """The voice's own random seed, moved for each retry.
+
+    Fish samples every frame, so each call rolls a slightly different person from the same
+    reference. Every turn of a voice starting from the same seed keeps its lines closer (five
+    lines of one voice, ECAPA 0.71 free, 0.74 seeded; heard as one person, 2026-10-29). A retry
+    with the same seed would repeat the same bad take, so it moves the seed.
+    """
+    return (zlib.crc32(voice.encode()) + 7919 * retry) % 2**31
+
+
+def take(model: engines.TTSModel, item: Turn, ref: tuple[Any, str], retry: int = 0, *, free: bool = False) -> np.ndarray:
+    """One generation of a turn with a clean start; `retry` counts the caller's earlier attempts."""
     sr = model.sample_rate
     ref_audio, ref_text = ref
     # The model sometimes drops a line's first sound: the clip starts mid-word. Sampling
     # differs per call, so generate again, and keep the softest start if none is clean.
     takes = []
     for attempt in range(1 + ONSET_RETRIES):
+        if not free:
+            mx.random.seed(seed_of(item.voice, retry * (1 + ONSET_RETRIES) + attempt))
         results = model.generate(text=item.text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
         takes.append(np.concatenate([np.array(r.audio) for r in results]))
         if not cut_onset(takes[-1], sr):
@@ -225,7 +245,7 @@ def said_right(model: engines.TTSModel, item: Turn, ref: tuple[Any, str], args: 
     tried: list[tuple[float, np.ndarray]] = []
     chars = max(1, len(scenario.spoken(item.text)))
     for attempt in range(1 + (SPEECH_RETRIES if args.check_speech else 0)):
-        audio = take(model, item, ref)
+        audio = take(model, item, ref, attempt, free=args.free_seed)
         pace = len(audio) / sr / chars
         if not args.check_speech or not suspect(item.voice, pace):
             PACE.setdefault(item.voice, []).append(pace)

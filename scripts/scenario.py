@@ -58,7 +58,7 @@ import math
 import re
 import sys
 from dataclasses import dataclass, field
-from itertools import pairwise
+from itertools import combinations, pairwise
 from pathlib import Path
 from typing import Any
 
@@ -97,6 +97,7 @@ class Rules:
     # 8% are 10 or more. A script far shorter reads as telegraph: the ear loses the links.
     clipped_max: float = 0.55  # share of 1-3 word sentences in dialogue, at most
     long_min: float = 0.05  # share of 10+ word sentences in dialogue, at least
+    voice_sim_max: float = 0.4  # speaker similarity (voices/similarity.json): the pair listeners mixed up scored 0.44
     length: float | None = None  # target minutes; an episode's <!-- length: N --> wins
 
     @classmethod
@@ -195,6 +196,7 @@ class Scenario:
     quiet: list[str] = field(default_factory=list)  # `<!-- lint-ok: words -->`: warnings containing them are dropped
     rules: Rules = field(default_factory=Rules)
     story: list[Node] = field(default_factory=list)  # the `## Map` table
+    profile: Path | None = None  # the profile the file belongs to, set by load()
 
     @property
     def turns(self) -> list[Turn]:
@@ -244,6 +246,9 @@ def load(path: str | Path) -> Scenario:
     sc.length = next((float(key) for kind, key, _ in sc.marks if kind == "length"), None)
     sc.quiet = [key for kind, key, _ in sc.marks if kind == "lint-ok"]
     sc.rules = Rules.of(path)
+    import profiles
+
+    sc.profile = profiles.of(path)
     return sc
 
 
@@ -587,6 +592,56 @@ def lint_question_order(sc: Scenario) -> list[Issue]:
     return out
 
 
+def registry(profile: Path) -> dict[str, str]:
+    """The series' voices: `characters.md`'s first `| voice | who |` table, voice -> description."""
+    f = profile / "characters.md"
+    rows: dict[str, str] = {}
+    for line in f.read_text().splitlines() if f.exists() else []:
+        if m := ROW.match(line.strip()):
+            voice, desc = [c.strip().strip("`") for c in m[1].split("|", 1)]
+            if voice.lower() != "voice" and not set(voice) <= set("-: "):
+                rows[voice] = desc.strip().strip("|").strip()
+        elif rows:
+            break
+    return rows
+
+
+def lint_casting(sc: Scenario) -> list[Issue]:
+    """One voice, one person (C6): no voice lent to another character, no two voices from one
+    file, no two cast voices the similarity check scores as one speaker."""
+    import hashlib
+
+    import voices
+
+    if not sc.profile:
+        return []
+    out: list[Issue] = []
+    known = registry(sc.profile)
+    for v, desc in sc.cast.items():
+        owner = names(known.get(v, ""))
+        if owner and not set(owner) & set(names(desc)):
+            who = desc.split(",")[0]
+            out.append(("warn", 1, f"voice {v} is {' '.join(owner)}'s in characters.md: {who} needs a voice of their own (C6)"))
+    used = sorted(set(sc.cast) | {t.voice for t in sc.turns})
+    files = {v: f for v in used if (f := voices.find(v, [sc.profile / "voices"]))}
+    digest = {v: hashlib.sha1(f.read_bytes(), usedforsecurity=False).hexdigest() for v, f in files.items()}
+    for a, b in combinations(sorted(digest), 2):
+        if digest[a] == digest[b]:
+            out.append(("warn", 1, f"voices {a} and {b} are the same recording: one person to the ear (C6)"))
+    f = sc.profile / "voices" / "similarity.json"
+    if not f.exists():
+        return [*out, ("warn", 1, "no voices/similarity.json: run voice_similarity.py to check the cast is told apart (C6)")]
+    sim = json.loads(f.read_text())
+    if stale := sorted(v for v in digest if sim["voices"].get(v, {}).get("sha1") != digest[v]):
+        out.append(("warn", 1, f"voices/similarity.json predates {', '.join(stale)}: rerun voice_similarity.py (C6)"))
+    for a, b in combinations(sorted(digest), 2):
+        score = sim["pairs"].get(f"{a}|{b}")
+        if score is not None and score > sc.rules.voice_sim_max and digest[a] != digest[b]:
+            over = f"over {sc.rules.voice_sim_max:g}"
+            out.append(("warn", 1, f"voices {a} and {b} score {score:.2f} ({over}): too close to tell apart, redesign one (C6)"))
+    return out
+
+
 def lint_pace(sc: Scenario) -> list[Issue]:
     """Scene budget by length: each cut costs an audio listener a reorientation."""
     minutes = sum(len(spoken(t.text)) for t in sc.turns) / CHARS_PER_SEC / 60
@@ -748,6 +803,7 @@ def lint(sc: Scenario) -> list[Issue]:
     else:
         out += lint_names(sc) + lint_scenes(sc) + lint_jokes(sc) + lint_laughs(sc) + lint_beats(sc) + lint_pace(sc)
         out += lint_story(sc) + lint_needs(sc) + lint_spoken_length(sc) + lint_question_order(sc)
+        out += lint_casting(sc)
     out = [i for i in out if i[0] == "error" or not any(q in i[2] for q in sc.quiet)]  # <!-- lint-ok: words -->
     return sorted(out, key=lambda x: x[1])
 

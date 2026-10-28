@@ -107,6 +107,22 @@ them in `structure.json` for its genre.
   lines. A catchphrase is different: rare, once an episode at most.
 - C5. Contrast voices in age, pitch, pace and accent; two similar voices in a fast exchange
   need names said.
+- C6. **One voice, one person, for the whole series.** Every speaking role gets its own voice,
+  a one-line extra too: the anon who answers on Двач, a courier, a voice on the radio. A voice
+  in `characters.md` belongs to its character; it is never lent to another role, even for one
+  line, because the ear has already tied it to a face and hears that person speak. An extra
+  gets a new voice and a row in `characters.md`, even if marked `(extra, ep NN)`. Two voices
+  that score close are mixed up by the ear: Михалыч and Палыч scored 0.44 and were.
+  - Make or change a voice with `design_voice.py NAME "..." --profile PROFILE`: it designs
+    `--tries` takes, scores each against the cast and saves the most distinct, or saves nothing
+    and says which voice each take sounds like, the pitch gap, and where pitch room is free.
+    A refusal is acted on, never forced past: change an axis the ear hears (age, pitch, pace,
+    accent, energy, C5), or reshape with `--pitch HZ --formant RATIO` (0.88 makes a voice
+    bigger and older). Richer words alone often land on the same timbre.
+  - Then `uv run $S/voice_similarity.py PROFILE` refreshes `voices/similarity.json`. The lint
+    warns when a cast voice belongs to another character, when two cast voices are the same
+    file, and when a cast pair scores over `voice_sim_max` (*tunable*). A close pair is
+    redesigned apart, not kept apart by naming.
 
 ## 3. Beat sheet
 
