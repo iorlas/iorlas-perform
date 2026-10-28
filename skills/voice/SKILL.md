@@ -23,7 +23,8 @@ background: renders take 2-6x real time, longer when the Mac swaps.
 ## Voices
 
 A voice is `<name>.wav` + `<name>.txt` (exact transcript). Lookup: `$PERFORM_VOICES`,
-then `./voices` in the current directory, then the bundled `praporshchik`, `girl`, `starik`.
+then `./voices` in the current directory, then the bundled `narrator`, `vadik`, `rajesh`,
+`praporshchik`, `girl`, `starik`. For multi-voice scenes use the `perform` skill.
 
 - Design one: `uv run $S/design_voice.py NAME "English description" --line "Русская фраза в характере"`.
   Fish copies the reference's delivery, not only its timbre: describe personality and

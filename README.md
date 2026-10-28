@@ -25,11 +25,18 @@ each model downloads to `~/.cache/huggingface` on its first use, with a log line
 
 ## Use
 
-Ask Claude to voice a text; the `voice` skill runs the scripts. Or run them yourself:
+Two skills:
+
+- `/perform`: give a scenario or an idea. Claude writes the tagged scene, casts voices
+  (designing new ones when needed), shows you the text, and on your yes renders a wav plus
+  `timeline.json`.
+- `voice`: one voice reading a text, voice design, recording your own voice.
+
+Or run the scripts yourself:
 
 ```bash
 uv run scripts/speak.py examples/shmatko.txt out.wav --voice praporshchik
-uv run scripts/scene.py examples/cherdak.txt scene.wav            # multi-voice + timeline
+uv run scripts/scene.py examples/senior_vadik.txt vadik.wav       # multi-voice + timeline
 uv run scripts/design_voice.py boss "A tired 40-year-old Russian office manager, dry sarcasm" --line "Ну и кто это опять сломал?"
 python3 scripts/record_refs.py
 ```
@@ -43,7 +50,8 @@ python3 scripts/record_refs.py
 | `record_refs.py` | guided recording of your own voice, space to start/stop |
 
 Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in `$PERFORM_VOICES`, then
-`./voices`, then the bundled `praporshchik`, `girl`, `starik` (designed with Qwen VoiceDesign).
+`./voices`, then the bundled `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`
+(designed with Qwen VoiceDesign).
 
 ## Tag guide
 
@@ -56,9 +64,8 @@ Tested by ear on Fish S2 Pro (Drama 3 judged better overall in an A/B; its tags 
 
 ## Roadmap
 
-- `/perform scenario.md`: Claude annotates a plain scenario (speakers, emotions, pauses,
-  emphasis), each line is rendered on its own, compiled to one wav plus `timeline.json`
-  (per-word timings, overlaps between speakers).
+- Per-word timings in `timeline.json` (forced alignment).
+- Overlapping speech: turns that start before the previous one ends.
 
 ## Licence
 
