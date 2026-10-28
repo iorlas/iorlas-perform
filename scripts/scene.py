@@ -94,12 +94,16 @@ def main():
     # Clips are placed on a timeline, not concatenated, so a negative gap can overlap.
     placed, timeline = [], []
     end = 0  # sample where the previous turn (or pause) ends
+    spoken = [t for v, t, _ in turns if v != "pause"]
+    total_chars, done_chars, done_turns = sum(map(len, spoken)), 0, 0
+    log(f"{len(spoken)} turns, {len(needed)} voices, {total_chars} chars; ETA after the first turn")
     start = time.time()
     for n, (voice, text, gap) in enumerate(turns, 1):
         if voice == "pause":
             end += int(text * sr)
             continue
         ref_audio, ref_text = refs[voice]
+        t0 = time.time()
         results = model.generate(text=text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
         audio = np.concatenate([np.array(r.audio) for r in results])
         if args.speed != 1.0:
@@ -112,7 +116,13 @@ def main():
         end = max(end, at + len(audio))
         timeline.append({"turn": n, "voice": voice, "text": text,
                          "start": round(at / sr, 3), "end": round((at + len(audio)) / sr, 3)})
-        print(f"[{n}/{len(turns)}] {voice}: {len(audio) / sr:.1f}s  {text[:50]}", flush=True)
+        # ETA scales the time so far by the characters left: render time follows text length.
+        done_turns, done_chars = done_turns + 1, done_chars + len(text)
+        elapsed = time.time() - start
+        eta = elapsed / done_chars * (total_chars - done_chars)
+        log(f"{done_turns}/{len(spoken)} {done_chars * 100 // total_chars}% {voice}: "
+            f"{len(audio) / sr:.1f}s audio in {time.time() - t0:.1f}s | "
+            f"elapsed {clock(elapsed)}, ETA {clock(eta)} | {text[:40]}")
 
     mix = np.zeros(end, dtype=np.float32)
     for at, audio in placed:
@@ -122,7 +132,17 @@ def main():
         mix *= 0.99 / peak
     sf.write(dest, mix, sr)
     dest.with_suffix(".timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=2) + "\n")
-    print(f"{dest}: {end / sr:.1f}s audio in {time.time() - start:.1f}s")
+    took = time.time() - start
+    log(f"done: {end / sr:.1f}s audio in {clock(took)} ({end / sr / took:.2f}x real time)")
+    print(f"{dest}: {end / sr:.1f}s audio in {took:.1f}s")
+
+
+def log(msg: str):
+    print(f"[perform] {msg}", flush=True)
+
+
+def clock(secs: float) -> str:
+    return f"{int(secs) // 60}m{int(secs) % 60:02d}s"
 
 
 def trim(audio: np.ndarray, sr: int, keep: float = 0.03) -> np.ndarray:
