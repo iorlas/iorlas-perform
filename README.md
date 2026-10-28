@@ -25,9 +25,11 @@ each model downloads to `~/.cache/huggingface` on its first use, with a log line
 
 ## Use
 
-Two skills:
+Three skills:
 
-- `/perform`: give a scenario or an idea. Claude writes the tagged scene, casts voices
+- `scenario`: writes or fixes a script with radio-drama craft (who speaks, where, when; scenes
+  that end on a beat), in the `@cast` / `@scene` format below, and lints it.
+- `/perform`: renders a ready scenario (given only an idea, it runs `scenario` first). Casts voices
   (designing new ones when needed), shows you the text, and on your yes renders a wav plus
   `timeline.json`.
 - `voice`: one voice reading a text, voice design, recording your own voice.
@@ -36,6 +38,7 @@ Or run the scripts yourself:
 
 ```bash
 uv run scripts/speak.py examples/shmatko.txt out.wav --voice praporshchik
+uv run scripts/scenario.py examples/senior_vadik.txt              # lint a script
 uv run scripts/scene.py examples/senior_vadik.txt vadik.wav       # multi-voice + timeline
 uv run scripts/scene.py examples/night_shift.txt night.wav        # with ambience beds
 uv run scripts/design_voice.py boss "A tired 40-year-old Russian office manager, dry sarcasm" --line "Ну и кто это опять сломал?"
@@ -45,7 +48,8 @@ python3 scripts/record_refs.py
 | script | job |
 |---|---|
 | `speak.py` | tagged text -> wav, voice cloned from one reference |
-| `scene.py` | `voice: text` scene -> wav + `timeline.json`, one render per turn |
+| `scenario.py` | scenario format parser and lint: every voice named, every scene placed |
+| `scene.py` | scenario -> wav + `timeline.json`, one render per turn, progress with ETA |
 | `ambience.py` | background beds (`office`, `kitchen`, `evening`, `night`, `rain`, `wind`), crossfade, ducking |
 | `engines.py` | engine list (`--engine drama3\|s2`), first-use download log |
 | `design_voice.py` | voice from a text description |
@@ -55,13 +59,42 @@ Voices are `<name>.wav` + `<name>.txt` (transcript), looked up in `$PERFORM_VOIC
 `./voices`, then the bundled `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`
 (designed with Qwen VoiceDesign).
 
+## Scenario format
+
+```
+@cast
+vadik  | Вадик, 28, тимлид третью неделю
+palych | Геннадий Палыч, IT-директор
+
+@scene Офис, утро | ambience office
+narrator: [calm, storyteller] Утро. Офис. Вадик третью неделю тимлид.
+palych: [loud] Вадим! Тимлид без команды — это просто лид!
+vadik@0.2: [nervous, too fast] Сделаем, Геннадий Палыч.
+{pause 1}
+```
+
+`@cast` names each voice; the lint checks every character is named before or in their first
+line and again when they return after a scene away. `@scene` adds a scene pause and, with
+`| ambience NAME`, a background bed. `voice@N:` sets the gap before a turn, negative overlaps.
+Files with only turns and `{pause N}` still render.
+
 ## Ambience
 
-A scene line `{ambience night}` brings in a background bed, crossfading over the 1.5 s
-before the next turn, so it is fully up as that turn starts; `{ambience rain 0.5}` sets volume (1 = default), `{ambience off}`
-fades out before the next turn. Beds sit 24 dB under the speech and duck 9 dB more while anyone talks. Put the
-line before the narrator's scene change ("Ночь. Офис."). `voice+phone: text` renders a turn
-through a telephone band. See [examples/night_shift.txt](examples/night_shift.txt).
+`@scene Офис, ночь | ambience night` puts a bed under the scene: it crossfades from the
+previous bed over 1.5 s and is fully up as the scene's first turn starts. `ambience rain 0.5`
+sets volume (1 = default); a scene without ambience fades the bed out. Beds sit 21 dB under the
+speech and duck 9 dB more while anyone talks. `{ambience NAME}` or `{ambience off}` changes the
+bed mid-scene. `voice+phone: text` renders a turn through a telephone band. See
+[examples/night_shift.txt](examples/night_shift.txt).
+
+| bed | for | sounds |
+|---|---|---|
+| `office` | office, open space, day | chatter, keyboards, air conditioner |
+| `kitchen` | kitchen, flat, home | fridge hum, TV through the wall |
+| `evening` | evening, outside, city | traffic, a few crickets |
+| `night` | night, outside or by a window | crickets, distant cars, wind |
+| `rain` | rain, street, courtyard | rain in a Saint Petersburg courtyard |
+| `wind` | outdoors, storm, roof | gusts |
 
 Beds are synthesized in numpy, nothing downloads: shaped noise for air conditioning, rain,
 wind and traffic, tones for crickets and hum, the bundled voices layered and muffled for
