@@ -99,6 +99,13 @@ how it ends. Rules:
   for outrage, `...` for a trailing hesitation, `—` for a cut-off or a turn of thought.
   Aim for at least one shift or jolt in every few lines; a scene of evenly delivered lines
   sounds read, not played.
+- **Fillers.** Live speech has them; give dialogue (never narration) Russian fillers:
+  «ну», «короче», «слушай», «блин», «типа», «как бы», «это самое», «значит», «вот»,
+  «ага», «да ладно», «ой», «ёлки». Each character gets their own set, which doubles as the
+  tic the ear tracks: a boss «так, значит», an old sysadmin «это самое», a young guy
+  «короче, типа», a mother «ой». About one per two or three lines, mid-sentence or at the
+  start, never inside a punchline. Prefer words over sounds: «э-э» and «ммм» can come out as
+  spelled letters.
 - **Length.** A character may say several sentences in one turn when the moment wants a
   speech: a rant, a confession, a story. Keep one turn under 300 characters (one render caps
   near 47 s); longer speeches continue in the next turn of the same voice with `@0.1`, and
