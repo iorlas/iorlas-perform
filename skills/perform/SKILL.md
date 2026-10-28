@@ -38,13 +38,16 @@ Show the user the script as readable text (character names, no tags) and the cas
 Run in the background, then send the wav and timeline:
 
 ```
-uv run $S/scene.py <name>.md <name>.wav [--engine drama3|s2] [--speed 1.1] [--gap 0.35]
+uv run $S/scene.py <name>.md [out.wav] [--engine drama3|s2] [--speed 1.1] [--gap 0.35]
                   [--scene-pause 1.5] [--max-silence 0.6] [--no-lint]
 ```
 
 - The lint runs first; errors stop the render before the model loads.
 - Inside a profile, the episode gets the profile's voices and `levels.json`, and the profile's
   `episodes/00-intro.md` plays first (`--no-intro` to skip; the intro file itself renders alone).
+- Without an output path, a profile's episode renders into the profile's `renders/` folder,
+  never into the plugin's repo or the user's project. Profiles live in the plugin's data
+  folder (`uv run $S/profiles.py` prints where).
 - Progress: one `[perform]` line per turn with percent, elapsed time and ETA.
 
 - A first-use model download logs `[perform] first use: downloading ...`; relay it with the size.
