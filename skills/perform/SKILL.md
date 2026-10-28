@@ -58,6 +58,9 @@ uv run $S/scene.py <name>.md [out.wav] [--engine drama3|s2] [--speed 1.1] [--gap
 - Beds come from `> ambience NAME` under a scene heading (README, Ambience). Preview one alone:
   `uv run $S/ambience.py night 10 night.wav`.
 - `--clips DIR` saves each turn as its own wav, for fixing one line or A/B tests.
+- Each take is transcribed (Whisper, local; ~1.6 GB on first use) and rendered again when it
+  repeats the line or its tail, overruns it, or skips words; `--no-check-speech` turns it off.
+  A turn still wrong after the retries is logged "kept the closest take": rephrase it.
 
 ## Sound design
 
@@ -92,5 +95,5 @@ the gains on every later render, once per voice, so whispers stay quieter than s
 edits that survive recalibration: `offset_db` (a narrator a little under the cast) and
 `semitones` (pitch shift at render; the timbre shifts with it).
 
-Report: audio length, render time, any turn that looks wrong (much shorter than its text
-suggests). Fix a bad turn by rephrasing or re-tagging it and rendering again.
+Report: audio length, render time, speech retries, any turn logged "kept the closest take",
+any turn that looks wrong (much shorter than its text suggests). Fix a bad turn by rephrasing or re-tagging it and rendering again.

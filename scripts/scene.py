@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.12,<3.13"
-# dependencies = ["mlx-audio>=0.6.2", "soundfile", "pyloudnorm", "scipy"]
+# dependencies = ["mlx-audio>=0.6.2", "mlx-whisper", "soundfile", "pyloudnorm", "scipy"]
 # ///
 """Render a multi-voice scene: one line per speaker turn, each in its own voice.
 
@@ -75,6 +75,7 @@ import soundfile as sf
 
 import ambience
 import engines
+import heard
 import master
 import profiles
 import scenario
@@ -83,10 +84,11 @@ import voices
 from scenario import Ambience, Pause, Scenario, Scene, Sfx, Turn
 
 ONSET_RETRIES = 3
+SPEECH_RETRIES = 2  # takes that say the wrong words (a repeat, skipped words): render again
 EDGE_IN, EDGE_OUT = 0.01, 0.06  # seconds of fade on each clip's edges: no hiss switching on and off
 TURN_PEAK = 10 ** (-1 / 20)  # -1 dBFS: the gain may raise a voice, never past clipping
 STAGES = dict.fromkeys(("load", "warm-up", "lines", "mix", "master"), 0.0)  # seconds, for the closing log line
-RETRIES = [0]  # onset retries this run
+RETRIES = [0, 0]  # onset and speech retries this run
 
 
 def parse_args() -> argparse.Namespace:
@@ -100,6 +102,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--scene-pause", type=float, default=1.5, help="silence before each scene, seconds")
     p.add_argument("--no-lint", action="store_true", help="render even when the lint finds errors")
     p.add_argument("--clips", type=Path, help="also save each turn as <dir>/NN_voice.wav")
+    p.add_argument(
+        "--no-check-speech", dest="check_speech", action="store_false", help="skip transcribing each take (repeats, skipped words)"
+    )
     p.add_argument("--loudness", type=float, default=master.DEFAULT_LUFS, help="episode loudness, LUFS (0: keep as mixed)")
     p.add_argument("--no-intro", action="store_true", help="skip the profile's episodes/00-intro.md")
     p.add_argument("--fresh-intro", action="store_true", help="render the intro again instead of reusing its cached takes")
@@ -148,19 +153,7 @@ def speak_turn(
 ) -> np.ndarray:
     """One turn as audio: generated, tempo and pitch set, edges trimmed, silences squashed, phone band, voice gain."""
     sr = model.sample_rate
-    ref_audio, ref_text = ref
-    # The model sometimes drops a line's first sound: the clip starts mid-word. Sampling
-    # differs per call, so generate again, and keep the softest start if none is clean.
-    takes = []
-    for attempt in range(1 + ONSET_RETRIES):
-        results = model.generate(text=item.text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
-        takes.append(np.concatenate([np.array(r.audio) for r in results]))
-        if not cut_onset(takes[-1], sr):
-            break
-        RETRIES[0] += 1
-        more = "trying again" if attempt < ONSET_RETRIES else "kept the softest start: rephrase the line"
-        log(f"{item.voice} line {item.line}: starts mid-sound, the first syllable is cut; {more}")
-    audio = min(takes, key=lambda t: onset_level(t, sr))
+    audio = said_right(model, item, ref, args)
     if args.speed != 1.0 or semitones_of(levels, item.voice):
         audio = atempo(audio, sr, args.speed, semitones_of(levels, item.voice))
     audio = trim(audio, sr)
@@ -174,6 +167,42 @@ def speak_turn(
         if (peak := np.abs(audio).max()) > TURN_PEAK:
             audio *= TURN_PEAK / peak
     return audio
+
+
+def take(model: engines.TTSModel, item: Turn, ref: tuple[Any, str]) -> np.ndarray:
+    """One generation of a turn with a clean start."""
+    sr = model.sample_rate
+    ref_audio, ref_text = ref
+    # The model sometimes drops a line's first sound: the clip starts mid-word. Sampling
+    # differs per call, so generate again, and keep the softest start if none is clean.
+    takes = []
+    for attempt in range(1 + ONSET_RETRIES):
+        results = model.generate(text=item.text, ref_audio=ref_audio, ref_text=ref_text, max_tokens=2048)
+        takes.append(np.concatenate([np.array(r.audio) for r in results]))
+        if not cut_onset(takes[-1], sr):
+            break
+        RETRIES[0] += 1
+        more = "trying again" if attempt < ONSET_RETRIES else "kept the softest start: rephrase the line"
+        log(f"{item.voice} line {item.line}: starts mid-sound, the first syllable is cut; {more}")
+    return min(takes, key=lambda t: onset_level(t, sr))
+
+
+def said_right(model: engines.TTSModel, item: Turn, ref: tuple[Any, str], args: argparse.Namespace) -> np.ndarray:
+    """A take that says the line's words: the model sometimes reads a line, or its tail, twice."""
+    sr = model.sample_rate
+    tried: list[tuple[float, np.ndarray]] = []
+    for attempt in range(1 + (SPEECH_RETRIES if args.check_speech else 0)):
+        audio = take(model, item, ref)
+        if not args.check_speech:
+            return audio
+        wrong, match = heard.problem(item.text, text := heard.transcribe(audio, sr))
+        if not wrong:
+            return audio
+        RETRIES[1] += 1
+        tried.append((match, audio))
+        more = "trying again" if attempt < SPEECH_RETRIES else "kept the closest take: listen to it, rephrase the line"
+        log(f"{item.voice} line {item.line}: {wrong} (heard «{text[:80]}»); {more}")
+    return max(tried, key=lambda x: x[0])[1]
 
 
 def mix_down(
@@ -399,6 +428,9 @@ def main() -> None:
     clip_log: dict[str, dict[str, Any]] = {}  # what was applied to each clip, so calibrate.py can measure the raw voice
     if args.clips:
         args.clips.mkdir(parents=True, exist_ok=True)
+        if (old := args.clips / "clips.json").exists():  # last run's clips: a shorter script leaves stale ones behind
+            for name in json.loads(old.read_text()):
+                (args.clips / name).unlink(missing_ok=True)
 
     intro_mix: tuple[np.ndarray, list[dict[str, Any]]] | None = None
     if intro_sc and intro and cache:
@@ -426,7 +458,11 @@ def main() -> None:
     dest.with_suffix(".timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=2) + "\n")
     took, length = time.time() - t_start, len(mix) / sr
     STAGES["lines"] -= STAGES["warm-up"]
-    log("stages: " + " | ".join(f"{k} {clock(v)}" for k, v in STAGES.items() if v) + f" | onset retries {RETRIES[0]}")
+    log(
+        "stages: "
+        + " | ".join(f"{k} {clock(v)}" for k, v in STAGES.items() if v)
+        + f" | onset retries {RETRIES[0]} | speech retries {RETRIES[1]}"
+    )
     log(f"done: {length:.1f}s audio in {clock(took)} ({length / took:.2f}x real time)")
     print(f"{dest}: {length:.1f}s audio in {took:.1f}s")
 
