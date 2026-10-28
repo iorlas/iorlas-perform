@@ -85,7 +85,8 @@ For a line over the effect («Вадим, у тебя телефон звони�
 Effects: `phone_ring`, `phone_vibrate`, `modem`, `door_open`, `door_close`, `door_knock`,
 `keyboard`, `notify`, `uh_oh` (ICQ-style), `call_join` (someone joins a call), `lighter`,
 `kettle`, `cash_register`, `error_beep`. The lint warns about a sound cue with no effect
-nearby; one or two effects per scene is plenty.
+nearby; one or two effects per scene is plenty. The senior-vadik episodes in
+`profiles/senior-vadik/episodes/` show them in use: calls, Zoom, keyboards, a lighter, a door.
 - Turns are list items, `- voice: Текст`, with the metadata inline:
   `[delivery tag]` for acting, `voice@N:` for the gap before (negative overlaps), and
   `- {pause N}` for a deliberate beat inside a scene (at most 3 s).
