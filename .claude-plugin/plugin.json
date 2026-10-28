@@ -1,7 +1,7 @@
 {
   "name": "iorlas-perform",
   "description": "Local Russian TTS on Apple Silicon: cloned or designed voices, ElevenLabs-style inline tags (laughs, sighs, whispers), Fish Drama 3 or S2 Pro via mlx-audio; /perform turns a scenario into a multi-voice scene with timeline.",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": {
     "name": "iorlas"
   },

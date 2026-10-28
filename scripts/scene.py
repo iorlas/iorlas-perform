@@ -62,6 +62,7 @@ Each model downloads on its first use, with a log line saying so.
 """
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -84,6 +85,8 @@ from scenario import Ambience, Pause, Scenario, Scene, Sfx, Turn
 ONSET_RETRIES = 3
 EDGE_IN, EDGE_OUT = 0.01, 0.06  # seconds of fade on each clip's edges: no hiss switching on and off
 TURN_PEAK = 10 ** (-1 / 20)  # -1 dBFS: the gain may raise a voice, never past clipping
+STAGES = dict.fromkeys(("load", "warm-up", "lines", "mix", "master"), 0.0)  # seconds, for the closing log line
+RETRIES = [0]  # onset retries this run
 
 
 def parse_args() -> argparse.Namespace:
@@ -99,6 +102,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--clips", type=Path, help="also save each turn as <dir>/NN_voice.wav")
     p.add_argument("--loudness", type=float, default=master.DEFAULT_LUFS, help="episode loudness, LUFS (0: keep as mixed)")
     p.add_argument("--no-intro", action="store_true", help="skip the profile's episodes/00-intro.md")
+    p.add_argument("--fresh-intro", action="store_true", help="render the intro again instead of reusing its cached takes")
     return p.parse_args()
 
 
@@ -153,6 +157,7 @@ def speak_turn(
         takes.append(np.concatenate([np.array(r.audio) for r in results]))
         if not cut_onset(takes[-1], sr):
             break
+        RETRIES[0] += 1
         more = "trying again" if attempt < ONSET_RETRIES else "kept the softest start: rephrase the line"
         log(f"{item.voice} line {item.line}: starts mid-sound, the first syllable is cut; {more}")
     audio = min(takes, key=lambda t: onset_level(t, sr))
@@ -208,44 +213,18 @@ def mix_down(
     return mix
 
 
-def main() -> None:
-    args = parse_args()
-
-    profile = profiles.of(args.src)
-    # A profile's episodes render into its renders/ folder; anything else renders next to itself.
-    default = profile / "renders" / Path(args.src).with_suffix(".wav").name if profile else Path(args.src).with_suffix(".wav")
-    dest = Path(args.out) if args.out else default
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    sc = scenario.load(args.src)
-    if not scenario.report(scenario.lint(sc), args.src) and not args.no_lint:
-        sys.exit("[perform] lint errors: fix them or pass --no-lint")
-    check_names(sc)
-    intro = profile / "episodes" / profiles.INTRO if profile else None
-    if intro and intro.exists() and not args.no_intro and Path(args.src).resolve() != intro.resolve():
-        sc.items = scenario.load(intro).items + sc.items  # the series intro opens every episode
-        log(f"intro: {intro.name}")
-    needed = {t.voice for t in sc.turns}
-    first = [profile / "voices"] if profile else []
-    levels = read_levels(profile, needed) if profile else {}
-    voice_wavs = find_voices(needed, first)
-
-    from mlx_audio.utils import load_audio
-
-    model = engines.load_engine(args.engine)
-    # Drama 3 keeps each voice's encoded reference in an LRU of 4: a cast of 5+ voices
-    # alternating would re-encode and re-prefill on every miss. Hold the whole cast.
-    voices: Any = getattr(model, "_voices", None)
-    if hasattr(voices, "_size"):
-        voices._size = max(voices._size, len(needed) + 2)  # noqa: SLF001  # no public setter
+def render(
+    sc: Scenario,
+    model: engines.TTSModel,
+    refs: dict[str, tuple[Any, str]],
+    args: argparse.Namespace,
+    levels: dict[str, dict[str, Any]],
+    *,
+    clip_log: dict[str, dict[str, Any]],
+    clip_prefix: str = "",
+) -> tuple[np.ndarray, list[dict[str, Any]]]:
+    """Every turn, effect and bed of a scenario, mixed and not yet mastered, with its timeline."""
     sr = model.sample_rate
-    refs: dict[str, tuple[Any, str]] = {}
-    for v, wav in voice_wavs.items():
-        transcript = wav.with_suffix(".txt").read_text().strip()
-        refs[v] = (load_audio(str(wav), sample_rate=sr), engines.ref_text(args.engine, transcript))
-    clip_log: dict[str, dict[str, Any]] = {}  # what was applied to each clip, so calibrate.py can measure the raw voice
-    if args.clips:
-        args.clips.mkdir(parents=True, exist_ok=True)
-
     # Clips are placed on a timeline, not concatenated, so a negative gap can overlap.
     placed: list[tuple[int, np.ndarray]] = []
     timeline: list[dict[str, Any]] = []
@@ -258,8 +237,8 @@ def main() -> None:
     end = lead  # sample where the previous turn (or pause) ends
     turns = sc.turns
     total_chars, done_chars, done_turns = sum(len(t.text) for t in turns), 0, 0
-    log(f"{len(turns)} turns, {len(sc.scenes)} scenes, {len(needed)} voices, {total_chars} chars; ETA after the first turn")
-    start, scene = time.time(), None
+    log(f"{len(turns)} turns, {len(sc.scenes)} scenes, {total_chars} chars")
+    start, scene, warm = time.time(), None, (0.0, 0)  # warm: the first call's seconds and characters
     for n, item in enumerate(sc.items, 1):
         if isinstance(item, Pause):
             end += int(item.secs * sr)
@@ -285,9 +264,12 @@ def main() -> None:
         voice, text, gap = item.voice, item.text, item.gap
         t0 = time.time()
         audio = speak_turn(model, item, refs[voice], args, levels)
+        took = time.time() - t0
+        STAGES["lines"] += took
         if args.clips:
-            sf.write(args.clips / f"{n:02d}_{voice}.wav", audio, sr)
-            clip_log[f"{n:02d}_{voice}.wav"] = {
+            name = f"{clip_prefix}{n:02d}_{voice}.wav"
+            sf.write(args.clips / name, audio, sr)
+            clip_log[name] = {
                 "voice": voice,
                 "gain_db": gain_db(levels, voice) if voice in levels else 0,
                 "semitones": semitones_of(levels, voice),
@@ -310,26 +292,141 @@ def main() -> None:
             }
             | ({"phone": True} if item.phone else {})
         )
-        # ETA scales the time so far by the characters left: render time follows text length.
         done_turns, done_chars = done_turns + 1, done_chars + len(text)
         elapsed = time.time() - start
-        eta = elapsed / done_chars * (total_chars - done_chars)
         log(
             f"{done_turns}/{len(turns)} {done_chars * 100 // total_chars}% {voice}: "
-            f"{len(audio) / sr:.1f}s audio in {time.time() - t0:.1f}s | "
-            f"elapsed {clock(elapsed)}, ETA {clock(eta)} | {text[:40]}"
+            f"{len(audio) / sr:.1f}s audio in {took:.1f}s | elapsed {clock(elapsed)}, "
+            f"ETA {eta(elapsed, done_chars, total_chars, warm)} | {text[:40]}"
         )
+        if not warm[1] and not STAGES["warm-up"]:  # the process's first call also loads the weights
+            warm = (elapsed, done_chars)
+            STAGES["warm-up"] = took
 
     changes += [(end, name, vol) for name, vol in pending]
+    t0 = time.time()
     mix = mix_down(placed, effects, changes, end, sr, timeline=timeline)
+    STAGES["mix"] += time.time() - t0
+    return mix, timeline
+
+
+def eta(elapsed: float, done: int, total: int, warm: tuple[float, int]) -> str:
+    """Time left at the rate so far, leaving out the first call's warm-up, which never repeats."""
+    secs, chars = (elapsed - warm[0], done - warm[1]) if warm[1] else (elapsed, done)
+    if done == total:
+        return "0m00s"
+    return clock(secs / chars * (total - done)) if chars > 0 and (warm[1] or STAGES["warm-up"]) else "after the next line"
+
+
+def intro_key(intro: Path, voice_wavs: dict[str, Path], levels: dict[str, dict[str, Any]], args: argparse.Namespace) -> str:
+    """What the intro's sound depends on; a cached intro with the same key is reused as is."""
+    sc = scenario.load(intro)
+    used = sorted({t.voice for t in sc.turns})
+    parts = [
+        intro.read_text(),
+        json.dumps({v: levels.get(v) for v in used}, sort_keys=True),
+        *(f"{v}:{voice_wavs[v].stat().st_size}:{voice_wavs[v].stat().st_mtime_ns}" for v in used),
+        *(f"{k}={getattr(args, k)}" for k in ("engine", "speed", "gap", "max_silence", "scene_pause")),
+    ]
+    return hashlib.sha256("\n".join(parts).encode()).hexdigest()
+
+
+def cached_intro(cache: Path, key: str, sr: int) -> tuple[np.ndarray, list[dict[str, Any]]] | None:
+    if not (cache / "key").exists() or (cache / "key").read_text().strip() != key:
+        return None
+    audio, cached_sr = sf.read(cache / "intro.wav", dtype="float32")
+    return (audio, json.loads((cache / "timeline.json").read_text())) if cached_sr == sr else None
+
+
+def save_intro(cache: Path, key: str, mix: np.ndarray, timeline: list[dict[str, Any]], sr: int) -> None:
+    """The intro as mixed, before mastering, so every episode joins it at the same level."""
+    cache.mkdir(parents=True, exist_ok=True)
+    sf.write(cache / "intro.wav", mix, sr, subtype="FLOAT")
+    (cache / "timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=2) + "\n")
+    (cache / "key").write_text(key + "\n")
+
+
+def join(
+    intro: np.ndarray, intro_tl: list[dict[str, Any]], ep: np.ndarray, ep_tl: list[dict[str, Any]], sr: int
+) -> tuple[np.ndarray, list[dict[str, Any]]]:
+    """The intro, then the episode, its opening bed fading in over the intro's bed tail."""
+    overlap = min(int(ambience.XFADE * sr), len(intro) // 4, len(ep))
+    out = np.zeros(len(intro) + len(ep) - overlap, dtype=np.float32)
+    out[: len(intro)] += intro
+    out[len(intro) - overlap :] += ep
+    shift = (len(intro) - overlap) / sr
+    moved = [e | {k: round(e[k] + shift, 3) for k in ("start", "end") if k in e} for e in ep_tl]
+    return out, intro_tl + moved
+
+
+def main() -> None:
+    args = parse_args()
+    t_start = time.time()
+
+    profile = profiles.of(args.src)
+    # A profile's episodes render into its renders/ folder; anything else renders next to itself.
+    default = profile / "renders" / Path(args.src).with_suffix(".wav").name if profile else Path(args.src).with_suffix(".wav")
+    dest = Path(args.out) if args.out else default
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    sc = scenario.load(args.src)
+    if not scenario.report(scenario.lint(sc), args.src) and not args.no_lint:
+        sys.exit("[perform] lint errors: fix them or pass --no-lint")
+    check_names(sc)
+    intro = profile / "episodes" / profiles.INTRO if profile else None
+    is_intro = bool(intro and Path(args.src).resolve() == intro.resolve())
+    intro_sc = scenario.load(intro) if intro and intro.exists() and not args.no_intro and not is_intro else None
+    cache = profile / "renders" / ".intro-cache" if profile else None
+    needed = {t.voice for t in sc.turns} | ({t.voice for t in intro_sc.turns} if intro_sc else set())
+    first = [profile / "voices"] if profile else []
+    levels = read_levels(profile, needed) if profile else {}
+    voice_wavs = find_voices(needed, first)
+
+    from mlx_audio.utils import load_audio
+
+    t0 = time.time()
+    model = engines.load_engine(args.engine)
+    # Drama 3 keeps each voice's encoded reference in an LRU of 4: a cast of 5+ voices
+    # alternating would re-encode and re-prefill on every miss. Hold the whole cast.
+    voices: Any = getattr(model, "_voices", None)
+    if hasattr(voices, "_size"):
+        voices._size = max(voices._size, len(needed) + 2)  # noqa: SLF001  # no public setter
+    sr = model.sample_rate
+    refs: dict[str, tuple[Any, str]] = {}
+    for v, wav in voice_wavs.items():
+        transcript = wav.with_suffix(".txt").read_text().strip()
+        refs[v] = (load_audio(str(wav), sample_rate=sr), engines.ref_text(args.engine, transcript))
+    STAGES["load"] = time.time() - t0
+    clip_log: dict[str, dict[str, Any]] = {}  # what was applied to each clip, so calibrate.py can measure the raw voice
+    if args.clips:
+        args.clips.mkdir(parents=True, exist_ok=True)
+
+    intro_mix: tuple[np.ndarray, list[dict[str, Any]]] | None = None
+    if intro_sc and intro and cache:
+        key = intro_key(intro, voice_wavs, levels, args)
+        intro_mix = None if args.fresh_intro else cached_intro(cache, key, sr)
+        if intro_mix is not None:
+            log(f"intro: {intro.name}, cached: the same takes as {profile and profile.name}/renders/{profiles.INTRO[:-3]}.wav")
+        else:
+            log(f"intro: {intro.name}, rendering it once; later episodes reuse it until it changes")
+            intro_mix = render(intro_sc, model, refs, args, levels, clip_log=clip_log, clip_prefix="intro_")
+            save_intro(cache, key, *intro_mix, sr)
+    mix, timeline = render(sc, model, refs, args, levels, clip_log=clip_log)
+    if is_intro and intro and cache:  # the intro rendered on its own is the one episodes reuse
+        save_intro(cache, intro_key(intro, voice_wavs, levels, args), mix, timeline, sr)
+    if intro_mix is not None:
+        mix, timeline = join(*intro_mix, mix, timeline, sr)
     if args.loudness:
+        t0 = time.time()
         mix, before, after, peak = master.normalize(mix, sr, args.loudness)
+        STAGES["master"] = time.time() - t0
         log(f"loudness: {before:.1f} -> {after:.1f} LUFS, true peak {peak:.1f} dBTP")
     sf.write(dest, mix, sr)
     if args.clips:
         (args.clips / "clips.json").write_text(json.dumps(clip_log, indent=2) + "\n")
     dest.with_suffix(".timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=2) + "\n")
-    took, length = time.time() - start, len(mix) / sr
+    took, length = time.time() - t_start, len(mix) / sr
+    STAGES["lines"] -= STAGES["warm-up"]
+    log("stages: " + " | ".join(f"{k} {clock(v)}" for k, v in STAGES.items() if v) + f" | onset retries {RETRIES[0]}")
     log(f"done: {length:.1f}s audio in {clock(took)} ({length / took:.2f}x real time)")
     print(f"{dest}: {length:.1f}s audio in {took:.1f}s")
 
