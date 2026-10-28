@@ -51,6 +51,7 @@ import numpy as np
 import soundfile as sf
 
 import engines
+import profiles
 import scenario
 import voices
 from scenario import Pause, Scene
@@ -75,9 +76,13 @@ def main():
     if not scenario.report(scenario.lint(sc), args.src) and not args.no_lint:
         sys.exit("[perform] lint errors: fix them or pass --no-lint")
     needed = {t.voice for t in sc.turns}
-    missing = sorted(v for v in needed if voices.find(v) is None)
+    profile = profiles.of(args.src)
+    first = [profile / "voices"] if profile else []
+    if profile:
+        log(f"profile: {profile.name} ({profile})")
+    missing = sorted(v for v in needed if voices.find(v, first) is None)
     if missing:
-        sys.exit(f"no voice: {', '.join(missing)}\navailable: {', '.join(voices.available())}")
+        sys.exit(f"no voice: {', '.join(missing)}\navailable: {', '.join(voices.available(first))}")
 
     from mlx_audio.utils import load_audio
 
@@ -85,7 +90,7 @@ def main():
     sr = model.sample_rate
     refs = {}
     for v in needed:
-        wav = voices.find(v)
+        wav = voices.find(v, first)
         transcript = wav.with_suffix(".txt").read_text().strip()
         refs[v] = (load_audio(str(wav), sample_rate=sr), engines.ref_text(args.engine, transcript))
     if args.clips:

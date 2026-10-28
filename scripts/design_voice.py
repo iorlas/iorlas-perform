@@ -12,10 +12,11 @@ description with personality and mannerisms, not only age and pitch, and give
 a --line in character.
 
 Usage:
-    uv run design_voice.py NAME "description in English" [--line "Русская фраза"]
+    uv run design_voice.py NAME "description in English" [--line "Русская фраза"] [--profile DIR]
     uv run design_voice.py --presets        # re-make the bundled voices
 """
 import argparse
+from pathlib import Path
 import sys
 import time
 
@@ -23,6 +24,7 @@ import numpy as np
 import soundfile as sf
 
 import engines
+import profiles
 import voices
 
 
@@ -53,6 +55,7 @@ def main():
     p.add_argument("description", nargs="?")
     p.add_argument("--line", default=LINE, help="Russian reference line, ~10s, in character")
     p.add_argument("--presets", action="store_true", help="make the bundled voices")
+    p.add_argument("--profile", help="write into this profile's voices/ (a name or a folder)")
     args = p.parse_args()
 
     if args.presets:
@@ -61,6 +64,11 @@ def main():
     elif args.name and args.description:
         jobs = [(args.name, args.description, args.line)]
         out = voices.user_dir()
+        if args.profile:
+            prof = profiles.find(args.profile) or Path(args.profile)
+            if not (prof / "profile.md").exists():
+                sys.exit(f"no profile: {args.profile}")
+            out = prof / "voices"
     else:
         p.print_usage()
         sys.exit(1)

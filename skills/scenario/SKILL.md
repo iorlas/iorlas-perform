@@ -1,13 +1,37 @@
 ---
 name: scenario
-description: Write or fix a script for an audio story, radio play or narrated multi-voice scene, using radio-drama craft so a listener with closed eyes always knows who speaks, where and when, and no scene feels cut off. Output is a lint-clean Markdown scenario file (.md: cast table, a ## heading per scene, turns as list items with inline tags), ready for /perform. Use for "write a scenario", "script this story", "fix this script", "part 2 of the story", or as step 1 of /perform. For rendering, use perform; for a single voice reading text, use voice.
+description: Write or fix a script for an audio story, radio play or narrated multi-voice scene, inside a profile (a series folder with its world, characters, voices, preferences and past episodes), using radio-drama craft so a listener with closed eyes always knows who speaks, where and when, and no scene feels cut off. Output is a lint-clean Markdown scenario file (.md: cast table, a ## heading per scene, turns as list items with inline tags), ready for /perform. Use for "write a scenario", "next episode", "script this story", "fix this script", "start a new series/profile", or as step 1 of /perform. For rendering, use perform; for a single voice reading text, use voice.
 ---
 
 # scenario
 
-Idea -> premise -> cast -> scene plan -> turns -> lint -> self-check -> approval.
+Profile -> premise -> cast -> scene plan -> turns -> lint -> self-check -> approval -> canon.
 Scripts: `${CLAUDE_SKILL_DIR}/../../scripts`, called `$S` below. The rules with sources are in
-`${CLAUDE_SKILL_DIR}/craft.md`; the tag guide is in the `voice` skill.
+`${CLAUDE_SKILL_DIR}/craft.md`; the tag guide is in the `voice` skill. This skill holds the
+craft that holds for any story; everything about one series lives in its profile.
+
+## 0. Profile
+
+A profile is a folder for one series or world (`$S/profiles.py` documents it):
+
+```
+profiles/<name>/
+  profile.md     format, tone, humour, acting and writing preferences, render settings
+  world.md       setting, rules of the world, running gags, canon so far
+  characters.md  cast table (voice | who) and how each character sounds: tics, fillers, accent
+  levels.json    per-voice loudness gain and pitch, from calibrate.py
+  voices/        the cast's voice files
+  episodes/      NN-slug.md, in order; 00-intro.md if the series has an intro
+```
+
+- `uv run $S/profiles.py` lists profiles: `$PERFORM_PROFILES`, `./profiles`, then the bundled
+  examples (read-only; `profiles.py copy NAME` copies one into `./profiles`).
+- Pick the profile the user names. With none named and one existing, use it; with several, ask.
+  A new series gets a new profile: write `profile.md`, `world.md` and `characters.md` from what
+  the user says, ask only about what changes the story (tone, audience, length).
+- Read `profile.md`, `world.md`, `characters.md` and the last two episodes before writing.
+  The profile's preferences override this skill's defaults where they conflict.
+- The bundled `senior-vadik` profile is a full example: copy its shape, not its jokes.
 
 ## Format
 
@@ -16,7 +40,7 @@ A Markdown file, `<name>.md`, that reads as a script when rendered:
 ```markdown
 # Сеньор Вадик. Часть 2: Три желания
 
-<!-- world: stories/WORLD.md -->
+<!-- profile: senior-vadik -->
 
 ## Cast
 
@@ -56,12 +80,13 @@ A Markdown file, `<name>.md`, that reads as a script when rendered:
 
 ## 1. Premise
 
-Read the world bible if the story has one (`WORLD.md` next to the scripts or stories) and the
-previous episode. Write down in 3 lines: what the hero wants, what goes wrong, the twist.
-Every episode stands alone: a listener who missed the last one must follow it.
+From the profile's world and canon, write down in 3 lines: what the hero wants, what goes
+wrong, the twist. Every episode stands alone: a listener who missed the last one must follow it.
 
 ## 2. Cast
 
+- Take characters from `characters.md`; copy their rows into the episode's `## Cast`. A new
+  character gets a row there too, and a voice (`design_voice.py --profile NAME`).
 - 3-4 major speaking roles, 6 at most. Each has one tic no one else has: a word («бхай»),
   a rhythm, a running gag. That is how the ear re-identifies them.
 - Contrast voices: age, pitch, pace, accent. Two similar voices in a fast exchange need
@@ -139,3 +164,12 @@ Read the script as a listener with closed eyes, then answer each:
 
 Show the user the script as readable text (names, no tags) with the cast table, then wait.
 Render with `perform` after a yes, or straight away if the user said to render.
+Save the episode as `profiles/<name>/episodes/NN-slug.md`, the next number.
+
+## 8. Canon
+
+Once the episode is approved, update the profile so the next episode starts from it:
+- `world.md`: one line under "Canon so far"; new running gags or rules of the world.
+- `characters.md`: new characters, and what changed about old ones.
+- `profile.md`: any preference the user stated while writing or listening ("too many places",
+  "more acting"), in their terms. The profile is where preferences live, not memory.
