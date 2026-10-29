@@ -118,7 +118,8 @@ them in `structure.json` for its genre.
     and says which voice each take sounds like, the pitch gap, and where pitch room is free.
     A refusal is acted on, never forced past: change an axis the ear hears (age, pitch, pace,
     accent, energy, C5), or reshape with `--pitch HZ --formant RATIO` (0.88 makes a voice
-    bigger and older). Richer words alone often land on the same timbre.
+    bigger and older). Richer words alone often land on the same timbre. Or start from a
+    consented reference voice, seeded in Russian (the `voice` skill, Voices).
   - Then `uv run $S/voice_similarity.py PROFILE` refreshes `voices/similarity.json`. The lint
     warns when a cast voice belongs to another character, when two cast voices are the same
     file, and when a cast pair scores over `voice_sim_max` (*tunable*). A close pair is

@@ -35,7 +35,32 @@ then the bundled `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`
   and stop). Run it in the user's terminal tab, never in a background shell. It records one
   reference per mood (calm, happy, angry, sad, whisper, excited) into `$PERFORM_VOICES` or
   `./voices`; copy the one to use into a profile's `voices/` by hand.
+- Start from a consented reference: a real recording gives a timbre the designer cannot reach
+  (its "older Russian man" and "young Russian woman" each land on one timbre, whatever the
+  words). Use only recordings whose speakers agreed to be cloned:
+  - Kyutai Unmute Voice Donation Project, `huggingface.co/kyutai/tts-voices`, folder
+    `voice-donations/`: 228 volunteers, CC0. The terms grant reuse "for any purpose (commercial
+    or non-commercial)", TTS and voice replicas included, under Kyutai's Acceptable Use Policy.
+    Donors may withdraw: keep the source id, and retire a voice whose file leaves the repo.
+    No labels (age, sex), mostly English; some have an `_enhanced` (denoised, de-echoed) copy.
+  - Mozilla Data Collective, Denis 1.0 and Dmitri 1.0: Russian, one man each, CC0, recorded for
+    TTS; no consent wording found, read the dataset card before using them.
+  - Refused: Common Voice and LibriVox readings (speakers never agreed to cloning); EARS and
+    Expresso are CC BY-NC (no commercial use); VCTK and CML-TTS name no cloning consent.
+  The picks, with the user's verdicts, are kept outside any profile in
+  the plugin's data folder, `voice-library/catalog.md`
+  (`~/.claude/plugins/data/iorlas-perform-iorlas-marketplace/voice-library/`). Screen a collection by pitch, roughness
+  (Praat HNR, shimmer) and an age-gender estimate, then by ear: send labelled packs (a spoken
+  name before each voice), never a row of unlabelled clips.
+- Seed a reference in Russian. An English (or noisy) clip anchors Fish loosely: in Russian, its
+  lines drift to other speakers. Cut the clip's pauses to 0.3 s, render one long, expressive
+  Russian line from it, keep the take the ear likes, and make that take the reference
+  (`<name>.wav` + its Russian text). Lines of one voice then scored 0.79-0.87 against each
+  other instead of 0.38. The seed's delivery becomes the voice: a breathy tag made a whisperer.
+- Check it apart from the cast: `uv run $S/voice_similarity.py PROFILE --check new.wav`
+  (`design_voice.py --profile` does it for designed takes; scenario rule C6).
 - Never clone a real person's voice from a clip without their consent; design a character instead.
+  A CC0 voice does not change the engine's licence (see Licence).
 
 ## Engines
 
@@ -60,7 +85,13 @@ Free-form `[tag]` text passes to the model as written. Tested by ear:
 - Never spell `ха-ха`: it is read aloud as a word.
 - `[laughing]`, `[laughing tone]`, `[giggles]` alone: weak or no laugh.
 - Questions come out flat without help: tag the delivery, e.g. `[provocative, rising intonation]`,
-  `[challenging]`, `[sarcastic question]`.
+  `[challenging]`, `[sarcastic question]`, one tag per question inside the turn. A spoken
+  particle («а?», «перезагрузить-то») makes it sound more real, but only for a character who
+  talks that way.
+- Same voice, different sound per line: Fish samples every take afresh. `scene.py` seeds each
+  voice (one fixed seed per voice name, moved on a retry), so a voice holds together across
+  turns and a rerender repeats it; `--free-seed` samples freely. Low temperature or feeding
+  earlier takes as history made takes that never end (47 s, no stop).
 - Others: `[sigh]` `[whisper]` `[shouting]` `[excited]` `[sad]` `[angry]` `[surprised]`
   `[chuckle]` `[inhale]` `[pause]` `[short pause]` `[emphasis]`.
 - Pauses: `[pause]` and `[short pause]` can stretch to 2-4 s; `scene.py` caps silences inside a

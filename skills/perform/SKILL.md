@@ -20,13 +20,17 @@ the `scenario` skill (`${CLAUDE_SKILL_DIR}/../scenario/SKILL.md`) and come back.
 
 List characters and pick a voice for each: an existing one (the scenario's profile `voices/`,
 then `$PERFORM_VOICES` (else `./voices`), then bundled: `narrator`, `vadik`, `rajesh`, `praporshchik`, `girl`, `starik`) or a new design.
-A reused voice under another character's name: copy its `.wav` and `.txt` into `./voices/<name>.*`.
+Every character gets a voice of its own, a one-line extra too: a voice already used by another
+character of the series, or one that sounds too close to it, gets a lint warning (scenario C6).
 
 New voice: `uv run $S/design_voice.py NAME "description" --line "Русская фраза в характере" --profile <name>`
 (without `--profile` it lands in `./voices`, which a profile episode still finds, but the profile
 is then incomplete).
 The description carries personality and mannerisms, not only age and pitch; the line is 8-12 s,
-in character, with no brackets.
+in character, with no brackets. With `--profile` the take must also score apart from the cast,
+or nothing is saved and the script says why.
+Or start from a consented reference voice and seed it in Russian: the `voice` skill lists the
+sources and the method.
 
 ## 3. Approve
 
