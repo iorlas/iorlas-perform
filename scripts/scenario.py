@@ -98,6 +98,9 @@ class Rules:
     clipped_max: float = 0.55  # share of 1-3 word sentences in dialogue, at most
     long_min: float = 0.05  # share of 10+ word sentences in dialogue, at least
     voice_sim_max: float = 0.4  # speaker similarity (voices/similarity.json): the pair listeners mixed up scored 0.44
+    # A pair over voice_sim_max still passes this far apart in median pitch, semitones: mikhalych
+    # and palych scored 0.46 at 7.6 semitones apart and were told apart by ear (one listener).
+    voice_pitch_apart: float = 6
     length: float | None = None  # target minutes; an episode's <!-- length: N --> wins
 
     @classmethod
@@ -636,8 +639,12 @@ def lint_casting(sc: Scenario) -> list[Issue]:
         out.append(("warn", 1, f"voices/similarity.json predates {', '.join(stale)}: rerun voice_similarity.py (C6)"))
     for a, b in combinations(sorted(digest), 2):
         score = sim["pairs"].get(f"{a}|{b}")
-        if score is not None and score > sc.rules.voice_sim_max and digest[a] != digest[b]:
-            over = f"over {sc.rules.voice_sim_max:g}"
+        if score is None or score <= sc.rules.voice_sim_max or digest[a] == digest[b]:
+            continue
+        fa, fb = (sim["voices"].get(v, {}).get("f0_hz") for v in (a, b))
+        gap = abs(12 * math.log2(fa / fb)) if fa and fb else 0
+        if gap < sc.rules.voice_pitch_apart:
+            over = f"over {sc.rules.voice_sim_max:g}, {gap:.1f} semitones apart"
             out.append(("warn", 1, f"voices {a} and {b} score {score:.2f} ({over}): too close to tell apart, redesign one (C6)"))
     return out
 

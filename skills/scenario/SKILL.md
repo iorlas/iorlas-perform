@@ -122,8 +122,10 @@ them in `structure.json` for its genre.
     consented reference voice, seeded in Russian (the `voice` skill, Voices).
   - Then `uv run $S/voice_similarity.py PROFILE` refreshes `voices/similarity.json`. The lint
     warns when a cast voice belongs to another character, when two cast voices are the same
-    file, and when a cast pair scores over `voice_sim_max` (*tunable*). A close pair is
-    redesigned apart, not kept apart by naming.
+    file, and when a cast pair scores over `voice_sim_max` (*tunable*) unless their median
+    pitches are `voice_pitch_apart` (6, *tunable*) semitones or more apart: Михалыч and Палыч
+    scored 0.46 at 7.6 semitones and were told apart. A close pair is redesigned apart, not
+    kept apart by naming.
 
 ## 3. Beat sheet
 
