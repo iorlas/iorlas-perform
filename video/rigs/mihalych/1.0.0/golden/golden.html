@@ -1,0 +1,50 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#26344f}</style></head><body><div id="c"></div>
+<script src="../art/mihalych_cut.js"></script>
+<script>
+var HF=window.HF,R=HF.RIG.mihalych,F="Helvetica, Arial, sans-serif";function J(x){return JSON.parse(JSON.stringify(x))}
+var n=0,o='<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1800" viewBox="0 0 2400 1800"><rect width="2400" height="1800" fill="#26344f"/>';
+function T(x,y,s,t,fill,a){return '<text x="'+x+'" y="'+y+'" text-anchor="'+(a||'middle')+'" font-size="'+s+'" font-family="'+F+'" fill="'+(fill||'#efe7d2')+'">'+t+'</text>'}
+function cell(x,y,w,h,label,pose,expr,mouth,vb,extra){
+ o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="10" fill="#33476a"/>';
+ var st={ch:'mihalych',uid:'u'+(n++),pose:J(R.poses[pose]),expr:J(R.expr[expr]),mouth:mouth||0,gaze:{x:0,y:0},t:.8};
+ if(extra)for(var k in extra)st.pose[k]=extra[k];
+ o+='<svg x="'+x+'" y="'+y+'" width="'+w+'" height="'+(h-34)+'" viewBox="'+vb.join(' ')+'" overflow="hidden">'+R.draw(st)+'</svg>';
+ o+=T(x+w/2,y+h-10,20,label)}
+function body(x,y,w,label,pose,expr,mouth,extra){cell(x,y,w,700,label,pose,expr,mouth,[-w/2/0.95-0,-215,w/0.95,666/0.95],extra)}
+function fix(w,ox){return ox}
+/* row 1: standing views */
+var W1=398;
+[['stand_still','front (stoop 6°)','tired_neutral'],['stand_q','3/4 (body 28°, head 25°)','tired_neutral'],['stand_side','side','tired_neutral'],['stand_back','back','tired_neutral'],['stand_slump','slump','drag'],['smoke_hand','cigarette in hand','tired_neutral']].forEach(function(a,i){body(2+i*(W1+1),6,W1,a[1],a[0],a[2],0)});
+/* row 2: sit + walk */
+function sitcell(x,w,label,pose,sc,x0){sc=sc||.7;cell(x,716,w,520,label,pose,'tired_neutral',0,[x0==null?-w/2/sc:x0,-130,w/sc,486/sc])}
+sitcell(4,330,'sit front','sit_front',.62,-200);sitcell(338,360,'sit side','sit_side',.6,-140);
+for(var i=0;i<8;i++){var w=210;cell(704+i*(w+2),716,w,520,'walk '+(i+1)+'/8','walk_'+i,'tired_neutral',0,[-w/2/0.62-14,-215,w/0.62,486/0.62])}
+/* row 3: mouth states + expressions + numbers */
+var by=1244;
+[0,.3,.6,.9].forEach(function(m,i){cell(4+i*200,by,196,236,'mouth '+m,'stand_still','tired_neutral',m,[-98,-192,196,202])});
+var EX=['tired_neutral','deadpan','wince','panic','pretend','shame','realize','blank','soft_smile','drag'];
+EX.forEach(function(e,i){var cx=818+(i%5)*198,cy=by+Math.floor(i/5)*(246);cell(cx,cy,196,238,e,'stand_still',e,0,[-98,-192,196,202])});
+/* side-view mouth + smoke drag */
+cell(4,by+246,196,236,'side: closed','stand_side','tired_neutral',0,[-20,-192,196,202]);
+cell(204,by+246,196,236,'side: 0.6','stand_side','tired_neutral',.6,[-20,-192,196,202]);
+cell(404,by+246,196,236,'side: drag','stand_side','drag',0,[-20,-192,196,202]);
+cell(604,by+246,196,236,'3/4: 0.6','stand_q','tired_neutral',.6,[-98,-192,196,202]);
+/* numbers */
+var d=R.dim,hs=R.hs,topY=-(20+hs.B*d.HS)-hs.T*d.HS,ck=R.checkSkull();
+var L=['ЦИФРЫ (mihalych 1.0.0)',
+'рост: макушка до пола '+Math.round(d.floor-topY)+' px; голова '+Math.round((hs.T+hs.B)*d.HS)+' px (x'+d.HS+') = '+((d.floor-topY)/((hs.T+hs.B)*d.HS)).toFixed(1)+' головы',
+'плечи полуширина '+d.sw+' (халат на бёдрах '+(d.sw+d.bel+10)+'), подол y='+d.hemY+', бёдра y='+d.hipY+', пол y='+d.floor,
+'череп: кубическая Безье, 4 якоря, касательные совпадают: стык '+ck.front.joint_deg.toFixed(3)+'° (фас), '+ck.side.joint_deg.toFixed(3)+'° (профиль); макс. поворот на шаг 1/60 '+ck.front.max_step_deg.toFixed(2)+'°/'+ck.side.max_step_deg.toFixed(2)+'°',
+'сутулость: lean 7° по умолчанию (stand_still), 11° в stand_slump, 20° сидя в профиль; фас: голова ниже на lean*0.9 px, профиль: поворот верхней части вокруг бёдер',
+'ноги: носки наружу ±9°, стопы врозь ±30 px; сапоги рабочие; руки идут против ног (ходьба, 8 кадров: шаг ±62 px, подъём 26 px)',
+'рот: mouth_open 0/0.3/0.6/0.9 = высота щели 0/'+(17*.3).toFixed(1)+'/'+(17*.6).toFixed(1)+'/'+(17*.9).toFixed(1)+' px; зубы с 0.4, язык с 0.55',
+'вид 3/4: тело асимметрично (ближняя сторона шире, дальняя уже на 26*sin px), полы смещены от центра, дальняя рука за халатом; голова yaw 25°, дальнее ухо скрыто',
+'халат: без пояса, А-силуэт (талия y=165, бёдра ~250), лацкан + одна тень, до 3 складок, подол качается и раскрывается при ходьбе/сидя',
+'руки: ладонь + большой + блок из 3 пальцев; расслабл./кулак/сигарета; манжета рубашки + манжета халата',
+'свет сверху слева; слой = основа + одна тень (клип), без градиентов и полос',
+'СЛАБО: 3/4 дальняя рука видна целиком, но уже; голова 31..89° не поддержана; в профиле шов между верхней частью халата и подолом; стол и ЭЛТ упрощены; кисти — блоки, не шарнирные;',
+'сигарета: правое ухо (экранное) в фас, ближнее ухо в 3/4 и профиле'];
+var LL=[];L.forEach(function(t,k){var w=t.split(' '),cur='';w.forEach(function(x){if((cur+' '+x).length>78){LL.push([cur,k==0]);cur='   '+x}else cur=cur?cur+' '+x:x});LL.push([cur,k==0])});
+LL.forEach(function(p,i){o+=T(1836,by+22+i*17,13,p[0],(p[1]||p[0].indexOf('СЛАБО')==0)?'#f1c46b':'#efe7d2','start')});
+o+='</svg>';document.getElementById('c').innerHTML=o;window.__ok=1;
+</script></body></html>

@@ -1,0 +1,18 @@
+{
+ "id": "friend",
+ "version": "1.0.1",
+ "algorithm": "sha256-tree-v1",
+ "sha256": "0bb49dfcfd4ec308ecd9b68afb6bb991e132953fa337e7c3d553edb9b482fe60",
+ "files": {
+  "RIG.md": "f4a78362e6874e6f5f3ca95670027325b6488a4fcdfe4191f989bfd3d11b1947",
+  "art/female_cut.js": "b72e7d8a2a164bc65c73c188f40078ebbe6621832ce53096f2e783f65fb01a1e",
+  "golden/golden.html": "8caf5389261092e73469f8593475aa392320f873b69742ff3f7a0257fec4f99b",
+  "golden/golden_panic.html": "dc9eb4035310c4786d91150c7f9bd474726094f2bfdd77d8fdd898b0fd23e4c8",
+  "golden/harness/hf.js": "910f3ae4f739ab00df162fc19dec3223d0661b3f959e9102a348f35dfe2ba06d",
+  "golden/harness/poses.js": "7ddc4d24d271392a37812c322e11a9f833d8bec1d6ef70527878463e80ef3604",
+  "golden/harness/puppet.js": "76e4a0b41671e488e4c38c6ea37314f9018ab891a35bc2d8022f47b43032556a",
+  "golden/notes12.js": "175cccfedded00718ad2b2e9c6bc82523091334544897e0c532aff8727a80831",
+  "golden/render.mjs": "9e0a326e8f53eedf0a2cbfb525f8c043ff93a156a6b2564b78622ff0cea8e078",
+  "rig.json": "20407af455cc4fcb7f37e82c8c0b2002e682f03ef60a2a7d1054de5eb002c424"
+ }
+}

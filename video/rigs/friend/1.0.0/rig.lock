@@ -1,0 +1,17 @@
+{
+ "id": "friend",
+ "version": "1.0.0",
+ "algorithm": "sha256-tree-v1",
+ "sha256": "fc20d175c6f63216dd18f6af85739047df17c787a42421d0f4cacab710c3199b",
+ "files": {
+  "RIG.md": "8b7538ce97701196ee6708b864f96433b9967e07796ee12cf8ea6054917b9874",
+  "art/female_cut.js": "a5cdcb00417e2b530b255ee0967100f91f4f28e30705d314432cd6b174764e9e",
+  "golden/golden.html": "8caf5389261092e73469f8593475aa392320f873b69742ff3f7a0257fec4f99b",
+  "golden/harness/hf.js": "910f3ae4f739ab00df162fc19dec3223d0661b3f959e9102a348f35dfe2ba06d",
+  "golden/harness/poses.js": "7ddc4d24d271392a37812c322e11a9f833d8bec1d6ef70527878463e80ef3604",
+  "golden/harness/puppet.js": "76e4a0b41671e488e4c38c6ea37314f9018ab891a35bc2d8022f47b43032556a",
+  "golden/notes12.js": "175cccfedded00718ad2b2e9c6bc82523091334544897e0c532aff8727a80831",
+  "golden/render.mjs": "1a55dfb7836134d81ade4174514f0c57f99711fd3d0c716091d487c23168bf46",
+  "rig.json": "c065bde44d7c04dd1c9fc6e7a56d337c067db0628e8dd192823f93540d37a8cb"
+ }
+}

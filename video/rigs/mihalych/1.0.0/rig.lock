@@ -1,0 +1,14 @@
+{
+ "id": "mihalych",
+ "version": "1.0.0",
+ "algorithm": "sha256-tree-v1",
+ "sha256": "020981674ec0743fdb105be6af5ea4e6e9743956db62b438c055148e59cf8c94",
+ "files": {
+  "RIG.md": "5453ce7b60a7b99205e0d5568d9a4b6ab2ce2a33bdccb8f6bd47890749908b4c",
+  "art/mihalych_cut.js": "67ce5682205ff53ee81c6f897642c644cd39a698e038fe81ec7e7931dbabc0a4",
+  "golden/golden.html": "95033503db85110735c25001dcc88791964a70c829e17291a45dfe6fa89f24f1",
+  "golden/golden_panic.html": "c7ab3bd72f8ff02fad5ca8142d1d06714a21e5e8322f967b8e59e1d32cd6cb41",
+  "golden/render.mjs": "9e0a326e8f53eedf0a2cbfb525f8c043ff93a156a6b2564b78622ff0cea8e078",
+  "rig.json": "9f53864aa2cc5f61c2e8f82bbd07e630441074118ebfff1325c21de7e7aa5721"
+ }
+}

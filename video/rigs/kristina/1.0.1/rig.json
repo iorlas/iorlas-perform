@@ -1,0 +1,1123 @@
+{
+ "id": "kristina",
+ "version": "1.0.1",
+ "body_type": "f",
+ "look": "cutout",
+ "seed": 15,
+ "description": "Кристина (working name): cast15 sheet12 variant 4 face; dark half-bun hair with gold clip; sage knit sweater, dark trousers, white sneakers. 1.0.1: panic reworked so it no longer reads as a laugh: larger eyes, open oval mouth with corners down, no teeth/tongue, brows high and worried.",
+ "module": {
+  "file": "art/female_cut.js",
+  "registers": {
+   "rig": "HF.RIGS.kristina",
+   "data": "HF.RIG.kristina",
+   "expressions": "HF.EXPR_F.kristina",
+   "poses": "HF.POSES_F",
+   "char": "HF.CHARS.kristina"
+  },
+  "purity": "pure function of (state, t); no randomness (no tufts); only t-driven fid idle",
+  "shared_module": "female_cut.js registers both kristina and friend; each version dir carries a verbatim copy so its hash stays self-contained"
+ },
+ "space": {
+  "origin": "neck base",
+  "y_axis": "down",
+  "units": "px",
+  "floor_y": 548,
+  "hip_y": 214,
+  "head_scale": 1.109,
+  "height_vs_vadik": 0.945,
+  "height_basis": "skull top to floor (vadik 734 px, this rig 694 px)"
+ },
+ "dim": {
+  "sw": 42,
+  "shY": 27,
+  "UA": 83,
+  "FA": 77,
+  "UL": 158,
+  "LL": 156,
+  "hipY": 214,
+  "hemY": 170,
+  "waistY": 122,
+  "ww": 31,
+  "hemW": 40,
+  "ankleY": 528,
+  "floor": 548,
+  "neckY": -33,
+  "sitDy": 118,
+  "hs": 19,
+  "ank": 26,
+  "boot": 0,
+  "tee": 0,
+  "hips": 55,
+  "wTop": 36,
+  "legA": 36.5,
+  "legB": 14.4,
+  "calfW": 15.8,
+  "ankW": 9.2,
+  "kneeW": 14.2,
+  "bw": 47.9,
+  "rb": 40.8,
+  "ap": 37.5
+ },
+ "palette": {
+  "skin": "#f6e0cc",
+  "skin2": "#e9c9b2",
+  "skinSh": "#d5ab92",
+  "hair": "#34242b",
+  "hair2": "#5a444e",
+  "hair3": "#241a20",
+  "gold": "#d6b45a",
+  "top": "#8fb09a",
+  "top2": "#6f9380",
+  "topHi": "#a8c4b3",
+  "collarIn": "#5f8470",
+  "pants": "#363a4a",
+  "pants2": "#272a38",
+  "pantsHi": "#474c60",
+  "shoe": "#ecebe6",
+  "shoe2": "#c6c5bf",
+  "sole": "#f7f2e4",
+  "shoeAcc": "#8fb09a",
+  "mouthIn": "#4a1c2a",
+  "teeth": "#f6efe6",
+  "tongue": "#d4666e",
+  "shadow": "#0b1020",
+  "pantsHi2": "#434960",
+  "pantsSh": "#2a2e3e",
+  "pantsSh2": "#212434",
+  "topHi2": "#a1c0ad",
+  "topSh": "#79a08b"
+ },
+ "parts": [
+  {
+   "name": "hair_back",
+   "draw": "PF.hair_back",
+   "frame": "head",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "hair_front",
+   "draw": "PF.hair_front",
+   "frame": "head",
+   "pivot": [
+    0,
+    -50
+   ]
+  },
+  {
+   "name": "skull",
+   "draw": "PF.skull",
+   "frame": "head",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "ear",
+   "draw": "PF.ear",
+   "frame": "head",
+   "pivot": [
+    0,
+    -37
+   ]
+  },
+  {
+   "name": "head_profile",
+   "draw": "PF.head_profile",
+   "frame": "head",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "neck",
+   "draw": "PF.neck",
+   "frame": "torso",
+   "pivot": [
+    0,
+    -16
+   ]
+  },
+  {
+   "name": "torso",
+   "draw": "PF.torso",
+   "frame": "torso",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "collar",
+   "draw": "PF.collar",
+   "frame": "torso",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "upper_arm",
+   "draw": "PF.upper_arm",
+   "frame": "shoulder",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "forearm",
+   "draw": "PF.forearm",
+   "frame": "elbow",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "hand",
+   "draw": "PF.hand",
+   "frame": "wrist",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pelvis",
+   "draw": "PF.pelvis",
+   "frame": "hip",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "upper_leg",
+   "draw": "PF.upper_leg",
+   "frame": "hip_joint",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "lower_leg",
+   "draw": "PF.lower_leg",
+   "frame": "knee",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "foot",
+   "draw": "PF.foot",
+   "frame": "ankle",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "torso_side",
+   "draw": "PF.torso_side",
+   "frame": "torso",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pelvis_side",
+   "draw": "PF.pelvis_side",
+   "frame": "hip",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "upper_leg_side",
+   "draw": "PF.upper_leg_side",
+   "frame": "hip_joint",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "thigh_sit",
+   "draw": "PF.thigh_sit",
+   "frame": "hip_joint",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "foot_back",
+   "draw": "PF.foot_back",
+   "frame": "ankle",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "head_back",
+   "draw": "PF.head_back",
+   "frame": "head",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "chair",
+   "draw": "PF.chair",
+   "frame": "hip",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "phone",
+   "draw": "PF.phone",
+   "frame": "grip",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "mug",
+   "draw": "PF.mug",
+   "frame": "grip",
+   "pivot": [
+    0,
+    0
+   ]
+  }
+ ],
+ "pivots": {
+  "root": {
+   "at": [
+    0,
+    548
+   ],
+   "note": "floor contact, between feet"
+  },
+  "hip": {
+   "at": [
+    0,
+    194
+   ],
+   "parent": "root",
+   "note": "upper body lean pivot (rotate about y=hipY)"
+  },
+  "torso": {
+   "at": [
+    0,
+    0
+   ],
+   "parent": "hip",
+   "note": "neck base"
+  },
+  "neck": {
+   "at": [
+    0,
+    -16
+   ],
+   "parent": "torso"
+  },
+  "head": {
+   "at": [
+    0,
+    -33
+   ],
+   "parent": "neck",
+   "note": "head frame origin = chin/neck joint, drawn at scale 1.18 of cast units; tilt + yaw pivot"
+  },
+  "hair_back": {
+   "at": [
+    0,
+    0
+   ],
+   "parent": "head",
+   "note": "back layer, drawn before torso/neck so it falls behind neck and shoulders; narrows with yaw; long straight hair to y=+66 (head frame)"
+  },
+  "hair_front": {
+   "at": [
+    0,
+    0
+   ],
+   "parent": "head",
+   "note": "fringe/side strands, shifts fx*0.3 with yaw"
+  },
+  "skull": {
+   "at": [
+    0,
+    0
+   ],
+   "parent": "head",
+   "note": "skin + all face features (eyes, brows, nose, mouth) clipped to the skull; features translate/narrow with yaw"
+  },
+  "ear": {
+   "at": [
+    0,
+    -37
+   ],
+   "parent": "head",
+   "note": "earrings/studs (pair centre)"
+  },
+  "head_profile": {
+   "at": [
+    0,
+    0
+   ],
+   "parent": "head",
+   "note": "used when |yaw|>=0.75, faces +x, mirrored for yaw<0"
+  },
+  "upper_arm_L_R": {
+   "at": [
+    -30,
+    27
+   ],
+   "parent": "torso",
+   "note": "shoulder; R mirrored (+x)"
+  },
+  "forearm_L_R": {
+   "at": "elbow (IK, FA*fsh)",
+   "parent": "upper_arm"
+  },
+  "hand_L_R": {
+   "at": "wrist (IK, pose target)",
+   "parent": "forearm",
+   "note": "mitten+thumb; hand \"grip\" when a prop is held"
+  },
+  "pelvis": {
+   "at": [
+    0,
+    214
+   ],
+   "parent": "root",
+   "note": "trouser seat, under tee/sweater hem, not leaned"
+  },
+  "upper_leg_L_R": {
+   "at": [
+    -19,
+    214
+   ],
+   "parent": "root"
+  },
+  "lower_leg_L_R": {
+   "at": "knee (IK)",
+   "parent": "upper_leg"
+  },
+  "foot_L_R": {
+   "at": [
+    -26,
+    528
+   ],
+   "parent": "lower_leg",
+   "note": "ankle; toes OUTWARD: pose.legs.fl:-1/fr:1, rotL -11/rotR +12 deg, q34 0.88/0.80"
+  },
+  "chair": {
+   "at": "hip when pose.sit=1",
+   "parent": "root",
+   "note": "detachable; drawn behind legs"
+  },
+  "prop": {
+   "at": "hand wrist + along forearm",
+   "parent": "hand",
+   "note": "st.prop {on:\"phone\"|\"mug\", hand:\"L\"|\"R\", at:[dx,dy], rot}"
+  }
+ },
+ "expressions": {
+  "neutral": {
+   "open": 1,
+   "lo": 0,
+   "shut": 0,
+   "happy": 0,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0,
+   "by": 0,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 0,
+   "btR": 0,
+   "mc": 0,
+   "mw": 1,
+   "mo": 0,
+   "ms": 0,
+   "mp": 1,
+   "mt": -1,
+   "mg": -1,
+   "blush": 0,
+   "sweat": 0,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  },
+  "deadpan": {
+   "open": 0.82,
+   "lo": 0,
+   "shut": 0,
+   "happy": 0,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0,
+   "by": 0,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 0,
+   "btR": 0,
+   "mc": -0.55,
+   "mw": 1,
+   "mo": 0,
+   "ms": -0.8,
+   "mp": 0,
+   "mt": -1,
+   "mg": -1,
+   "blush": 0,
+   "sweat": 0,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  },
+  "smile": {
+   "open": 0.9,
+   "lo": 0.4,
+   "shut": 0,
+   "happy": 0,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0,
+   "by": 0.8,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 0.6,
+   "btR": 0.6,
+   "mc": 0.85,
+   "mw": 1.1,
+   "mo": 0.14,
+   "ms": -0.3,
+   "mp": 0,
+   "mt": -1,
+   "mg": -1,
+   "blush": 0.25,
+   "sweat": 0,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  },
+  "surprised": {
+   "open": 1.7,
+   "lo": 1.4,
+   "shut": 0,
+   "happy": 0,
+   "pup": 0.85,
+   "gx": 0,
+   "gy": 0,
+   "by": 5,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 1.5,
+   "btR": 1.5,
+   "mc": -0.2,
+   "mw": 0.62,
+   "mo": 0.55,
+   "ms": -0.8,
+   "mp": 0,
+   "mt": 0,
+   "mg": 0.3,
+   "blush": 0,
+   "sweat": 0,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  },
+  "annoyed": {
+   "open": 0.62,
+   "lo": 0,
+   "shut": 0,
+   "happy": 0,
+   "pup": 0.95,
+   "gx": 0,
+   "gy": 0,
+   "by": -2.5,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": -3.2,
+   "btR": -3.2,
+   "mc": -0.65,
+   "mw": 0.9,
+   "mo": 0,
+   "ms": -0.8,
+   "mp": 0,
+   "mt": -1,
+   "mg": -1,
+   "blush": 0,
+   "sweat": 0,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  },
+  "hate_stare": {
+   "open": 0.45,
+   "lo": -0.8,
+   "shut": 0,
+   "happy": 0,
+   "pup": 0.8,
+   "gx": 0,
+   "gy": 0,
+   "by": -3.5,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": -4.6,
+   "btR": -4.6,
+   "mc": -0.7,
+   "mw": 0.8,
+   "mo": 0,
+   "ms": -0.8,
+   "mp": 0,
+   "mt": -1,
+   "mg": -1,
+   "blush": 0,
+   "sweat": 0,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  },
+  "embarrassed": {
+   "open": 0.9,
+   "lo": 0,
+   "shut": 0,
+   "happy": 0,
+   "pup": 1,
+   "gx": 0.7,
+   "gy": 0.7,
+   "by": 1,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 2.6,
+   "btR": 2.6,
+   "mc": 0.3,
+   "mw": 0.9,
+   "mo": 0.06,
+   "ms": -0.4,
+   "mp": 0,
+   "mt": -1,
+   "mg": -1,
+   "blush": 1,
+   "sweat": 0,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  },
+  "laughing": {
+   "open": 1,
+   "lo": 0,
+   "shut": 1,
+   "happy": 1,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0,
+   "by": 2.2,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 0.8,
+   "btR": 0.8,
+   "mc": 1,
+   "mw": 1.12,
+   "mo": 0.88,
+   "ms": -0.6,
+   "mp": 0,
+   "mt": -1,
+   "mg": -1,
+   "blush": 0.35,
+   "sweat": 0,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  },
+  "sad": {
+   "open": 0.78,
+   "lo": 0,
+   "shut": 0,
+   "happy": 0,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0.8,
+   "by": 0.5,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 4.6,
+   "btR": 4.6,
+   "mc": -0.7,
+   "mw": 0.8,
+   "mo": 0,
+   "ms": -0.8,
+   "mp": 0,
+   "mt": -1,
+   "mg": -1,
+   "blush": 0,
+   "sweat": 0,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  },
+  "panic": {
+   "open": 2.6,
+   "lo": 3,
+   "shut": 0,
+   "happy": 0,
+   "pup": 0.4,
+   "gx": 0,
+   "gy": 0,
+   "by": 9,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 7,
+   "btR": 7,
+   "mc": -1.1,
+   "mw": 1,
+   "mo": 0.62,
+   "ms": 0,
+   "mp": 0,
+   "mt": 0,
+   "mg": 0,
+   "blush": 0,
+   "sweat": 1,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  },
+  "sidelong": {
+   "open": 0.78,
+   "lo": 0,
+   "shut": 0,
+   "happy": 0,
+   "pup": 1,
+   "gx": 1,
+   "gy": 0,
+   "by": -0.5,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": -1,
+   "btR": -1,
+   "mc": -0.2,
+   "mw": 1,
+   "mo": 0,
+   "ms": -0.4,
+   "mp": 0,
+   "mt": -1,
+   "mg": -1,
+   "blush": 0,
+   "sweat": 0,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  },
+  "sidelong_l": {
+   "open": 0.78,
+   "lo": 0,
+   "shut": 0,
+   "happy": 0,
+   "pup": 1,
+   "gx": -1,
+   "gy": 0,
+   "by": -0.5,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": -1,
+   "btR": -1,
+   "mc": -0.2,
+   "mw": 1,
+   "mo": 0,
+   "ms": -0.4,
+   "mp": 0,
+   "mt": -1,
+   "mg": -1,
+   "blush": 0,
+   "sweat": 0,
+   "trap": 0,
+   "lt": 0,
+   "pale": 0,
+   "irs": 1
+  }
+ },
+ "poses": [
+  "stand_still",
+  "stand_idle",
+  "sit_desk",
+  "walk_contact",
+  "arms_crossed",
+  "hand_on_hip",
+  "hand_to_hair",
+  "turn_3q",
+  "profile",
+  "phone_hold",
+  "mug_hold",
+  "stand_3q",
+  "sit_front",
+  "sit_3q",
+  "stand_side",
+  "sit_side",
+  "sit_side_crossed",
+  "back_view",
+  "walk_down",
+  "walk_contact_b",
+  "walk_passing"
+ ],
+ "walk_cycle": {
+  "api": "HF.walkPose(phase 0..1)",
+  "frames": 8,
+  "note": "procedural: half-cycle keys A, down .1, passing .25, up .4, B .5 + mirror, smoothstep; HF.POSES_F.walk_f0..7 are the 8 frames"
+ },
+ "pose_keys": [
+  "turn",
+  "lean",
+  "hipx",
+  "sh",
+  "fid",
+  "sit",
+  "view(\"front\"|\"side\")",
+  "face(+-1, side view)",
+  "head{yaw,tilt,dx,dy}",
+  "back(0|1)",
+  "L/R{h,bend,ush(upper-arm foreshortening),hand(\"relaxed\"|\"grip\"),rot,s,z,fsh}",
+  "legs{spread,ank,kin,k,fl,fr,fsh,fs}",
+  "gait{nx,ny,nrot,fx,fy,frot,hipdy} (side view ankles/foot rot)"
+ ],
+ "parameters": {
+  "expression_channels": {
+   "open": {
+    "default": 1,
+    "range": [
+     0,
+     2.6
+    ],
+    "note": "eye openness, 1 = rig base lid (lid = base + (1-open)*6; >1 wide)"
+   },
+   "lo": {
+    "default": 0,
+    "range": [
+     -1.5,
+     4.2
+    ],
+    "note": "lower-lid push (surprise/panic wide, <0 squint)"
+   },
+   "shut": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "eye closure 0..1; >=0.6 draws a closed lid"
+   },
+   "happy": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "closed eye drawn as an inverted arc (laugh); 0 = relaxed closed"
+   },
+   "pup": {
+    "default": 1,
+    "range": [
+     0.4,
+     1.3
+    ],
+    "note": "pupil scale (panic small)"
+   },
+   "gx": {
+    "default": 0,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "gaze x, -1..1 (adds to st.gaze), pupil shift up to 4.6 units"
+   },
+   "gy": {
+    "default": 0,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "gaze y, -1..1"
+   },
+   "by": {
+    "default": 0,
+    "range": [
+     -6,
+     9
+    ],
+    "note": "both brows lift (cast units, + up)"
+   },
+   "bdL": {
+    "default": 0,
+    "range": [
+     -6,
+     8
+    ],
+    "note": "screen-left brow lift"
+   },
+   "bdR": {
+    "default": 0,
+    "range": [
+     -6,
+     8
+    ],
+    "note": "screen-right brow lift"
+   },
+   "btL": {
+    "default": 0,
+    "range": [
+     -6,
+     11
+    ],
+    "note": "screen-left brow tilt, + = inner end up (worried), - = inner end down (angry)"
+   },
+   "btR": {
+    "default": 0,
+    "range": [
+     -6,
+     11
+    ],
+    "note": "screen-right brow tilt"
+   },
+   "mc": {
+    "default": 0,
+    "range": [
+     -1.2,
+     1.2
+    ],
+    "note": "mouth curve: +1 smile (+3 units corner lift), -1 frown"
+   },
+   "mw": {
+    "default": 1,
+    "range": [
+     0.5,
+     1.5
+    ],
+    "note": "mouth width scalar (x base mw, +12% at full open)"
+   },
+   "mo": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "base mouth open 0..1; mouth_open layers on top: eff = 1-(1-mo)*(1-mouth_open)"
+   },
+   "ms": {
+    "default": 0,
+    "range": [
+     -1.5,
+     1.5
+    ],
+    "note": "smirk: + raises screen-right corner"
+   },
+   "mp": {
+    "default": 1,
+    "range": [
+     0,
+     1
+    ],
+    "note": "lip-part line on closed mouth (1 = cast look)"
+   },
+   "mt": {
+    "default": -1,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "upper teeth strip 0..1, -1 = auto (from eff>=0.4)"
+   },
+   "mg": {
+    "default": -1,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "tongue 0..1, -1 = auto (from eff>=0.5)"
+   },
+   "blush": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "cheek blush 0..1 (embarrassed)"
+   },
+   "sweat": {
+    "default": 0,
+    "range": [
+     0,
+     2
+    ],
+    "note": "sweat drop at the screen-right temple (>0); a second drop at the screen-left temple when >1"
+   },
+   "trap": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "flat open (trapezoid) mouth with a dark interior, corners down, no cupid bow; used by friend panic"
+   },
+   "lt": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "lower gritted-teeth strip inside the trapezoid mouth (needs trap>0)"
+   },
+   "pale": {
+    "default": 0,
+    "range": [
+     0,
+     1.4
+    ],
+    "note": "cool cheek shade over the base blush (fear pallor)"
+   },
+   "irs": {
+    "default": 1,
+    "range": [
+     0.6,
+     1.2
+    ],
+    "note": "iris scale (panic: smaller irises show a ring of white)"
+   }
+  },
+  "mouth_open": {
+   "state_key": "st.mouth",
+   "range": [
+    0,
+    1
+   ],
+   "default": 0,
+   "note": "eff = 1-(1-mo)*(1-mouth_open); opening height = eff*13.5 cast units (15.5 laughing); jaw drop + lip shape carry the state, upper teeth are a strip of at most 2.6 px, lower teeth only at eff>=0.85, tongue a hint from 0.6. Kristina mouth width x1.42 (mwK), Friend wide state +30% (wideK) ",
+   "visemes": {
+    "closed": 0,
+    "small": 0.3,
+    "mid": 0.6,
+    "wide": 1
+   }
+  },
+  "mouth_style": {
+   "note": "per-character, from the locked cast builders (mk15 / mk21)",
+   "values": {
+    "sm": 1.6,
+    "smirk": 0.8,
+    "mw": 9.2,
+    "full": 3,
+    "part": 0.9,
+    "lip": "#c85c64",
+    "lip2": "#b24c56",
+    "teeth": "#f6efe6",
+    "tongue": "#d4666e",
+    "mouthIn": "#4a1c2a"
+   }
+  },
+  "head": {
+   "yaw_range": [
+    -1,
+    1
+   ],
+   "note": "front-based head valid to |yaw|~0.45 (~40 deg), profile head from |yaw|>=0.75; 0.45..0.75 degrades"
+  },
+  "props": {
+   "phone": "PF.phone",
+   "mug": "PF.mug",
+   "default": "none",
+   "st_prop": "{on,at,hand}"
+  }
+ },
+ "requires": {
+  "engine_api": 1,
+  "engine_verbs": [
+   "pose",
+   "express",
+   "gaze",
+   "turn_head",
+   "lean",
+   "move",
+   "hold",
+   "prop"
+  ],
+  "engine_globals": [],
+  "draw_state": [
+   "ch",
+   "uid",
+   "pose",
+   "expr",
+   "mouth",
+   "gaze{x,y,cam}",
+   "key",
+   "stand",
+   "t",
+   "shake{x,y,r}",
+   "prop?{on,at,hand,rot}"
+  ],
+  "fonts": [],
+  "assets": []
+ },
+ "draw_order": [
+  "chair (sit)",
+  "floor shadows",
+  "pelvis",
+  "legs+feet",
+  "upper-body group (lean)",
+  "hair_back",
+  "torso",
+  "neck",
+  "collar",
+  "choker",
+  "pendant",
+  "arms (upper_arm, forearm)",
+  "skull (+face) + ear + hair_front",
+  "prop",
+  "hands",
+  "side view: far leg, far arm, pelvis_side, near leg, torso_side, neck, near arm, head_profile"
+ ],
+ "known_weaknesses": [
+  "profile head is a simplified hand-built cut, not on the approved sheet",
+  "3/4 only to ~30 deg",
+  "hands rigid, no finger poses other than relaxed / grip",
+  "front sit default = sit_front (straight, thigh tapered cone 71 to 36.4 wide, knee 44 px below hip); sit_3q (turn .36, chair34, far thigh .95 reach .86 scale) is the alternative, torso turned by outline and bust shift only; stand_3q added",
+  "front/side hips: waist 31 / hips 52 (60%), hips read mainly in side view",
+  "near arm swinging forward crosses the ribs in walk frames (bust apex stays visible)",
+  "crossed legs only in side view",
+  "seated trouser folds are schematic, dark trousers merge pelvis and thighs",
+  "walk is 4 hand-set poses, no interpolation",
+  "Kristina long hair hides the knit back in back view",
+  "1.0.1 panic: open oval mouth on the old lip shape (peaked upper lip still visible), jaw not lowered"
+ ],
+ "frozen_from": "kristina@1.0.0 + panic rework (scratchpad poc_rig22)",
+ "changes_from": {
+  "version": "1.0.0",
+  "summary": "panic reworked (open oval mouth, no grin, larger eyes, worried brows), new expression channels trap/lt/pale/irs (unused by kristina) shared with friend"
+ }
+}
