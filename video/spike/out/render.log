@@ -1,0 +1,12 @@
+cache key a89bc3c4c23202d13375e4c3840ef77752aab25f481fc9a94e8cf4decd009025
+
+◆  Rendering hf-project → /Users/iorlas/Workspaces/iorlas-perform-video-spike/video/spike/out/scene.mp4
+   30fps · high · auto workers (14 cores detected)
+   GPU: browser GPU (auto-detect)
+
+
+◇  /Users/iorlas/Workspaces/iorlas-perform-video-spike/video/spike/out/scene.mp4
+   1.7 MB · 10.0s video · rendered in 9.2s
+   screenshot capture · hardware gpu · compile 0.1s · extract 0.0s · audio 0.8s · probe 0.0s · setup 1.5s · capture 7.0s · encode 0.0s · assemble 0.2s
+   Keep editing by chatting with Framey in the HyperFrames desktop app → https://hyperframes.studio/studio/download?src=cli
+render wall s 11.9

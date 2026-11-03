@@ -1,0 +1,15 @@
+{
+ "key": "a89bc3c4c23202d13375e4c3840ef77752aab25f481fc9a94e8cf4decd009025",
+ "rigs": [
+  {
+   "id": "zinaida",
+   "version": "1.0.0",
+   "sha256": "3c2d9e53eb6f3811f3747662c338dedfc6d262bc3b9eb62eaa3229274060e310"
+  },
+  {
+   "id": "mihalych",
+   "version": "1.0.0",
+   "sha256": "020981674ec0743fdb105be6af5ea4e6e9743956db62b438c055148e59cf8c94"
+  }
+ ]
+}

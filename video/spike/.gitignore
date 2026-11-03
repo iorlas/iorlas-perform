@@ -1,0 +1,5 @@
+out/*
+!out/scene.mp4
+!out/cache_key.json
+!out/first_last.png
+!out/render.log

@@ -1,0 +1,28 @@
+{
+  "schema": "shots/0-spike",
+  "scene": "mihalych_desk_zinaida",
+  "fps": 30,
+  "size": [1280, 720],
+  "duration": 10,
+  "camera": { "viewBox": [-90, -20, 622, 350] },
+  "background": "#26344f",
+  "audio": { "file": "audio/out.wav", "start": 0, "duration": 8.545, "note": "existing take from ru-voice-clone/out.wav, mouth envelope below is FAKE (not derived from it)" },
+  "mouth_open": { "actor": "mihalych", "file": "mouth_open.json" },
+  "actors": [
+    { "id": "zinaida", "rig": "zinaida@1.0.0", "layer": 1, "pose": "q", "offset": [110, 0] },
+    { "id": "mihalych", "rig": "mihalych@1.0.0", "layer": 2, "pose": "sit_side", "pose_override": { "desk": 0 } }
+  ],
+  "tracks": [
+    { "actor": "zinaida", "channel": "state", "keys": [
+      { "t": 0.0, "value": "idle", "screen_text": "Резерв: вчера?" },
+      { "t": 2.5, "value": "working", "screen_text": "Копирую отчёт" },
+      { "t": 5.2, "value": "error", "screen_text": "Всё плохо" },
+      { "t": 7.6, "value": "love", "screen_text": "Михалыч!" }
+    ] },
+    { "actor": "mihalych", "channel": "expr", "blend": 0.25, "keys": [
+      { "t": 0.0, "value": "tired_neutral" },
+      { "t": 5.2, "value": "panic" },
+      { "t": 7.9, "value": "soft_smile" }
+    ] }
+  ]
+}
