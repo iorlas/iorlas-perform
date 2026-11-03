@@ -1,0 +1,941 @@
+{
+ "id": "palych",
+ "version": "1.0.1",
+ "look": "cutout",
+ "seed": 11,
+ "description": "Palych (Gennady Palych), 55, IT director, ex-praporshchik. Flat cut-paper puppet: block flat-top head, grey bristle crop, mustache, stocky build, thick visible neck, knit vest over shirt and tie, ill-fitting short sleeves, leather oxfords.",
+ "module": {
+  "file": "art/palych_cut.js",
+  "registers": {
+   "rig": "HF.RIGS.palych",
+   "data": "HF.RIG.palych",
+   "expressions": "HF.RIG.palych.expr",
+   "poses": "HF.RIG.palych.poses",
+   "variant_defaults": "HF.RIG.palych.variantDefault",
+   "char": "HF.CHARS.palych_cut"
+  },
+  "purity": "pure function of (state, t); randomness only via HF.hash(seed...)"
+ },
+ "space": {
+  "origin": "neck base",
+  "y_axis": "down",
+  "units": "px",
+  "floor_y": 516,
+  "hip_y": 230
+ },
+ "dim": {
+  "hw": 62,
+  "sw": 80,
+  "shY": 24,
+  "UA": 100,
+  "FA": 92,
+  "UL": 128,
+  "LL": 126,
+  "hipY": 230,
+  "hemY": 230,
+  "ankleY": 496,
+  "neckY": -58,
+  "headCY": -116,
+  "eyeY": -62,
+  "sep": 25,
+  "tufts": 9
+ },
+ "palette": {
+  "skin": "#dcab88",
+  "skin2": "#c99476",
+  "skinSh": "#b27857",
+  "hair": "#8f9396",
+  "hair2": "#777b7e",
+  "hair3": "#a4a8ab",
+  "shirt": "#c3d1df",
+  "shirt2": "#a9bbcd",
+  "shirtHi": "#e2eaf2",
+  "vest": "#c49a62",
+  "vest2": "#a07a46",
+  "vestHi": "#d2ab74",
+  "button": "#5a3b1f",
+  "tie": "#2f3c5e",
+  "tie2": "#6c7ca2",
+  "collarIn": "#a9bbcd",
+  "pants": "#3d4557",
+  "pants2": "#2f3646",
+  "belt": "#2a2220",
+  "buckle": "#b9953a",
+  "shoe": "#4a3226",
+  "shoe2": "#2f1f17",
+  "sole": "#17110f",
+  "lace": "#c9b79c",
+  "shoeHi": "#6a4a38",
+  "nose": "#d1946f",
+  "noseSh": "#b97a58",
+  "noseHi": "#e6b793",
+  "nostril": "#7a4a3a",
+  "mustache": "#7a7468",
+  "mustache2": "#625d53",
+  "brow": "#6b675f",
+  "lid": "#6c4a38",
+  "eyeW": "#f5f2ea",
+  "pupil": "#1e1c22",
+  "mouth": "#7a3f36",
+  "mouthIn": "#4e2423",
+  "cheek": "#cd7f68",
+  "handset": "#1c2430",
+  "handset2": "#2d3a4c",
+  "thermos": "#9fb1c2",
+  "thermos2": "#7f93a6",
+  "thermosCap": "#b5452f",
+  "thermosBand": "#2f3c5e",
+  "shadow": "#0b1020",
+  "teeth": "#f2ecdc",
+  "teethSh": "#cdc2aa",
+  "tongue": "#cf6a66",
+  "tongue2": "#a24a4b"
+ },
+ "parts": [
+  {
+   "name": "hair_cap",
+   "draw": "P.hair"
+  },
+  {
+   "name": "hair_tuft",
+   "draw": "P.tuft"
+  },
+  {
+   "name": "skull",
+   "draw": "P.skull"
+  },
+  {
+   "name": "ear",
+   "draw": "P.ear"
+  },
+  {
+   "name": "nose",
+   "draw": "P.nose"
+  },
+  {
+   "name": "face",
+   "draw": "P.face"
+  },
+  {
+   "name": "mustache",
+   "draw": "P.mustache"
+  },
+  {
+   "name": "neck",
+   "draw": "P.neck"
+  },
+  {
+   "name": "torso",
+   "draw": "P.torso"
+  },
+  {
+   "name": "tie",
+   "draw": "P.tie"
+  },
+  {
+   "name": "upper_arm",
+   "draw": "P.upper_arm"
+  },
+  {
+   "name": "forearm",
+   "draw": "P.forearm"
+  },
+  {
+   "name": "hand",
+   "draw": "P.hand"
+  },
+  {
+   "name": "handset",
+   "draw": "P.handset"
+  },
+  {
+   "name": "prop_thermos",
+   "draw": "P.prop_thermos"
+  },
+  {
+   "name": "pelvis",
+   "draw": "P.pelvis"
+  },
+  {
+   "name": "upper_leg",
+   "draw": "P.upper_leg"
+  },
+  {
+   "name": "lower_leg",
+   "draw": "P.lower_leg"
+  },
+  {
+   "name": "foot",
+   "draw": "P.foot"
+  },
+  {
+   "name": "head_back",
+   "draw": "P.head_back"
+  },
+  {
+   "name": "collar_back",
+   "draw": "P.collar_back"
+  }
+ ],
+ "pivots": {
+  "root": {
+   "at": [
+    0,
+    516
+   ],
+   "note": "floor contact, between feet"
+  },
+  "hip": {
+   "at": [
+    0,
+    212
+   ],
+   "parent": "root",
+   "note": "upper body lean pivot"
+  },
+  "torso": {
+   "at": [
+    0,
+    0
+   ],
+   "parent": "hip",
+   "note": "neck base"
+  },
+  "neck": {
+   "at": [
+    0,
+    -36
+   ],
+   "parent": "torso",
+   "note": "thick neck, about 36 px visible between chin and collar"
+  },
+  "head": {
+   "at": [
+    0,
+    -36
+   ],
+   "parent": "neck",
+   "note": "tilt + yaw pivot (chin/neck joint)"
+  },
+  "hair_tuft_i": {
+   "at": "seeded root on top of skull (head frame)",
+   "parent": "head",
+   "note": "9 short bristle spikes, sway pivot at root"
+  },
+  "ear_L_R": {
+   "at": [
+    -62,
+    -58
+   ],
+   "parent": "head"
+  },
+  "mustache": {
+   "at": [
+    0,
+    -26
+   ],
+   "parent": "head",
+   "note": "over the upper lip, follows face x offset"
+  },
+  "face": {
+   "at": [
+    0,
+    -58
+   ],
+   "parent": "head",
+   "note": "eyes, lids, brows, mouth layer"
+  },
+  "upper_arm_L_R": {
+   "at": [
+    -68,
+    24
+   ],
+   "parent": "torso",
+   "note": "shoulder; R mirrored"
+  },
+  "forearm_L_R": {
+   "at": "elbow (IK)",
+   "parent": "upper_arm"
+  },
+  "hand_L_R": {
+   "at": "wrist (IK, pose target)",
+   "parent": "forearm",
+   "note": "mitten + separate thumb; hand kind point on pose key hand"
+  },
+  "tie": {
+   "at": [
+    0,
+    14
+   ],
+   "parent": "torso",
+   "note": "knot; blade swings slightly"
+  },
+  "prop_thermos": {
+   "at": "hand_L_R palm (hand mode) or torso x=+-44,y=140 (side mode)",
+   "parent": "hand_L_R",
+   "note": "detachable; st.prop {on,at,hand}; default off"
+  },
+  "upper_leg_L_R": {
+   "at": [
+    -30,
+    230
+   ],
+   "parent": "root"
+  },
+  "lower_leg_L_R": {
+   "at": "knee (IK)",
+   "parent": "upper_leg"
+  },
+  "pelvis": {
+   "at": [
+    0,
+    230
+   ],
+   "parent": "root",
+   "note": "high-waisted trouser seat + belt, under vest hem, not leaned"
+  },
+  "foot_L_R": {
+   "at": [
+    -44,
+    498
+   ],
+   "parent": "lower_leg",
+   "note": "ankle; toe direction sign by pose.legs.fl/fr, foreshortened by legs.fsh"
+  }
+ },
+ "default_expression": "neutral_anxious",
+ "expressions": {
+  "neutral_anxious": {
+   "open": 0.85,
+   "mt": 0,
+   "mg": 0,
+   "lk": 0,
+   "by": 1,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 6,
+   "btR": 6,
+   "shut": 0,
+   "pup": 0.9,
+   "gl": 0,
+   "mc": -0.3,
+   "mw": 1,
+   "mo": 0,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0,
+   "gx": 0,
+   "gy": 0,
+   "big": 0,
+   "sweat": 0
+  },
+  "wince": {
+   "open": 0.1,
+   "mt": 1,
+   "mg": 0,
+   "lk": 0,
+   "by": 4,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 18,
+   "btR": 18,
+   "shut": 1,
+   "pup": 1,
+   "gl": 0,
+   "mc": -0.7,
+   "mw": 1.05,
+   "mo": 0,
+   "ms": 0,
+   "wob": 1,
+   "slide": 0,
+   "gx": 0,
+   "gy": 0,
+   "big": 0,
+   "sweat": 0
+  },
+  "side_glance": {
+   "open": 0.85,
+   "mt": 0,
+   "mg": 0,
+   "lk": 0,
+   "by": 0,
+   "bdL": 0,
+   "bdR": -2,
+   "btL": 4,
+   "btR": 4,
+   "shut": 0,
+   "pup": 0.95,
+   "gl": 0,
+   "mc": -0.25,
+   "mw": 1,
+   "mo": 0,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0,
+   "gx": 1,
+   "gy": 0,
+   "big": 0,
+   "sweat": 0
+  },
+  "panic": {
+   "open": 1.5,
+   "mt": 0,
+   "mg": 0,
+   "lk": 1,
+   "by": -13,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 24,
+   "btR": 24,
+   "shut": 0,
+   "pup": 0.95,
+   "gl": 0,
+   "mc": -1,
+   "mw": 0.56,
+   "mo": 0.85,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0,
+   "gx": 0,
+   "gy": 0,
+   "big": 0.6,
+   "sweat": 1
+  },
+  "pretend": {
+   "open": 0.8,
+   "mt": 0,
+   "mg": 0,
+   "lk": 0,
+   "by": -2,
+   "bdL": 0,
+   "bdR": -3,
+   "btL": 9,
+   "btR": 9,
+   "shut": 0,
+   "pup": 0.9,
+   "gl": 0,
+   "mc": 0.35,
+   "mw": 1.15,
+   "mo": 0,
+   "ms": 1,
+   "wob": 0,
+   "slide": 0,
+   "gx": 0.4,
+   "gy": 0,
+   "big": 0,
+   "sweat": 0
+  },
+  "shame": {
+   "open": 0.6,
+   "mt": 0,
+   "mg": 0,
+   "lk": 0,
+   "by": -1,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 22,
+   "btR": 22,
+   "shut": 0,
+   "pup": 0.95,
+   "gl": 0,
+   "mc": -1,
+   "mw": 1,
+   "mo": 0,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0,
+   "gx": 0,
+   "gy": 1,
+   "big": 0,
+   "sweat": 0
+  },
+  "realize": {
+   "open": 1.3,
+   "mt": 0,
+   "mg": 0,
+   "lk": 0,
+   "by": -3,
+   "bdL": -9,
+   "bdR": 0,
+   "btL": 2,
+   "btR": 10,
+   "shut": 0,
+   "pup": 1,
+   "gl": 0,
+   "mc": 0,
+   "mw": 0.6,
+   "mo": 0.5,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0,
+   "gx": 0,
+   "gy": 0,
+   "big": 0,
+   "sweat": 0
+  },
+  "blank": {
+   "open": 1,
+   "mt": 0,
+   "mg": 0,
+   "lk": 0,
+   "by": 2,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 0,
+   "btR": 0,
+   "shut": 0,
+   "pup": 1,
+   "gl": 0,
+   "mc": -0.05,
+   "mw": 1,
+   "mo": 0,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0,
+   "gx": 0,
+   "gy": 0,
+   "big": 0,
+   "sweat": 0
+  },
+  "bark": {
+   "open": 0.95,
+   "mt": 1,
+   "mg": 1,
+   "lk": 0,
+   "by": 6,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": -17,
+   "btR": -17,
+   "shut": 0,
+   "pup": 1.05,
+   "gl": 0,
+   "mc": -0.1,
+   "mw": 1.1,
+   "mo": 1,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0,
+   "gx": 0,
+   "gy": 0,
+   "big": 0,
+   "sweat": 0
+  },
+  "clerk": {
+   "open": 0.85,
+   "mt": 1,
+   "mg": 0,
+   "lk": 0,
+   "by": -6,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 10,
+   "btR": 10,
+   "shut": 0,
+   "pup": 0.9,
+   "gl": 0,
+   "mc": 0.8,
+   "mw": 0.85,
+   "mo": 0.3,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0,
+   "gx": 0,
+   "gy": 0,
+   "big": 0,
+   "sweat": 0
+  },
+  "proud": {
+   "open": 0.65,
+   "mt": 0,
+   "mg": 0,
+   "lk": 0,
+   "by": -4,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": -3,
+   "btR": -3,
+   "shut": 0,
+   "pup": 0.95,
+   "gl": 0,
+   "mc": 1,
+   "mw": 1.4,
+   "mo": 0,
+   "ms": 0.6,
+   "wob": 0,
+   "slide": 0,
+   "gx": 0,
+   "gy": -0.8,
+   "big": 0,
+   "sweat": 0
+  },
+  "side_glance_l": {
+   "open": 0.85,
+   "mt": 0,
+   "mg": 0,
+   "lk": 0,
+   "by": 0,
+   "bdL": 0,
+   "bdR": -2,
+   "btL": 4,
+   "btR": 4,
+   "shut": 0,
+   "pup": 0.95,
+   "gl": 0,
+   "mc": -0.25,
+   "mw": 1,
+   "mo": 0,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0,
+   "gx": -1,
+   "gy": 0,
+   "big": 0,
+   "sweat": 0
+  }
+ },
+ "poses": [
+  "stand_still",
+  "stand_fidget",
+  "hold_receiver",
+  "point_order",
+  "hold_prop"
+ ],
+ "pose_keys": [
+  "turn",
+  "lean",
+  "hipx",
+  "sh",
+  "fid",
+  "head{yaw,tilt,dx,dy,back}",
+  "L/R{h,bend,hand,rot,s,z,rcv,rr,pr}",
+  "legs{spread,ank,kin,k,fl,fr,fsh,fs}"
+ ],
+ "props": [
+  {
+   "name": "thermos",
+   "part": "prop_thermos",
+   "draw": "P.prop_thermos",
+   "anchor": {
+    "hand_mode": "hand_L_R palm (wrist + 22 px along the forearm), upright, rotated by pose L/R.pr; the hand is drawn over it",
+    "side_mode": "torso frame, x=+-46, tucked against the body, drawn before the arms"
+   },
+   "state_key": "st.prop",
+   "state": {
+    "on": "boolean, default false (prop absent)",
+    "at": "hand | side, default hand",
+    "hand": "L | R, default R"
+   },
+   "default": "off",
+   "note": "steel thermos with red cap"
+  }
+ ],
+ "parameters": {
+  "expression_channels": {
+   "open": {
+    "default": 0.92,
+    "range": [
+     0,
+     1.5
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "by": {
+    "default": -1,
+    "range": [
+     -12,
+     8
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "bdL": {
+    "default": 0,
+    "range": [
+     -12,
+     8
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "bdR": {
+    "default": 0,
+    "range": [
+     -12,
+     8
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "btL": {
+    "default": 14,
+    "range": [
+     -10,
+     30
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "btR": {
+    "default": 14,
+    "range": [
+     -10,
+     30
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "shut": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "pup": {
+    "default": 0.9,
+    "range": [
+     0.3,
+     1.2
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "gl": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "mc": {
+    "default": -0.3,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "mouth curve: +1 smile, -1 frown (corners and centre move)"
+   },
+   "mw": {
+    "default": 0.9,
+    "range": [
+     0.5,
+     1.5
+    ],
+    "note": "mouth width scalar (x R.mouth.wk)"
+   },
+   "mo": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "base mouth open 0..1 of the full open mouth; mouth_open layers on top"
+   },
+   "ms": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "lopsided: screen-right corner up, left corner down"
+   },
+   "wob": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "slide": {
+    "default": 0.12,
+    "range": [
+     0,
+     0.5
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "gx": {
+    "default": 0,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "gy": {
+    "default": 0,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "mt": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "upper teeth strip, 0..1 (open mouth only; gritted when wob>0.3)"
+   },
+   "mg": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "tongue, 0..1 (open mouth only)"
+   },
+   "lk": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "lid kill: 1 removes the half-lid cover (wide eyes)"
+   },
+   "big": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "eye size boost (rx +22%, ry +30%, pupil +12% at 1); panic only"
+   },
+   "sweat": {
+    "default": 0,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "temple sweat drop; +1 screen-right, -1 screen-left (stas: fringe hides the right temple)"
+   }
+  },
+  "variant": {
+   "note": "optional state.v overrides; defaults are HF.RIG.palych.variantDefault; baseline = all defaults",
+   "defaults": {
+    "hw": 1,
+    "jw": 1.08,
+    "ch": 12,
+    "nx": 1.25,
+    "ny": 1.1,
+    "my": 0,
+    "es": 0.82,
+    "lid": 0.18,
+    "bw": 8.5,
+    "bl": 19,
+    "bdy": 1,
+    "bags": 1,
+    "earS": 1.12,
+    "th": 1,
+    "cheek": 0.55,
+    "mous": 1
+   }
+  },
+  "mouth_open": {
+   "state_key": "st.mouth",
+   "range": [
+    0,
+    1
+   ],
+   "default": 0,
+   "note": "amplitude-driven lip-sync, on top of the expression base shape: eff = 1-(1-mo)*(1-mouth_open); open height = eff*mouth.dk, jaw drop = eff*mouth.jd; teeth strip from 0.45 and tongue from 0.55 appear automatically for lip-sync",
+   "visemes": {
+    "closed": 0,
+    "small": 0.3,
+    "mid": 0.6,
+    "wide": 1
+   },
+   "viseme_note": "closed = line, small ~30%, mid ~60%, wide 100% of the full open mouth. 3-level RMS lip-sync: closed/small/mid or wide by thresholds"
+  },
+  "mouth_style": {
+   "note": "per-character styling, R.mouth in the art module (px, head frame)",
+   "values": {
+    "y": -16,
+    "wk": 20,
+    "dk": 22,
+    "cu": 6,
+    "bu": 5,
+    "lw": 3.6,
+    "jd": 5,
+    "jc": 26,
+    "chin": 2,
+    "tmax": 8,
+    "col": {
+     "teeth": "#f2ecdc",
+     "teethSh": "#cdc2aa",
+     "tongue": "#cf6a66",
+     "tongue2": "#a24a4b"
+    }
+   }
+  }
+ },
+ "requires": {
+  "engine_api": 1,
+  "engine_verbs": [
+   "pose",
+   "express",
+   "gaze",
+   "turn_head",
+   "lean",
+   "move",
+   "hold"
+  ],
+  "engine_globals": [
+   "HF.hash"
+  ],
+  "draw_state": [
+   "ch",
+   "uid",
+   "pose",
+   "expr",
+   "mouth",
+   "gaze{x,y,cam}",
+   "key",
+   "stand",
+   "t",
+   "shake{x,y,r}",
+   "v?",
+   "tether?",
+   "prop?{on,at,hand}"
+  ],
+  "optional_engine_features": [
+   "actor.tether (joint-attached cord, engine.js)"
+  ],
+  "fonts": [],
+  "assets": []
+ },
+ "known_weaknesses": [
+  "yaw above ~0.6 degrades",
+  "thermos is small at golden scale; the hand is drawn over it so the grip reads as a fist",
+  "no walk cycle",
+  "yaw: hair/crop shifts by fx*0.3 inside a skull + rest-cap clip; at ~0.8 a thin skull sliver can show on the trailing side above the ear",
+  "back view ignores yaw (head forced to yaw 0) and has no 3/4-back variant"
+ ],
+ "parts_note": "draw = part function in the art module (P.<fn>=function). Instances: tuft x9 (seeded), ear/arm/forearm/hand/leg/foot L+R. Pivot hierarchy in pivots. Expressions and poses are registered per rig (HF.RIG.palych.expr/.poses), not in the shared HF.EXPR/HF.POSES.",
+ "draw_order": [
+  "legs",
+  "neck",
+  "torso+vest",
+  "collar",
+  "tie",
+  "arms",
+  "tufts",
+  "ears+head",
+  "nose",
+  "face",
+  "mustache",
+  "hair crop",
+  "handset+prop(hand)",
+  "hands",
+  "rim light",
+  "back view (pose.back/head.back): legs, neck, torso (plain vest back), collar_back, arms, tufts, head_back, hands"
+ ],
+ "back_view": {
+  "trigger": "pose.back or pose.head.back",
+  "note": "head drawn by P.head_back: ears at the sides behind the skull, hair mass to the nape, no face features; yaw forced to 0; front-only parts (badge/lanyard V/tie/fringe/glasses lenses/mustache) skipped"
+ },
+ "hair_anchor": {
+  "tufts": "root x = rest x * (hwid/rest hwid) * (0.8+0.2*cos(yaw)) + fx*0.3, clamped inside the crown, y on the crown; yaw 0 = rest roots exactly",
+  "cap": "shifted by fx*0.3, clipped to skull + rest cap silhouette",
+  "face": "eyes and brows clipped to the skull; mouth unclipped (jaw drop)"
+ }
+}

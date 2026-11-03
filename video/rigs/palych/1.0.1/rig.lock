@@ -1,0 +1,16 @@
+{
+ "id": "palych",
+ "version": "1.0.1",
+ "algorithm": "sha256-tree-v1",
+ "sha256": "7f04fd7fd10ee84bccd60bea8e242ee475ea0da4cc1fce64badda6939ba09727",
+ "files": {
+  "RIG.md": "263114e95901c33e02d1bd654f914503cd7cf2b4216a7abb1424ce534536183c",
+  "art/palych_cut.js": "77414316069256657013df12ddb6ca152912eee7da018ba649acea5517051900",
+  "golden/golden.html": "588d4b8a91533b3749edae7cdbea4e052fba0efa45b83b958701c2c6f3b39282",
+  "golden/harness/hf.js": "910f3ae4f739ab00df162fc19dec3223d0661b3f959e9102a348f35dfe2ba06d",
+  "golden/harness/poses.js": "7ddc4d24d271392a37812c322e11a9f833d8bec1d6ef70527878463e80ef3604",
+  "golden/harness/puppet.js": "76e4a0b41671e488e4c38c6ea37314f9018ab891a35bc2d8022f47b43032556a",
+  "golden/render.mjs": "22951a325d6837a9cd0571d72ed6586f7c7ad0284eece77fff47d8aef03bd399",
+  "rig.json": "6e7b22dd458efd090f65114f1e55212676473e9ec2e2dbbb871291af524ab736"
+ }
+}
