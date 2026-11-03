@@ -1,0 +1,55 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#26344f}</style></head><body><div id="c"></div>
+<script src="../art/zinaida_cut.js"></script>
+<script>
+var HF=window.HF,R=HF.RIG.zinaida,F="Helvetica, Arial, sans-serif";
+var n=0,o='<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1800" viewBox="0 0 2400 1800"><rect width="2400" height="1800" fill="#26344f"/>';
+function T(x,y,s,t,fill,a,w){return '<text x="'+x+'" y="'+y+'" text-anchor="'+(a||'middle')+'" font-size="'+s+'" font-family="'+F+'" fill="'+(fill||'#efe7d2')+'"'+(w?' font-weight="700"':'')+'>'+t+'</text>'}
+function cell(x,y,w,h,label,vb,inner){
+ o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="10" fill="#33476a"/>';
+ o+='<svg x="'+x+'" y="'+y+'" width="'+w+'" height="'+(h-30)+'" viewBox="'+vb.join(' ')+'" overflow="hidden" preserveAspectRatio="xMidYMid meet">'+inner+'</svg>';
+ o+=T(x+w/2,y+h-9,18,label)}
+function Z(pose,state,t,extra){var st={uid:'u'+(n++),pose:pose,state:state,t:t||.3};if(extra)for(var k in extra)st[k]=extra[k];return R.draw(st)}
+/* row 1: three views */
+var W=796,H=440;
+cell(2,6,W,H,'вид спереди (front)',[-200,92,640,360],Z('front','idle',.3,{screen_text:'Резерв: вчера?'}));
+cell(2+W+2,6,W,H,'вид 3/4 (q, поворот 35°)',[-200,92,640,360],Z('q','idle',.3));
+cell(2+2*(W+2),6,W,H,'вид сбоку (side, экран слева, как у Михалыча)',[-80,92,640,360],Z('side','idle',.3));
+/* row 2: chair versions, combo, numbers */
+var W2=594,y2=452,H2=440,vb2=[-60,100,470,348];
+cell(2,y2,W2,H2,'стол + силуэт стула (3/4)',[-110,100,520,348],Z('q_chair','idle',.3));
+cell(2+W2+2,y2,W2,H2,'стол + силуэт стула (сбоку)',vb2,Z('side_chair','idle',.3));
+cell(2+2*(W2+2),y2,W2,H2,'стол сбоку: error, тряска',vb2,Z('side','error',.2,{screen_text:'Всё плохо'}));
+/* row 3: nine states */
+var ST=['off','idle','boot','working','error','bsod','love','sleep','static'],NM=['off · выкл','idle · ждёт','boot · загрузка','working · работает','error · ошибка','bsod · синий экран','love · любовь','sleep · спит','static · помехи'],TX=[null,null,null,'Копирую отчёт',null,null,'Михалыч!',null,null];
+var cw=265,y3=898,h3=272;
+ST.forEach(function(s,i){var st={uid:'s'+(n++),pose:'front',state:s,t:1.7+(s==='error'?.2:0)};if(TX[i])st.screen_text=TX[i];
+ cell(2+i*(cw+1),y3,cw,h3,NM[i],[50,106,176,176],R.draw(st))});
+/* row 4: shake frames (error), LED states, cable frames */
+var y4=1176,h4=250;
+for(var i=0;i<6;i++){cell(2+i*162,y4,160,h4,'тряска '+(i+1)+'/6',[44,104,170,185],R.draw({uid:'k'+(n++),pose:'front',state:'error',t:.04*i+.01}))}
+var LED=[['off','LED off'],['green','green'],['amber','amber'],['red','red'],['pink','pink · любит'],['blink_red','мигает']];
+for(var i=0;i<6;i++){var tt=i===5?.1:.3;cell(980+i*124,y4,122,h4,LED[i][1],[158,145,50,90],R.draw({uid:'l'+(n++),pose:'front',state:'idle',led:LED[i][0],t:tt}))}
+/* cable frames in working state, t=0, .4, .8 */
+for(var i=0;i<3;i++)cell(1728+i*224,y4,222,h4,'кабель '+(i+1)+'/3',[-125,352,150,126],R.draw({uid:'b'+(n++),pose:'front',state:'working',t:i*.55+.1}));
+/* row 5: love + working + dust + zoom, numbers */
+var y5=1434;
+cell(2,y5,460,362,'клавиатура, мышь, ожог от сигареты',[-100,185,270,190],Z('front','idle',.3));
+cell(464,y5,460,362,'3/4: экран, вмятина, наклейка',[30,92,190,130],Z('q','love',.4));
+cell(1784,y2,614,H2,'тумба и пыль вентилятора (working)',[-60,300,270,180],Z('front','working',.9));
+var d=R.dim,pw=1470,L=['ЦИФРЫ (zinaida 1.0.0)',
+'система как у Михалыча: пол y='+d.floor+', столешница y='+d.deskY+', ЭЛТ x '+d.crtX0+'..'+d.crtX1+' (120×110, глубина 130, горб сужается до 76×48), подставка 68×14',
+'стол: x '+d.deskLeft+'..'+d.deskRight+' (у Михалыча -170..170, тут шире на 40, чтобы ЭЛТ не торчал), ножка сбоку x 372..386, глубина z '+d.deskZ0+'..'+d.deskZ1,
+'экран: 84×78 в рамке x 80..164; справа колонка кнопок и 2 светодиода; снизу наклейка «НЕ ВЫКЛЮЧАТЬ!!!»',
+'тумба: 84×150, x '+d.towerX0+'..'+d.towerX1+', два отсека, кнопка, лента «Зинаида»; фильтр пыли на боку',
+'клавиатура 140×62, 4 ряда, 3 клавиши не хватает, ожог от сигареты (пятно + прожиг); мышь 26×38',
+'состояния: off idle boot working error bsod love sleep static (9); экран: курсор мигает 1 Гц, песочные часы 2.2 с на цикл, окно ошибки дёргается',
+'screen_text: до 3 строк (12 знаков), led: auto off green amber red pink blink_red pulse_amber, shake 0..1.5, cable 0..1.5',
+'тряска: сдвиг до ±2.4 px при 21 Гц, поворот до 0.5°, гул 0.5 px; ошибка: пачки по 0.7 с из 3',
+'виды: yaw 0 / 35 / 90°, наклон 5–8°; только 0..90 (зеркало не поддержано)',
+'свет сверху слева; тело = основа + одна плоская тень; без градиентов, кругов, тонких полос',
+'СЛАБО: стул — силуэт; в 3/4 низ тумбы чуть неточно по глубине; шрифт экрана системный Menlo; зерна нет (его добавляет сцена)'];
+var LL=[];L.forEach(function(t,k){var w=t.split(' '),cur='';w.forEach(function(x){if((cur+' '+x).length>150){LL.push([cur,k==0]);cur='   '+x}else cur=cur?cur+' '+x:x});LL.push([cur,k==0])});
+o+='<rect x="926" y="'+y5+'" width="1472" height="362" rx="10" fill="#33476a"/>';
+LL.forEach(function(p,i){o+=T(940,y5+24+i*19,13.5,p[0],(p[1]||p[0].indexOf('СЛАБО')==0)?'#f1c46b':'#efe7d2','start')});
+o+='</svg>';document.getElementById('c').innerHTML=o;window.__ok=1;
+</script></body></html>

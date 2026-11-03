@@ -1,0 +1,539 @@
+{
+ "id": "zinaida",
+ "version": "1.0.0",
+ "body_type": "object",
+ "look": "cutout",
+ "seed": 5,
+ "description": "Зинаида, the office's old 90s beige CRT computer. Faceless object character: yellowed plastic, dented top-left corner, sticker «НЕ ВЫКЛЮЧАТЬ!!!», inventory tag, cigarette burn on the keyboard (Михалыч smokes), dust, cables that move. Personality = screen content, LEDs, shake/hum. Scene 1 layout: CRT on a desk, tower under the desk, keyboard, mouse, power strip. Standalone module (no shared harness).",
+ "module": {
+  "file": "art/zinaida_cut.js",
+  "registers": {
+   "rig": "HF.RIGS.zinaida",
+   "data": "HF.RIG.zinaida",
+   "expressions": "HF.EXPR_Z",
+   "poses": "HF.POSES_Z",
+   "parts": "HF.PARTS_Z",
+   "char": "HF.CHARS.zinaida_cut"
+  },
+  "purity": "pure function of (state, t); no randomness (hash noise only)"
+ },
+ "space": {
+  "origin": "scene origin = user centre x=0 (same as mihalych sit poses)",
+  "y_axis": "down",
+  "units": "px",
+  "floor_y": 478,
+  "desk_top_y": 267,
+  "head_scale": null,
+  "note": "3D box model: x lateral, y down, z away from the screen plane; yaw 0 front, 90 side (screen on the left, like the mihalych side desk x 246..376 / desk 64..404 / leg 372..386)"
+ },
+ "dim": {
+  "floor": 478,
+  "deskY": 267,
+  "deskLeft": -170,
+  "deskRight": 210,
+  "deskZ0": -182,
+  "deskZ1": 158,
+  "crtX0": 70,
+  "crtX1": 190,
+  "crt_w": 120,
+  "crt_h": 110,
+  "crt_depth": 130,
+  "crt_back": [
+   76,
+   48
+  ],
+  "stand": [
+   68,
+   14,
+   84
+  ],
+  "screen": [
+   80,
+   -114,
+   84,
+   78
+  ],
+  "towerX0": 40,
+  "towerX1": 124,
+  "towerY0": 328,
+  "tower_depth": 120,
+  "keyboard": [
+   140,
+   62
+  ],
+  "mouse": [
+   26,
+   38
+  ],
+  "pivotX": 130,
+  "sideShift": 116
+ },
+ "palette": {
+  "crt": "#d4c590",
+  "crtSh": "#b3a46c",
+  "crtHi": "#e4d8ab",
+  "kb": "#cdbb7c",
+  "kbSh": "#ab9a5e",
+  "kbHi": "#a99a5e",
+  "key": "#e2d6a8",
+  "keySh": "#bfb07e",
+  "keyDown": "#a99a66",
+  "keyGap": "#3b3328",
+  "tower": "#d0c08a",
+  "towerSh": "#af9f68",
+  "towerHi": "#e0d3a4",
+  "bay": "#8d8153",
+  "bayDk": "#2a2c30",
+  "mouse": "#cdbb7c",
+  "mouseSh": "#ab9a5e",
+  "mouseHi": "#ddcf9a",
+  "recess": "#232a2e",
+  "glass": "#12201f",
+  "amber": "#f3b04a",
+  "amberDim": "#b9822c",
+  "teal": "#2f6b73",
+  "win": "#cfc8b3",
+  "winBar": "#2d4f8a",
+  "winBtn": "#e5dfcc",
+  "red": "#c0392b",
+  "bsod": "#1f3fb0",
+  "bsodHd": "#c9d3f2",
+  "bsodTx": "#e7ecff",
+  "heart": "#e0556b",
+  "sleepZ": "#8fb4d8",
+  "offGlass": "#1b2732",
+  "offRefl": "#26343f",
+  "sand": "#f3b04a",
+  "hgGlass": "#55737a",
+  "hgFrame": "#cfc7ad",
+  "ledGreen": "#4fbf72",
+  "ledAmber": "#f2a93b",
+  "ledRed": "#ff5a4a",
+  "ledPink": "#ff8aa6",
+  "ledOff": "#6a6a58",
+  "tape": "#eadfb8",
+  "tapeInk": "#2b2723",
+  "sticker": "#f1ede0",
+  "stain": "#7a5a2e",
+  "stainCore": "#3b2a18",
+  "dust": "#b9ae95",
+  "dust2": "#a2977d",
+  "desk": "#7d6a54",
+  "deskSh": "#5f4f3e",
+  "deskHi": "#8f7b63",
+  "cableDk": "#20222a",
+  "cableGr": "#8d8a7c",
+  "strip": "#d7cfb6",
+  "stripSh": "#b4aa8c",
+  "chair": "#394258",
+  "shadow": "#0b1020"
+ },
+ "parts": [
+  {
+   "name": "crt_hump",
+   "draw": "P.crt_hump",
+   "frame": "crt",
+   "pivot": [
+    130,
+    143
+   ]
+  },
+  {
+   "name": "crt_stand",
+   "draw": "P.crt_stand",
+   "frame": "crt",
+   "pivot": [
+    130,
+    267
+   ]
+  },
+  {
+   "name": "crt_body",
+   "draw": "P.crt_body",
+   "frame": "crt",
+   "pivot": [
+    130,
+    143
+   ]
+  },
+  {
+   "name": "crt_face",
+   "draw": "P.crt_face",
+   "frame": "crt_front_plane",
+   "pivot": [
+    130,
+    143
+   ]
+  },
+  {
+   "name": "crt_side",
+   "draw": "P.crt_side",
+   "frame": "crt_side_plane",
+   "pivot": [
+    190,
+    143
+   ]
+  },
+  {
+   "name": "screen_content",
+   "draw": "P.screen_content",
+   "frame": "screen",
+   "pivot": [
+    80,
+    153
+   ]
+  },
+  {
+   "name": "led_cluster",
+   "draw": "P.led_cluster",
+   "frame": "crt_front_plane",
+   "pivot": [
+    171,
+    175
+   ]
+  },
+  {
+   "name": "dust",
+   "draw": "P.dust",
+   "frame": "crt_front_plane",
+   "pivot": [
+    130,
+    143
+   ]
+  },
+  {
+   "name": "desk_leg",
+   "draw": "P.desk_leg",
+   "frame": "desk",
+   "pivot": [
+    0,
+    283
+   ]
+  },
+  {
+   "name": "desk",
+   "draw": "P.desk",
+   "frame": "desk",
+   "pivot": [
+    0,
+    267
+   ]
+  },
+  {
+   "name": "tower",
+   "draw": "P.tower",
+   "frame": "tower",
+   "pivot": [
+    82,
+    478
+   ]
+  },
+  {
+   "name": "tower_face",
+   "draw": "P.tower_face",
+   "frame": "tower_front_plane",
+   "pivot": [
+    82,
+    328
+   ]
+  },
+  {
+   "name": "tower_side",
+   "draw": "P.tower_side",
+   "frame": "tower_side_plane",
+   "pivot": [
+    124,
+    328
+   ]
+  },
+  {
+   "name": "strip",
+   "draw": "P.strip",
+   "frame": "floor",
+   "pivot": [
+    -7,
+    478
+   ]
+  },
+  {
+   "name": "keyboard",
+   "draw": "P.keyboard",
+   "frame": "desk",
+   "pivot": [
+    -10,
+    267
+   ]
+  },
+  {
+   "name": "mouse",
+   "draw": "P.mouse",
+   "frame": "desk",
+   "pivot": [
+    107,
+    267
+   ]
+  },
+  {
+   "name": "cables",
+   "draw": "P.cables",
+   "frame": "desk",
+   "pivot": [
+    0,
+    267
+   ]
+  },
+  {
+   "name": "chair_slot",
+   "draw": "P.chair_slot",
+   "frame": "floor",
+   "pivot": [
+    0,
+    478
+   ]
+  }
+ ],
+ "pivots": {
+  "root": {
+   "at": [
+    0,
+    478
+   ],
+   "note": "floor contact"
+  },
+  "yaw": {
+   "at": [
+    130,
+    478
+   ],
+   "parent": "root",
+   "note": "scene turns about the CRT centre line x=130; side view adds 116 px so the screen plane lands at x=246 like the mihalych side desk"
+  },
+  "crt": {
+   "at": [
+    130,
+    267
+   ],
+   "parent": "desk",
+   "note": "body 120x110 (depth 78) + tapered hump to 76x48 (z 130) on a 68x14 stand; shake pivot x=130,y=470"
+  },
+  "screen": {
+   "at": [
+    80,
+    153
+   ],
+   "parent": "crt_face",
+   "note": "84x78 recessed glass, content drawn in its own coordinates, clipped to the glass shape"
+  },
+  "tower": {
+   "at": [
+    82,
+    478
+   ],
+   "parent": "floor",
+   "note": "84 wide x150 tall, front panel at z=-16; shakes with the CRT"
+  },
+  "desk": {
+   "at": [
+    0,
+    267
+   ],
+   "parent": "root",
+   "note": "slab -170..210 x 340 deep (z -182..158), four legs 14x14"
+  },
+  "chair_slot": {
+   "at": [
+    0,
+    478
+   ],
+   "parent": "root",
+   "note": "flat silhouette placeholder, user side (z -312..-176), seat y=341 (= mihalych hip 325 + 16)"
+  }
+ },
+ "requires": {
+  "engine_api": 1,
+  "engine_verbs": [
+   "state",
+   "screen_text",
+   "led",
+   "shake",
+   "move",
+   "hold"
+  ],
+  "engine_globals": [],
+  "draw_state": [
+   "uid",
+   "pose",
+   "state|expr",
+   "screen_text",
+   "led",
+   "shake",
+   "t"
+  ],
+  "optional_engine_features": [
+   "scene-level grain"
+  ],
+  "fonts": [
+   "monospace (Menlo / Courier New fallback), Cyrillic"
+  ],
+  "assets": []
+ },
+ "expressions": {
+  "off": {
+   "screen": "off",
+   "led": "auto",
+   "shake": 0,
+   "hum": 0,
+   "cable": 0,
+   "bounce": 0
+  },
+  "idle": {
+   "screen": "idle",
+   "led": "auto",
+   "shake": 0.12,
+   "hum": 1,
+   "cable": 0.25,
+   "bounce": 0
+  },
+  "boot": {
+   "screen": "boot",
+   "led": "auto",
+   "shake": 0.35,
+   "hum": 1,
+   "cable": 0.5,
+   "bounce": 0
+  },
+  "working": {
+   "screen": "working",
+   "led": "auto",
+   "shake": 0.4,
+   "hum": 1,
+   "cable": 0.7,
+   "bounce": 0
+  },
+  "error": {
+   "screen": "error",
+   "led": "auto",
+   "shake": 0.9,
+   "hum": 1,
+   "cable": 1.1,
+   "bounce": 0
+  },
+  "bsod": {
+   "screen": "bsod",
+   "led": "auto",
+   "shake": 0.2,
+   "hum": 1,
+   "cable": 0.15,
+   "bounce": 0
+  },
+  "love": {
+   "screen": "love",
+   "led": "auto",
+   "shake": 0,
+   "hum": 1,
+   "cable": 0.5,
+   "bounce": 1
+  },
+  "sleep": {
+   "screen": "sleep",
+   "led": "auto",
+   "shake": 0.03,
+   "hum": 1,
+   "cable": 0.05,
+   "bounce": 0
+  },
+  "static": {
+   "screen": "static",
+   "led": "auto",
+   "shake": 0.25,
+   "hum": 1,
+   "cable": 0.4,
+   "bounce": 0
+  }
+ },
+ "poses": [
+  "front",
+  "q",
+  "side",
+  "q_chair",
+  "side_chair"
+ ],
+ "pose_keys": [
+  "yaw (deg, 0..90)",
+  "pitch (deg, 5..8)",
+  "chair (0|1, flat silhouette slot)"
+ ],
+ "parameters": {
+  "state": {
+   "values": [
+    "off",
+    "idle",
+    "boot",
+    "working",
+    "error",
+    "bsod",
+    "love",
+    "sleep",
+    "static"
+   ],
+   "note": "scene sheet `state`; also accepted as `expr` (name or object)"
+  },
+  "screen_text": {
+   "type": "string",
+   "note": "short text, up to 3 lines of ~12 chars; idle: second line, working: caption, error: dialog message, bsod: error code, love: caption; per-state defaults when empty"
+  },
+  "led": {
+   "default": "auto",
+   "values": [
+    "auto",
+    "off",
+    "green",
+    "amber",
+    "red",
+    "pink",
+    "blink_red",
+    "pulse_amber"
+   ],
+   "note": "auto follows the state (idle green, boot/working green + HDD flicker, error red blink, love pink, sleep amber pulse, off none)"
+  },
+  "shake": {
+   "default": "per state",
+   "range": [
+    0,
+    1.5
+   ],
+   "note": "horizontal jitter up to 2.4 px at 21 Hz, rotation up to 0.5 deg at 13 Hz, hum 0.5 px; error plays in 0.7 s bursts"
+  },
+  "cable": {
+   "default": "per state",
+   "range": [
+    0,
+    1.5
+   ],
+   "note": "sway of the power cable, keyboard and mouse cables"
+  },
+  "t": {
+   "note": "seconds; drives cursor blink (1 Hz), hourglass (2.2 s), boot lines (5 s), noise (14 fps), dust puffs, love pulse"
+  }
+ },
+ "draw_order": [
+  "floor shadow",
+  "under-desk objects far to near (legs, tower + dust, power strip + floor cables)",
+  "desk slab",
+  "desk cable",
+  "keyboard / mouse / CRT sorted by depth (CRT = hump, stand, body)",
+  "chair silhouette (pose chair:1)"
+ ],
+ "known_weaknesses": [
+  "yaw only 0..90 (no mirror, no back view)",
+  "chair is a flat silhouette placeholder, not Mihalych's chair",
+  "desk is 40 px wider than the mihalych silhouette desk (-170..210 vs -170..170)",
+  "in 3/4 the tower base sits slightly off in depth (no real occlusion test between tower and front legs)",
+  "screen font is the system monospace, not an asset; text is tiny at working size (screen is 84 px wide)",
+  "faces drawn without outlines: corner rounding comes from the silhouette hull, inner edges are sharp",
+  "no grain in the module (scene compositor adds it)",
+  "not run through the real engine; `state`, `screen_text`, `led`, `shake` verbs are declared but not wired",
+  "hourglass and heart are plain shapes; no hearts rain or cable-heart gag yet"
+ ],
+ "frozen_from": "scratchpad poc_obj1 (zinaida 1.0.0 draft)"
+}

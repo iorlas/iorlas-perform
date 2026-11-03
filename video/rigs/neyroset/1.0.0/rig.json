@@ -1,0 +1,803 @@
+{
+ "id": "neyroset",
+ "version": "1.0.0",
+ "look": "cutout",
+ "seed": 7,
+ "description": "Нейросеть: female AI-assistant asset set, cut-paper «Вырезка»: three display modes (chat window, monitor smiley, thought cloud), 12 smiley expressions, lip-sync mouth, clean back view. Navy cap with parting and fringe (client OK).",
+ "module": {
+  "file": "art/neyroset_cut.js",
+  "registers": {
+   "rig": "NEY (also HF.RIGS.neyroset)",
+   "data": "NEY.P (parts), NEY.EXPR, NEY.EMOJI, NEY.MODES, NEY.PALETTE",
+   "expressions": "NEY.EXPR",
+   "poses": "NEY.MODES",
+   "draw": "NEY.draw(state, t) -> SVG string",
+   "defs": "NEY.defs() -> filters, insert once per page"
+  },
+  "purity": "pure function of (state, t); no randomness; blink and bob derive from t"
+ },
+ "space": {
+  "origin": "head centre (head/head_back); top-left of the box for modes",
+  "y_axis": "down",
+  "units": "px",
+  "head_box": [
+   -150,
+   -140,
+   300,
+   320
+  ],
+  "mode_sizes": {
+   "chat_window": [
+    520,
+    440
+   ],
+   "monitor_smiley": [
+    520,
+    380
+   ],
+   "thought_cloud": [
+    400,
+    360
+   ]
+  }
+ },
+ "dim": {
+  "head_w": 190,
+  "head_h": 176,
+  "bob_w": 234,
+  "eye_dx": 38,
+  "eye_y": -2,
+  "mouth_y": 44,
+  "brow_y": -34,
+  "bust_to_y": 168
+ },
+ "palette": {
+  "navy": "#1f3568",
+  "navy2": "#172a54",
+  "navy3": "#2b4a8c",
+  "skin": "#fbdccb",
+  "skin2": "#efc0ae",
+  "cheek": "#f6a9a6",
+  "lip": "#b04a63",
+  "inside": "#5a1f3a",
+  "tongue": "#e0708a",
+  "teeth": "#fbf6ea",
+  "sclera": "#ffffff",
+  "iris": "#26407f",
+  "blouse": "#4f86d6",
+  "blouse2": "#3d6fd0",
+  "win": "#1c2a4a",
+  "win2": "#2c3d66",
+  "field": "#101a31",
+  "aiB": "#2f4f8f",
+  "aiT": "#eaf2ff",
+  "usB": "#e6dcc4",
+  "usT": "#2b2723",
+  "amber": "#f3b04a",
+  "amber2": "#ffd27a",
+  "red": "#e0705f",
+  "yel": "#e0b341",
+  "grn": "#58d68d",
+  "ice": "#9ec8ff",
+  "txt": "#b9c9e6",
+  "scr": "#0d1730",
+  "scr2": "#16285a",
+  "body": "#3a4258",
+  "cloud": "#eef3fb",
+  "cloud2": "#c8d6ea",
+  "cloudT": "#26407f",
+  "shadow": "#0b1020"
+ },
+ "parts": [
+  {
+   "name": "hair_back",
+   "draw": "P.hair_back",
+   "note": "bob mass behind head, darker navy"
+  },
+  {
+   "name": "skull",
+   "draw": "P.skull",
+   "note": "face + one jaw shade"
+  },
+  {
+   "name": "cheeks",
+   "draw": "P.cheeks",
+   "note": "flat pink"
+  },
+  {
+   "name": "brows",
+   "draw": "P.brows",
+   "note": "navy, width 9"
+  },
+  {
+   "name": "eyes",
+   "draw": "P.eyes",
+   "note": "sclera, iris, lid cover, arc/x variants"
+  },
+  {
+   "name": "mouth",
+   "draw": "P.mouth",
+   "note": "filled lips, interior, thin teeth crescent, tongue"
+  },
+  {
+   "name": "cap",
+   "draw": "P.cap",
+   "note": "navy cap with parting and fringe; casts one flat forehead shadow"
+  },
+  {
+   "name": "neck",
+   "draw": "P.neck",
+   "note": ""
+  },
+  {
+   "name": "shoulders",
+   "draw": "P.shoulders",
+   "note": "blouse bust for mini-figure"
+  },
+  {
+   "name": "head_back",
+   "draw": "P.head_back",
+   "note": "clean back view, parting from crown, nape hairline"
+  },
+  {
+   "name": "fx",
+   "draw": "P.fx",
+   "note": "expression extras: sweat, sweat2, dots, typing, check, warn, zzz, sparks, glitch"
+  },
+  {
+   "name": "chat_window",
+   "draw": "P.chat_window",
+   "note": "mode 1"
+  },
+  {
+   "name": "monitor_smiley",
+   "draw": "P.monitor_smiley",
+   "note": "mode 2"
+  },
+  {
+   "name": "thought_cloud",
+   "draw": "P.thought_cloud",
+   "note": "mode 3"
+  }
+ ],
+ "pivots": {
+  "head": {
+   "at": [
+    0,
+    0
+   ],
+   "note": "tilt pivot at (0,80) chin/neck; expression tilt_deg rotates about it"
+  },
+  "eye_L_R": {
+   "at": [
+    -38,
+    -2
+   ],
+   "parent": "head",
+   "note": "R mirrored"
+  },
+  "brow_L_R": {
+   "at": [
+    -13,
+    -34
+   ],
+   "parent": "head",
+   "note": "inner end"
+  },
+  "mouth": {
+   "at": [
+    0,
+    44
+   ],
+   "parent": "head"
+  },
+  "cap": {
+   "at": [
+    0,
+    -100
+   ],
+   "parent": "head",
+   "note": "parting point"
+  },
+  "chat_window": {
+   "at": [
+    0,
+    0
+   ],
+   "note": "top-left of 520x440 box"
+  },
+  "monitor_smiley": {
+   "at": [
+    0,
+    0
+   ],
+   "note": "top-left of 520x380 box; screen (30,24,460,264)"
+  },
+  "thought_cloud": {
+   "at": [
+    38,
+    334
+   ],
+   "note": "tail tip bottom-left of 400x360 box; anchor over a head"
+  }
+ },
+ "expressions": {
+  "neutral_helpful": {
+   "eye": {
+    "t": "open",
+    "sL": 1,
+    "sR": 1,
+    "lidL": 0,
+    "lidR": 0,
+    "slL": 0,
+    "slR": 0,
+    "pup": 1,
+    "gx": 0,
+    "gy": 0
+   },
+   "brow": {
+    "yL": 5,
+    "yR": 5,
+    "aL": 1,
+    "aR": 1
+   },
+   "mouth": {
+    "w": 24,
+    "mc": 0.55,
+    "ms": 0,
+    "mo": 0,
+    "mt": 0,
+    "mg": 0
+   },
+   "cheeks": 1,
+   "tilt_deg": 0,
+   "dy": 0,
+   "fx": [],
+   "label_ru": "нейтральная, готова помочь"
+  },
+  "thinking": {
+   "eye": {
+    "t": "open",
+    "sL": 1,
+    "sR": 1,
+    "lidL": 0.1,
+    "lidR": 0.1,
+    "slL": 0,
+    "slR": 0,
+    "pup": 0.95,
+    "gx": -0.8,
+    "gy": -0.9
+   },
+   "brow": {
+    "yL": 8,
+    "yR": -2,
+    "aL": -6,
+    "aR": -4
+   },
+   "mouth": {
+    "w": 13,
+    "mc": 0,
+    "ms": 0.8,
+    "mo": 0,
+    "mt": 0,
+    "mg": 0
+   },
+   "cheeks": 0.8,
+   "tilt_deg": -5,
+   "dy": 0,
+   "fx": [
+    "dots"
+   ],
+   "label_ru": "думает"
+  },
+  "confident_wrong": {
+   "eye": {
+    "t": "open",
+    "sL": 1.05,
+    "sR": 1.05,
+    "lidL": 0.12,
+    "lidR": 0.12,
+    "slL": 0,
+    "slR": 0,
+    "pup": 1.05,
+    "gx": 0.1,
+    "gy": 0
+   },
+   "brow": {
+    "yL": 6,
+    "yR": 6,
+    "aL": -3,
+    "aR": -3
+   },
+   "mouth": {
+    "w": 36,
+    "mc": 1,
+    "ms": 0.1,
+    "mo": 0.3,
+    "mt": 1,
+    "mg": 0
+   },
+   "cheeks": 1.15,
+   "tilt_deg": 4,
+   "dy": -3,
+   "fx": [
+    "check"
+   ],
+   "label_ru": "уверена, но не права"
+  },
+  "apologetic": {
+   "eye": {
+    "t": "open",
+    "sL": 1.1,
+    "sR": 1.1,
+    "lidL": 0,
+    "lidR": 0,
+    "slL": 0,
+    "slR": 0,
+    "pup": 1.12,
+    "gx": 0.3,
+    "gy": 0.6
+   },
+   "brow": {
+    "yL": 4,
+    "yR": 4,
+    "aL": 9,
+    "aR": 9
+   },
+   "mouth": {
+    "w": 17,
+    "mc": -0.55,
+    "ms": 0,
+    "mo": 0,
+    "mt": 0,
+    "mg": 0
+   },
+   "cheeks": 1.3,
+   "tilt_deg": -4,
+   "dy": 3,
+   "fx": [
+    "sweat"
+   ],
+   "label_ru": "извиняется"
+  },
+  "cheerful": {
+   "eye": {
+    "t": "arc",
+    "sL": 1,
+    "sR": 1,
+    "lidL": 0,
+    "lidR": 0,
+    "slL": 0,
+    "slR": 0,
+    "pup": 1,
+    "gx": 0,
+    "gy": 0
+   },
+   "brow": {
+    "yL": 6,
+    "yR": 6,
+    "aL": -3,
+    "aR": -3
+   },
+   "mouth": {
+    "w": 36,
+    "mc": 1,
+    "ms": 0,
+    "mo": 0.55,
+    "mt": 1,
+    "mg": 1
+   },
+   "cheeks": 1.4,
+   "tilt_deg": 0,
+   "dy": -2,
+   "fx": [
+    "sparks"
+   ],
+   "label_ru": "радуется"
+  },
+  "typing": {
+   "eye": {
+    "t": "open",
+    "sL": 1,
+    "sR": 1,
+    "lidL": 0.28,
+    "lidR": 0.28,
+    "slL": 0,
+    "slR": 0,
+    "pup": 1,
+    "gx": 0.1,
+    "gy": 1
+   },
+   "brow": {
+    "yL": 0,
+    "yR": 0,
+    "aL": 0,
+    "aR": 0
+   },
+   "mouth": {
+    "w": 11,
+    "mc": 0.1,
+    "ms": 0,
+    "mo": 0,
+    "mt": 0,
+    "mg": 0
+   },
+   "cheeks": 0.9,
+   "tilt_deg": 0,
+   "dy": 4,
+   "fx": [
+    "typing"
+   ],
+   "label_ru": "печатает"
+  },
+  "error": {
+   "eye": {
+    "t": "x",
+    "sL": 1,
+    "sR": 1,
+    "lidL": 0,
+    "lidR": 0,
+    "slL": 0,
+    "slR": 0,
+    "pup": 1,
+    "gx": 0,
+    "gy": 0
+   },
+   "brow": {
+    "yL": 3,
+    "yR": 3,
+    "aL": 5,
+    "aR": 5
+   },
+   "mouth": {
+    "w": 24,
+    "mc": 0,
+    "ms": 0,
+    "mo": 0,
+    "mt": 0,
+    "mg": 0,
+    "type": "zig"
+   },
+   "cheeks": 0.6,
+   "tilt_deg": 0,
+   "dy": 0,
+   "fx": [
+    "warn"
+   ],
+   "label_ru": "ошибка"
+  },
+  "hallucinating": {
+   "eye": {
+    "t": "open",
+    "sL": 1.2,
+    "sR": 0.82,
+    "lidL": 0,
+    "lidR": 0.05,
+    "slL": 0,
+    "slR": 0,
+    "pup": 1.1,
+    "gx": -0.9,
+    "gy": -0.7,
+    "gxR": 0.9,
+    "gyR": 0.8,
+    "pupR": 0.6
+   },
+   "brow": {
+    "yL": 10,
+    "yR": -4,
+    "aL": -4,
+    "aR": 4
+   },
+   "mouth": {
+    "w": 26,
+    "mc": 0,
+    "ms": 0,
+    "mo": 0,
+    "mt": 0,
+    "mg": 0,
+    "type": "wave"
+   },
+   "cheeks": 1,
+   "tilt_deg": 6,
+   "dy": 0,
+   "fx": [
+    "glitch"
+   ],
+   "label_ru": "галлюцинирует"
+  },
+  "smug": {
+   "eye": {
+    "t": "open",
+    "sL": 1,
+    "sR": 1,
+    "lidL": 0.5,
+    "lidR": 0.5,
+    "slL": -1,
+    "slR": 1,
+    "pup": 1,
+    "gx": 0.4,
+    "gy": 0.1
+   },
+   "brow": {
+    "yL": 0,
+    "yR": 9,
+    "aL": -2,
+    "aR": -5
+   },
+   "mouth": {
+    "w": 26,
+    "mc": 0.5,
+    "ms": 1,
+    "mo": 0,
+    "mt": 0,
+    "mg": 0
+   },
+   "cheeks": 1,
+   "tilt_deg": -6,
+   "dy": -2,
+   "fx": [],
+   "label_ru": "самодовольна"
+  },
+  "sleepy": {
+   "eye": {
+    "t": "open",
+    "sL": 1,
+    "sR": 1,
+    "lidL": 0.84,
+    "lidR": 0.84,
+    "slL": 0,
+    "slR": 0,
+    "pup": 0.9,
+    "gx": 0,
+    "gy": 0.4
+   },
+   "brow": {
+    "yL": -3,
+    "yR": -3,
+    "aL": 3,
+    "aR": 3
+   },
+   "mouth": {
+    "w": 13,
+    "mc": 0,
+    "ms": 0,
+    "mo": 0.28,
+    "mt": 0,
+    "mg": 0
+   },
+   "cheeks": 0.8,
+   "tilt_deg": 8,
+   "dy": 5,
+   "fx": [
+    "zzz"
+   ],
+   "label_ru": "дремлет"
+  },
+  "sarcastic": {
+   "eye": {
+    "t": "open",
+    "sL": 1,
+    "sR": 1,
+    "lidL": 0.38,
+    "lidR": 0.38,
+    "slL": 0,
+    "slR": 0,
+    "pup": 1,
+    "gx": -0.9,
+    "gy": -0.8
+   },
+   "brow": {
+    "yL": 11,
+    "yR": -5,
+    "aL": -7,
+    "aR": -8
+   },
+   "mouth": {
+    "w": 22,
+    "mc": -0.05,
+    "ms": -0.7,
+    "mo": 0,
+    "mt": 0,
+    "mg": 0
+   },
+   "cheeks": 0.7,
+   "tilt_deg": -3,
+   "dy": 0,
+   "fx": [],
+   "label_ru": "язвит"
+  },
+  "panicked": {
+   "eye": {
+    "t": "open",
+    "sL": 1.22,
+    "sR": 1.22,
+    "lidL": 0,
+    "lidR": 0,
+    "slL": 0,
+    "slR": 0,
+    "pup": 0.6,
+    "gx": 0,
+    "gy": 0
+   },
+   "brow": {
+    "yL": 6,
+    "yR": 6,
+    "aL": 9,
+    "aR": 9
+   },
+   "mouth": {
+    "w": 15,
+    "mc": -0.65,
+    "ms": 0,
+    "mo": 0.45,
+    "mt": 0,
+    "mg": 0,
+    "nt": 1
+   },
+   "cheeks": 0.6,
+   "tilt_deg": 0,
+   "dy": -3,
+   "fx": [
+    "sweat",
+    "sweat2"
+   ],
+   "label_ru": "паника от пользователя"
+  }
+ },
+ "poses": {
+  "chat_window": {
+   "size": [
+    520,
+    440
+   ],
+   "slots": [
+    "chat_lines",
+    "typing",
+    "emoji",
+    "scroll",
+    "expr"
+   ]
+  },
+  "monitor_smiley": {
+   "size": [
+    520,
+    380
+   ],
+   "slots": [
+    "phrase",
+    "emoji",
+    "expr",
+    "mouth",
+    "frame"
+   ]
+  },
+  "thought_cloud": {
+   "size": [
+    400,
+    360
+   ],
+   "slots": [
+    "phrase",
+    "emoji",
+    "expr",
+    "mouth"
+   ]
+  },
+  "head": {
+   "size": "HEAD_BOX",
+   "slots": [
+    "expr",
+    "mouth",
+    "gaze",
+    "bust",
+    "fx"
+   ]
+  },
+  "head_back": {
+   "slots": [
+    "bust"
+   ]
+  }
+ },
+ "parameters": {
+  "mouth_open": {
+   "range": [
+    0,
+    1
+   ],
+   "visemes": {
+    "closed": 0,
+    "small": 0.3,
+    "mid": 0.6,
+    "wide": 1
+   },
+   "note": "adds to expression base mo; open interior from >0.12, thin teeth strip from 0.25 if expression has mt, tongue from 0.55 with mg"
+  },
+  "gaze": {
+   "range": [
+    -1,
+    1
+   ],
+   "note": "added to expression gaze"
+  },
+  "blink": {
+   "auto": "every 3.4 s, 0.18 s; false disables"
+  },
+  "scroll": {
+   "range": [
+    0,
+    1
+   ],
+   "note": "0 = stuck to newest message (bottom), 1 = oldest"
+  }
+ },
+ "slots": {
+  "chat_lines": {
+   "type": "array",
+   "item": {
+    "from": "user|ai",
+    "text": "short Russian text, wraps to 5 lines at 300 px, ellipsis after",
+    "expr": "expression for the avatar of an ai line",
+    "emoji": "inline emoji name at bubble end",
+    "react": "[{e: emoji name, n: count}] chips under the bubble"
+   }
+  },
+  "typing": {
+   "type": "bool",
+   "note": "AI typing indicator bubble at the end of the list"
+  },
+  "phrase": {
+   "type": "string",
+   "note": "one line, ellipsised to the screen / cloud width"
+  },
+  "emoji": {
+   "type": "string",
+   "values": [
+    "heart",
+    "star",
+    "fire",
+    "check",
+    "cross",
+    "laugh",
+    "sparkle",
+    "bulb",
+    "question"
+   ],
+   "note": "sticker in the corner of monitor/cloud; chat_lines[].emoji inline"
+  }
+ },
+ "requires": {
+  "engine_api": 1,
+  "engine_verbs": [
+   "express",
+   "mouth_open",
+   "set_mode"
+  ],
+  "engine_globals": [],
+  "draw_state": [
+   "mode",
+   "expr",
+   "mouth",
+   "gaze{x,y}",
+   "uid",
+   "bust?",
+   "back?",
+   "fx?",
+   "blink?",
+   "chat_lines[]?",
+   "typing?",
+   "scroll?",
+   "phrase?",
+   "emoji?",
+   "frame?",
+   "t"
+  ],
+  "optional_engine_features": [],
+  "fonts": [
+   "Marker Felt",
+   "Marker Felt Wide",
+   "Helvetica"
+  ],
+  "assets": []
+ }
+}

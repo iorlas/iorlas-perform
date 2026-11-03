@@ -1,0 +1,48 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#1c2740}</style></head><body><div id="c"></div>
+<script src="../art/neyroset_cut.js"></script>
+<script>
+/* Golden / sheet: three modes, 12 expressions, 4 mouth states, small-size insets, palette. Layout is part of the golden. */
+var W=2400,H=1800,FONT="'Marker Felt','Marker Felt Wide',Helvetica,sans-serif",T0=0.3;
+function Tx(x,y,s,t,fill,a,w){return '<text x="'+x+'" y="'+y+'" text-anchor="'+(a||'middle')+'" font-size="'+s+'" font-family="'+FONT+'" fill="'+(fill||'#efe7d2')+'"'+(w?' font-weight="'+w+'"':'')+'>'+t+'</text>'}
+var o='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'"><rect width="'+W+'" height="'+H+'" fill="#2a3a55"/>'+NEY.defs()
+ +'<defs><filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="5"/><feColorMatrix type="saturate" values="0"/></filter></defs>';
+function panel(x,y,w,h,i){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="12" fill="'+(i%2?'#2f4263':'#33476a')+'"/>'}
+function at(x,y,k,inner){return '<g transform="translate('+x+','+y+') scale('+k+')">'+inner+'</g>'}
+function headAt(cx,cy,k,st){return at(cx,cy,k,NEY.head(st,T0))}
+function native(x,y,px,st,fx){st.fx=!!fx;var vb=fx?'-150 -140 300 300':'-122 -122 244 244';return '<svg x="'+x+'" y="'+y+'" width="'+px+'" height="'+px+'" viewBox="'+vb+'" overflow="hidden">'+NEY.head(st,T0)+'</svg>'}
+o+=Tx(40,52,40,'НЕЙРОСЕТЬ · набор «Вырезка» 1.0.0',null,'start','700')+Tx(2360,50,22,'она · тёмно-синяя шапка с пробором и чёлкой · три режима показа','#b9c9e6','end');
+var CH=[{from:'user',text:'сделай, чтобы Палыч меня наконец уважал'},{from:'ai',text:'С огромным удовольствием, Вадим! Готово: Палычу отправлена вся история ваших запросов за год.',emoji:'sparkle',react:[{e:'heart',n:3},{e:'fire',n:1}],expr:'cheerful'},{from:'user',text:'что?!'}];
+o+=panel(30,80,700,640,0)+at(54,100,1.28,NEY.draw({mode:'chat_window',uid:'cw',chat_lines:CH,typing:true,expr:'neutral_helpful'},T0));
+o+=Tx(380,706,24,'1. окно чата: глубокий разговор',null,null,'700');
+o+=panel(750,80,640,640,1)+at(780,150,1.15,NEY.draw({mode:'monitor_smiley',uid:'ms',expr:'confident_wrong',phrase:'Выполнено. Тесты — тоже.',emoji:'check'},T0));
+o+=Tx(1070,706,24,'2. смайл на мониторе Вадика',null,null,'700');
+var chead='<clipPath id="cc"><rect x="1410" y="480" width="520" height="200"/></clipPath><g clip-path="url(#cc)"><g transform="translate(1670,590)"><path d="M-62,30 C-66,-40 -36,-70 0,-70 C36,-70 66,-40 62,30Z" fill="#a7774c"/><path d="M-54,70 C-58,10 -32,-14 0,-14 C32,-14 58,10 54,70Z" fill="#d2ab86"/><path d="M-110,110 C-104,84 -70,72 -54,70 L54,70 C70,72 104,84 110,110Z" fill="#8d9299"/></g></g>';
+o+=panel(1410,80,520,640,0)+chead+at(1450,150,1.15,NEY.draw({mode:'thought_cloud',uid:'tc',expr:'smug',phrase:'Готово! Тесты — тоже.',emoji:'bulb'},T0));
+o+=Tx(1670,706,24,'3. облако мысли над головой',null,null,'700');
+o+=panel(1950,80,420,640,1)+headAt(2160,250,.9,{back:true,bust:true,uid:'bk'});
+o+=Tx(2160,448,20,'вид сзади: чистый затылок');
+var pal=[['шапка','#1f3568'],['волосы сзади','#172a54'],['кожа','#fbdccb'],['тень кожи','#efc0ae'],['щёки','#f6a9a6'],['блуза','#4f86d6'],['губы','#b04a63'],['радужка','#26407f'],['облако','#eef3fb'],['янтарь','#f3b04a'],['зелёный','#58d68d'],['красный','#e0705f']];
+pal.forEach(function(p,i){var x=1972+(i%3)*134,y=480+Math.floor(i/3)*58;o+='<rect x="'+x+'" y="'+y+'" width="26" height="26" rx="6" fill="'+p[1]+'"/>'+Tx(x+32,y+12,13,p[0],'#efe7d2','start')+Tx(x+32,y+26,11,p[1],'#b9c9e6','start')});
+NEY.EXPR_ORDER.forEach(function(n,i){var cx=30+(i%6)*390,cy=740+Math.floor(i/6)*290;
+  o+=panel(cx,cy,376,276,i)+headAt(cx+188,cy+118,.88,{expr:n,uid:'g'+i})+Tx(cx+188,cy+262,19,(i+1)+'. '+NEY.EXPR_RU[n],null,null,'700')});
+var by=1340;
+o+=Tx(40,by-8,22,'рот: mouth_open 0 · 0,3 · 0,6 · 1','#b9c9e6','start','700');
+[0,.3,.6,1].forEach(function(m,i){var cx=30+i*250;o+=panel(cx,by,236,230,i)+headAt(cx+118,by+95,.62,{expr:'neutral_helpful',uid:'mo'+i,mouth:m})+Tx(cx+118,by+218,18,(m+'').replace('.',',')+' · '+['закрыт','малый','средний','широкий'][i])});
+var wx=1050;o+=Tx(wx,by-8,22,'рабочий размер: 64 px с эффектами · 40 px, чат 0,46 ×, монитор 0,4 ×, облако 0,36 ×, прокрутка 0,55','#b9c9e6','start','700');
+o+='<rect x="'+wx+'" y="'+by+'" width="1320" height="100" rx="12" fill="#0d1730"/>';
+NEY.EXPR_ORDER.forEach(function(n,i){var x=wx+12+i*108;o+=native(x,by+4,64,{expr:n,uid:'w'+i},1)+native(x+56,by+44,40,{expr:n,uid:'v'+i},0);});
+o+='<rect x="'+wx+'" y="'+(by+112)+'" width="1320" height="190" rx="12" fill="#33476a"/>';
+var sy=by+116;
+o+=at(wx+14,sy,.4,NEY.draw({mode:'chat_window',uid:'sc1',chat_lines:CH,expr:'neutral_helpful'},T0));
+o+=at(wx+240,sy+4,.34,NEY.draw({mode:'monitor_smiley',uid:'sm1',expr:'cheerful',phrase:'Готово!'},T0));
+o+=at(wx+440,sy,.3,NEY.draw({mode:'thought_cloud',uid:'st1',expr:'thinking',phrase:'Хм…'},T0));
+var LONG=[{from:'user',text:'а теперь объясни, как это работает'},{from:'ai',text:'Конечно! Сначала я собираю все ваши запросы.',expr:'cheerful'},{from:'user',text:'все?'},{from:'ai',text:'Все до единого. Даже тот, про «как понять женщин».',expr:'smug'},{from:'user',text:'удали'},{from:'ai',text:'Выполнено. Кроме копий.',expr:'confident_wrong'},{from:'user',text:'КАКИХ КОПИЙ'}];
+o+=at(wx+600,sy,.4,NEY.draw({mode:'chat_window',uid:'sc2',chat_lines:LONG,scroll:.55,expr:'panicked'},T0));
+o+=native(wx+840,sy+4,110,{expr:'typing',uid:'n100'},1)+native(wx+960,sy+4,110,{expr:'smug',uid:'n101'},1)+native(wx+1080,sy+4,110,{expr:'panicked',uid:'n102'},1);
+o+=Tx(40,1610,22,'эмодзи: 9 бумажных значков, слот emoji','#b9c9e6','start','700');
+var en={heart:'сердце',star:'звезда',fire:'огонь',check:'верно',cross:'неверно',laugh:'смех',sparkle:'блеск',bulb:'идея',question:'вопрос'};
+NEY.EMOJI_ORDER.forEach(function(n,i){var x=30+i*118;o+=panel(x,1622,108,150,i)+NEY.emoji(n,x+54,1676,2.6)+Tx(x+54,1752,17,en[n])});
+o+=Tx(1130,1690,20,'слоты: chat_lines[] {from, text, expr, emoji, react[{e,n}]} · phrase · emoji','#b9c9e6','start')+Tx(1130,1724,20,'режимы: chat_window · monitor_smiley · thought_cloud · head · head_back','#b9c9e6','start')+Tx(1130,1758,20,'12 выражений × mouth_open 0 / 0,3 / 0,6 / 1 · seed 7','#b9c9e6','start');
+o+='<rect width="'+W+'" height="'+H+'" filter="url(#grain)" opacity=".09" style="mix-blend-mode:overlay"/></svg>';
+document.getElementById('c').innerHTML=o;window.__ok=1;
+</script></body></html>
