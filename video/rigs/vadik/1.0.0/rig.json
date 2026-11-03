@@ -1,0 +1,712 @@
+{
+ "id": "vadik",
+ "version": "1.0.0",
+ "look": "cutout",
+ "seed": 7,
+ "description": "Vadik, flat cut-paper puppet (approved design: variant 1, neutral_anxious baseline, clean shaven, rectangular dark glasses, soft light-brown tufts).",
+ "module": {
+  "file": "art/vadik_cut.js",
+  "registers": {
+   "rig": "HF.RIGS.vadik",
+   "data": "HF.RIG.vadik",
+   "expressions": "HF.EXPR",
+   "poses": "HF.POSES",
+   "variant_defaults": "HF.VARIANT_DEFAULT",
+   "char": "HF.CHARS.vadik_cut"
+  },
+  "purity": "pure function of (state, t); randomness only via HF.hash(seed...)"
+ },
+ "space": {
+  "origin": "neck base",
+  "y_axis": "down",
+  "units": "px",
+  "floor_y": 612,
+  "hip_y": 272
+ },
+ "dim": {
+  "hw": 56,
+  "sw": 62,
+  "shY": 24,
+  "UA": 112,
+  "FA": 104,
+  "UL": 163,
+  "LL": 161,
+  "hipY": 272,
+  "hemY": 274,
+  "ankleY": 592,
+  "neckY": -28,
+  "headCY": -58,
+  "eyeY": -62,
+  "lanY": 78,
+  "tufts": 6
+ },
+ "palette": {
+  "skin": "#e2bd98",
+  "skin2": "#d4aa85",
+  "skinSh": "#c4977a",
+  "hair": "#a7774c",
+  "hair2": "#8c603a",
+  "hair3": "#b88a5a",
+  "tee": "#8d9299",
+  "tee2": "#737a83",
+  "teeHi": "#9aa0a7",
+  "collarIn": "#5d636c",
+  "pants": "#5d5b66",
+  "pants2": "#4a4853",
+  "shoe": "#dfe0dc",
+  "shoe2": "#b9bcbc",
+  "sole": "#f1ead8",
+  "shoeAcc": "#c4673a",
+  "nose": "#d9a682",
+  "noseSh": "#c18b6a",
+  "noseHi": "#eccaa6",
+  "nostril": "#99614b",
+  "lan": "#a5492f",
+  "badge": "#efe8d6",
+  "badge2": "#b4c3d1",
+  "frame": "#242a3a",
+  "lens": "#e8f3f8",
+  "brow": "#6d4b31",
+  "lid": "#4a3326",
+  "eyeW": "#f5f2ea",
+  "pupil": "#1e1c22",
+  "mouth": "#8c4b3e",
+  "mouthIn": "#5a2b2a",
+  "cheek": "#d9907a",
+  "handset": "#1c2430",
+  "handset2": "#2d3a4c",
+  "shadow": "#0b1020"
+ },
+ "parts": [
+  {
+   "name": "hair_cap",
+   "draw": "P.hair"
+  },
+  {
+   "name": "hair_tuft",
+   "draw": "P.tuft"
+  },
+  {
+   "name": "skull",
+   "draw": "P.skull"
+  },
+  {
+   "name": "ear",
+   "draw": "P.ear"
+  },
+  {
+   "name": "nose",
+   "draw": "P.nose"
+  },
+  {
+   "name": "face",
+   "draw": "P.face"
+  },
+  {
+   "name": "glasses",
+   "draw": "P.glasses"
+  },
+  {
+   "name": "neck",
+   "draw": "P.neck"
+  },
+  {
+   "name": "torso",
+   "draw": "P.torso"
+  },
+  {
+   "name": "lanyard",
+   "draw": "P.lanyard"
+  },
+  {
+   "name": "badge",
+   "draw": "P.badge"
+  },
+  {
+   "name": "upper_arm",
+   "draw": "P.upper_arm"
+  },
+  {
+   "name": "forearm",
+   "draw": "P.forearm"
+  },
+  {
+   "name": "hand",
+   "draw": "P.hand"
+  },
+  {
+   "name": "handset",
+   "draw": "P.handset"
+  },
+  {
+   "name": "pelvis",
+   "draw": "P.pelvis"
+  },
+  {
+   "name": "upper_leg",
+   "draw": "P.upper_leg"
+  },
+  {
+   "name": "lower_leg",
+   "draw": "P.lower_leg"
+  },
+  {
+   "name": "foot",
+   "draw": "P.foot"
+  }
+ ],
+ "pivots": {
+  "root": {
+   "at": [
+    0,
+    612
+   ],
+   "note": "floor contact, between feet"
+  },
+  "hip": {
+   "at": [
+    0,
+    250
+   ],
+   "parent": "root",
+   "note": "upper body lean pivot"
+  },
+  "torso": {
+   "at": [
+    0,
+    0
+   ],
+   "parent": "hip",
+   "note": "neck base"
+  },
+  "neck": {
+   "at": [
+    0,
+    -20
+   ],
+   "parent": "torso"
+  },
+  "head": {
+   "at": [
+    0,
+    -20
+   ],
+   "parent": "neck",
+   "note": "tilt + yaw pivot (chin/neck joint)"
+  },
+  "hair_tuft_i": {
+   "at": "seeded root on skull (head frame)",
+   "parent": "head",
+   "note": "6 tufts, sway pivot at root"
+  },
+  "ear_L_R": {
+   "at": [
+    -56,
+    -58
+   ],
+   "parent": "head"
+  },
+  "glasses": {
+   "at": [
+    0,
+    -62
+   ],
+   "parent": "head",
+   "note": "nose bridge; slides down on nose"
+  },
+  "face": {
+   "at": [
+    0,
+    -58
+   ],
+   "parent": "head",
+   "note": "eyes, lids, brows, mouth layer"
+  },
+  "upper_arm_L_R": {
+   "at": [
+    -56,
+    24
+   ],
+   "parent": "torso",
+   "note": "shoulder; R mirrored"
+  },
+  "forearm_L_R": {
+   "at": "elbow (IK)",
+   "parent": "upper_arm"
+  },
+  "hand_L_R": {
+   "at": "wrist (IK, pose target)",
+   "parent": "forearm",
+   "note": "mitten + separate thumb"
+  },
+  "lanyard": {
+   "at": [
+    0,
+    78
+   ],
+   "parent": "torso",
+   "note": "V strap joins here"
+  },
+  "badge": {
+   "at": [
+    0,
+    78
+   ],
+   "parent": "lanyard",
+   "note": "pendulum, swings"
+  },
+  "upper_leg_L_R": {
+   "at": [
+    -30,
+    250
+   ],
+   "parent": "root"
+  },
+  "lower_leg_L_R": {
+   "at": "knee (IK)",
+   "parent": "upper_leg"
+  },
+  "pelvis": {
+   "at": [
+    0,
+    272
+   ],
+   "parent": "root",
+   "note": "trouser seat + crotch, under tee hem, not leaned"
+  },
+  "foot_L_R": {
+   "at": [
+    -33,
+    595
+   ],
+   "parent": "lower_leg",
+   "note": "ankle; toe direction sign by pose.legs.fl/fr, foreshortened by legs.fsh"
+  }
+ },
+ "expressions": {
+  "neutral_anxious": {
+   "open": 0.92,
+   "by": -1,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 14,
+   "btR": 14,
+   "shut": 0,
+   "pup": 0.9,
+   "gl": 0,
+   "mc": -0.3,
+   "mw": 0.9,
+   "mo": 0,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0.12,
+   "gx": 0,
+   "gy": 0
+  },
+  "wince": {
+   "open": 0.1,
+   "by": 4,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 22,
+   "btR": 22,
+   "shut": 1,
+   "pup": 1,
+   "gl": 0,
+   "mc": -0.5,
+   "mw": 0.85,
+   "mo": 0,
+   "ms": 0,
+   "wob": 1,
+   "slide": 0.08,
+   "gx": 0,
+   "gy": 0
+  },
+  "side_glance": {
+   "open": 0.9,
+   "by": -1,
+   "bdL": 0,
+   "bdR": -2,
+   "btL": 10,
+   "btR": 10,
+   "shut": 0,
+   "pup": 0.95,
+   "gl": 0,
+   "mc": -0.2,
+   "mw": 0.9,
+   "mo": 0,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0.12,
+   "gx": 1,
+   "gy": 0
+  },
+  "side_glance_l": {
+   "open": 0.9,
+   "by": -1,
+   "bdL": 0,
+   "bdR": -2,
+   "btL": 10,
+   "btR": 10,
+   "shut": 0,
+   "pup": 0.95,
+   "gl": 0,
+   "mc": -0.2,
+   "mw": 0.9,
+   "mo": 0,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0.12,
+   "gx": -1,
+   "gy": 0
+  },
+  "panic": {
+   "open": 1.45,
+   "by": -8,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 20,
+   "btR": 20,
+   "shut": 0,
+   "pup": 0.5,
+   "gl": 0,
+   "mc": -0.2,
+   "mw": 0.7,
+   "mo": 0.55,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0,
+   "gx": 0,
+   "gy": 0
+  },
+  "pretend": {
+   "open": 0.82,
+   "by": -3,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 10,
+   "btR": 10,
+   "shut": 0,
+   "pup": 0.95,
+   "gl": 0,
+   "mc": 0.5,
+   "mw": 1.15,
+   "mo": 0,
+   "ms": 0.8,
+   "wob": 0,
+   "slide": 0.1,
+   "gx": 0,
+   "gy": 0
+  },
+  "shame": {
+   "open": 0.62,
+   "by": -4,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 26,
+   "btR": 26,
+   "shut": 0,
+   "pup": 0.95,
+   "gl": 0,
+   "mc": -0.5,
+   "mw": 0.85,
+   "mo": 0,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0.38,
+   "gx": 0,
+   "gy": 1
+  },
+  "realize": {
+   "open": 1.35,
+   "by": -3,
+   "bdL": -9,
+   "bdR": 0,
+   "btL": 4,
+   "btR": 12,
+   "shut": 0,
+   "pup": 1,
+   "gl": 0,
+   "mc": -0.05,
+   "mw": 0.9,
+   "mo": 0.22,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0,
+   "gx": 0,
+   "gy": 0
+  },
+  "blank": {
+   "open": 1,
+   "by": 0,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 6,
+   "btR": 6,
+   "shut": 0,
+   "pup": 1,
+   "gl": 1,
+   "mc": -0.1,
+   "mw": 0.95,
+   "mo": 0,
+   "ms": 0,
+   "wob": 0,
+   "slide": 0.05,
+   "gx": 0,
+   "gy": 0
+  }
+ },
+ "poses": [
+  "stand_still",
+  "stand_fidget",
+  "hold_receiver",
+  "flinch"
+ ],
+ "pose_keys": [
+  "turn",
+  "lean",
+  "hipx",
+  "sh",
+  "fid",
+  "head{yaw,tilt,dx,dy,back}",
+  "L/R{h,bend,hand,rot,s,z,rcv,rr}",
+  "legs{spread,ank,kin,k,fl,fr,fsh,fs}"
+ ],
+ "parameters": {
+  "expression_channels": {
+   "open": {
+    "default": 0.92,
+    "range": [
+     0,
+     1.5
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "by": {
+    "default": -1,
+    "range": [
+     -12,
+     8
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "bdL": {
+    "default": 0,
+    "range": [
+     -12,
+     8
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "bdR": {
+    "default": 0,
+    "range": [
+     -12,
+     8
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "btL": {
+    "default": 14,
+    "range": [
+     -10,
+     30
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "btR": {
+    "default": 14,
+    "range": [
+     -10,
+     30
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "shut": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "pup": {
+    "default": 0.9,
+    "range": [
+     0.3,
+     1.2
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "gl": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "mc": {
+    "default": -0.3,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "mw": {
+    "default": 0.9,
+    "range": [
+     0.6,
+     1.3
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "mo": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "ms": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "wob": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "slide": {
+    "default": 0.12,
+    "range": [
+     0,
+     0.5
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "gx": {
+    "default": 0,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   },
+   "gy": {
+    "default": 0,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "expression channel; per-expression values in expressions"
+   }
+  },
+  "variant": {
+   "note": "optional state.v overrides; defaults are HF.VARIANT_DEFAULT; baseline = all defaults",
+   "defaults": {
+    "hw": 1,
+    "fh": 0,
+    "ch": 0,
+    "jw": 1,
+    "nx": 1,
+    "ny": 1,
+    "my": 0,
+    "es": 1,
+    "lid": 0,
+    "bw": 6.5,
+    "bl": 17,
+    "bdy": 0,
+    "bags": 0,
+    "stub": 0,
+    "earS": 1,
+    "th": 1,
+    "fringe": 0,
+    "cheek": 0.28,
+    "st5": 0,
+    "patch": 0,
+    "hollow": 0,
+    "burns": 0,
+    "beard": 0,
+    "goat": 0,
+    "mous": 0,
+    "shave": 0,
+    "mess": 0,
+    "g": {
+     "lw": 41,
+     "lh": 29,
+     "rx": 9,
+     "sw": 2.4,
+     "col": null
+    }
+   }
+  }
+ },
+ "requires": {
+  "engine_api": 1,
+  "engine_verbs": [
+   "pose",
+   "express",
+   "gaze",
+   "turn_head",
+   "lean",
+   "move",
+   "hold"
+  ],
+  "engine_globals": [
+   "HF.hash"
+  ],
+  "draw_state": [
+   "ch",
+   "uid",
+   "pose",
+   "expr",
+   "mouth",
+   "gaze{x,y,cam}",
+   "key",
+   "stand",
+   "t",
+   "shake{x,y,r}",
+   "v?",
+   "tether?"
+  ],
+  "optional_engine_features": [
+   "actor.tether (joint-attached cord, engine.js)"
+  ],
+  "fonts": [],
+  "assets": []
+ },
+ "known_weaknesses": [
+  "yaw above ~0.6 degrades",
+  "face about 100 px wide in wide shots",
+  "no back view, no walk cycle"
+ ],
+ "parts_note": "draw = part function in the art module (P.<fn>=function). Instances: tuft x6 (seeded), ear/arm/forearm/hand/leg/foot/sneaker L+R. Pivot hierarchy in pivots.",
+ "draw_order": [
+  "legs",
+  "neck",
+  "torso",
+  "lanyard",
+  "badge",
+  "arms",
+  "tufts",
+  "ears+head",
+  "nose",
+  "face",
+  "glasses",
+  "hair cap",
+  "handset+cord",
+  "hands",
+  "rim light"
+ ],
+ "variants": "variants/variants.json (parked, optional named parameter sets; baseline = none)"
+}
