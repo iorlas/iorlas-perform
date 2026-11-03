@@ -1,0 +1,70 @@
+{
+ "_note": "Parked design alternatives; parameter overrides for state.v (see rig.json parameters.variant). Not part of the approved look. Baseline is variant 1 = {} (no overrides).",
+ "original": {
+  "title": "Исходный вариант",
+  "v": {}
+ },
+ "evening_stubble": {
+  "title": "Вечерняя щетина",
+  "v": {
+   "st5": 1,
+   "bags": 0.5
+  }
+ },
+ "patchy_stubble": {
+  "title": "Клочковатая щетина",
+  "v": {
+   "patch": 1,
+   "bags": 0.5
+  }
+ },
+ "goatee": {
+  "title": "Одинокая бородка",
+  "v": {
+   "goat": 1,
+   "bags": 0.3
+  }
+ },
+ "thin_moustache": {
+  "title": "Тонкие усы",
+  "v": {
+   "mous": 1,
+   "bags": 1
+  }
+ },
+ "short_beard": {
+  "title": "Короткая борода",
+  "v": {
+   "beard": 1,
+   "bags": 0.4,
+   "cheek": 0.2
+  }
+ },
+ "hollow_cheeks": {
+  "title": "Впалые щёки",
+  "v": {
+   "hollow": 1,
+   "bags": 1.3,
+   "cheek": 0.1,
+   "hw": 0.97
+  }
+ },
+ "shaggy_sideburns": {
+  "title": "Лохматый бакенбард",
+  "v": {
+   "burns": 1,
+   "mess": 1,
+   "th": 1.25,
+   "st5": 0.8,
+   "bags": 0.6
+  }
+ },
+ "bad_shave": {
+  "title": "Неудачное бритьё",
+  "v": {
+   "st5": 1,
+   "shave": 1,
+   "bags": 0.6
+  }
+ }
+}
