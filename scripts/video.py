@@ -154,9 +154,17 @@ def main() -> None:
     p.add_argument("--out", type=Path, help="default: <audio stem>.video next to the wav")
     p.add_argument("--scenario", type=Path, help="the scenario the audio came from: {pause} splits scenes, <!-- screen: ... --> directives drive the screen")
     p.add_argument("--design", type=Path, help="design file (default: <scenario>.design.json next to the scenario)")
+    p.add_argument("--describe", action="store_true", help="write the design as a review document (<design stem>.md) and exit")
     p.add_argument("--chrome", help="Chrome/headless-shell binary (or PERFORM_CHROME)")
     a = p.parse_args()
     v1 = json.loads(a.timeline.read_text())
+    if a.describe:
+        design_path = a.design or a.scenario.with_suffix(".design.json")
+        tl = videoplan.timeline_v2(v1, audio=a.audio.name, duration=max(e["end"] for e in v1), sr=24000, breaks=scenario_marks(a.scenario)[0] if a.scenario else [])
+        dest = design_path.with_name(design_path.name.replace(".design.json", ".scene.md"))
+        dest.write_text(videodesign.describe(tl, json.loads(design_path.read_text())) + "\n")
+        print(dest)
+        return
     sr, samples = videoplan.read_wav(a.audio)
     duration = len(samples) / sr
     make(a.audio, v1, sr=sr, duration=duration, out=a.out or a.audio.with_suffix(".video"), sheet_path=a.sheet, chrome=a.chrome, scenario_src=a.scenario, design_path=a.design)

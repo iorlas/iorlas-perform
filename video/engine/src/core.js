@@ -17,6 +17,29 @@
   function poses(rig) { return rig.poses || HF.POSES; }
   function drawFn(rig, a) { var f = HF.RIGS && HF.RIGS[a.rig.split("@")[0]]; return f || rig.draw.bind(rig); }
 
+  // Pose = the rig's named pose + the actor's static override + the pose track key's override (hand targets, head turn), eased over 0.3 s between keys.
+  function isObj(x) { return x && typeof x === "object" && !Array.isArray(x); }
+  function deepMerge(a, b) { for (var k in b) { if (isObj(b[k]) && isObj(a[k])) deepMerge(a[k], b[k]); else a[k] = clone(b[k]); } return a; }
+  function deepLerp(a, b, u) {
+    if (typeof a === "number" && typeof b === "number") return a + (b - a) * u;
+    if (Array.isArray(a) && Array.isArray(b)) return b.map(function (v, i) { return deepLerp(a[i], v, u); });
+    if (isObj(a) && isObj(b)) { var o = {}; for (var k in b) o[k] = deepLerp(a[k], b[k], u); return o; }
+    return b;
+  }
+  function poseOf(rig, a, pk, t) {
+    function make(key) { var p = clone(poses(rig)[key.value]); deepMerge(p, a.pose_override || {}); return deepMerge(p, key.override || {}); }
+    var pose;
+    if (!pk) pose = make({ value: a.pose });
+    else {
+      var k = keyAt(pk.keys, t), i = pk.keys.indexOf(k), prev = i > 0 ? pk.keys[i - 1] : k;
+      pose = make(k);
+      if (prev !== k && t < k.t + 0.3) { var u = (t - k.t) / 0.3; pose = deepLerp(make(prev), pose, u * u * (3 - 2 * u)); }
+    }
+    if (pose._typing) { pose.L.h = [pose.L.h[0], pose.L.h[1] + Math.sin(t * 38) * 5]; pose.R.h = [pose.R.h[0], pose.R.h[1] + Math.sin(t * 38 + 2) * 5]; }
+    delete pose._typing;
+    return pose;
+  }
+
   function drawActor(a, t) {
     var rig = rigOf(a), id = a.id;
     if (a.kind === "object") {
@@ -25,8 +48,7 @@
       ["screen_text", "led", "shake", "cable"].forEach(function (p) { if (k[p] != null) s[p] = k[p]; });
       return rig.draw(s);
     }
-    var ex = track(id, "expr"), pk = track(id, "pose"), poseName = pk ? keyAt(pk.keys, t).value : a.pose, pose = clone(poses(rig)[poseName]);
-    for (var q in (a.pose_override || {})) pose[q] = a.pose_override[q];
+    var ex = track(id, "expr"), pk = track(id, "pose"), poseName = pk ? keyAt(pk.keys, t).value : a.pose, pose = poseOf(rig, a, pk, t);
     var E = exprs(rig), expr = E[a.expr || rig.default_expression || "neutral_anxious"] || E[Object.keys(E)[0]];
     if (ex) {
       var k2 = keyAt(ex.keys, t), i = ex.keys.indexOf(k2), prev = i > 0 ? ex.keys[i - 1] : k2;
@@ -35,7 +57,7 @@
     }
     // Lip-sync owns the jaw: rigs combine eff = 1-(1-expr.mo)(1-mouth_open), so an expression with a base-open mouth (bark mo=1, panic) would pin it open whatever is said.
     if (M[id] && expr.mo) { expr = clone(expr); expr.mo = 0; }
-    return drawFn(rig, a)({ ch: id, uid: "c_" + id, pose: pose, expr: expr, mouth: mouthAt(id, t), gaze: { x: 0, y: 0, cam: 0 }, key: 1, stand: !/^sit/.test(poseName), shake: { x: 0, y: 0, r: 0 }, t: t });
+    return drawFn(rig, a)({ ch: id, uid: "c_" + id, pose: pose, expr: expr, mouth: mouthAt(id, t), gaze: { x: 0, y: 0, cam: 0 }, key: 1, stand: !a.seated && !/^sit/.test(poseName), shake: { x: 0, y: 0, r: 0 }, t: t });
   }
 
   function captions(t, vb) {
@@ -99,7 +121,9 @@
     return o;
   }
   function drawProp(p, t) {
-    var d = Object.assign({}, (S.props || {})[p.id] || {}, p), at = d.at || [0, 0], k = d.scale || 1, w = (d.w || 60) * k, h = (d.h || 60) * k, o, inst = p.inst || p.id;
+    var inst = p.inst || p.id, vis = track(inst, "visible");
+    if (vis && keyAt(vis.keys, t).value === false) return "";
+    var d = Object.assign({}, (S.props || {})[p.id] || {}, p), at = d.at || [0, 0], k = d.scale || 1, w = (d.w || 60) * k, h = (d.h || 60) * k, o;
     if (d.svg) return '<g transform="translate(' + at[0] + " " + at[1] + ') scale(' + k + ')">' + d.svg + "</g>";
     var txtTrack = track(inst, "text"), txt = (txtTrack && keyAt(txtTrack.keys, t).value) || d.text, x0 = at[0], y0 = at[1];
     if (d.id === "phone" && txtTrack && keyAt(txtTrack.keys, t).value) { x0 += Math.sin(t * 90) * w * 0.03; o = '<rect x="' + (x0 - w * 0.1) + '" y="' + (y0 - h * 0.2) + '" width="' + w * 1.2 + '" height="' + h * 1.4 + '" rx="8" fill="#ffd84a" opacity="' + (0.25 + 0.2 * Math.sin(t * 14)).toFixed(2) + '"/>'; } else o = "";

@@ -1,113 +1,247 @@
 {
- "schema": "scene-design/1",
+ "schema": "scene-design/2",
  "look": "Вырезка (flat cut paper)",
  "offscreen": [
   "narrator"
  ],
  "stage": {
   "H": 742,
-  "floor": 478,
-  "bases": {
-   "desk": 0.42,
-   "shelf": 0.52
-  }
+  "floor": 478
  },
  "cast": {
-  "vadik": {
-   "offset": [
-    0,
-    -134
-   ]
-  },
-  "praporshchik": {
-   "offset": [
-    0,
-    -134
-   ]
-  }
+  "vadik": {},
+  "praporshchik": {}
  },
+ "story": "Friday 18:00: Vadik deploys to prod and goes home late (his mistake). Saturday 03:00: prod is red, Vadik begs it to go green, the CTO calls, Vadik lies «всё под контролем»; the narrator's punchline: the only thing under control was the cricket, which never went down.",
  "sets": {
   "setA_office_dusk": {
-   "props": [
+   "objects": [
     {
-     "id": "desk",
-     "x": 0,
-     "base": "floor",
-     "w": 0.75,
-     "h": 0.42,
-     "front": true
+     "id": "window",
+     "size": [
+      0.5,
+      0.5
+     ],
+     "place": {
+      "x": -1.0,
+      "up": 0.38
+     },
+     "role": "Back wall, left. Dusk: orange sky. Night: dark. Carries the time of day.",
+     "kind": "window_dusk"
     },
     {
-     "id": "monitor",
-     "x": 0.17,
-     "base": "desk",
-     "w": 0.3,
-     "h": 0.2,
-     "front": true
+     "id": "sill",
+     "size": [
+      0.56,
+      0.025
+     ],
+     "place": {
+      "x": -1.0,
+      "up": 0.36
+     },
+     "role": "Window sill. Where the cricket lives (night)."
     },
     {
      "id": "clock",
-     "x": -0.5,
-     "base": "floor",
-     "up": 0.6,
-     "w": 0.13,
-     "h": 0.13,
+     "size": [
+      0.13,
+      0.13
+     ],
+     "place": {
+      "x": -0.5,
+      "up": 0.62
+     },
+     "role": "Wall clock over the desk row. Shows 18:00; the time card then jumps to 03:00.",
      "text": "18:00"
-    }
-   ]
-  },
-  "setB_office_night": {
-   "props": [
-    {
-     "id": "shelf",
-     "x": 0.58,
-     "base": "floor",
-     "up": 0.5,
-     "w": 0.5,
-     "h": 0.02
-    },
-    {
-     "id": "dashboard",
-     "x": 0.58,
-     "base": "shelf",
-     "up": 0.06,
-     "w": 0.5,
-     "h": 0.3
-    },
-    {
-     "id": "cricket",
-     "x": 0.72,
-     "base": "shelf",
-     "w": 0.09,
-     "h": 0.05
     },
     {
      "id": "desk",
-     "x": 0,
-     "base": "floor",
-     "w": 0.75,
-     "h": 0.42,
-     "front": true
+     "size": [
+      0.8,
+      0.43
+     ],
+     "place": {
+      "x": 0
+     },
+     "role": "Vadik's desk, solid to the floor. Stands in front of him, so his lap and legs are hidden.",
+     "layer": "front"
+    },
+    {
+     "id": "chair",
+     "size": [
+      0.28,
+      0.55
+     ],
+     "place": {
+      "x": 0
+     },
+     "role": "Office chair behind the desk; its back shows over his shoulders. He sits on it.",
+     "seat_h": 0.26
+    },
+    {
+     "id": "keyboard",
+     "size": [
+      0.24,
+      0.03
+     ],
+     "place": {
+      "x": -0.03,
+      "on": "desk"
+     },
+     "role": "Under his hands. All typing happens here."
     },
     {
      "id": "monitor",
-     "x": 0.17,
-     "base": "desk",
-     "w": 0.3,
-     "h": 0.2,
-     "front": true
+     "size": [
+      0.3,
+      0.2
+     ],
+     "place": {
+      "x": 0.24,
+      "on": "desk"
+     },
+     "role": "Right of the keyboard, turned to Vadik; its screen is what he reads and what the story shows.",
+     "layer": "front"
     },
     {
      "id": "phone",
-     "x": -0.2,
-     "base": "desk",
-     "w": 0.1,
-     "h": 0.045,
-     "front": true
+     "size": [
+      0.1,
+      0.045
+     ],
+     "place": {
+      "x": -0.3,
+      "on": "desk"
+     },
+     "role": "Desk phone, left of the keyboard. Rings at night; he picks it up.",
+     "layer": "front"
+    },
+    {
+     "id": "coatrack",
+     "size": [
+      0.1,
+      0.78
+     ],
+     "place": {
+      "x": 0.62
+     },
+     "role": "Right of the desk, empty at night (everyone left)."
+    },
+    {
+     "id": "colleague_1",
+     "size": [
+      0.16,
+      0.62
+     ],
+     "place": {
+      "x": 0.85
+     },
+     "role": "Grey cut-out, leaving at 18:00. Gone from beat 2.",
+     "kind": "colleague"
+    },
+    {
+     "id": "colleague_2",
+     "size": [
+      0.16,
+      0.62
+     ],
+     "place": {
+      "x": 1.05
+     },
+     "role": "Grey cut-out, leaving at 18:00. Gone from beat 2.",
+     "kind": "colleague"
+    }
+   ],
+   "characters": {
+    "vadik": {
+     "seated_on": "chair",
+     "pose": "stand_still",
+     "role": "Sits at his desk, facing us over the keyboard, reading the monitor on his right."
+    }
+   }
+  },
+  "setB_office_night": {
+   "extends": "setA_office_dusk",
+   "remove": [
+    "clock",
+    "colleague_1",
+    "colleague_2"
+   ],
+   "objects": [
+    {
+     "id": "window",
+     "size": [
+      0.5,
+      0.5
+     ],
+     "place": {
+      "x": -1.0,
+      "up": 0.38
+     },
+     "role": "Same window, night.",
+     "kind": "window_night"
+    },
+    {
+     "id": "dashboard",
+     "size": [
+      0.5,
+      0.3
+     ],
+     "place": {
+      "x": -0.5,
+      "up": 0.52
+     },
+     "role": "Wall dashboard where the clock was: a PROD service list. The cricket is a row of it (setup and punchline)."
+    },
+    {
+     "id": "cricket",
+     "size": [
+      0.07,
+      0.04
+     ],
+     "place": {
+      "x": -0.9,
+      "on": "sill"
+     },
+     "role": "The cricket on the sill under the window, next to the dashboard so one frame shows both."
     }
    ]
   },
-  "setC_palych_home": {}
+  "setC_palych_home": {
+   "objects": [
+    {
+     "id": "armchair",
+     "size": [
+      0.5,
+      0.55
+     ],
+     "place": {
+      "x": 0
+     },
+     "role": "His armchair at home, night.",
+     "seat_h": 0.22
+    },
+    {
+     "id": "lamp",
+     "size": [
+      0.12,
+      0.6
+     ],
+     "place": {
+      "x": 0.4
+     },
+     "role": "Floor lamp: the one warm light in a dark room.",
+     "kind": "lamp"
+    }
+   ],
+   "characters": {
+    "palych": {
+     "seated_on": "armchair",
+     "pose": "hold_receiver",
+     "role": "Sits in the armchair, phone at his ear. Only head and shoulders are ever shown."
+    }
+   }
+  }
  },
  "screens": {
   "terminal": {
@@ -208,6 +342,7 @@
     "text": "СБ 03:00",
     "dur": 1.2
    },
+   "story": "Establish place, time and the plan: a calm office emptying out, one man staying to push a deploy that looks easy.",
    "shots": [
     {
      "id": "1.1",
@@ -215,13 +350,11 @@
       1
      ],
      "frame": "wide",
-     "focus": "vadik",
+     "focus": "desk",
      "cast": [
-      {
-       "id": "vadik",
-       "scale": 1
-      }
-     ]
+      "vadik"
+     ],
+     "intent": "Where and when: the clock says 18:00, colleagues leave, Vadik stays at his desk."
     },
     {
      "id": "1.2",
@@ -232,7 +365,8 @@
      "focus": "vadik",
      "cast": [
       "vadik"
-     ]
+     ],
+     "intent": "The plan: he types, the monitor shows the deploy bar racing to 99 %."
     },
     {
      "id": "1.3",
@@ -244,7 +378,40 @@
      "cast": [
       "vadik"
      ],
-     "push_in": 0.7
+     "push_in": 0.75,
+     "intent": "The mistake: the bar freezes at 99 % with one red tile; he winces; slow push-in."
+    }
+   ],
+   "interactions": [
+    {
+     "actor": "vadik",
+     "type": "looks_at",
+     "object": "monitor"
+    },
+    {
+     "actor": "vadik",
+     "type": "hands_on",
+     "object": "keyboard",
+     "beats": [
+      1
+     ]
+    },
+    {
+     "actor": "vadik",
+     "type": "hands_on",
+     "object": "keyboard",
+     "beats": [
+      2
+     ],
+     "typing": true
+    },
+    {
+     "actor": "vadik",
+     "type": "hands_on",
+     "object": "keyboard",
+     "beats": [
+      3
+     ]
     }
    ],
    "cues": [
@@ -257,6 +424,16 @@
      "beat": 2,
      "target": "monitor",
      "screen": "deploy_run"
+    },
+    {
+     "beat": 2,
+     "target": "colleague_1",
+     "visible": false
+    },
+    {
+     "beat": 2,
+     "target": "colleague_2",
+     "visible": false
     },
     {
      "beat": 3,
@@ -272,6 +449,7 @@
   },
   "Офис, ночь": {
    "set": "setB_office_night",
+   "story": "Same room, 03:00, lights off. Everything is red except the cricket. Vadik begs the monitor; the CTO's call forces the lie; the punchline pays off the cricket.",
    "shots": [
     {
      "id": "2.1",
@@ -279,8 +457,11 @@
       1
      ],
      "frame": "wide",
-     "focus": "vadik",
-     "cast": []
+     "focus": "desk",
+     "cast": [
+      "vadik"
+     ],
+     "intent": "Same office, now dark: dashboard rows fail one by one; the cricket sits quietly on the sill (setup)."
     },
     {
      "id": "2.2",
@@ -291,7 +472,12 @@
      "focus": "vadik",
      "cast": [
       "vadik"
-     ]
+     ],
+     "intent": "Vadik begs, lit by the monitor: red tiles, one flickers green and goes back.",
+     "camera": {
+      "w": 460,
+      "dy": -55
+     }
     },
     {
      "id": "2.3",
@@ -299,14 +485,18 @@
       3
      ],
      "frame": "insert",
+     "focus": "keyboard",
      "at_xy": [
-      126,
-      92
+      0,
+      50
      ],
      "camera": {
-      "w": 460
+      "w": 400
      },
-     "cast": []
+     "cast": [
+      "vadik"
+     ],
+     "intent": "Typing, desperate: hands on the keys."
     },
     {
      "id": "2.4",
@@ -315,24 +505,16 @@
       5
      ],
      "frame": "insert",
-     "at_xy": [
-      -148,
-      150
-     ],
+     "focus": "phone",
      "camera": {
       "w": 360
      },
      "cast": [],
+     "intent": "The phone rings; a caller card shows who: the CTO.",
      "inset": {
       "set": "setC_palych_home",
       "cast": [
-       {
-        "id": "palych",
-        "offset": [
-         0,
-         -134
-        ]
-       }
+       "palych"
       ],
       "rect": [
        0.62,
@@ -361,22 +543,17 @@
      "cast": [
       "vadik"
      ],
+     "intent": "Both in frame: Vadik with the receiver, the CTO's head in a call card, shouting.",
      "inset": {
       "set": "setC_palych_home",
       "cast": [
-       {
-        "id": "palych",
-        "offset": [
-         0,
-         -134
-        ]
-       }
+       "palych"
       ],
       "rect": [
-       0.66,
+       0.7,
        0.04,
-       0.3,
-       0.7
+       0.27,
+       0.62
       ],
       "radius": 0.02,
       "style": "caller",
@@ -398,7 +575,8 @@
      "focus": "vadik",
      "cast": [
       "vadik"
-     ]
+     ],
+     "intent": "The lie: panic on his face while the monitor repeats «всё под контролем»."
     },
     {
      "id": "2.7",
@@ -406,15 +584,66 @@
       8
      ],
      "frame": "insert",
-     "at_xy": [
-      430,
-      20
-     ],
      "camera": {
-      "w": 660
+      "w": 900
      },
-     "push_in": 0.85,
-     "cast": []
+     "push_in": 0.8,
+     "cast": [],
+     "intent": "Punchline: every service DOWN, the cricket row UP at 100 %, the cricket on the sill; push-in on «сверчок».",
+     "at_xy": [
+      -520,
+      40
+     ]
+    }
+   ],
+   "interactions": [
+    {
+     "actor": "vadik",
+     "type": "looks_at",
+     "object": "monitor",
+     "beats": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "actor": "vadik",
+     "type": "hands_on",
+     "object": "keyboard",
+     "beats": [
+      1,
+      2
+     ]
+    },
+    {
+     "actor": "vadik",
+     "type": "hands_on",
+     "object": "keyboard",
+     "beats": [
+      3
+     ],
+     "typing": true
+    },
+    {
+     "actor": "vadik",
+     "type": "hands_on",
+     "object": "keyboard",
+     "beats": [
+      4,
+      5
+     ]
+    },
+    {
+     "actor": "vadik",
+     "type": "holds",
+     "object": "phone",
+     "beats": [
+      6,
+      7,
+      8
+     ]
     }
    ],
    "cues": [

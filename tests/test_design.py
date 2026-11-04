@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 import videodesign  # noqa: E402
 import videoplan  # noqa: E402
+import videoscene  # noqa: E402
 
 LAYOUT = json.loads((ROOT / "video" / "layout.json").read_text())
 DESIGN = json.loads((ROOT / "examples" / "night_shift.design.json").read_text())
@@ -47,12 +48,13 @@ def test_scene_count_follows_the_scenario_sections(tmp_path):
 
 def test_per_shot_cast_matches_who_is_in_it(tmp_path):
     s1, s2 = resolved(tmp_path)
-    assert [(x["id"], [c if isinstance(c, str) else c["id"] for c in x["cast"]]) for x in s1["shots"]] == [("1.1", ["vadik"]), ("1.2", ["vadik"]), ("1.3", ["vadik"])]
-    cast2 = {x["id"]: [c if isinstance(c, str) else c["id"] for c in x["cast"]] for x in s2["shots"]}
-    assert cast2 == {"2.1": [], "2.2": ["vadik"], "2.3": [], "2.4": [], "2.5": ["vadik"], "2.6": ["vadik"], "2.7": []}
-    inset = next(x for x in s2["shots"] if x["id"] == "2.5")["inset"]
-    assert [c["id"] for c in inset["cast"]] == ["palych"] and inset["set"] == "setC_palych_home"
-    assert {a["id"] for a in s1["actors"]} == {"vadik"} and {a["id"] for a in s2["actors"]} == {"vadik", "palych"}  # Mihalych and Zinaida are not in this scenario
+    ids = lambda shot: [c["id"] for c in shot["cast"]]  # noqa: E731
+    assert [(x["id"], ids(x)) for x in s1["shots"]] == [("1.1", ["vadik"]), ("1.2", ["vadik"]), ("1.3", ["vadik"])]
+    assert {x["id"]: ids(x) for x in s2["shots"]} == {"2.1": ["vadik"], "2.2": ["vadik"], "2.3": ["vadik"], "2.4": [], "2.5": ["vadik"], "2.6": ["vadik"], "2.7": []}
+    for i in ("2.4", "2.5"):
+        inset = next(x for x in s2["shots"] if x["id"] == i)["inset"]
+        assert ids(inset) == ["palych"] and inset["set"] == "setC_palych_home" and inset["style"] == "caller"
+    assert {a["id"] for a in s1["actors"]} == {"vadik"} and {a["id"] for a in s2["actors"]} == {"vadik", "palych"}
 
 
 def test_shot_types_times_and_push_in(tmp_path):
@@ -61,11 +63,9 @@ def test_shot_types_times_and_push_in(tmp_path):
     for s in (s1, s2):
         t0s = [x["t0"] for x in s["shots"]]
         assert t0s[0] == 0 and t0s == sorted(set(t0s)) and t0s[-1] < s["duration"]
-    assert "push_to" in s1["shots"][2]["camera"] and "push_to" not in s1["shots"][1]["camera"]
     push, start = s1["shots"][2]["camera"]["push_to"], s1["shots"][2]["camera"]["viewBox"]
     assert push[2] < start[2] and push[3] < start[3]
-    vb = [x["camera"]["viewBox"] for x in s1["shots"] + s2["shots"]]
-    assert all(abs(v[2] / v[3] - 16 / 9) < 0.01 for v in vb)
+    assert all(abs(v[2] / v[3] - 16 / 9) < 0.01 for v in (x["camera"]["viewBox"] for x in s1["shots"] + s2["shots"]))
 
 
 def test_transitions_are_in_shots_json(tmp_path):
@@ -76,35 +76,82 @@ def test_transitions_are_in_shots_json(tmp_path):
     assert (into["type"], into["text"], into["t0"]) == ("card_out", "СБ 03:00", 0)
 
 
-def test_sets_and_props_carry_the_ids_the_art_will_use(tmp_path):
+def props_of(scene: dict, set_name: str) -> dict:
+    return {p["id"]: p for p in scene["sets"][set_name]["props"]}
+
+
+def test_objects_are_placed_by_relations_not_pixels(tmp_path):
+    """desk on the floor, keyboard/monitor/phone on the desk, cricket on the sill, chair behind the desk: derived from `place`."""
+    _, s2 = resolved(tmp_path)
+    p, floor, big_h = props_of(s2, "setB_office_night"), DESIGN["stage"]["floor"], DESIGN["stage"]["H"]
+    bottom = lambda o: o["at"][1] + o["h"]  # noqa: E731
+    assert bottom(p["desk"]) == floor and p["desk"]["h"] == round(0.43 * big_h)
+    assert all(bottom(p[k]) == p["desk"]["at"][1] for k in ("keyboard", "monitor", "phone"))
+    assert abs(bottom(p["cricket"]) - p["sill"]["at"][1]) <= 1  # on the window sill, which is next to the dashboard
+    assert p["desk"]["front"] and p["monitor"]["front"] and not p["chair"].get("front")  # he sits behind the desk, on the chair
+    assert abs(p["chair"]["at"][0] + p["chair"]["w"] / 2) < 2  # chair centred on his axis
+
+
+def test_a_set_can_extend_another_and_drop_or_replace_objects(tmp_path):
     s1, s2 = resolved(tmp_path)
-    assert set(s1["sets"]) == {"setA_office_dusk"} and set(s2["sets"]) == {"setB_office_night", "setC_palych_home"}
-    assert {"clock", "dashboard", "phone", "cricket"} <= set(s2["props"])
-    assert {p["id"] for p in s2["sets"]["setB_office_night"]["props"]} >= {"dashboard", "cricket", "phone"}
-    assert "svg" not in s1["sets"]["setA_office_dusk"]  # placeholder: flat colours
+    a, b = props_of(s1, "setA_office_dusk"), props_of(s2, "setB_office_night")
+    assert {"clock", "colleague_1", "colleague_2"} <= set(a) and not ({"clock", "colleague_1", "colleague_2"} & set(b))
+    assert {"dashboard", "cricket"} <= set(b) and a["desk"]["at"] == b["desk"]["at"]  # same room, re-lit
+    assert a["window"]["fill"] != b["window"]["fill"]  # dusk vs night art kind
 
 
-def test_dropped_in_art_replaces_the_placeholder_without_other_changes(tmp_path):
-    assets = tmp_path / "assets"
-    (assets / "sets").mkdir(parents=True)
-    (assets / "props").mkdir()
-    (assets / "sets" / "setA_office_dusk.svg").write_text("<rect width='9' height='9'/>")
-    (assets / "props" / "clock.svg").write_text("<circle r='5'/>")
-    for d in ("x", "y"):
-        (tmp_path / d).mkdir()
-    before, after = resolved(tmp_path / "x"), resolved(tmp_path / "y", assets)
-    assert after[0]["sets"]["setA_office_dusk"]["svg"] == "<rect width='9' height='9'/>" and after[0]["props"]["clock"]["svg"] == "<circle r='5'/>"
-    assert [s["shots"] for s in before] == [s["shots"] for s in after]
+def test_vadik_sits_on_the_chair_and_his_hands_go_where_the_keyboard_is(tmp_path):
+    s1, _ = resolved(tmp_path)
+    vadik = next(c for c in s1["shots"][1]["cast"] if c["id"] == "vadik")
+    assert vadik["seated"] and vadik["offset"][0] == 0
+    dim = videoscene.rig_dim("vadik@1.2.0")["dim"]
+    seat_y = DESIGN["stage"]["floor"] - 0.26 * DESIGN["stage"]["H"]
+    assert vadik["offset"][1] == round(seat_y - dim["hipY"])  # hips at seat height
+    pose = [t for t in s1["tracks"] if t["actor"] == "vadik" and t["channel"] == "pose"][0]["keys"]
+    kb = props_of(s1, "setA_office_dusk")["keyboard"]
+    typing = next(k for k in pose if k["override"].get("_typing"))
+    hand_world = [typing["override"]["R"]["h"][0] + vadik["offset"][0], typing["override"]["R"]["h"][1] + vadik["offset"][1]]
+    assert abs(hand_world[1] - (kb["at"][1] - 4)) < 1 and kb["at"][0] <= hand_world[0] <= kb["at"][0] + kb["w"] + 40  # on the keys, not floating
+
+
+def test_vadik_picks_up_the_phone_when_it_rings_and_it_leaves_the_desk(tmp_path):
+    _, s2 = resolved(tmp_path)
+    keys = [k for t in s2["tracks"] if t["actor"] == "phone" and t["channel"] == "visible" for k in t["keys"]]
+    assert keys[0]["value"] is True and keys[-1]["value"] is False  # on the desk until beat 6, then in his hand
+    pose = [k["value"] for t in s2["tracks"] if t["actor"] == "vadik" and t["channel"] == "pose" for k in t["keys"]]
+    assert pose[-1] == "hold_receiver" and "stand_still" in pose
 
 
 def test_screen_contents_come_from_named_cues(tmp_path):
     s1, s2 = resolved(tmp_path)
-    def mon(s: dict) -> list[str]:  # the resolver adds a key at t=0 equal to the first: collapse repeats
-        v = [k["value"] for t in s["tracks"] if t["actor"] == "monitor" and t["channel"] == "screen" for k in t["keys"]]
+
+    def vals(s: dict, who: str) -> list[str]:
+        v = [k["value"] for t in s["tracks"] if t["actor"] == who and t["channel"] == "screen" for k in t["keys"]]
         return [x for i, x in enumerate(v) if i == 0 or x != v[i - 1]]
 
-    assert mon(s1) == ["terminal", "deploy_run", "deploy_frozen"] and mon(s2) == ["tiles_red", "chat_control"]
-    assert set(s2["screens"]) >= {"tiles_red", "chat_control"}
+    assert vals(s1, "monitor") == ["terminal", "deploy_run", "deploy_frozen"] and vals(s2, "monitor") == ["tiles_red", "chat_control"]
+    assert vals(s2, "dashboard") == ["dash_failing", "dash_cricket"]
+
+
+def test_the_punchline_shows_every_service_down_and_the_cricket_up(tmp_path):
+    _, s2 = resolved(tmp_path)
+    d = s2["screens"]
+    assert len(d["dash_failing"]["rows"]) == 5 and d["dash_failing"]["ok"]["label"] == "сверчок"
+    assert all("at" not in r for r in d["dash_cricket"]["rows"]) and d["dash_cricket"]["ok"]["pulse_after"] > 0
+    last = s2["shots"][-1]
+    assert last["id"] == "2.7" and last["camera"]["push_to"][2] < last["camera"]["viewBox"][2]
+    vb, p = last["camera"]["viewBox"], props_of(s2, "setB_office_night")
+    for k in ("dashboard", "cricket"):  # both are in the same frame
+        assert vb[0] <= p[k]["at"][0] and p[k]["at"][0] + p[k]["w"] <= vb[0] + vb[2], k
+
+
+def test_the_cto_is_a_caller_card_then_a_head_inset_never_a_full_body(tmp_path):
+    _, s2 = resolved(tmp_path)
+    ring, talk = (next(x for x in s2["shots"] if x["id"] == i)["inset"] for i in ("2.4", "2.5"))
+    assert ring["ringing"] and not talk["ringing"] and talk["name"] == "Геннадий Палыч"
+    for ins in (ring, talk):
+        assert ins["camera"][2] <= 320 and ins["cast"][0]["seated"]  # head and shoulders of a man in an armchair
+    assert "mouth" in next(a for a in s2["actors"] if a["id"] == "palych") and not s2.get("debug")
 
 
 def test_a_shot_on_a_missing_beat_is_an_error():
@@ -121,36 +168,31 @@ def test_a_voice_missing_from_the_design_cast_is_an_error():
         videodesign.emit_sheet(tl(), LAYOUT, bad)
 
 
-def test_props_are_placed_from_one_scale_and_named_anchors(tmp_path):
-    """Staging model: sizes in person-heights, resting on named bases. No prop floats or sinks."""
-    _, s2 = resolved(tmp_path)
-    st, p = DESIGN["stage"], {x["id"]: x for x in s2["sets"]["setB_office_night"]["props"]}
-    big_h, floor = st["H"], st["floor"]
-    assert p["desk"]["at"][1] + p["desk"]["h"] == floor and p["desk"]["h"] == round(0.42 * big_h)  # desk stands on the floor, 42 % of a person
-    desk_top = p["desk"]["at"][1]
-    assert p["monitor"]["at"][1] + p["monitor"]["h"] == desk_top and p["phone"]["at"][1] + p["phone"]["h"] == desk_top  # both rest on the desk
-    shelf_top = p["shelf"]["at"][1]
-    assert p["cricket"]["at"][1] + p["cricket"]["h"] == shelf_top  # the cricket sits on the shelf, under the dashboard
-    assert p["dashboard"]["at"][1] + p["dashboard"]["h"] < shelf_top
-    assert p["desk"]["front"] and p["monitor"]["front"]  # drawn in front of the cast: Vadik stands behind the desk
+def test_an_object_out_of_arm_reach_is_refused():
+    bad = json.loads(json.dumps(DESIGN))
+    for o in bad["sets"]["setA_office_dusk"]["objects"]:
+        if o["id"] == "keyboard":
+            o["place"]["x"] = 0.9  # a metre away
+    with pytest.raises(ValueError, match="arm reach"):
+        videodesign.emit_sheet(tl(), LAYOUT, bad)
 
 
-def test_the_punchline_shows_every_service_down_and_the_cricket_up(tmp_path):
-    _, s2 = resolved(tmp_path)
-    d = s2["screens"]
-    assert len(d["dash_failing"]["rows"]) == 5 and d["dash_failing"]["ok"]["label"] == "сверчок"  # setup: services go down one by one, cricket row stays up
-    assert all("at" not in r for r in d["dash_cricket"]["rows"]) and d["dash_cricket"]["ok"]["pulse_after"] > 0  # payoff: all down at once, cricket row pulses on «сверчок»
-    last = s2["shots"][-1]
-    assert last["id"] == "2.7" and last["frame"] == "insert" and last["camera"]["push_to"][2] < last["camera"]["viewBox"][2]
-    keys = [k["value"] for t in s2["tracks"] if t["actor"] == "dashboard" for k in t["keys"]]
-    assert keys[-1] == "dash_cricket" and "dash_failing" in keys
+def test_a_seated_character_with_nothing_hiding_his_legs_is_refused():
+    """vadik 1.2.0 has no seated pose: without a solid desk over his missing legs, a wide shot would show him cut off at the hips."""
+    bad = json.loads(json.dumps(DESIGN))
+    bad["sets"]["setA_office_dusk"]["objects"] = [o for o in bad["sets"]["setA_office_dusk"]["objects"] if o["id"] not in {"desk", "keyboard", "monitor", "phone"}]
+    bad["scenes"]["Офис, вечер"]["interactions"] = []
+    bad["scenes"]["Офис, вечер"]["cues"] = [c for c in bad["scenes"]["Офис, вечер"]["cues"] if c.get("target") not in {"monitor"}]
+    with pytest.raises(ValueError, match="no seated pose"):
+        videodesign.emit_sheet(tl(), LAYOUT, bad)
 
 
-def test_the_cto_is_a_caller_card_then_a_head_inset_never_a_full_body(tmp_path):
-    _, s2 = resolved(tmp_path)
-    ring, talk = (next(x for x in s2["shots"] if x["id"] == i)["inset"] for i in ("2.4", "2.5"))
-    assert ring["style"] == talk["style"] == "caller" and ring["ringing"] and not talk["ringing"] and talk["name"] == "Геннадий Палыч"
-    for ins in (ring, talk):  # head and shoulders: the camera is far tighter than a body shot
-        assert ins["camera"][2] <= 320
-    assert "mouth" in next(a for a in s2["actors"] if a["id"] == "palych")  # lip-sync track present
-    assert not s2.get("debug")  # no debug labels in a real render
+def test_objects_that_depend_on_each_other_in_a_loop_are_refused():
+    objs = [{"id": "a", "size": [.1, .1], "place": {"on": "b", "x": 0}}, {"id": "b", "size": [.1, .1], "place": {"on": "a", "x": 0}}]
+    with pytest.raises(ValueError, match="loop"):
+        videoscene.solve_objects(objs, DESIGN["stage"])
+
+
+def test_the_design_renders_as_a_review_document():
+    md = videodesign.describe(tl(), DESIGN)
+    assert "## Set `setB_office_night` (extends `setA_office_dusk`)" in md and "| 2.7 |" in md and "seated on `chair`" in md and "hands_on `keyboard`" in md

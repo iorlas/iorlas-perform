@@ -53,6 +53,33 @@
       "w": 300,
       "h": 14,
       "fill": "#5a4630"
+    },
+    "chair": {
+      "fill": "#2f3644"
+    },
+    "keyboard": {
+      "fill": "#232630"
+    },
+    "window_dusk": {
+      "fill": "#e08a3c"
+    },
+    "window_night": {
+      "fill": "#101a30"
+    },
+    "sill": {
+      "fill": "#5a4630"
+    },
+    "lamp": {
+      "fill": "#e8c070"
+    },
+    "armchair": {
+      "fill": "#6a4a3a"
+    },
+    "coatrack": {
+      "fill": "#4a4036"
+    },
+    "colleague": {
+      "fill": "#7a7f8c"
     }
   }
 }
