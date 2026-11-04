@@ -137,8 +137,8 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             ids = [c if isinstance(c, str) else c["id"] for c in sh.get("cast", [])]
             focus = sh.get("focus") or (ids[0] if ids else None)
             fxy = focus_xy(sset, focus, sh)
-            out = {k: v for k, v in sh.items() if k not in {"beats", "frame", "focus", "push_in", "at_xy", "camera", "cast", "inset"}}
-            out |= {"at": at(sh["beats"][0]), "frame": sh["frame"], "set": sset, "beats": sh["beats"], "camera": _camera(sh["frame"], fxy, layout, sh.get("push_in"), sh.get("camera"))}
+            out = {k: v for k, v in sh.items() if k not in {"beats", "frame", "focus", "push_in", "at_xy", "camera", "cast", "inset", "offset"}}
+            out |= {"at": at(sh["beats"][0], sh.get("offset", 0.0)), "frame": sh["frame"], "set": sset, "beats": sh["beats"], "camera": _camera(sh["frame"], fxy, layout, sh.get("push_in"), sh.get("camera"))}
             out["cast"] = cast_entries(sset, sh.get("cast", []))
             check_legs(sh["id"], sset, ids, out["camera"])
             if "inset" in sh:
@@ -171,6 +171,7 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
                 cues.append({**anchor, "actor": c["target"], "channel": "text", "value": c["text"]})
             if "visible" in c:
                 cues.append({**anchor, "actor": c["target"], "channel": "visible", "value": c["visible"]})
+        cues += [{"at": 0, "actor": t, "channel": "text", "value": ""} for t in sorted({c["actor"] for c in cues if c["channel"] == "text"})]  # a first text cue must not reach back to t=0: the phone would ring from the start
         cues += [{"at": 0, "actor": t, "channel": "visible", "value": True} for t in sorted({c["actor"] for c in cues if c["channel"] == "visible"} | {i["object"] for i in d.get("interactions", []) if i["type"] == "holds"})]
         cues += _interaction_cues(d.get("interactions", []), merged[d["set"]], solved[d["set"]], stand, d["set"], by_id, at, len(bl), s["title"])
         nxt = tl["scenes"][si + 1]["title"] if si + 1 < len(tl["scenes"]) else None
@@ -262,6 +263,14 @@ def describe(tl: dict[str, Any], design: dict[str, Any]) -> str:
             if "inset" in sh:
                 who += f" + inset `{sh['inset']['style']}`: {', '.join(c if isinstance(c, str) else c['id'] for c in sh['inset']['cast'])}"
             out.append(f"| {sh['id']} | {heard} | {sh['frame']}{' + push-in' if sh.get('push_in') else ''} | {who} | {sh.get('intent', '')} |")
+        out += ["", "Event map (heard -> shown, in time order):", "", "| beat | heard | shot starts | cues and interactions that start here |", "|---|---|---|---|"]
+        for b, ei in enumerate(bl, 1):
+            e = tl["entries"][ei]
+            heard = f"{e['voice']}: {e['text'][:40]}" if e.get("text") else f"sfx {e.get('sfx', '')}"
+            shots_here = ", ".join(sh["id"] + (f"+{sh['offset']}s" if sh.get("offset") else "") for sh in d["shots"] if sh["beats"][0] == b)
+            ev = [f"`{c.get('target') or c.get('actor')}` -> {c.get('screen') or c.get('expr') or ('text «' + c['text'] + '»' if 'text' in c else 'visible=' + str(c.get('visible')))}" + (f" (+{c['offset']}s)" if c.get("offset") else "") for c in d.get("cues", []) if c["beat"] == b]
+            ev += [f"`{i['actor']}` {i['type']} `{i['object']}`" for i in d.get("interactions", []) if i.get("beats", [None])[0] == b]
+            out.append(f"| {b} | {heard} | {shots_here or '-'} | {'; '.join(ev) or '-'} |")
         out += ["", "Interactions:", ""]
         for i in d.get("interactions", []):
             out.append(f"- `{i['actor']}` {i['type']} `{i['object']}`" + (f" (beats {i['beats']})" if "beats" in i else " (whole scene)") + (" typing" if i.get("typing") else ""))

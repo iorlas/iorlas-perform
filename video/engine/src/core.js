@@ -120,22 +120,63 @@
     } else o += label(d.text || "", x + w / 2, y + h * 0.55, h * 0.14, d.kind === "chat" ? "#fff" : "#9fd", 1);
     return o;
   }
+  function T(txt, x, y, fs, fill, anchor, weight) { return '<text x="' + x + '" y="' + y + '" font-family="Helvetica, Arial, sans-serif" font-weight="' + (weight || 700) + '" font-size="' + fs + '" fill="' + fill + '" text-anchor="' + (anchor || "middle") + '">' + esc(txt) + "</text>"; }
+  function textAt(inst, t, dflt) { var tr = track(inst, "text"), v = tr && keyAt(tr.keys, t).value; return v === undefined || v === null ? dflt : v; }
+  function ringing(t) { var v = textAt("phone", t, ""); return typeof v === "string" && v.indexOf("ring:") === 0; }
+
+  // Flat cut-paper placeholders by kind. Real art (video/assets/**/<id>.svg) replaces any of them.
+  function drawKind(d, x, y, w, h, t, inst) {
+    var kind = d.kind || d.id, o = "", i;
+    if (kind === "clock") {
+      var cx = x + w / 2, cy = y + h / 2, r = w / 2, txt = textAt(inst, t, d.text) || "";
+      o += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + d.fill + '" stroke="#2a2a30" stroke-width="' + r * 0.06 + '"/>';
+      for (i = 1; i <= 12; i++) { var an = i * Math.PI / 6; o += T(i, cx + Math.sin(an) * r * 0.74, cy - Math.cos(an) * r * 0.74 + r * 0.1, r * 0.26, "#2a2a30"); }
+      if (/^\d\d:\d\d$/.test(txt)) {
+        var hh = +txt.slice(0, 2) % 12, mm = +txt.slice(3), ha = (hh + mm / 60) * Math.PI / 6, ma = mm * Math.PI / 30;
+        o += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.sin(ha) * r * 0.5) + '" y2="' + (cy - Math.cos(ha) * r * 0.5) + '" stroke="#2a2a30" stroke-width="' + r * 0.1 + '" stroke-linecap="round"/><line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.sin(ma) * r * 0.72) + '" y2="' + (cy - Math.cos(ma) * r * 0.72) + '" stroke="#2a2a30" stroke-width="' + r * 0.06 + '" stroke-linecap="round"/><circle cx="' + cx + '" cy="' + cy + '" r="' + r * 0.06 + '" fill="#2a2a30"/>';
+      }
+      return o;
+    }
+    if (kind === "phone") {   // desk phone base: display, keypad; the handset is its own prop on top
+      var ring = ringing(t), disp = textAt(inst, t, ""), shown = typeof disp === "string" && disp.indexOf("ring:") === 0 ? disp.slice(5) : disp || "03:07";
+      o += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + h * 0.18 + '" fill="' + d.fill + '"/>';
+      o += '<rect x="' + (x + w * 0.08) + '" y="' + (y + h * 0.14) + '" width="' + w * 0.46 + '" height="' + h * 0.3 + '" rx="2" fill="' + (ring && Math.floor(t * 4) % 2 ? "#ffd84a" : "#9ad8c0") + '"/>' + T(shown, x + w * 0.31, y + h * 0.36, Math.min(h * 0.2, w * 0.42 / Math.max(1, String(shown).length * 0.62)), "#1a2b25", "middle", 700);
+      for (i = 0; i < 12; i++) o += '<rect x="' + (x + w * (0.6 + (i % 3) * 0.12)) + '" y="' + (y + h * (0.14 + Math.floor(i / 3) * 0.2)) + '" width="' + w * 0.09 + '" height="' + h * 0.14 + '" rx="1.5" fill="#6b6f7a"/>';
+      return o;
+    }
+    if (kind === "handset") {
+      var rg = ringing(t), ang = rg ? Math.sin(t * 60) * 3 : 0;
+      return '<g transform="rotate(' + ang.toFixed(2) + " " + (x + w / 2) + " " + (y + h / 2) + ')"><rect x="' + x + '" y="' + (y + h * 0.35) + '" width="' + w + '" height="' + h * 0.35 + '" rx="' + h * 0.17 + '" fill="' + d.fill + '"/><rect x="' + x + '" y="' + y + '" width="' + w * 0.22 + '" height="' + h + '" rx="' + h * 0.2 + '" fill="' + d.fill + '"/><rect x="' + (x + w * 0.78) + '" y="' + y + '" width="' + w * 0.22 + '" height="' + h + '" rx="' + h * 0.2 + '" fill="' + d.fill + '"/></g>';
+    }
+    if (kind === "sign") {
+      var lines = (d.lines || []).slice(), n = lines.length, over = textAt(inst, t, null);
+      if (over !== null && n) lines[n - 1] = over;
+      o += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="4" fill="' + d.fill + '" stroke="' + (d.edge || "#00000055") + '" stroke-width="2"/>';
+      lines.forEach(function (ln, k) { var big = d.big && k === n - 1; o += T(ln, x + w / 2, y + (k + 1) * h / (n + 0.6) + (big ? h * 0.05 : 0), (big ? h * 0.42 : Math.min(h * 0.22, w * 0.9 / Math.max(6, ln.length) * 1.5)), d.ink || "#fff"); });
+      return o;
+    }
+    if (kind === "whiteboard") {
+      var g = d.diagram || { boxes: [], arrows: [] };
+      o += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="4" fill="' + d.fill + '" stroke="#8a8f99" stroke-width="3"/>';
+      (g.arrows || []).forEach(function (ar) { var A = g.boxes[ar[0]], B = g.boxes[ar[1]]; o += '<line x1="' + (x + (A.x + A.w / 2) * w) + '" y1="' + (y + (A.y + A.h / 2) * h) + '" x2="' + (x + (B.x + B.w / 2) * w) + '" y2="' + (y + (B.y + B.h / 2) * h) + '" stroke="' + (ar[2] ? "#c0392b" : "#34495e") + '" stroke-width="2.5" stroke-dasharray="' + (ar[2] ? "6 4" : "0") + '"/>'; });
+      g.boxes.forEach(function (bx) { o += '<rect x="' + (x + bx.x * w) + '" y="' + (y + bx.y * h) + '" width="' + bx.w * w + '" height="' + bx.h * h + '" rx="3" fill="' + (bx.tone === "bad" ? "#f6c9c4" : "#dfe9f2") + '" stroke="#34495e" stroke-width="2"/>' + T(bx.label, x + (bx.x + bx.w / 2) * w, y + (bx.y + bx.h / 2) * h + h * 0.035, h * 0.1, "#1d2733"); });
+      (g.notes || []).forEach(function (nt) { o += T(nt.text, x + nt.x * w, y + nt.y * h, h * 0.085, nt.color || "#c0392b", "middle", 700); });
+      return o;
+    }
+    return null;
+  }
   function drawProp(p, t) {
     var inst = p.inst || p.id, vis = track(inst, "visible");
     if (vis && keyAt(vis.keys, t).value === false) return "";
     var d = Object.assign({}, (S.props || {})[p.id] || {}, p), at = d.at || [0, 0], k = d.scale || 1, w = (d.w || 60) * k, h = (d.h || 60) * k, o;
     if (d.svg) return '<g transform="translate(' + at[0] + " " + at[1] + ') scale(' + k + ')">' + d.svg + "</g>";
-    var txtTrack = track(inst, "text"), txt = (txtTrack && keyAt(txtTrack.keys, t).value) || d.text, x0 = at[0], y0 = at[1];
-    if (d.id === "phone" && txtTrack && keyAt(txtTrack.keys, t).value) { x0 += Math.sin(t * 90) * w * 0.03; o = '<rect x="' + (x0 - w * 0.1) + '" y="' + (y0 - h * 0.2) + '" width="' + w * 1.2 + '" height="' + h * 1.4 + '" rx="8" fill="#ffd84a" opacity="' + (0.25 + 0.2 * Math.sin(t * 14)).toFixed(2) + '"/>'; } else o = "";
-    o += d.shape === "circle" ? '<circle cx="' + (x0 + w / 2) + '" cy="' + (y0 + h / 2) + '" r="' + w / 2 + '" fill="' + d.fill + '"/>'
+    var x0 = at[0], y0 = at[1], special = drawKind(d, x0, y0, w, h, t, inst);
+    if (special !== null) return special + label(d.id, x0 + w / 2, y0 + h + 14, 11, "#ffffffaa");
+    o = d.shape === "circle" ? '<circle cx="' + (x0 + w / 2) + '" cy="' + (y0 + h / 2) + '" r="' + w / 2 + '" fill="' + d.fill + '"/>'
       : d.shape === "oval" ? '<ellipse cx="' + (x0 + w / 2) + '" cy="' + (y0 + h / 2) + '" rx="' + w / 2 + '" ry="' + h / 2 + '" fill="' + d.fill + '"/>'
       : '<rect x="' + x0 + '" y="' + y0 + '" width="' + w + '" height="' + h + '" rx="' + Math.min(8, h / 4) + '" fill="' + d.fill + '"/>';
-    if (d.id === "clock" && /^\d\d:\d\d$/.test(txt || "")) {
-      var hh = +txt.slice(0, 2) % 12, mm = +txt.slice(3), cx = x0 + w / 2, cy = y0 + h / 2, ha = (hh + mm / 60) * Math.PI / 6, ma = mm * Math.PI / 30;
-      o += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.sin(ha) * w * 0.26) + '" y2="' + (cy - Math.cos(ha) * w * 0.26) + '" stroke="#2a2a30" stroke-width="' + w * 0.05 + '" stroke-linecap="round"/><line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.sin(ma) * w * 0.4) + '" y2="' + (cy - Math.cos(ma) * w * 0.4) + '" stroke="#2a2a30" stroke-width="' + w * 0.03 + '" stroke-linecap="round"/>';
-    }
-    if (d.screen) { var s = screenAt(inst, t); if (s) o += drawScreen(x0 + w * 0.05, y0 + h * 0.08, w * 0.9, h * 0.84, s); }
-    return o + label(d.id + (txt ? " " + txt : ""), x0 + w / 2, y0 + h + 14, 11, "#ffffffaa");
+    if (d.screen) { var sc = screenAt(inst, t); if (sc) o += drawScreen(x0 + w * 0.05, y0 + h * 0.08, w * 0.9, h * 0.84, sc); }
+    return o + label(d.id, x0 + w / 2, y0 + h + 14, 11, "#ffffffaa");
   }
   function actorsOf(sh, cast) {
     return cast.map(function (c) {

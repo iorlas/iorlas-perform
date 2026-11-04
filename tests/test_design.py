@@ -50,10 +50,9 @@ def test_per_shot_cast_matches_who_is_in_it(tmp_path):
     s1, s2 = resolved(tmp_path)
     ids = lambda shot: [c["id"] for c in shot["cast"]]  # noqa: E731
     assert [(x["id"], ids(x)) for x in s1["shots"]] == [("1.1", ["vadik"]), ("1.2", ["vadik"]), ("1.3", ["vadik"])]
-    assert {x["id"]: ids(x) for x in s2["shots"]} == {"2.1": ["vadik"], "2.2": ["vadik"], "2.3": ["vadik"], "2.4": [], "2.5": ["vadik"], "2.6": ["vadik"], "2.7": []}
-    for i in ("2.4", "2.5"):
-        inset = next(x for x in s2["shots"] if x["id"] == i)["inset"]
-        assert ids(inset) == ["palych"] and inset["set"] == "setC_palych_home" and inset["style"] == "caller"
+    assert {x["id"]: ids(x) for x in s2["shots"]} == {"2.1": ["vadik"], "2.2": ["vadik"], "2.3": ["vadik"], "2.4": [], "2.5": ["palych"], "2.5b": ["vadik"], "2.6": ["vadik"], "2.7": []}
+    cto = next(x for x in s2["shots"] if x["id"] == "2.5")  # a phone call is cut like in film: full frame on the other end, then back
+    assert cto["set"] == "setC_palych_home" and "inset" not in cto
     assert {a["id"] for a in s1["actors"]} == {"vadik"} and {a["id"] for a in s2["actors"]} == {"vadik", "palych"}
 
 
@@ -116,7 +115,7 @@ def test_vadik_sits_on_the_chair_and_his_hands_go_where_the_keyboard_is(tmp_path
 
 def test_vadik_picks_up_the_phone_when_it_rings_and_it_leaves_the_desk(tmp_path):
     _, s2 = resolved(tmp_path)
-    keys = [k for t in s2["tracks"] if t["actor"] == "phone" and t["channel"] == "visible" for k in t["keys"]]
+    keys = [k for t in s2["tracks"] if t["actor"] == "handset" and t["channel"] == "visible" for k in t["keys"]]
     assert keys[0]["value"] is True and keys[-1]["value"] is False  # on the desk until beat 6, then in his hand
     pose = [k["value"] for t in s2["tracks"] if t["actor"] == "vadik" and t["channel"] == "pose" for k in t["keys"]]
     assert pose[-1] == "hold_receiver" and "stand_still" in pose
@@ -136,7 +135,7 @@ def test_screen_contents_come_from_named_cues(tmp_path):
 def test_the_punchline_shows_every_service_down_and_the_cricket_up(tmp_path):
     _, s2 = resolved(tmp_path)
     d = s2["screens"]
-    assert len(d["dash_failing"]["rows"]) == 5 and d["dash_failing"]["ok"]["label"] == "сверчок"
+    assert len(d["dash_failing"]["rows"]) == 5 and "ok" not in d["dash_failing"]  # the cricket row is the reveal, not there from the start
     assert all("at" not in r for r in d["dash_cricket"]["rows"]) and d["dash_cricket"]["ok"]["pulse_after"] > 0
     last = s2["shots"][-1]
     assert last["id"] == "2.7" and last["camera"]["push_to"][2] < last["camera"]["viewBox"][2]
@@ -145,14 +144,13 @@ def test_the_punchline_shows_every_service_down_and_the_cricket_up(tmp_path):
         assert vb[0] <= p[k]["at"][0] and p[k]["at"][0] + p[k]["w"] <= vb[0] + vb[2], k
 
 
-def test_the_cto_is_a_caller_card_then_a_head_inset_never_a_full_body(tmp_path):
+def test_the_cto_is_cut_to_full_frame_lip_synced_and_the_caller_id_is_on_the_phone(tmp_path):
     _, s2 = resolved(tmp_path)
-    ring, talk = (next(x for x in s2["shots"] if x["id"] == i)["inset"] for i in ("2.4", "2.5"))
-    assert ring["ringing"] and not talk["ringing"] and talk["name"] == "Геннадий Палыч"
-    for ins in (ring, talk):
-        assert ins["camera"][2] <= 320 and ins["cast"][0]["seated"]  # head and shoulders of a man in an armchair
+    cto = next(x for x in s2["shots"] if x["id"] == "2.5")
+    assert cto["cast"][0]["seated"] and cto["frame"] == "close"
     assert "mouth" in next(a for a in s2["actors"] if a["id"] == "palych") and not s2.get("debug")
-
+    back = next(x for x in s2["shots"] if x["id"] == "2.5b")
+    assert back["t0"] > cto["t0"] + 1  # the reaction shot starts mid-beat, after the CTO has spoken
 
 def test_a_shot_on_a_missing_beat_is_an_error():
     bad = json.loads(json.dumps(DESIGN))
@@ -180,7 +178,7 @@ def test_an_object_out_of_arm_reach_is_refused():
 def test_a_seated_character_with_nothing_hiding_his_legs_is_refused():
     """vadik 1.2.0 has no seated pose: without a solid desk over his missing legs, a wide shot would show him cut off at the hips."""
     bad = json.loads(json.dumps(DESIGN))
-    bad["sets"]["setA_office_dusk"]["objects"] = [o for o in bad["sets"]["setA_office_dusk"]["objects"] if o["id"] not in {"desk", "keyboard", "monitor", "phone"}]
+    bad["sets"]["setA_office_dusk"]["objects"] = [o for o in bad["sets"]["setA_office_dusk"]["objects"] if o["id"] not in {"desk", "keyboard", "monitor", "phone", "handset"}]
     bad["scenes"]["Офис, вечер"]["interactions"] = []
     bad["scenes"]["Офис, вечер"]["cues"] = [c for c in bad["scenes"]["Офис, вечер"]["cues"] if c.get("target") not in {"monitor"}]
     with pytest.raises(ValueError, match="no seated pose"):
@@ -196,3 +194,11 @@ def test_objects_that_depend_on_each_other_in_a_loop_are_refused():
 def test_the_design_renders_as_a_review_document():
     md = videodesign.describe(tl(), DESIGN)
     assert "## Set `setB_office_night` (extends `setA_office_dusk`)" in md and "| 2.7 |" in md and "seated on `chair`" in md and "hands_on `keyboard`" in md
+
+
+def test_phone_rings_only_from_the_ring_sfx(tmp_path):
+    _, s2 = resolved(tmp_path)
+    ring = next(t for t in s2["tracks"] if t["actor"] == "phone" and t["channel"] == "text")["keys"]
+    first = next(k for k in ring if k["value"].startswith("ring:"))
+    assert ring[0]["value"] == "" and first["t"] > 15  # silent at t=0, rings at the sfx (beat 5), not while the narrator introduces the call
+    assert any(k["value"] == "в разговоре" and k["t"] > first["t"] for k in ring)

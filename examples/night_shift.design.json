@@ -44,14 +44,14 @@
     {
      "id": "clock",
      "size": [
-      0.13,
-      0.13
+      0.16,
+      0.16
      ],
      "place": {
-      "x": -0.5,
-      "up": 0.62
+      "x": 0.98,
+      "up": 0.7
      },
-     "role": "Wall clock over the desk row. Shows 18:00; the time card then jumps to 03:00.",
+     "role": "Wall clock, right wall, above the counter. 12 numerals, hands at 18:00; the time card then jumps to 03:00.",
      "text": "18:00"
     },
     {
@@ -106,26 +106,15 @@
     {
      "id": "phone",
      "size": [
-      0.1,
-      0.045
+      0.13,
+      0.06
      ],
      "place": {
       "x": -0.3,
       "on": "desk"
      },
-     "role": "Desk phone, left of the keyboard. Rings at night; he picks it up.",
+     "role": "Desk phone base: display (caller ID, then call time), keypad. Stays on the desk.",
      "layer": "front"
-    },
-    {
-     "id": "coatrack",
-     "size": [
-      0.1,
-      0.78
-     ],
-     "place": {
-      "x": 0.62
-     },
-     "role": "Right of the desk, empty at night (everyone left)."
     },
     {
      "id": "colleague_1",
@@ -150,6 +139,135 @@
      },
      "role": "Grey cut-out, leaving at 18:00. Gone from beat 2.",
      "kind": "colleague"
+    },
+    {
+     "id": "incidents",
+     "size": [
+      0.26,
+      0.17
+     ],
+     "place": {
+      "x": 0.98,
+      "up": 0.5
+     },
+     "role": "Safety counter «дней без инцидентов»: 3 at dusk, 0 at night. Setup/payoff for the whole story.",
+     "kind": "sign",
+     "lines": [
+      "ДНЕЙ БЕЗ",
+      "ИНЦИДЕНТОВ",
+      "3"
+     ],
+     "big": true,
+     "fill": "#f2efe3",
+     "ink": "#2a2a2a",
+     "edge": "#2a7a3a"
+    },
+    {
+     "id": "poster_friday",
+     "size": [
+      0.46,
+      0.3
+     ],
+     "place": {
+      "x": -0.5,
+      "up": 0.52
+     },
+     "role": "Left wall poster: the rule everyone breaks. Joke on the first beat; replaced by the dashboard at night.",
+     "kind": "sign",
+     "lines": [
+      "НЕ ДЕПЛОЙ",
+      "В ПЯТНИЦУ",
+      "(мы тоже так думали)"
+     ],
+     "fill": "#e8d27a",
+     "ink": "#3a2d10"
+    },
+    {
+     "id": "whiteboard",
+     "size": [
+      0.46,
+      0.28
+     ],
+     "place": {
+      "x": 0.62,
+      "up": 0.66
+     },
+     "role": "Architecture whiteboard on the right wall: every arrow goes through one box, «Вадик» (SPOF), with a dashed arrow to the API: manual deploy.",
+     "kind": "whiteboard",
+     "diagram": {
+      "boxes": [
+       {
+        "x": 0.04,
+        "y": 0.38,
+        "w": 0.26,
+        "h": 0.22,
+        "label": "Юзер"
+       },
+       {
+        "x": 0.38,
+        "y": 0.38,
+        "w": 0.22,
+        "h": 0.22,
+        "label": "API"
+       },
+       {
+        "x": 0.7,
+        "y": 0.38,
+        "w": 0.26,
+        "h": 0.22,
+        "label": "БД"
+       },
+       {
+        "x": 0.33,
+        "y": 0.74,
+        "w": 0.34,
+        "h": 0.2,
+        "label": "Вадик",
+        "tone": "bad"
+       }
+      ],
+      "arrows": [
+       [
+        0,
+        1
+       ],
+       [
+        1,
+        2
+       ],
+       [
+        3,
+        1,
+        true
+       ]
+      ],
+      "notes": [
+       {
+        "x": 0.5,
+        "y": 0.2,
+        "text": "архитектура",
+        "color": "#34495e"
+       },
+       {
+        "x": 0.85,
+        "y": 0.9,
+        "text": "SPOF"
+       }
+      ]
+     }
+    },
+    {
+     "id": "handset",
+     "size": [
+      0.15,
+      0.035
+     ],
+     "place": {
+      "x": -0.3,
+      "on": "phone"
+     },
+     "role": "Handset on the cradle. Jiggles when it rings; Vadik lifts it (it leaves the cradle).",
+     "layer": "front"
     }
    ],
    "characters": {
@@ -165,7 +283,8 @@
    "remove": [
     "clock",
     "colleague_1",
-    "colleague_2"
+    "colleague_2",
+    "poster_friday"
    ],
    "objects": [
     {
@@ -191,7 +310,7 @@
       "x": -0.5,
       "up": 0.52
      },
-     "role": "Wall dashboard where the clock was: a PROD service list. The cricket is a row of it (setup and punchline)."
+     "role": "Wall dashboard in the poster's place: a PROD service list. The cricket is a row of it (setup and punchline)."
     },
     {
      "id": "cricket",
@@ -232,6 +351,27 @@
      },
      "role": "Floor lamp: the one warm light in a dark room.",
      "kind": "lamp"
+    },
+    {
+     "id": "cert",
+     "size": [
+      0.3,
+      0.2
+     ],
+     "place": {
+      "x": -0.45,
+      "up": 0.5
+     },
+     "role": "Framed certificate on his wall, crooked pride: «лучшему CTO за ночные звонки».",
+     "kind": "sign",
+     "lines": [
+      "ГРАМОТА",
+      "лучшему CTO",
+      "за ночные звонки"
+     ],
+     "fill": "#efe6c8",
+     "ink": "#5a4a20",
+     "edge": "#a07a28"
     }
    ],
    "characters": {
@@ -301,11 +441,7 @@
      "label": "deploy",
      "at": 5.4
     }
-   ],
-   "ok": {
-    "label": "сверчок",
-    "note": "uptime 100 %"
-   }
+   ]
   },
   "dash_cricket": {
    "kind": "rows",
@@ -329,8 +465,8 @@
    ],
    "ok": {
     "label": "сверчок",
-    "note": "uptime 100 %",
-    "pulse_after": 2.6
+    "note": "падений: 0",
+    "pulse_after": 0.8
    }
   }
  },
@@ -444,6 +580,11 @@
      "beat": 3,
      "actor": "vadik",
      "expr": "wince"
+    },
+    {
+     "beat": 2,
+     "target": "poster_friday",
+     "visible": true
     }
    ]
   },
@@ -507,64 +648,36 @@
      "frame": "insert",
      "focus": "phone",
      "camera": {
-      "w": 360
+      "w": 330
      },
      "cast": [],
-     "intent": "The phone rings; a caller card shows who: the CTO.",
-     "inset": {
-      "set": "setC_palych_home",
-      "cast": [
-       "palych"
-      ],
-      "rect": [
-       0.62,
-       0.06,
-       0.3,
-       0.78
-      ],
-      "radius": 0.02,
-      "style": "caller",
-      "name": "Геннадий Палыч",
-      "ringing": true,
-      "frame": "close",
-      "camera": {
-       "w": 300,
-       "dy": -70
-      }
-     }
+     "intent": "The phone rings: handset jiggles, the display shows who: «Г. Палыч CTO»."
     },
     {
      "id": "2.5",
      "beats": [
       6
      ],
-     "frame": "medium",
+     "set": "setC_palych_home",
+     "frame": "close",
+     "focus": "palych",
+     "cast": [
+      "palych"
+     ],
+     "intent": "Intercut to the CTO at home (armchair, lamp, framed certificate), receiver at his ear, shouting; lip-synced. Film language for a phone call, no UI plate."
+    },
+    {
+     "id": "2.5b",
+     "beats": [
+      6
+     ],
+     "offset": 3.0,
+     "frame": "close",
      "focus": "vadik",
      "cast": [
       "vadik"
      ],
-     "intent": "Both in frame: Vadik with the receiver, the CTO's head in a call card, shouting.",
-     "inset": {
-      "set": "setC_palych_home",
-      "cast": [
-       "palych"
-      ],
-      "rect": [
-       0.7,
-       0.04,
-       0.27,
-       0.62
-      ],
-      "radius": 0.02,
-      "style": "caller",
-      "name": "Геннадий Палыч",
-      "ringing": false,
-      "frame": "close",
-      "camera": {
-       "w": 300,
-       "dy": -70
-      }
-     }
+     "intent": "Cut back to Vadik with the receiver, listening, bracing for his answer."
     },
     {
      "id": "2.6",
@@ -638,7 +751,7 @@
     {
      "actor": "vadik",
      "type": "holds",
-     "object": "phone",
+     "object": "handset",
      "beats": [
       6,
       7,
@@ -658,16 +771,6 @@
      "screen": "tiles_red"
     },
     {
-     "beat": 5,
-     "target": "phone",
-     "text": "ring"
-    },
-    {
-     "beat": 6,
-     "target": "phone",
-     "text": ""
-    },
-    {
      "beat": 6,
      "target": "monitor",
      "screen": "chat_control"
@@ -675,7 +778,23 @@
     {
      "beat": 8,
      "target": "dashboard",
-     "screen": "dash_cricket"
+     "screen": "dash_cricket",
+     "offset": 2.6
+    },
+    {
+     "beat": 1,
+     "target": "incidents",
+     "text": "0"
+    },
+    {
+     "beat": 5,
+     "target": "phone",
+     "text": "ring:ПАЛЫЧ CTO"
+    },
+    {
+     "beat": 6,
+     "target": "phone",
+     "text": "в разговоре"
     }
    ]
   }
