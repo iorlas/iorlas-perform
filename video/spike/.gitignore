@@ -9,3 +9,4 @@ engines/*/.remotion
 bench/run*.log
 !out/scene_remotion.mp4
 !out/scene_plain.mp4
+engines/resvg/node_modules

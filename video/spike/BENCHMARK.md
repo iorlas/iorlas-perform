@@ -59,6 +59,32 @@ Weights (stated by Denis): **determinism 25 %, per-scene regeneration 25 %**, th
 - Remotion 5.0 licence terms exclude solo/plugin use -> plain.
 - Untested rows that could flip a score: camera moves, video-clip sync, Remotion Lambda cost, HF `data-automation` ducking.
 
+## Other engines and scripts considered (2026-11-04)
+Facts: npm/GitHub API on 2026-11-04 (version, licence, last publish/push, stars). Only resvg was run; every other row is desk research (📖/❓), so verdicts there are from licence, maintenance and architecture, not from a test.
+
+**Measured: resvg-js, no browser at all.** `render_resvg.mjs`: the rig `draw()` functions + `core.js` run in plain Node with a fake `window` (the rigs never touch the DOM), each frame's SVG string goes to `@resvg/resvg-js` 2.6.2, PNGs to ffmpeg.
+- ✅ Works unmodified on both frozen rigs, incl. `feDropShadow`, `clipPath`, Cyrillic text (system Helvetica/Menlo). Frames look identical to Chrome (side-by-side checked); SSIM vs Chrome 0.9934 / 0.9938 / 0.9955 (frames 0/150/299, 720p), so not pixel-exact against Chrome (different rasteriser).
+- ✅ Deterministic: two runs, identical PNG md5. Install 4 MB (vs 118 MB HF, 242 MB Remotion + 140 MB Chrome).
+- ❌ Slow: 358 ms per 720p frame on one thread (19 s CPU per 60 frames, ~107 s CPU for a 10 s scene) = ~4x HyperFrames' CPU, ~1.4x Remotion's. The per-part drop-shadow filters dominate. Parallel worker threads would cut wall time but not CPU.
+- Licence: resvg Apache-2.0 (GitHub); the npm binding `@resvg/resvg-js` MPL-2.0 (file-level copyleft, fine if unmodified). No telemetry (no network code looked at ❓).
+- Verdict: a legitimate "no Chrome, no GPU, tiny install" renderer if the project ever needs to run on a bare server; not better than Remotion/plain Chrome on cost or fidelity. ✅ test, not adopted.
+
+| Candidate | What it is | Licence / activity | Fit for our rigs + pipeline | Verdict |
+|---|---|---|---|---|
+| **Revideo** (`@revideo/core` 0.11.0) | TS generator-based animation + headless render API, Motion Canvas fork; browser-rendered 📖 | MIT; 4.2k stars; last push 2026-07-15; repo now under `midrender` org (was a different org: ownership/maintenance change ❓) | Scenes are Canvas/TSX components, so our SVG-string rigs would need wrapping as images/nodes ❓; no per-frame pure-function seam shown | ❓ skip unless Remotion fails; 0.x, small, org moved |
+| **Motion Canvas** (`@motion-canvas/core` 3.17.2) | TS generator animations, editor with timeline | MIT; 19.7k stars; **npm last published 2025-02-16** (20 months), repo pushed 2026-07 | Animation-authoring tool, not a render-this-function engine; needs its editor/plugin for render 📖 | ❌ wrong shape (authors motion, we already have rigs) and stale npm |
+| **Editly** 0.14.2 | JSON-declared edits (clips, titles, transitions) on ffmpeg + canvas/gl | MIT; 5.6k stars; last push 2025-05-12 (stale); a custom-canvas layer exists 📖 ❓ not verified | JSON data model matches shots.json in spirit; transitions built in 📖; custom draw is canvas, not SVG strings | ❓ interesting for transitions/concat only; stale, not tested |
+| **Own script: plain Chrome + ffmpeg** | `render_plain.mjs` | n/a | ✅ tested, see matrix | ✅ the escape hatch |
+| **MoviePy** (Python) | `make_frame(t)` clips composed in Python, ffmpeg | MIT; 15.1k stars; pushed 2026-08-26 | Frame-as-function-of-t matches our model, but the rigs are JS, so Python would need Node (or a JS engine) per frame and an SVG rasteriser (resvg/cairosvg) | ❌ adds a second runtime; only makes sense if the whole plugin were Python-driven, and then a Node subprocess ≈ our plain/resvg script |
+| **Manim** | Python maths-animation library (Cairo/OpenGL) | MIT; 42.2k stars; active | Imports SVG as shapes; our filters/clip-paths/text screens not supported 📖 ❓ | ❌ wrong domain |
+| **skia-canvas / @napi-rs/canvas** | Canvas 2D in Node on Skia, no browser | MIT; both active (releases Oct 2026) | Needs canvas calls or SVG import; rigs emit SVG strings with filters; their SVG support level ❓ not tested | ❓ possible faster no-browser path than resvg; test before ruling out |
+| **Rive / Lottie / dotLottie** | Runtime formats for vector skeletal animation | MIT; very active | Would require re-authoring both frozen, hash-locked rigs in a new format and tool; loses the rig.lock contract | ❌ |
+| **Blender / After Effects / Natron** | Full 3D/compositing suites | various | Heavy, not a code-first headless per-scene loop; rigs would be rebuilt | ❌ |
+| **Cloud video APIs** (Shotstack, Creatomate, JSON2Video, HeyGen) | Hosted render by JSON template | paid, hosted ❓ | Break local-first, privacy and the frozen-rig requirement | ❌ |
+| **Theatre.js, Etro, Pixi** | Animation editor / GPL video lib / 2D renderer | Theatre npm stale since 2024-05; **Etro GPL-3.0**; Pixi MIT active | Not render-to-file engines for pure draw functions | ❌ |
+
+Net effect on the decision: nothing found beats Remotion + plain-Chrome fallback. Two follow-ups would be worth an hour each if the stakes rise: (1) skia-canvas/@napi-rs/canvas SVG fidelity as a faster browser-free path; (2) Editly or ffmpeg-native `xfade` chains as the concat/transition layer.
+
 ## Appendix: speed, memory and cost numbers (secondary)
 Plain renderer, 720p, 10 s, 4 workers, 2 runs: 11.6 s and 12.4 s wall (capture 10.9-11.8 s), byte-identical outputs. Only this column was measured in this latest pass; HF/Remotion numbers below are from the earlier benchmark pass.
 
