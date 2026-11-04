@@ -1,7 +1,7 @@
 // Remotion composition "scene": loads the vendored rig art + core.js, then draws SpikeCore.frame(t) per frame.
-// Inputs (inputProps): { scene: "<id>" } -> public/scenes/<id>/{shots.json, mouth_<actor>.json, audio.wav}; rigs from public/rigs/.
+// Inputs (inputProps): { scene: "<id>" } -> public/scenes/<id>/{shots.json, mouth_<actor>.json}; rigs from public/rigs/.
 import React, { useEffect, useState } from "react";
-import { AbsoluteFill, Audio, Composition, continueRender, delayRender, registerRoot, staticFile, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Composition, continueRender, delayRender, registerRoot, staticFile, useCurrentFrame } from "remotion";
 
 const loadScript = (src) => new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = () => rej(new Error("load " + src)); document.head.appendChild(s); });
 const booted = {};
@@ -28,7 +28,6 @@ const Scene = ({ scene }) => {
     <AbsoluteFill>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox={shots.camera.viewBox.join(" ")} preserveAspectRatio="xMidYMid slice" style={{ width: "100%", height: "100%" }}
         dangerouslySetInnerHTML={{ __html: C.bg() + C.frame(frame / shots.fps) }} />
-      <Audio src={staticFile(`scenes/${scene}/audio.wav`)} />
     </AbsoluteFill>
   );
 };

@@ -2,8 +2,8 @@
   "name": "perform-video-engine",
   "private": true,
   "type": "module",
-  "description": "Per-scene video render for iorlas-perform: timeline.json + scene sheet -> shots.json -> Remotion -> mp4 -> concat",
-  "scripts": { "test": "node --test test/" },
+  "description": "Node half of the video path for iorlas-perform: the Remotion adapter, rig.lock verify and scene cache key. Python (scripts/video.py) calls render.mjs per scene.",
+  "scripts": { "test": "node --test test/*.test.mjs" },
   "dependencies": {
     "remotion": "4.0.540",
     "@remotion/bundler": "4.0.540",

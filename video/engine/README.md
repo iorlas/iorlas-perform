@@ -1,27 +1,35 @@
-# video/engine: per-scene video render (Remotion)
+# video/engine: the Node half of the video path (Remotion)
 
-timeline.json + scene sheet + mixed wav -> `shots.json` per scene -> Remotion -> cached per-scene mp4 -> concat -> `final.mp4`.
-Engine choice and evidence: `../spike/BENCHMARK.md` (Remotion 4.0.540; plain Chrome + ffmpeg is the fallback). Audio-only mode (`scripts/scene.py`) is untouched.
+Two languages, split at `shots.json`.
 
 ```
-node cli.mjs --timeline demo/demo.turns.json --sheet demo/demo.sheet.json --audio demo/demo.wav --out out/demo [--only s01] [--chrome PATH] [--concurrency N] [--xfade 0.5]
-./demo/make_audio.sh   # builds demo/demo.wav (gitignored) from two existing takes
-npm test               # unit tests + slow end-to-end render tests (need a Chrome: PERFORM_CHROME or Remotion's own)
+scene.py (--video)                 scripts/videoplan.py + scripts/video.py (Python, uv)          video/engine/ (Node)
+wav + timeline.json  ------>  timeline v2 -> scene sheet -> resolver + mouth -> shots.json  --->  render.mjs per scene
+                                                                                                   rig.lock verify, cache key,
+                                                                                                   adapter -> Remotion -> scene.mp4
+                                  <---- ffmpeg: concat (same engine + params only) + mux the mastered wav ----
 ```
 
-## Flow
-1. `src/resolve.mjs` `segment()`: consecutive turns with the same `scene` title become one scene (`s01`, `s02`, ...), padded by `lead`/`tail`, whole frames, no overlap.
-2. `resolveScene()`: the scene sheet's `cues` (`at` seconds, or `turn` number + `offset`, both scene-relative after resolving) become `tracks` of keys. Mouth: `src/mouth.mjs` computes `mouth_open` per video frame from the scene's audio RMS, gated to the speaking actor's own turns (`cast` maps a timeline `voice` to an actor id).
-3. `src/stage.mjs`: every referenced rig is checked against `rig.lock` (tampered = abort before anything renders), copied byte-for-byte into `public/rigs/`, checked again, then the scene files are written and the cache key computed: rig id + version + sha256 + engine_api, shots hash, per-actor mouth hash, audio hash, core.js hash, composition hash, fps, size, engine version.
-4. `src/render.mjs`: bundle once (only if some scene misses), then `cache/<key>.mp4`; a hit starts no Chrome.
-5. `src/concat.mjs`: copy-concat after checking identical codec params (files from different engines or settings are refused); `--xfade s` re-encodes with crossfades.
+- **Python** owns everything upstream of `shots.json`: timeline v2, the sheet emitter (`video/layout.json`), segmenting into scenes, cue resolution, the mouth envelope from audio RMS, joining and muxing. Tests: `tests/`.
+- **Node** owns only what needs the rigs' JS or the engine: `render.mjs` verifies every rig against `rig.lock` (a tampered rig aborts before staging), copies the rigs byte-for-byte, computes the cache key, renders on a miss. Rigs stay plain JS and frozen (`../rigs/`).
+- **Adapter isolation:** `src/adapter.mjs` + `remotion/` are the only code that knows Remotion. `src/stage.mjs`, `src/core.js`, `src/rig_lock.mjs`, `render.mjs` are engine-neutral. A plain Chrome + ffmpeg engine means replacing those two with the same `render()`, `ENGINE`, `ADAPTER_VERSION`, `CODEC`, `COMPOSITION` exports. Engine choice and evidence: `../spike/BENCHMARK.md`.
+- **Cache key** (`<out>/cache/<key>.mp4`): rig id + version + sha256 + engine_api, shots hash, per-actor mouth hashes, core.js and composition hashes, fps, size, codec, engine, adapter version. A hit starts no Chrome. Scene videos are video-only; the mastered wav is muxed once at the end.
+- **Join** refuses scene videos whose engine, adapter, codec or stream parameters differ.
+
+```
+node render.mjs --scene DIR --cache DIR [--work DIR] [--chrome PATH] [--concurrency N]   # DIR: shots.json + mouth_*.json; prints one JSON line
+npm ci && npm test                                                                         # 3 rig/cache-key tests
+uv run ../../scripts/video.py out/x.wav out/x.timeline.json                                # a finished scene -> out/x.video/x.mp4
+uv run ../../scripts/scene.py examples/night_shift.md out/ns.wav --video                   # speech + video in one go
+```
+Needs Node >= 20 and a Chrome (`PERFORM_CHROME`, or Remotion downloads its own on first use).
 
 ## Scene sheet (`scene-sheet/1`)
-`{fps, size, camera:{viewBox}, background, lead, tail, cast:{<voice>:{actor}}, scenes:{<scene title>|"*": {actors:[{id, rig:"id@semver", kind?, layer, pose, offset, pose_override}], cues:[{at|turn, offset?, actor, channel:"state"|"expr"|"pose", value, blend?, screen_text?, led?, shake?}], camera?, captions?}}}`.
-Actors of `kind: "object"` (derived from the rig's `body_type`) use the `state` channel; characters use `expr`/`pose` and get a mouth envelope.
+`{fps, size, camera:{viewBox}, background, lead, cast:{<voice>:{actor}}, scenes:{<scene title>|"*": {actors:[{id, rig:"id@semver", kind?, layer, pose, offset, pose_override}], cues:[{at|turn, offset?, actor, channel:"state"|"expr"|"pose", value, blend?, screen_text?, led?, shake?}], camera?, captions?}}}`.
+`scene.py --video` writes `<out>.sheet.json` from `../layout.json` when it is missing (the cast on stage per scene, default expression/state) and never overwrites it: the cues are the author's acting layer, edit them and re-run; only scenes whose frames change re-render.
 
 ## Open items
-- Mihalych `sit_side` is edge-on to Zinaida's screen. The demo uses Zinaida `q` with a hand-tuned `offset`; a coordinated pair (a Mihalych `sit_q`, or an aligned Zinaida view) is a rig task.
-- timeline.json is today's v1 (`scene.py` output: turns, sfx, ambience). Nothing emits a "v2" or a scene sheet yet; the sheet is written by hand.
-- Untested: camera moves, audio ducking, per-scene audio from the real mix (the demo cuts a stand-in wav), vertical 9:16 variants through this path, Remotion with its own downloaded Chrome.
-- Not wired into `scripts/scene.py` or the `perform` skill.
+- **Rig-side blocker, pairing:** Mihalych `sit_side` is edge-on to Zinaida's `side`, so her screen is invisible; the pair is Zinaida `q` + a fixed offset from `layout.json` (same in every scene, no per-scene edit). A true pair needs a new Mihalych version with a `sit_q` pose (frozen versions are not edited).
+- Only rigs whose API matches `core.js` (`rig.expr`, `rig.poses`, `draw({pose, expr, mouth})`: Mihalych, Zinaida) run. Vadik, Palych, Friend, Kristina, Stas, Neyroset register differently: `layout.json` maps the voice `vadik` to Mihalych for now.
+- The default sheet has no acting (one expression, Zinaida idle); real cues are hand-written.
+- Untested: camera moves, ducking, 9:16, Remotion's own Chrome on a clean machine, scenes much longer than a minute.

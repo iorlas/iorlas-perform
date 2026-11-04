@@ -1,0 +1,13 @@
+{
+  "_doc": "Defaults for the scene-sheet emitter (scripts/videoplan.py emit_sheet). cast: timeline voice -> the rig that plays it (voices with no entry, e.g. narrator, are off screen). props: always on stage. pairing: Zinaida's `q` view with a fixed offset beside Mihalych's `sit_side`; their rigs have no common view where the screen faces the camera, so the offset is data here, not a per-scene hand edit. A proper pair needs a new Mihalych version with a `sit_q` pose (frozen versions are never edited).",
+  "fps": 30,
+  "size": [1280, 720],
+  "camera": { "viewBox": [-90, -20, 622, 350] },
+  "background": "#26344f",
+  "props": [
+    { "id": "zinaida", "rig": "zinaida@1.0.0", "layer": 1, "pose": "q", "offset": [110, 0], "state": "idle" }
+  ],
+  "cast": {
+    "vadik": { "id": "mihalych", "rig": "mihalych@1.0.0", "layer": 2, "pose": "sit_side", "pose_override": { "desk": 0 }, "expr": "tired_neutral" }
+  }
+}
