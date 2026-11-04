@@ -31,10 +31,9 @@
       "fill": "#3a3d48"
     },
     "cricket": {
-      "w": 60,
-      "h": 34,
-      "shape": "oval",
-      "fill": "#7fa02a"
+      "fill": "#8fb03a",
+      "w": 74,
+      "h": 48
     },
     "monitor": {
       "w": 220,

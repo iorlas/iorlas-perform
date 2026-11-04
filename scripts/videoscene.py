@@ -72,7 +72,7 @@ def solve_objects(objects: list[dict[str, Any]], stage: dict[str, Any]) -> dict[
         else:
             msg = f'object "{oid}" has no horizontal place (x, centered_on, left_of or right_of)'
             raise ValueError(msg)
-        inst = {k: v for k, v in o.items() if k not in {"size", "place", "layer", "role", "seat_h"}}
+        inst = {k: v for k, v in o.items() if k not in {"size", "place", "layer", "role", "seat_h", "from", "side", "mentions"}}
         inst |= {"w": round(w), "h": round(h), "at": [round(cx - w / 2), round(bottom - h)], "cx": cx, "top": bottom - h, "bottom": bottom}
         if o.get("layer") == "front":
             inst["front"] = True

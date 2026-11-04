@@ -36,7 +36,7 @@ Character `vadik`: seated on `chair`, base pose `stand_still`. Sits at his desk,
 | `whiteboard` | 0.46x0.28 | x=0.55, up=0.66 | Whiteboard: the system diagram. Everything is deployed through one box, «Вадик»; arrow to the API is labelled «руками». |
 | `handset` (front) | 0.15x0.035 | x=-0.3, on=phone | Handset on the cradle. Jiggles when it rings; Vadik lifts it (it leaves the cradle). |
 | `dashboard` | 0.5x0.3 | x=-0.5, up=0.52 | Wall dashboard in the poster's place: a PROD service list. The cricket is a row of it (setup and punchline). |
-| `cricket` | 0.07x0.04 | x=-0.9, on=sill | The cricket on the sill under the window, next to the dashboard so one frame shows both. |
+| `cricket` | 0.1x0.065 | x=-1.0, on=window, up=-0.465 | The cricket OUTSIDE, on the outer ledge, seen through the dark pane against the moon-lit sky. Chirps on the punchline. |
 
 Character `vadik`: seated on `chair`, base pose `stand_still`. Sits at his desk, facing us over the keyboard, reading the monitor on his right.
 
@@ -49,6 +49,28 @@ Character `vadik`: seated on `chair`, base pose `stand_still`. Sits at his desk,
 | `cert` | 0.3x0.2 | x=-0.45, up=0.5 | Framed certificate on his wall, crooked pride: «лучшему CTO за ночные звонки». |
 
 Character `palych`: seated on `armchair`, base pose `hold_receiver`. Sits in the armchair, phone at his ear. Only head and shoulders are ever shown.
+
+## Grounding: where each object comes from
+
+| object | from |
+|---|---|
+| `window` | «за окном» |
+| `sill` | **invented** |
+| `clock` | «Шесть вечера» |
+| `desk` | **invented** |
+| `chair` | **invented** |
+| `keyboard` | «keyboard» |
+| `monitor` | «в монитор» |
+| `phone` | «зазвонил телефон» |
+| `incidents` | **invented** |
+| `poster_friday` | **invented** |
+| `whiteboard` | **invented** |
+| `handset` | «зазвонил телефон» |
+| `dashboard` | «красный дашборд» |
+| `cricket` (outside) | «сверчок за окном» |
+| `armchair` | **invented** |
+| `lamp` | **invented** |
+| `cert` | **invented** |
 
 ## Scene «Офис, вечер» (set `setA_office_dusk`)
 
@@ -111,7 +133,7 @@ Event map (heard -> shown, in time order):
 | 5 | sfx phone_ring | - | `phone` -> text «ring:ПАЛЫЧ CTO» |
 | 6 | praporshchik: [loud, suspicious question, rising inton | 2.5, 2.5b+3.0s | `monitor` -> chat_control; `phone` -> text «в разговоре»; `vadik` holds `handset` |
 | 7 | vadik: [panicking] Потому что всё под контролем | 2.6 | - |
-| 8 | narrator: [dry, deadpan] Под контролем было только | 2.7 | `dashboard` -> dash_cricket (+2.6s) |
+| 8 | narrator: [dry, deadpan] Под контролем было только | 2.7 | `dashboard` -> dash_cricket (+2.6s); `cricket` -> text «chirp» (+2.6s) |
 
 Interactions:
 
@@ -130,4 +152,5 @@ Cues:
 - beat 1: `incidents` -> text «0»
 - beat 5: `phone` -> text «ring:ПАЛЫЧ CTO»
 - beat 6: `phone` -> text «в разговоре»
+- beat 8: `cricket` -> text «chirp»
 

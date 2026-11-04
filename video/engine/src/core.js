@@ -138,6 +138,16 @@
         : '<circle cx="' + (x + w * 0.3) + '" cy="' + (y + h * 0.7) + '" r="' + w * 0.1 + '" fill="#ffd36a"/><rect x="' + (x + f) + '" y="' + (y + h * 0.78) + '" width="' + (w - 2 * f) + '" height="' + h * 0.14 + '" fill="#3b3550"/>';
       return o;
     }
+    if (kind === "cricket") {   // a silhouette seen outside: body, folded back leg, antennae, one eye; chirp arcs on a "chirp" text cue
+      var bx = x + w * 0.5, by = y + h * 0.62, ink = d.fill || "#8fb03a", chirp = textAt(inst, t, "") === "chirp";
+      o += '<ellipse cx="' + bx + '" cy="' + by + '" rx="' + w * 0.3 + '" ry="' + h * 0.2 + '" fill="' + ink + '"/>'
+        + '<circle cx="' + (bx + w * 0.3) + '" cy="' + (by - h * 0.12) + '" r="' + h * 0.14 + '" fill="' + ink + '"/><circle cx="' + (bx + w * 0.34) + '" cy="' + (by - h * 0.15) + '" r="2" fill="#10151f"/>'
+        + '<polyline points="' + (bx - w * 0.1) + "," + by + " " + (bx - w * 0.28) + "," + (by - h * 0.32) + " " + (bx - w * 0.4) + "," + (y + h) + '" fill="none" stroke="' + ink + '" stroke-width="3"/>'
+        + '<polyline points="' + (bx + w * 0.1) + "," + (by + h * 0.1) + " " + (bx + w * 0.16) + "," + (y + h) + '" fill="none" stroke="' + ink + '" stroke-width="3"/>'
+        + '<polyline points="' + (bx + w * 0.38) + "," + (by - h * 0.22) + " " + (bx + w * 0.55) + "," + (y + h * 0.05) + " " + (bx + w * 0.8) + "," + (y - h * 0.1) + '" fill="none" stroke="' + ink + '" stroke-width="1.5"/>';
+      if (chirp) for (i = 0; i < 2; i++) o += '<path d="M ' + (bx - w * (0.5 + i * 0.22)) + " " + (by - h * 0.3) + " q -8 " + h * 0.3 + " 0 " + h * 0.6 + '" fill="none" stroke="#f2efd0" stroke-width="2" opacity="' + (0.4 + 0.5 * Math.abs(Math.sin(t * 9 - i))) + '"/>';
+      return o;
+    }
     if (kind === "clock") {
       var cx = x + w / 2, cy = y + h / 2, r = w / 2, txt = textAt(inst, t, d.text) || "";
       o += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + d.fill + '" stroke="#2a2a30" stroke-width="' + r * 0.06 + '"/>';

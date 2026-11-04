@@ -86,7 +86,8 @@ def test_objects_are_placed_by_relations_not_pixels(tmp_path):
     bottom = lambda o: o["at"][1] + o["h"]  # noqa: E731
     assert bottom(p["desk"]) == floor and p["desk"]["h"] == round(0.43 * big_h)
     assert all(bottom(p[k]) == p["desk"]["at"][1] for k in ("keyboard", "monitor", "phone"))
-    assert abs(bottom(p["cricket"]) - p["sill"]["at"][1]) <= 1  # on the window sill, which is next to the dashboard
+    w, c = p["window"], p["cricket"]  # the cricket is outside: seen inside the window frame, not on the room's sill
+    assert w["at"][0] <= c["at"][0] and c["at"][0] + c["w"] <= w["at"][0] + w["w"] and w["at"][1] <= c["at"][1] and bottom(c) <= bottom(w)
     assert p["desk"]["front"] and p["monitor"]["front"] and not p["chair"].get("front")  # he sits behind the desk, on the chair
     assert abs(p["chair"]["at"][0] + p["chair"]["w"] / 2) < 2  # chair centred on his axis
 
@@ -202,3 +203,32 @@ def test_phone_rings_only_from_the_ring_sfx(tmp_path):
     first = next(k for k in ring if k["value"].startswith("ring:"))
     assert ring[0]["value"] == "" and first["t"] > 15  # silent at t=0, rings at the sfx (beat 5), not while the narrator introduces the call
     assert any(k["value"] == "в разговоре" and k["t"] > first["t"] for k in ring)
+
+
+def _design(edit) -> dict:
+    d = json.loads(json.dumps(DESIGN))
+    edit(d)
+    return d
+
+
+def test_an_object_must_cite_the_script_or_say_it_is_invented():
+    with pytest.raises(ValueError, match='no "from"'):
+        videodesign.emit_sheet(tl(), LAYOUT, _design(lambda d: d["sets"]["setA_office_dusk"]["objects"][0].pop("from")))
+    with pytest.raises(ValueError, match="not in the script"):
+        videodesign.emit_sheet(tl(), LAYOUT, _design(lambda d: d["sets"]["setA_office_dusk"]["objects"][0].update({"from": "слон в комнате"})))
+
+
+def test_an_outside_object_must_be_seen_through_the_window():
+    def on_the_inner_sill(d):
+        cricket = next(o for o in d["sets"]["setB_office_night"]["objects"] if o["id"] == "cricket")
+        cricket["place"] = {"x": -0.9, "on": "sill"}  # the mistake we made: «за окном» drawn inside the room
+    with pytest.raises(ValueError, match="outside but not inside a window"):
+        videodesign.emit_sheet(tl(), LAYOUT, _design(on_the_inner_sill))
+
+
+def test_a_beat_that_names_an_object_must_show_it():
+    def hide_the_cricket(d):
+        sc = d["scenes"]["Офис, ночь"]
+        sc["shots"] = [s for s in sc["shots"] if s["id"] != "2.7"]  # the only shot of the punchline beat
+    with pytest.raises(ValueError, match="says «сверчок»"):
+        videodesign.emit_sheet(tl(), LAYOUT, _design(hide_the_cricket))

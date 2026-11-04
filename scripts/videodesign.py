@@ -55,6 +55,13 @@ def _camera(
     return cam
 
 
+def _frame_has(shot: dict[str, Any], solved: dict[str, dict[str, Any]], oid: str) -> bool:
+    """The object, in the shot's set, lies inside the shot's starting camera."""
+    o = solved.get(shot["set"], {}).get(oid)
+    x, y, w, h = shot["camera"]["viewBox"]
+    return bool(o) and x <= o["at"][0] and o["at"][0] + o["w"] <= x + w and y <= o["top"] and o["bottom"] <= y + h
+
+
 def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any]) -> dict[str, Any]:
     """Scene sheet from a design file. Voices on screen get their own rig (layout cast, overridden by the design); anything
     unlisted that is not off screen is an error. Positions come from videoscene (relations), never from pixels."""
@@ -74,6 +81,23 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
     merged = {n: videoscene.merge_set(design["sets"], n) for n in design["sets"]}
     solved = {n: videoscene.solve_objects(m["objects"], stage) for n, m in merged.items()}
     raw = {n: {o["id"]: o for o in m["objects"]} for n, m in merged.items()}
+
+    script = " ".join((e.get("text") or e.get("sfx") or "").casefold() for e in tl["entries"])  # words and sound effects
+    for n, m in merged.items():
+        for o in m["objects"]:  # grounding: every object cites the script or says it is invented
+            src = o.get("from")
+            if not src:
+                msg = f'set {n}: object "{o["id"]}" has no "from": cite the script («сверчок за окном») or write "invented"'
+                raise ValueError(msg)
+            if src != "invented" and src.casefold() not in script:
+                msg = f'set {n}: object "{o["id"]}" cites «{src}», which is not in the script'
+                raise ValueError(msg)
+            if o.get("side") == "outside":  # things outside are seen through a window: inside its frame, never on the inner sill
+                win = [w for w in solved[n].values() if str(w.get("kind", "")).startswith("window")]
+                me = solved[n][o["id"]]
+                if o.get("place", {}).get("on") not in {w["id"] for w in win} or not any(w["at"][0] <= me["at"][0] and me["at"][0] + me["w"] <= w["at"][0] + w["w"] and w["top"] <= me["top"] and me["bottom"] <= w["bottom"] for w in win):
+                    msg = f'set {n}: "{o["id"]}" is outside but not inside a window frame, so the viewer could not see it'
+                    raise ValueError(msg)
 
     def stand(set_name: str, actor: str) -> dict[str, Any]:
         spec = merged[set_name]["characters"].get(actor)
@@ -153,6 +177,14 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             for i in ids:
                 used.setdefault(i, {k: v for k, v in by_id[i].items() if k not in {"expr", "expr_map", "offset"}})
             shots.append(out)
+        for b, ei in enumerate(bl, 1):  # mention test: a beat that names an object must show it
+            said = (tl["entries"][ei].get("text") or "").casefold()
+            for o in merged[d["set"]]["objects"]:
+                if not any(m.casefold() in said for m in o.get("mentions", [])):
+                    continue
+                if not any(_frame_has(sh, solved, o["id"]) for sh in shots if b in sh["beats"]):
+                    msg = f'scene "{s["title"]}" beat {b} says «{o["mentions"][0]}», but no shot of that beat shows "{o["id"]}" in frame'
+                    raise ValueError(msg)
         cues: list[dict[str, Any]] = []
         for i in used:
             c = by_id[i]
@@ -250,6 +282,14 @@ def describe(tl: dict[str, Any], design: dict[str, Any]) -> str:
             where = f"seated on `{c['seated_on']}`" if "seated_on" in c else "stands"
             out += ["", f"Character `{who}`: {where}, base pose `{c.get('pose', 'stand_still')}`. {c.get('role', '')}"]
         out.append("")
+    out += ["## Grounding: where each object comes from", "", "| object | from |", "|---|---|"]
+    seen: set[str] = set()
+    for m in merged.values():
+        for o in m["objects"]:
+            if o["id"] not in seen:
+                seen.add(o["id"])
+                out.append(f"| `{o['id']}`{' (outside)' if o.get('side') == 'outside' else ''} | {'**invented**' if o.get('from') == 'invented' else '«' + o.get('from', '?') + '»'} |")
+    out.append("")
     for s in tl["scenes"]:
         d = design["scenes"][s["title"]]
         bl = beats(tl, s)

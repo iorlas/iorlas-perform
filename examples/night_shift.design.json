@@ -27,7 +27,8 @@
       "up": 0.38
      },
      "role": "Back wall, left. Dusk: orange sky. Night: dark. Carries the time of day.",
-     "kind": "window_dusk"
+     "kind": "window_dusk",
+     "from": "за окном"
     },
     {
      "id": "sill",
@@ -39,7 +40,8 @@
       "x": -1.0,
       "up": 0.36
      },
-     "role": "Window sill. Where the cricket lives (night)."
+     "role": "Window sill. Where the cricket lives (night).",
+     "from": "invented"
     },
     {
      "id": "clock",
@@ -52,7 +54,11 @@
       "up": 0.7
      },
      "role": "Wall clock, right wall, above the counter. 12 numerals, hands at 18:00; the time card then jumps to 03:00.",
-     "text": "18:00"
+     "text": "18:00",
+     "from": "Шесть вечера",
+     "mentions": [
+      "шесть вечера"
+     ]
     },
     {
      "id": "desk",
@@ -64,7 +70,8 @@
       "x": 0
      },
      "role": "Vadik's desk, solid to the floor. Stands in front of him, so his lap and legs are hidden.",
-     "layer": "front"
+     "layer": "front",
+     "from": "invented"
     },
     {
      "id": "chair",
@@ -76,7 +83,8 @@
       "x": 0
      },
      "role": "Office chair behind the desk; its back shows over his shoulders. He sits on it.",
-     "seat_h": 0.26
+     "seat_h": 0.26,
+     "from": "invented"
     },
     {
      "id": "keyboard",
@@ -88,7 +96,8 @@
       "x": -0.03,
       "on": "desk"
      },
-     "role": "Under his hands. All typing happens here."
+     "role": "Under his hands. All typing happens here.",
+     "from": "keyboard"
     },
     {
      "id": "monitor",
@@ -101,7 +110,11 @@
       "on": "desk"
      },
      "role": "Right of the keyboard, turned to Vadik; its screen is what he reads and what the story shows.",
-     "layer": "front"
+     "layer": "front",
+     "from": "в монитор",
+     "mentions": [
+      "монитор"
+     ]
     },
     {
      "id": "phone",
@@ -114,7 +127,11 @@
       "on": "desk"
      },
      "role": "Desk phone base: display (caller ID, then call time), keypad. Stays on the desk.",
-     "layer": "front"
+     "layer": "front",
+     "from": "зазвонил телефон",
+     "mentions": [
+      "телефон"
+     ]
     },
     {
      "id": "incidents",
@@ -136,7 +153,8 @@
      "big": true,
      "fill": "#f2efe3",
      "ink": "#2a2a2a",
-     "edge": "#2a7a3a"
+     "edge": "#2a7a3a",
+     "from": "invented"
     },
     {
      "id": "poster_friday",
@@ -157,7 +175,8 @@
       "нарушено: 52 раза"
      ],
      "fill": "#e8d27a",
-     "ink": "#3a2d10"
+     "ink": "#3a2d10",
+     "from": "invented"
     },
     {
      "id": "whiteboard",
@@ -231,7 +250,8 @@
         "text": "только руками"
        }
       ]
-     }
+     },
+     "from": "invented"
     },
     {
      "id": "handset",
@@ -244,7 +264,8 @@
       "on": "phone"
      },
      "role": "Handset on the cradle. Jiggles when it rings; Vadik lifts it (it leaves the cradle).",
-     "layer": "front"
+     "layer": "front",
+     "from": "зазвонил телефон"
     }
    ],
    "characters": {
@@ -273,7 +294,8 @@
       "up": 0.38
      },
      "role": "Same window, night.",
-     "kind": "window_night"
+     "kind": "window_night",
+     "from": "за окном"
     },
     {
      "id": "dashboard",
@@ -285,19 +307,30 @@
       "x": -0.5,
       "up": 0.52
      },
-     "role": "Wall dashboard in the poster's place: a PROD service list. The cricket is a row of it (setup and punchline)."
+     "role": "Wall dashboard in the poster's place: a PROD service list. The cricket is a row of it (setup and punchline).",
+     "from": "красный дашборд",
+     "mentions": [
+      "дашборд"
+     ]
     },
     {
      "id": "cricket",
      "size": [
-      0.07,
-      0.04
+      0.1,
+      0.065
      ],
      "place": {
-      "x": -0.9,
-      "on": "sill"
+      "x": -1.0,
+      "on": "window",
+      "up": -0.465
      },
-     "role": "The cricket on the sill under the window, next to the dashboard so one frame shows both."
+     "role": "The cricket OUTSIDE, on the outer ledge, seen through the dark pane against the moon-lit sky. Chirps on the punchline.",
+     "from": "сверчок за окном",
+     "side": "outside",
+     "mentions": [
+      "сверчок"
+     ],
+     "kind": "cricket"
     }
    ]
   },
@@ -313,7 +346,8 @@
       "x": 0
      },
      "role": "His armchair at home, night.",
-     "seat_h": 0.22
+     "seat_h": 0.22,
+     "from": "invented"
     },
     {
      "id": "lamp",
@@ -325,7 +359,8 @@
       "x": 0.4
      },
      "role": "Floor lamp: the one warm light in a dark room.",
-     "kind": "lamp"
+     "kind": "lamp",
+     "from": "invented"
     },
     {
      "id": "cert",
@@ -346,7 +381,8 @@
      ],
      "fill": "#efe6c8",
      "ink": "#5a4a20",
-     "edge": "#a07a28"
+     "edge": "#a07a28",
+     "from": "invented"
     }
    ],
    "characters": {
@@ -760,6 +796,12 @@
      "beat": 6,
      "target": "phone",
      "text": "в разговоре"
+    },
+    {
+     "beat": 8,
+     "offset": 2.6,
+     "target": "cricket",
+     "text": "chirp"
     }
    ]
   }
