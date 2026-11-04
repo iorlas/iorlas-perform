@@ -27,7 +27,7 @@ const Scene = ({ scene }) => {
   const C = window.SpikeCore;
   return (
     <AbsoluteFill>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox={shots.camera.viewBox.join(" ")} preserveAspectRatio="xMidYMid slice" style={{ width: "100%", height: "100%" }}
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox={C.viewBox(frame / shots.fps).join(" ")} preserveAspectRatio="xMidYMid slice" style={{ width: "100%", height: "100%" }}
         dangerouslySetInnerHTML={{ __html: C.bg() + C.frame(frame / shots.fps) }} />
     </AbsoluteFill>
   );

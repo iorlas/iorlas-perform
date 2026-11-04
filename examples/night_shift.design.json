@@ -1,0 +1,315 @@
+{
+ "schema": "scene-design/1",
+ "look": "Вырезка (flat cut paper)",
+ "offscreen": [
+  "narrator"
+ ],
+ "cast": {
+  "vadik": {
+   "offset": [
+    0,
+    -134
+   ]
+  },
+  "praporshchik": {
+   "offset": [
+    0,
+    -134
+   ]
+  }
+ },
+ "sets": {
+  "setA_office_dusk": {
+   "props": [
+    {
+     "id": "desk",
+     "at": [
+      40,
+      300
+     ]
+    },
+    {
+     "id": "clock",
+     "at": [
+      -340,
+      -210
+     ],
+     "text": "18:00"
+    },
+    {
+     "id": "monitor",
+     "at": [
+      170,
+      150
+     ]
+    }
+   ]
+  },
+  "setB_office_night": {
+   "props": [
+    {
+     "id": "desk",
+     "at": [
+      40,
+      300
+     ]
+    },
+    {
+     "id": "dashboard",
+     "at": [
+      300,
+      -250
+     ],
+     "text": "красный"
+    },
+    {
+     "id": "cricket",
+     "at": [
+      -440,
+      150
+     ]
+    },
+    {
+     "id": "monitor",
+     "at": [
+      170,
+      150
+     ]
+    },
+    {
+     "id": "phone",
+     "at": [
+      90,
+      272
+     ]
+    }
+   ]
+  },
+  "setC_palych_home": {}
+ },
+ "screens": {
+  "terminal": {
+   "kind": "text",
+   "text": "$ _"
+  },
+  "deploy_run": {
+   "kind": "bar",
+   "label": "prod <- main",
+   "from": 0.3,
+   "to": 0.99,
+   "dur": 2.0
+  },
+  "deploy_frozen": {
+   "kind": "bar",
+   "label": "prod <- main",
+   "from": 0.99,
+   "to": 0.99,
+   "frozen": true,
+   "red_tile": true
+  },
+  "tiles_red": {
+   "kind": "tiles",
+   "cols": 4,
+   "rows": 3,
+   "flicker": {
+    "tile": 5,
+    "after": 3.2,
+    "hold": 1.2
+   }
+  },
+  "chat_control": {
+   "kind": "chat",
+   "text": "всё под контролем"
+  }
+ },
+ "scenes": {
+  "Офис, вечер": {
+   "set": "setA_office_dusk",
+   "transition_out": {
+    "type": "time_card",
+    "text": "СБ 03:00",
+    "dur": 1.2
+   },
+   "shots": [
+    {
+     "id": "1.1",
+     "beats": [
+      1
+     ],
+     "frame": "wide",
+     "focus": "vadik",
+     "cast": [
+      {
+       "id": "vadik",
+       "scale": 0.9
+      }
+     ]
+    },
+    {
+     "id": "1.2",
+     "beats": [
+      2
+     ],
+     "frame": "medium",
+     "focus": "vadik",
+     "cast": [
+      "vadik"
+     ]
+    },
+    {
+     "id": "1.3",
+     "beats": [
+      3
+     ],
+     "frame": "medium",
+     "focus": "vadik",
+     "cast": [
+      "vadik"
+     ],
+     "push_in": 0.7
+    }
+   ],
+   "cues": [
+    {
+     "beat": 1,
+     "target": "monitor",
+     "screen": "terminal"
+    },
+    {
+     "beat": 2,
+     "target": "monitor",
+     "screen": "deploy_run"
+    },
+    {
+     "beat": 3,
+     "target": "monitor",
+     "screen": "deploy_frozen"
+    },
+    {
+     "beat": 3,
+     "actor": "vadik",
+     "expr": "wince"
+    }
+   ]
+  },
+  "Офис, ночь": {
+   "set": "setB_office_night",
+   "shots": [
+    {
+     "id": "2.1",
+     "beats": [
+      1
+     ],
+     "frame": "wide",
+     "focus": "vadik",
+     "cast": []
+    },
+    {
+     "id": "2.2",
+     "beats": [
+      2
+     ],
+     "frame": "close",
+     "focus": "vadik",
+     "cast": [
+      "vadik"
+     ]
+    },
+    {
+     "id": "2.3",
+     "beats": [
+      3
+     ],
+     "frame": "insert",
+     "at_xy": [
+      280,
+      225
+     ],
+     "cast": []
+    },
+    {
+     "id": "2.4",
+     "beats": [
+      4,
+      5
+     ],
+     "frame": "insert",
+     "at_xy": [
+      120,
+      286
+     ],
+     "cast": []
+    },
+    {
+     "id": "2.5",
+     "beats": [
+      6
+     ],
+     "frame": "medium",
+     "focus": "vadik",
+     "cast": [
+      "vadik"
+     ],
+     "inset": {
+      "set": "setC_palych_home",
+      "cast": [
+       {
+        "id": "palych",
+        "offset": [
+         0,
+         -134
+        ]
+       }
+      ],
+      "rect": [
+       0.58,
+       0.05,
+       0.38,
+       0.78
+      ],
+      "radius": 0.02,
+      "frame": "inset",
+      "focus": "palych"
+     }
+    },
+    {
+     "id": "2.6",
+     "beats": [
+      7
+     ],
+     "frame": "close",
+     "focus": "vadik",
+     "cast": [
+      "vadik"
+     ]
+    },
+    {
+     "id": "2.7",
+     "beats": [
+      8
+     ],
+     "frame": "wide",
+     "focus": "vadik",
+     "cast": []
+    }
+   ],
+   "cues": [
+    {
+     "beat": 2,
+     "target": "monitor",
+     "screen": "tiles_red"
+    },
+    {
+     "beat": 6,
+     "target": "monitor",
+     "screen": "chat_control"
+    },
+    {
+     "beat": 5,
+     "target": "phone",
+     "text": "Геннадий Палыч"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,16 @@
+{
+  "_doc": "Flat placeholders carrying the ids the art will use. Real art dropped in as video/assets/sets/<id>.svg or video/assets/props/<id>.svg replaces the placeholder with the same id; shots and design files do not change. A design file can override any field per scenario.",
+  "sets": {
+    "setA_office_dusk": { "bg": "#4a5a7a", "floor": "#5a4a3a" },
+    "setB_office_night": { "bg": "#0c1424", "floor": "#1a1f2e" },
+    "setC_palych_home": { "bg": "#3a2f2a", "floor": "#2a211c" }
+  },
+  "props": {
+    "clock": { "w": 90, "h": 90, "shape": "circle", "fill": "#d9d2c0" },
+    "dashboard": { "w": 360, "h": 200, "fill": "#3a0f14" },
+    "phone": { "w": 60, "h": 28, "fill": "#2b2b33" },
+    "cricket": { "w": 40, "h": 20, "shape": "oval", "fill": "#6a7a2a" },
+    "monitor": { "w": 220, "h": 150, "fill": "#cfc6a8", "screen": true },
+    "desk": { "w": 460, "h": 178, "fill": "#6b5238" }
+  }
+}

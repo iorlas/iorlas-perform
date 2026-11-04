@@ -1,0 +1,108 @@
+[
+  {
+    "turn": 2,
+    "voice": "narrator",
+    "text": "[calm, ironic] Пятница. Офис. Шесть вечера. Все обсуждают выходные, и только Вадик смотрит в монитор.",
+    "scene": "Офис, вечер",
+    "ambience": "office",
+    "start": 1.5,
+    "end": 8.283
+  },
+  {
+    "turn": 3,
+    "voice": "vadik",
+    "text": "[nervous, too fast] Последний деплой. Пять минут. И домой.",
+    "scene": "Офис, вечер",
+    "ambience": "office",
+    "start": 8.633,
+    "end": 11.065
+  },
+  {
+    "turn": 4,
+    "voice": "narrator",
+    "text": "[dry] Это была его главная ошибка за неделю.",
+    "scene": "Офис, вечер",
+    "ambience": "office",
+    "start": 11.185,
+    "end": 13.469
+  },
+  {
+    "turn": 6,
+    "voice": "narrator",
+    "text": "[low voice] Ночь. Офис. Тишина. Только сверчок за окном и красный дашборд.",
+    "scene": "Офис, ночь",
+    "ambience": "night",
+    "start": 15.319,
+    "end": 21.706
+  },
+  {
+    "turn": 7,
+    "voice": "vadik",
+    "text": "[whisper, pleading] Ну давай. Ну пожалуйста. Зелёный. Просто зелёный.",
+    "scene": "Офис, ночь",
+    "ambience": "night",
+    "start": 22.056,
+    "end": 26.742
+  },
+  {
+    "turn": 9,
+    "voice": "narrator",
+    "text": "[dry] В три часа ночи у Вадика зазвонил телефон. Звонил Геннадий Палыч.",
+    "scene": "Офис, ночь",
+    "ambience": "night",
+    "start": 27.362,
+    "end": 32.335
+  },
+  {
+    "turn": 11,
+    "voice": "praporshchik",
+    "text": "[loud, suspicious question, rising intonation] Вадим! Ты почему в три часа ночи в чате пишешь «всё под контролем»?",
+    "scene": "Офис, ночь",
+    "ambience": "night",
+    "start": 37.434,
+    "end": 41.796,
+    "phone": true
+  },
+  {
+    "turn": 12,
+    "voice": "vadik",
+    "text": "[panicking] Потому что всё под контролем, Геннадий Палыч!",
+    "scene": "Офис, ночь",
+    "ambience": "night",
+    "start": 42.146,
+    "end": 43.813
+  },
+  {
+    "turn": 13,
+    "voice": "narrator",
+    "text": "[dry, deadpan] Под контролем было только одно: сверчок. Он не падал ни разу.",
+    "scene": "Офис, ночь",
+    "ambience": "night",
+    "start": 44.163,
+    "end": 48.815
+  },
+  {
+    "sfx": "keyboard",
+    "volume": 1.0,
+    "start": 24.742,
+    "end": 27.242
+  },
+  {
+    "sfx": "phone_ring",
+    "volume": 1.0,
+    "start": 32.685,
+    "end": 37.085
+  },
+  {
+    "ambience": "office",
+    "volume": 1.0,
+    "start": 0.0,
+    "end": 15.319
+  },
+  {
+    "ambience": "night",
+    "volume": 1.0,
+    "start": 13.819,
+    "end": 50.815
+  }
+]

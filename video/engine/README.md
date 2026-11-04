@@ -24,11 +24,17 @@ uv run ../../scripts/scene.py examples/night_shift.md out/ns.wav --video        
 ```
 Needs Node >= 20 and a Chrome (`PERFORM_CHROME`, or Remotion downloads its own on first use).
 
+## Design file (per scenario) -> sheet/2 -> shots/2
+`examples/night_shift.design.json` (schema `scene-design/1`, documented in `scripts/videodesign.py`) sits next to the scenario and replaces `layout.json`'s default props: sets, shots per beat (a beat = a turn or sfx of the scene, counted from 1), shot types `wide/medium/close/insert/inset` (`layout.json` `frames`), `push_in`, per-shot cast, scene transitions (`time_card` dissolves through a caption: out of the scene, into the next), and named screen contents driven by cues. With a design file the sheet is derived on every run; hand-edit the design, not the sheet.
+shots/2 adds `set, shots[{id,t0,frame,set,camera{viewBox,push_to?},cast,props,inset?}], sets, props, screens, transitions` to shots/1; `core.js` draws set -> props -> cast -> inset -> captions -> transition overlay.
+Placeholders: `video/placeholders.json` gives flat sets/props the real ids (setA_office_dusk, setB_office_night, setC_palych_home, clock, dashboard, phone, cricket, monitor, desk); art dropped in as `video/assets/sets/<id>.svg` or `video/assets/props/<id>.svg` replaces them with no other change (it enters shots.json, so the cache key follows).
+
 ## Scene sheet (`scene-sheet/1`)
 `{fps, size, camera:{viewBox}, background, lead, cast:{<voice>:{actor}}, scenes:{<scene title>|"*": {actors:[{id, rig:"id@semver", kind?, layer, pose, offset, pose_override}], cues:[{at|turn, offset?, actor, channel:"state"|"expr"|"pose", value, blend?, screen_text?, led?, shake?}], camera?, captions?}}}`.
 `scene.py --video` writes `<out>.sheet.json` from `../layout.json` when it is missing (the cast on stage per scene, default expression/state) and never overwrites it: the cues are the author's acting layer, edit them and re-run; only scenes whose frames change re-render.
 
 ## Open items
+- Not drawn yet (art later): colleagues walking out, window, cricket pose, typing hands, glasses reflection, match cuts; insert shots on empty cast show only props.
 - **Rig-side blocker, pairing:** Mihalych `sit_side` is edge-on to Zinaida's `side`, so her screen is invisible; the pair is Zinaida `q` + a fixed offset from `layout.json` (same in every scene, no per-scene edit). A true pair needs a new Mihalych version with a `sit_q` pose (frozen versions are not edited).
 - `core.js` runs rigs that register expressions/poses on the rig or in `HF.EXPR`/`HF.POSES` (Mihalych, Zinaida, Vadik, Palych). Not yet tried: Friend, Kristina, Stas, Neyroset (add a `layout.json` cast entry per voice; a voice with no entry is an error, never a stand-in).
 - Scenes come from scenario headings and `{pause}`; the default sheet acts from `[tags]` (expressions per rig, `layout.json` `expr_map`), keywords, sfx and `<!-- screen: STATE "text" -->` directives. Gaze, body poses and camera moves stay static unless hand-edited.

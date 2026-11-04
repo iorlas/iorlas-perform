@@ -21,7 +21,7 @@ from typing import Any
 
 SHEET = "scene-sheet/1"
 TIMELINE = "timeline/2"
-SHOTS = "shots/1"
+SHOTS = "shots/1"  # shots/2 when a scene has a shot list: same keys plus set, shots, sets, props, screens, transitions
 
 
 def timeline_v2(
@@ -168,7 +168,8 @@ def segment(tl: dict[str, Any], sheet: dict[str, Any]) -> list[dict[str, Any]]:
     fps, lead = sheet.get("fps", 30), sheet.get("lead", 0.3)
     by_n = {e["turn"]: e for e in tl["entries"] if "turn" in e}
     groups = [
-        {"id": f"s{i + 1:02d}", "title": s["title"], "turns": [by_n[n] for n in s["turns"]]} for i, s in enumerate(tl["scenes"])
+        {"id": f"s{i + 1:02d}", "title": s["title"], "turns": [by_n[n] for n in s["turns"]], "all": tl["entries"]}
+        for i, s in enumerate(tl["scenes"])
     ]
     total = max(1, math.ceil(tl["duration"] * fps))
     edges = [0] + [min(total, max(0, round((min(t["start"] for t in g["turns"]) - lead) * fps))) for g in groups[1:]] + [total]
@@ -210,7 +211,7 @@ def envelope(wav: tuple[int, list[float]], fps: int, t0: float, duration: float,
     return {"kind": "mouth_open", "fps": fps, "samples": [0 if v < 0.08 else round(v, 3) for v in out]}
 
 
-def resolve_scene(group: dict[str, Any], sheet: dict[str, Any], wav: tuple[int, list[float]]) -> dict[str, Any]:
+def resolve_scene(group: dict[str, Any], sheet: dict[str, Any], wav: tuple[int, list[float]], assets: Path | None = None) -> dict[str, Any]:
     """One scene's shots (engine-neutral) and mouth envelopes, from its sheet entry. Cue times are scene-relative."""
     title, fps = group["title"], sheet.get("fps", 30)
     scenes = sheet.get("scenes", {})
@@ -228,14 +229,24 @@ def resolve_scene(group: dict[str, Any], sheet: dict[str, Any], wav: tuple[int, 
         msg = f'cue refers to turn {n}, not in scene "{title}"'
         raise KeyError(msg)
 
+    def anchor(c: dict[str, Any]) -> float:
+        """Scene-relative seconds of a cue/shot: `at` (scene clock), `abs` (audio clock), `turn` (scenario item) or `entry` (timeline entry), plus `offset`."""
+        if "at" in c:
+            return c["at"]
+        if "abs" in c:
+            return max(0.0, rel(c["abs"]))
+        if "entry" in c:
+            return max(0.0, rel(group["all"][c["entry"]]["start"])) + c.get("offset", 0)
+        return turn_start(c["turn"]) + c.get("offset", 0)
+
     tracks: list[dict[str, Any]] = []
     for c in d.get("cues", []):
-        t = c["at"] if "at" in c else max(0.0, rel(c["abs"])) if "abs" in c else turn_start(c["turn"]) + c.get("offset", 0)
+        t = anchor(c)
         tr = next((x for x in tracks if x["actor"] == c["actor"] and x["channel"] == c["channel"]), None)
         if tr is None:
             tr = {"actor": c["actor"], "channel": c["channel"], **({"blend": c["blend"]} if "blend" in c else {}), "keys": []}
             tracks.append(tr)
-        tr["keys"].append({"t": round(t, 3)} | {k: v for k, v in c.items() if k not in {"at", "abs", "turn", "offset", "actor", "channel", "blend"}})
+        tr["keys"].append({"t": round(t, 3)} | {k: v for k, v in c.items() if k not in {"at", "abs", "turn", "entry", "offset", "actor", "channel", "blend"}})
     for tr in tracks:
         tr["keys"].sort(key=lambda k: k["t"])
         if tr["keys"][0]["t"] > 0:
@@ -262,7 +273,37 @@ def resolve_scene(group: dict[str, Any], sheet: dict[str, Any], wav: tuple[int, 
         "tracks": tracks,
         **({"captions": d["captions"]} if "captions" in d else {}),
     }
+    if d.get("shots"):
+        shots |= shots_v2(d, sheet, group, anchor, assets)
     return {"shots": shots, "mouth": mouth}
+
+
+def _art(assets: Path | None, kind: str, ident: str) -> str | None:
+    """Real art dropped in as <assets>/<kind>/<id>.svg replaces the flat placeholder with the same id; no code change."""
+    f = assets / kind / f"{ident}.svg" if assets else None
+    return f.read_text() if f and f.exists() else None
+
+
+def shots_v2(d: dict[str, Any], sheet: dict[str, Any], group: dict[str, Any], anchor: Any, assets: Path | None) -> dict[str, Any]:
+    """The shots/2 part of a scene: shot list with times, sets and props used (placeholder or staged art), screens, transitions."""
+    shots = []
+    for i, sh in enumerate(d["shots"]):
+        t0 = 0.0 if i == 0 else round(max(0.0, anchor(sh["at"]) - sh.get("lead", 0.15)), 3)
+        shots.append({k: v for k, v in sh.items() if k != "at"} | {"t0": t0})
+    if any(b["t0"] <= a["t0"] for a, b in zip(shots, shots[1:], strict=False)):
+        msg = f'scene "{group["title"]}": shots are not in time order: {[s["id"] for s in shots]}'
+        raise ValueError(msg)
+    sets = {k: dict(v) for k, v in sheet.get("sets", {}).items() if k in {s.get("set") or d.get("set") for s in shots} | {s["inset"]["set"] for s in shots if "inset" in s}}
+    props = {k: dict(v) for k, v in sheet.get("props", {}).items()}
+    for ident, v in {**sets, **props}.items():
+        if (svg := _art(assets, "sets" if ident in sets else "props", ident)) is not None:
+            v["svg"] = svg
+    trans = []
+    if (o := d.get("transition_out")) and o["type"] == "time_card":
+        trans.append({"type": "time_card", "text": o["text"], "t0": round(group["duration"] - o.get("dur", 1.2), 3), "t1": group["duration"], "fade": o.get("fade", 0.4)})
+    if (i := d.get("transition_in")) and i["type"] == "time_card":
+        trans.append({"type": "card_out", "text": i["text"], "t0": 0, "t1": i.get("fade", 0.4), "fade": i.get("fade", 0.4)})
+    return {"schema": "shots/2", "set": d.get("set"), "shots": shots, "sets": sets, "props": props, "screens": sheet.get("screens", {}), "transitions": trans}
 
 
 def write_scene(out: Path, scene: dict[str, Any]) -> Path:
@@ -275,10 +316,10 @@ def write_scene(out: Path, scene: dict[str, Any]) -> Path:
     return d
 
 
-def plan(tl: dict[str, Any], sheet: dict[str, Any], audio: Path, out: Path) -> list[dict[str, Any]]:
+def plan(tl: dict[str, Any], sheet: dict[str, Any], audio: Path, out: Path, assets: Path | None = None) -> list[dict[str, Any]]:
     """Every scene of the timeline resolved and written under `out`; returns the groups with their `dir`."""
     wav = read_wav(audio)
     groups = segment(tl, sheet)
     for g in groups:
-        g["dir"] = write_scene(out, resolve_scene(g, sheet, wav))
+        g["dir"] = write_scene(out, resolve_scene(g, sheet, wav, assets))
     return groups
