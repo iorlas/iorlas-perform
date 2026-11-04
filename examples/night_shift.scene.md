@@ -14,11 +14,9 @@ Friday 18:00: Vadik deploys to prod and goes home late (his mistake). Saturday 0
 | `keyboard` | 0.24x0.03 | x=-0.03, on=desk | Under his hands. All typing happens here. |
 | `monitor` (front) | 0.3x0.2 | x=0.24, on=desk | Right of the keyboard, turned to Vadik; its screen is what he reads and what the story shows. |
 | `phone` (front) | 0.13x0.06 | x=-0.3, on=desk | Desk phone base: display (caller ID, then call time), keypad. Stays on the desk. |
-| `colleague_1` | 0.16x0.62 | x=0.85 | Grey cut-out, leaving at 18:00. Gone from beat 2. |
-| `colleague_2` | 0.16x0.62 | x=1.05 | Grey cut-out, leaving at 18:00. Gone from beat 2. |
 | `incidents` | 0.26x0.17 | x=0.98, up=0.5 | Safety counter «дней без инцидентов»: 3 at dusk, 0 at night. Setup/payoff for the whole story. |
-| `poster_friday` | 0.46x0.3 | x=-0.5, up=0.52 | Left wall poster: the rule everyone breaks. Joke on the first beat; replaced by the dashboard at night. |
-| `whiteboard` | 0.46x0.28 | x=0.62, up=0.66 | Architecture whiteboard on the right wall: every arrow goes through one box, «Вадик» (SPOF), with a dashed arrow to the API: manual deploy. |
+| `poster_friday` | 0.46x0.3 | x=-0.5, up=0.52 | Left wall poster: the rule everyone breaks, with the count. Replaced by the dashboard at night. |
+| `whiteboard` | 0.46x0.28 | x=0.55, up=0.66 | Whiteboard: the system diagram. Everything is deployed through one box, «Вадик»; arrow to the API is labelled «руками». |
 | `handset` (front) | 0.15x0.035 | x=-0.3, on=phone | Handset on the cradle. Jiggles when it rings; Vadik lifts it (it leaves the cradle). |
 
 Character `vadik`: seated on `chair`, base pose `stand_still`. Sits at his desk, facing us over the keyboard, reading the monitor on his right.
@@ -35,7 +33,7 @@ Character `vadik`: seated on `chair`, base pose `stand_still`. Sits at his desk,
 | `monitor` (front) | 0.3x0.2 | x=0.24, on=desk | Right of the keyboard, turned to Vadik; its screen is what he reads and what the story shows. |
 | `phone` (front) | 0.13x0.06 | x=-0.3, on=desk | Desk phone base: display (caller ID, then call time), keypad. Stays on the desk. |
 | `incidents` | 0.26x0.17 | x=0.98, up=0.5 | Safety counter «дней без инцидентов»: 3 at dusk, 0 at night. Setup/payoff for the whole story. |
-| `whiteboard` | 0.46x0.28 | x=0.62, up=0.66 | Architecture whiteboard on the right wall: every arrow goes through one box, «Вадик» (SPOF), with a dashed arrow to the API: manual deploy. |
+| `whiteboard` | 0.46x0.28 | x=0.55, up=0.66 | Whiteboard: the system diagram. Everything is deployed through one box, «Вадик»; arrow to the API is labelled «руками». |
 | `handset` (front) | 0.15x0.035 | x=-0.3, on=phone | Handset on the cradle. Jiggles when it rings; Vadik lifts it (it leaves the cradle). |
 | `dashboard` | 0.5x0.3 | x=-0.5, up=0.52 | Wall dashboard in the poster's place: a PROD service list. The cricket is a row of it (setup and punchline). |
 | `cricket` | 0.07x0.04 | x=-0.9, on=sill | The cricket on the sill under the window, next to the dashboard so one frame shows both. |
@@ -60,7 +58,7 @@ Transition out: time_card «СБ 03:00»
 
 | shot | beats (what is heard) | frame | on screen | intent |
 |---|---|---|---|---|
-| 1.1 | [calm, ironic] Пятница. Офис. Шесть вечера. Все  | wide | vadik | Where and when: the clock says 18:00, colleagues leave, Vadik stays at his desk. |
+| 1.1 | [calm, ironic] Пятница. Офис. Шесть вечера. Все  | wide | vadik | Where and when: the clock says 18:00, Vadik stays at his desk. |
 | 1.2 | [nervous, too fast] Последний деплой. Пять минут | medium | vadik | The plan: he types, the monitor shows the deploy bar racing to 99 %. |
 | 1.3 | [dry] Это была его главная ошибка за неделю. | medium + push-in | vadik | The mistake: the bar freezes at 99 % with one red tile; he winces; slow push-in. |
 
@@ -69,7 +67,7 @@ Event map (heard -> shown, in time order):
 | beat | heard | shot starts | cues and interactions that start here |
 |---|---|---|---|
 | 1 | narrator: [calm, ironic] Пятница. Офис. Шесть вече | 1.1 | `monitor` -> terminal; `vadik` hands_on `keyboard` |
-| 2 | vadik: [nervous, too fast] Последний деплой. Пя | 1.2 | `monitor` -> deploy_run; `colleague_1` -> visible=False; `colleague_2` -> visible=False; `poster_friday` -> visible=True; `vadik` hands_on `keyboard` |
+| 2 | vadik: [nervous, too fast] Последний деплой. Пя | 1.2 | `monitor` -> deploy_run; `poster_friday` -> visible=True; `vadik` hands_on `keyboard` |
 | 3 | narrator: [dry] Это была его главная ошибка за нед | 1.3 | `monitor` -> deploy_frozen; `vadik` -> wince; `vadik` hands_on `keyboard` |
 
 Interactions:
@@ -83,8 +81,6 @@ Cues:
 
 - beat 1: `monitor` -> terminal
 - beat 2: `monitor` -> deploy_run
-- beat 2: `colleague_1` -> visible=False
-- beat 2: `colleague_2` -> visible=False
 - beat 3: `monitor` -> deploy_frozen
 - beat 3: `vadik` -> wince
 - beat 2: `poster_friday` -> visible=True

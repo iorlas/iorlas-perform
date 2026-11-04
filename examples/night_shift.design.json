@@ -117,30 +117,6 @@
      "layer": "front"
     },
     {
-     "id": "colleague_1",
-     "size": [
-      0.16,
-      0.62
-     ],
-     "place": {
-      "x": 0.85
-     },
-     "role": "Grey cut-out, leaving at 18:00. Gone from beat 2.",
-     "kind": "colleague"
-    },
-    {
-     "id": "colleague_2",
-     "size": [
-      0.16,
-      0.62
-     ],
-     "place": {
-      "x": 1.05
-     },
-     "role": "Grey cut-out, leaving at 18:00. Gone from beat 2.",
-     "kind": "colleague"
-    },
-    {
      "id": "incidents",
      "size": [
       0.26,
@@ -172,12 +148,13 @@
       "x": -0.5,
       "up": 0.52
      },
-     "role": "Left wall poster: the rule everyone breaks. Joke on the first beat; replaced by the dashboard at night.",
+     "role": "Left wall poster: the rule everyone breaks, with the count. Replaced by the dashboard at night.",
      "kind": "sign",
      "lines": [
+      "ПРАВИЛО №1:",
       "НЕ ДЕПЛОЙ",
       "В ПЯТНИЦУ",
-      "(мы тоже так думали)"
+      "нарушено: 52 раза"
      ],
      "fill": "#e8d27a",
      "ink": "#3a2d10"
@@ -189,10 +166,10 @@
       0.28
      ],
      "place": {
-      "x": 0.62,
+      "x": 0.55,
       "up": 0.66
      },
-     "role": "Architecture whiteboard on the right wall: every arrow goes through one box, «Вадик» (SPOF), with a dashed arrow to the API: manual deploy.",
+     "role": "Whiteboard: the system diagram. Everything is deployed through one box, «Вадик»; arrow to the API is labelled «руками».",
      "kind": "whiteboard",
      "diagram": {
       "boxes": [
@@ -218,7 +195,7 @@
         "label": "БД"
        },
        {
-        "x": 0.33,
+        "x": 0.18,
         "y": 0.74,
         "w": 0.34,
         "h": 0.2,
@@ -245,13 +222,13 @@
        {
         "x": 0.5,
         "y": 0.2,
-        "text": "архитектура",
+        "text": "как мы деплоим",
         "color": "#34495e"
        },
        {
-        "x": 0.85,
+        "x": 0.7,
         "y": 0.9,
-        "text": "SPOF"
+        "text": "только руками"
        }
       ]
      }
@@ -282,8 +259,6 @@
    "extends": "setA_office_dusk",
    "remove": [
     "clock",
-    "colleague_1",
-    "colleague_2",
     "poster_friday"
    ],
    "objects": [
@@ -490,7 +465,7 @@
      "cast": [
       "vadik"
      ],
-     "intent": "Where and when: the clock says 18:00, colleagues leave, Vadik stays at his desk."
+     "intent": "Where and when: the clock says 18:00, Vadik stays at his desk."
     },
     {
      "id": "1.2",
@@ -560,16 +535,6 @@
      "beat": 2,
      "target": "monitor",
      "screen": "deploy_run"
-    },
-    {
-     "beat": 2,
-     "target": "colleague_1",
-     "visible": false
-    },
-    {
-     "beat": 2,
-     "target": "colleague_2",
-     "visible": false
     },
     {
      "beat": 3,

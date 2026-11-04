@@ -94,7 +94,7 @@ def test_objects_are_placed_by_relations_not_pixels(tmp_path):
 def test_a_set_can_extend_another_and_drop_or_replace_objects(tmp_path):
     s1, s2 = resolved(tmp_path)
     a, b = props_of(s1, "setA_office_dusk"), props_of(s2, "setB_office_night")
-    assert {"clock", "colleague_1", "colleague_2"} <= set(a) and not ({"clock", "colleague_1", "colleague_2"} & set(b))
+    assert {"clock", "poster_friday"} <= set(a) and not ({"clock", "poster_friday"} & set(b))
     assert {"dashboard", "cricket"} <= set(b) and a["desk"]["at"] == b["desk"]["at"]  # same room, re-lit
     assert a["window"]["fill"] != b["window"]["fill"]  # dusk vs night art kind
 

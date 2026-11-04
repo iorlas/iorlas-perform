@@ -127,6 +127,17 @@
   // Flat cut-paper placeholders by kind. Real art (video/assets/**/<id>.svg) replaces any of them.
   function drawKind(d, x, y, w, h, t, inst) {
     var kind = d.kind || d.id, o = "", i;
+    if (kind === "window_dusk" || kind === "window_night") {   // frame, four panes, sky with sun/moon, sill line
+      var night = kind === "window_night", f = Math.max(6, w * 0.04), pw = (w - 3 * f) / 2, ph = (h - 3 * f) / 2;
+      o += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + (night ? "#4a3f33" : "#e9e2d0") + '"/>';
+      for (i = 0; i < 4; i++) {
+        var px = x + f + (i % 2) * (pw + f), py = y + f + Math.floor(i / 2) * (ph + f);
+        o += '<rect x="' + px + '" y="' + py + '" width="' + pw + '" height="' + ph + '" fill="' + (night ? "#101a3a" : i < 2 ? "#f0a24a" : "#e07a3c") + '"/>';
+      }
+      o += night ? '<circle cx="' + (x + w * 0.72) + '" cy="' + (y + h * 0.28) + '" r="' + w * 0.07 + '" fill="#f2efd0"/>' + [[.2, .2], [.4, .38], [.28, .7], [.8, .62]].map(function (s) { return '<circle cx="' + (x + w * s[0]) + '" cy="' + (y + h * s[1]) + '" r="2" fill="#fff"/>'; }).join("")
+        : '<circle cx="' + (x + w * 0.3) + '" cy="' + (y + h * 0.7) + '" r="' + w * 0.1 + '" fill="#ffd36a"/><rect x="' + (x + f) + '" y="' + (y + h * 0.78) + '" width="' + (w - 2 * f) + '" height="' + h * 0.14 + '" fill="#3b3550"/>';
+      return o;
+    }
     if (kind === "clock") {
       var cx = x + w / 2, cy = y + h / 2, r = w / 2, txt = textAt(inst, t, d.text) || "";
       o += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + d.fill + '" stroke="#2a2a30" stroke-width="' + r * 0.06 + '"/>';
