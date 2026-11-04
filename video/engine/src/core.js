@@ -33,6 +33,8 @@
       var u = k2 === prev ? 1 : Math.min(1, (t - k2.t) / (ex.blend || 0.25));
       expr = lerpExpr(E[prev.value], E[k2.value], u);
     }
+    // Lip-sync owns the jaw: rigs combine eff = 1-(1-expr.mo)(1-mouth_open), so an expression with a base-open mouth (bark mo=1, panic) would pin it open whatever is said.
+    if (M[id] && expr.mo) { expr = clone(expr); expr.mo = 0; }
     return drawFn(rig, a)({ ch: id, uid: "c_" + id, pose: pose, expr: expr, mouth: mouthAt(id, t), gaze: { x: 0, y: 0, cam: 0 }, key: 1, stand: !/^sit/.test(poseName), shake: { x: 0, y: 0, r: 0 }, t: t });
   }
 
