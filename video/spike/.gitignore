@@ -3,3 +3,7 @@ out/*
 !out/cache_key.json
 !out/first_last.png
 !out/render.log
+engines/*/node_modules
+engines/*/.remotion
+*.log
+bench/run*.log
