@@ -1,6 +1,6 @@
 // Remotion glue: loads the vendored rig art + shared core.js from the public dir, then draws SpikeCore.frame(t) per frame.
 import React, { useEffect, useState } from "react";
-import { AbsoluteFill, Audio, Composition, continueRender, delayRender, registerRoot, staticFile, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, Composition, Sequence, continueRender, delayRender, registerRoot, staticFile, useCurrentFrame } from "remotion";
 
 const loadScript = (src) => new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = () => rej(new Error("load " + src)); document.head.appendChild(s); });
 let booted;
@@ -28,6 +28,11 @@ const Scene = () => {
       <svg xmlns="http://www.w3.org/2000/svg" viewBox={shots.camera.viewBox.join(" ")} preserveAspectRatio="xMidYMid slice" style={{ width: "100%", height: "100%" }}
         dangerouslySetInnerHTML={{ __html: C.bg() + C.frame(frame / shots.fps) }} />
       <Audio src={staticFile("assets/audio/out.wav")} endAt={Math.round(shots.audio.duration * shots.fps)} />
+      {(shots.audio_tracks || []).map((t) => (
+        <Sequence key={t.id} from={Math.round(t.start * shots.fps)} durationInFrames={Math.round(t.duration * shots.fps)}>
+          <Audio src={staticFile("assets/audio/" + t.file.split("/").pop())} volume={t.volume ?? 1} />
+        </Sequence>
+      ))}
     </AbsoluteFill>
   );
 };

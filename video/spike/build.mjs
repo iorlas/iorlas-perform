@@ -27,6 +27,7 @@ html,body{margin:0;background:#000}#root{position:relative;width:${w}px;height:$
 <div id="root" data-composition-id="main" data-start="0" data-duration="${s.duration}" data-width="${w}" data-height="${h}" data-fps="${s.fps}">
 <svg id="stage" xmlns="http://www.w3.org/2000/svg" viewBox="${s.camera.viewBox.join(" ")}" preserveAspectRatio="xMidYMid slice"></svg>
 <audio id="vo" src="assets/audio/out.wav" data-start="${s.audio.start}" data-duration="${s.audio.duration}" data-track-index="1"></audio>
+${(s.audio_tracks || []).map((t, i) => `<audio id="${t.id}" src="assets/audio/${t.file.split("/").pop()}" data-start="${t.start}" data-duration="${t.duration}" data-volume="${t.volume ?? 1}" data-track-index="${i + 2}"></audio>`).join("\n")}
 </div>
 ${p.rigFacts.map((r) => `<script src="assets/rigs/${r.id}/${r.version}/${r.artFile}"></script>`).join("\n")}
 <script>window.__SHOTS=${JSON.stringify(s)};window.__MOUTH=${p.mouthText};</script>

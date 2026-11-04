@@ -7,3 +7,5 @@ engines/*/node_modules
 engines/*/.remotion
 *.log
 bench/run*.log
+!out/scene_remotion.mp4
+!out/scene_plain.mp4

@@ -11,6 +11,7 @@
   function sample(arr, t) { var f = Math.min(arr.length - 1, Math.max(0, Math.round(t * S.mouth_open.fps))); return arr[f]; }
 
   function frame(t) {
+    var tc = t;
     if (S.loop) t = t % S.loop;
     var out = "";
     S.actors.slice().sort(function (a, b) { return a.layer - b.layer; }).forEach(function (a) {
@@ -28,7 +29,19 @@
       var off = a.offset || [0, 0];
       out = o0 + '<g transform="translate(' + off[0] + ' ' + off[1] + ')">' + out + "</g>";
     });
-    return out;
+    return out + captions(tc, S.camera.viewBox);
   }
-  window.SpikeCore = { frame: frame, bg: function () { return '<rect x="-1000" y="-1000" width="3000" height="3000" fill="' + S.background + '"/>'; } };
+  function captions(t, vb) {
+    var cs = (S.captions || []).filter(function (c) { return t >= c.t0 && t < c.t1; })[0];
+    if (!cs) return "";
+    var x = vb[0] + vb[2] / 2, y = vb[1] + vb[3] - vb[3] * 0.06, fs = vb[3] * 0.055, o = "";
+    var total = cs.words.reduce(function (a, w) { return a + w.w.length + 1; }, 0) * fs * 0.55, cx = x - total / 2;
+    cs.words.forEach(function (w) {
+      var on = t >= w.t0 && t < w.t1;
+      o += '<text x="' + cx + '" y="' + y + '" font-family="Helvetica, Arial, sans-serif" font-weight="700" font-size="' + fs + '" fill="' + (on ? "#ffd84a" : "#ffffff") + '" stroke="#000" stroke-width="' + fs * 0.08 + '" paint-order="stroke">' + w.w + "</text>";
+      cx += (w.w.length + 1) * fs * 0.55;
+    });
+    return o;
+  }
+  window.SpikeCore = { captions: captions, frame: frame, bg: function () { return '<rect x="-1000" y="-1000" width="3000" height="3000" fill="' + S.background + '"/>'; } };
 })();
