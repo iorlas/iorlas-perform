@@ -13,3 +13,4 @@ __pycache__/
 *.gate.lock*
 # Profiles are user data: they live in the plugin's data folder (scripts/profiles.py), never here.
 profiles/
+.remotion/
