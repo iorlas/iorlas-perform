@@ -9,7 +9,7 @@ import { readWav } from "../src/mouth.mjs";
 import { writeBurstWav } from "./helpers.mjs";
 
 const demo = join(dirname(fileURLToPath(import.meta.url)), "..", "demo");
-const tl = JSON.parse(readFileSync(join(demo, "demo.timeline.json"), "utf8")), sheet = JSON.parse(readFileSync(join(demo, "demo.sheet.json"), "utf8"));
+const tl = JSON.parse(readFileSync(join(demo, "demo.turns.json"), "utf8")), sheet = JSON.parse(readFileSync(join(demo, "demo.sheet.json"), "utf8"));
 
 test("segment: consecutive turns of one scene title form a scene; whole frames; no overlap", () => {
   const g = segment(tl, sheet, 30);

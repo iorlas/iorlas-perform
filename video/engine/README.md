@@ -4,7 +4,7 @@ timeline.json + scene sheet + mixed wav -> `shots.json` per scene -> Remotion ->
 Engine choice and evidence: `../spike/BENCHMARK.md` (Remotion 4.0.540; plain Chrome + ffmpeg is the fallback). Audio-only mode (`scripts/scene.py`) is untouched.
 
 ```
-node cli.mjs --timeline demo/demo.timeline.json --sheet demo/demo.sheet.json --audio demo/demo.wav --out out/demo [--only s01] [--chrome PATH] [--concurrency N] [--xfade 0.5]
+node cli.mjs --timeline demo/demo.turns.json --sheet demo/demo.sheet.json --audio demo/demo.wav --out out/demo [--only s01] [--chrome PATH] [--concurrency N] [--xfade 0.5]
 ./demo/make_audio.sh   # builds demo/demo.wav (gitignored) from two existing takes
 npm test               # unit tests + slow end-to-end render tests (need a Chrome: PERFORM_CHROME or Remotion's own)
 ```

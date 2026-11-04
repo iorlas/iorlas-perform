@@ -12,7 +12,7 @@ const demo = join(dirname(fileURLToPath(import.meta.url)), "..", "demo");
 const audio = join(demo, "demo.wav");
 const chrome = process.env.PERFORM_CHROME;
 const skip = existsSync(audio) ? false : "demo/demo.wav missing: run demo/make_audio.sh";
-const base = { timeline: join(demo, "demo.timeline.json"), sheet: join(demo, "demo.sheet.json"), audio, chrome, onLog: () => {} };
+const base = { timeline: join(demo, "demo.turns.json"), sheet: join(demo, "demo.sheet.json"), audio, chrome, onLog: () => {} };
 const md5 = (f) => execFileSync("ffmpeg", ["-v", "error", "-i", f, "-map", "0:v", "-f", "framemd5", "-"]).toString().split("\n").filter((l) => l && !l.startsWith("#")).map((l) => l.split(",")[5]).join(",");
 const dur = (f) => +execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", f]).toString();
 
