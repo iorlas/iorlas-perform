@@ -38,6 +38,21 @@ def beats(tl: dict[str, Any], scene: dict[str, Any]) -> list[int]:
     return sorted([*mine, *sfx], key=lambda i: tl["entries"][i]["start"])
 
 
+def place(prop: dict[str, Any], stage: dict[str, Any]) -> dict[str, Any]:
+    """Staging model: a prop is placed from one scale (H = a person's height in px) and named bases, not from pixels.
+
+    {"id", "x": centre in H from the person's axis, "base": "floor" | a name in stage.bases (height above the floor in H),
+     "up": H above the base, "w", "h": in H, "front": drawn in front of the cast}  ->  at/w/h in px.
+    """
+    if "base" not in prop:
+        return prop
+    big_h, floor = stage["H"], stage["floor"]
+    base = 0.0 if prop["base"] == "floor" else stage["bases"][prop["base"]]
+    w, h = prop["w"] * big_h, prop["h"] * big_h
+    out = {k: v for k, v in prop.items() if k not in {"x", "base", "up"}}
+    return out | {"w": round(w), "h": round(h), "at": [round(prop["x"] * big_h - w / 2), round(floor - (base + prop.get("up", 0)) * big_h - h)]}
+
+
 def _camera(
     frame: str, focus_xy: tuple[float, float], layout: dict[str, Any], push_in: float | None, override: dict[str, Any] | None = None, aspect: float = 16 / 9
 ) -> dict[str, Any]:
@@ -97,7 +112,7 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             out["props"] = sh.get("props", [])
             if "inset" in sh:
                 ins = sh["inset"]
-                ifocus = ins.get("focus") or ins["cast"][0]
+                ifocus = ins.get("focus") or (ins["cast"][0] if isinstance(ins["cast"][0], str) else ins["cast"][0]["id"])
                 ixy = tuple(next((c["offset"] for c in ins["cast"] if not isinstance(c, str) and c["id"] == ifocus and "offset" in c), pos.get(ifocus, [0, 0])))
                 out["inset"] = {**{k: v for k, v in ins.items() if k not in {"frame", "focus"}}, "camera": _camera(ins.get("frame", "medium"), ixy, layout, None, ins.get("camera"), ins["rect"][2] * 16 / (ins["rect"][3] * 9))["viewBox"]}
                 ids += [c if isinstance(c, str) else c["id"] for c in ins["cast"]]
@@ -126,6 +141,8 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             **({"transition_out": d["transition_out"]} if "transition_out" in d and nxt else {}),
             **({"transition_in": design["scenes"][tl["scenes"][si - 1]["title"]]["transition_out"]} if si and "transition_out" in design["scenes"].get(tl["scenes"][si - 1]["title"], {}) else {}),
         }
+    stage = design.get("stage", {"H": 742, "floor": 478, "bases": {}})
+    design = {**design, "sets": {k: {**v, **({"props": [place(p, stage) for p in v["props"]]} if "props" in v else {})} for k, v in design.get("sets", {}).items()}}
     sets = {k: {**placeholders["sets"].get(k, {}), **v} for k, v in {**{k: {} for k in placeholders["sets"]}, **design.get("sets", {})}.items() if k in {x["set"] for x in scenes.values()} | {sh["inset"]["set"] for x in scenes.values() for sh in x["shots"] if "inset" in sh}}
     props = {k: {**placeholders["props"].get(k, {}), **v} for k, v in {**{k: {} for k in placeholders["props"]}, **design.get("props", {})}.items()}
     return {
@@ -138,5 +155,6 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
         "sets": sets,
         "props": props,
         "screens": design.get("screens", {}),
+        **({"debug": True} if design.get("debug_labels") else {}),
         "scenes": scenes,
     }

@@ -119,3 +119,38 @@ def test_a_voice_missing_from_the_design_cast_is_an_error():
     del bad["cast"]["praporshchik"]
     with pytest.raises(ValueError, match="praporshchik"):
         videodesign.emit_sheet(tl(), LAYOUT, bad)
+
+
+def test_props_are_placed_from_one_scale_and_named_anchors(tmp_path):
+    """Staging model: sizes in person-heights, resting on named bases. No prop floats or sinks."""
+    _, s2 = resolved(tmp_path)
+    st, p = DESIGN["stage"], {x["id"]: x for x in s2["sets"]["setB_office_night"]["props"]}
+    big_h, floor = st["H"], st["floor"]
+    assert p["desk"]["at"][1] + p["desk"]["h"] == floor and p["desk"]["h"] == round(0.42 * big_h)  # desk stands on the floor, 42 % of a person
+    desk_top = p["desk"]["at"][1]
+    assert p["monitor"]["at"][1] + p["monitor"]["h"] == desk_top and p["phone"]["at"][1] + p["phone"]["h"] == desk_top  # both rest on the desk
+    shelf_top = p["shelf"]["at"][1]
+    assert p["cricket"]["at"][1] + p["cricket"]["h"] == shelf_top  # the cricket sits on the shelf, under the dashboard
+    assert p["dashboard"]["at"][1] + p["dashboard"]["h"] < shelf_top
+    assert p["desk"]["front"] and p["monitor"]["front"]  # drawn in front of the cast: Vadik stands behind the desk
+
+
+def test_the_punchline_shows_every_service_down_and_the_cricket_up(tmp_path):
+    _, s2 = resolved(tmp_path)
+    d = s2["screens"]
+    assert len(d["dash_failing"]["rows"]) == 5 and d["dash_failing"]["ok"]["label"] == "сверчок"  # setup: services go down one by one, cricket row stays up
+    assert all("at" not in r for r in d["dash_cricket"]["rows"]) and d["dash_cricket"]["ok"]["pulse_after"] > 0  # payoff: all down at once, cricket row pulses on «сверчок»
+    last = s2["shots"][-1]
+    assert last["id"] == "2.7" and last["frame"] == "insert" and last["camera"]["push_to"][2] < last["camera"]["viewBox"][2]
+    keys = [k["value"] for t in s2["tracks"] if t["actor"] == "dashboard" for k in t["keys"]]
+    assert keys[-1] == "dash_cricket" and "dash_failing" in keys
+
+
+def test_the_cto_is_a_caller_card_then_a_head_inset_never_a_full_body(tmp_path):
+    _, s2 = resolved(tmp_path)
+    ring, talk = (next(x for x in s2["shots"] if x["id"] == i)["inset"] for i in ("2.4", "2.5"))
+    assert ring["style"] == talk["style"] == "caller" and ring["ringing"] and not talk["ringing"] and talk["name"] == "Геннадий Палыч"
+    for ins in (ring, talk):  # head and shoulders: the camera is far tighter than a body shot
+        assert ins["camera"][2] <= 320
+    assert "mouth" in next(a for a in s2["actors"] if a["id"] == "palych")  # lip-sync track present
+    assert not s2.get("debug")  # no debug labels in a real render

@@ -303,7 +303,7 @@ def shots_v2(d: dict[str, Any], sheet: dict[str, Any], group: dict[str, Any], an
         trans.append({"type": "time_card", "text": o["text"], "t0": round(group["duration"] - o.get("dur", 1.2), 3), "t1": group["duration"], "fade": o.get("fade", 0.4)})
     if (i := d.get("transition_in")) and i["type"] == "time_card":
         trans.append({"type": "card_out", "text": i["text"], "t0": 0, "t1": i.get("fade", 0.4), "fade": i.get("fade", 0.4)})
-    return {"schema": "shots/2", "set": d.get("set"), "shots": shots, "sets": sets, "props": props, "screens": sheet.get("screens", {}), "transitions": trans}
+    return {"schema": "shots/2", "set": d.get("set"), "shots": shots, "sets": sets, "props": props, "screens": sheet.get("screens", {}), "transitions": trans, **({"debug": True} if sheet.get("debug") else {})}
 
 
 def write_scene(out: Path, scene: dict[str, Any]) -> Path:

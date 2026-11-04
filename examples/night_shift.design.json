@@ -4,6 +4,14 @@
  "offscreen": [
   "narrator"
  ],
+ "stage": {
+  "H": 742,
+  "floor": 478,
+  "bases": {
+   "desk": 0.42,
+   "shelf": 0.52
+  }
+ },
  "cast": {
   "vadik": {
    "offset": [
@@ -23,65 +31,79 @@
    "props": [
     {
      "id": "desk",
-     "at": [
-      40,
-      300
-     ]
-    },
-    {
-     "id": "clock",
-     "at": [
-      -340,
-      -210
-     ],
-     "text": "18:00"
+     "x": 0,
+     "base": "floor",
+     "w": 0.75,
+     "h": 0.42,
+     "front": true
     },
     {
      "id": "monitor",
-     "at": [
-      170,
-      150
-     ]
+     "x": 0.17,
+     "base": "desk",
+     "w": 0.3,
+     "h": 0.2,
+     "front": true
+    },
+    {
+     "id": "clock",
+     "x": -0.5,
+     "base": "floor",
+     "up": 0.6,
+     "w": 0.13,
+     "h": 0.13,
+     "text": "18:00"
     }
    ]
   },
   "setB_office_night": {
    "props": [
     {
-     "id": "desk",
-     "at": [
-      40,
-      300
-     ]
+     "id": "shelf",
+     "x": 0.58,
+     "base": "floor",
+     "up": 0.5,
+     "w": 0.5,
+     "h": 0.02
     },
     {
      "id": "dashboard",
-     "at": [
-      300,
-      -250
-     ],
-     "text": "красный"
+     "x": 0.58,
+     "base": "shelf",
+     "up": 0.06,
+     "w": 0.5,
+     "h": 0.3
     },
     {
      "id": "cricket",
-     "at": [
-      -440,
-      150
-     ]
+     "x": 0.72,
+     "base": "shelf",
+     "w": 0.09,
+     "h": 0.05
+    },
+    {
+     "id": "desk",
+     "x": 0,
+     "base": "floor",
+     "w": 0.75,
+     "h": 0.42,
+     "front": true
     },
     {
      "id": "monitor",
-     "at": [
-      170,
-      150
-     ]
+     "x": 0.17,
+     "base": "desk",
+     "w": 0.3,
+     "h": 0.2,
+     "front": true
     },
     {
      "id": "phone",
-     "at": [
-      90,
-      272
-     ]
+     "x": -0.2,
+     "base": "desk",
+     "w": 0.1,
+     "h": 0.045,
+     "front": true
     }
    ]
   },
@@ -120,6 +142,62 @@
   "chat_control": {
    "kind": "chat",
    "text": "всё под контролем"
+  },
+  "dash_failing": {
+   "kind": "rows",
+   "title": "PROD",
+   "rows": [
+    {
+     "label": "api",
+     "at": 0.6
+    },
+    {
+     "label": "db",
+     "at": 1.8
+    },
+    {
+     "label": "queue",
+     "at": 3.0
+    },
+    {
+     "label": "cache",
+     "at": 4.2
+    },
+    {
+     "label": "deploy",
+     "at": 5.4
+    }
+   ],
+   "ok": {
+    "label": "сверчок",
+    "note": "uptime 100 %"
+   }
+  },
+  "dash_cricket": {
+   "kind": "rows",
+   "title": "PROD",
+   "rows": [
+    {
+     "label": "api"
+    },
+    {
+     "label": "db"
+    },
+    {
+     "label": "queue"
+    },
+    {
+     "label": "cache"
+    },
+    {
+     "label": "deploy"
+    }
+   ],
+   "ok": {
+    "label": "сверчок",
+    "note": "uptime 100 %",
+    "pulse_after": 2.6
+   }
   }
  },
  "scenes": {
@@ -141,7 +219,7 @@
      "cast": [
       {
        "id": "vadik",
-       "scale": 0.9
+       "scale": 1
       }
      ]
     },
@@ -222,9 +300,12 @@
      ],
      "frame": "insert",
      "at_xy": [
-      280,
-      225
+      126,
+      92
      ],
+     "camera": {
+      "w": 460
+     },
      "cast": []
     },
     {
@@ -235,10 +316,40 @@
      ],
      "frame": "insert",
      "at_xy": [
-      120,
-      286
+      -148,
+      150
      ],
-     "cast": []
+     "camera": {
+      "w": 360
+     },
+     "cast": [],
+     "inset": {
+      "set": "setC_palych_home",
+      "cast": [
+       {
+        "id": "palych",
+        "offset": [
+         0,
+         -134
+        ]
+       }
+      ],
+      "rect": [
+       0.62,
+       0.06,
+       0.3,
+       0.78
+      ],
+      "radius": 0.02,
+      "style": "caller",
+      "name": "Геннадий Палыч",
+      "ringing": true,
+      "frame": "close",
+      "camera": {
+       "w": 300,
+       "dy": -70
+      }
+     }
     },
     {
      "id": "2.5",
@@ -262,14 +373,20 @@
        }
       ],
       "rect": [
-       0.58,
-       0.05,
-       0.38,
-       0.78
+       0.66,
+       0.04,
+       0.3,
+       0.7
       ],
       "radius": 0.02,
-      "frame": "inset",
-      "focus": "palych"
+      "style": "caller",
+      "name": "Геннадий Палыч",
+      "ringing": false,
+      "frame": "close",
+      "camera": {
+       "w": 300,
+       "dy": -70
+      }
      }
     },
     {
@@ -288,16 +405,38 @@
      "beats": [
       8
      ],
-     "frame": "wide",
-     "focus": "vadik",
+     "frame": "insert",
+     "at_xy": [
+      430,
+      20
+     ],
+     "camera": {
+      "w": 660
+     },
+     "push_in": 0.85,
      "cast": []
     }
    ],
    "cues": [
     {
+     "beat": 1,
+     "target": "dashboard",
+     "screen": "dash_failing"
+    },
+    {
      "beat": 2,
      "target": "monitor",
      "screen": "tiles_red"
+    },
+    {
+     "beat": 5,
+     "target": "phone",
+     "text": "ring"
+    },
+    {
+     "beat": 6,
+     "target": "phone",
+     "text": ""
     },
     {
      "beat": 6,
@@ -305,9 +444,9 @@
      "screen": "chat_control"
     },
     {
-     "beat": 5,
-     "target": "phone",
-     "text": "Геннадий Палыч"
+     "beat": 8,
+     "target": "dashboard",
+     "screen": "dash_cricket"
     }
    ]
   }

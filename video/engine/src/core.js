@@ -62,7 +62,7 @@
     return a.map(function (v, i) { return v + (c.push_to[i] - v) * u; });
   }
   function esc(x) { return String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
-  function label(txt, x, y, fs, fill) { return '<text x="' + x + '" y="' + y + '" font-family="Helvetica, Arial, sans-serif" font-size="' + fs + '" fill="' + (fill || "#ffffff99") + '" text-anchor="middle">' + esc(txt) + "</text>"; }
+  function label(txt, x, y, fs, fill, always) { if (!always && !S.debug) return ""; return '<text x="' + x + '" y="' + y + '" font-family="Helvetica, Arial, sans-serif" font-size="' + fs + '" fill="' + (fill || "#ffffff99") + '" text-anchor="middle">' + esc(txt) + "</text>"; }
 
   // Flat placeholders carry the real ids (sets and props); a staged <id>.svg from video/assets replaces the placeholder with no code change.
   function drawSet(id, vb) {
@@ -78,7 +78,7 @@
     var d = sc.def, o = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="4" fill="#0a1218"/>';
     if (d.kind === "bar") {
       var u = Math.min(1, d.from + (d.to - d.from) * Math.min(1, sc.dt / (d.dur || 1)));
-      o += label(d.label || "", x + w / 2, y + h * 0.35, h * 0.13, "#9fd") + '<rect x="' + (x + w * 0.1) + '" y="' + (y + h * 0.5) + '" width="' + w * 0.8 + '" height="' + h * 0.14 + '" fill="#233"/><rect x="' + (x + w * 0.1) + '" y="' + (y + h * 0.5) + '" width="' + w * 0.8 * u + '" height="' + h * 0.14 + '" fill="' + (d.frozen ? "#e8a33a" : "#3ad07a") + '"/>' + label(Math.round(u * 100) + " %", x + w / 2, y + h * 0.85, h * 0.13, "#fff");
+      o += label(d.label || "", x + w / 2, y + h * 0.35, h * 0.13, "#9fd", 1) + '<rect x="' + (x + w * 0.1) + '" y="' + (y + h * 0.5) + '" width="' + w * 0.8 + '" height="' + h * 0.14 + '" fill="#233"/><rect x="' + (x + w * 0.1) + '" y="' + (y + h * 0.5) + '" width="' + w * 0.8 * u + '" height="' + h * 0.14 + '" fill="' + (d.frozen ? "#e8a33a" : "#3ad07a") + '"/>' + label(Math.round(u * 100) + " %", x + w / 2, y + h * 0.85, h * 0.13, "#fff", 1);
       if (d.red_tile) o += '<rect x="' + (x + w * 0.78) + '" y="' + (y + h * 0.08) + '" width="' + w * 0.14 + '" height="' + h * 0.16 + '" fill="#e03a3a"/>';
     } else if (d.kind === "tiles") {
       var n = d.cols * d.rows, tw = w * 0.9 / d.cols, th = h * 0.8 / d.rows;
@@ -86,18 +86,32 @@
         var green = d.flicker != null && i === d.flicker.tile && sc.dt >= d.flicker.after && (Math.floor(sc.dt * 6) % 2 === 0 || sc.dt >= d.flicker.after + d.flicker.hold);
         o += '<rect x="' + (x + w * 0.05 + (i % d.cols) * tw + 2) + '" y="' + (y + h * 0.1 + Math.floor(i / d.cols) * th + 2) + '" width="' + (tw - 4) + '" height="' + (th - 4) + '" fill="' + (green ? "#3ad07a" : "#c93030") + '"/>';
       }
-    } else o += label(d.text || "", x + w / 2, y + h * 0.55, h * 0.14, d.kind === "chat" ? "#fff" : "#9fd");
+    } else if (d.kind === "rows") {
+      var n2 = d.rows.length + (d.ok ? 1 : 0), rh = h * 0.84 / n2, all = d.rows.concat(d.ok ? [{ label: d.ok.label, ok: true }] : []);
+      o += label(d.title || "", x + w * 0.06, y + h * 0.1, h * 0.09, "#aab", 1).replace('text-anchor="middle"', 'text-anchor="start"');
+      all.forEach(function (r, i) {
+        var down = !r.ok && sc.dt >= (r.at || 0), pulse = r.ok && sc.dt >= (d.ok.pulse_after || 1e9) ? 0.65 + 0.35 * Math.sin(sc.dt * 8) : 1, ry = y + h * 0.14 + i * rh;
+        o += '<rect x="' + (x + w * 0.04) + '" y="' + (ry + 2) + '" width="' + w * 0.92 + '" height="' + (rh - 4) + '" rx="3" fill="' + (down ? "#7d1f1f" : "#17402c") + '" opacity="' + pulse + '"/>'
+          + label(r.label, x + w * 0.08, ry + rh * 0.68, rh * 0.5, "#fff", 1).replace('text-anchor="middle"', 'text-anchor="start"')
+          + label(r.ok ? d.ok.note : down ? "DOWN" : "UP", x + w * 0.93, ry + rh * 0.68, rh * 0.5, down ? "#ff9a9a" : "#8dffb8", 1).replace('text-anchor="middle"', 'text-anchor="end"');
+      });
+    } else o += label(d.text || "", x + w / 2, y + h * 0.55, h * 0.14, d.kind === "chat" ? "#fff" : "#9fd", 1);
     return o;
   }
   function drawProp(p, t) {
-    var d = Object.assign({}, (S.props || {})[p.id] || {}, p), at = d.at || [0, 0], sc = d.w || 60, k = d.scale || 1, w = (d.w || 60) * k, h = (d.h || 60) * k, o;
+    var d = Object.assign({}, (S.props || {})[p.id] || {}, p), at = d.at || [0, 0], k = d.scale || 1, w = (d.w || 60) * k, h = (d.h || 60) * k, o, inst = p.inst || p.id;
     if (d.svg) return '<g transform="translate(' + at[0] + " " + at[1] + ') scale(' + k + ')">' + d.svg + "</g>";
-    o = d.shape === "circle" ? '<circle cx="' + (at[0] + w / 2) + '" cy="' + (at[1] + h / 2) + '" r="' + w / 2 + '" fill="' + d.fill + '"/>'
-      : d.shape === "oval" ? '<ellipse cx="' + (at[0] + w / 2) + '" cy="' + (at[1] + h / 2) + '" rx="' + w / 2 + '" ry="' + h / 2 + '" fill="' + d.fill + '"/>'
-      : '<rect x="' + at[0] + '" y="' + at[1] + '" width="' + w + '" height="' + h + '" rx="6" fill="' + d.fill + '"/>';
-    if (d.screen) { var s = screenAt(p.inst || p.id, t); if (s) o += drawScreen(at[0] + w * 0.08, at[1] + h * 0.1, w * 0.84, h * 0.72, s); }
-    var txt = (track(p.inst || p.id, "text") && keyAt(track(p.inst || p.id, "text").keys, t).value) || d.text;
-    return o + label(txt ? p.id + " " + txt : p.id, at[0] + w / 2, at[1] + h + 14, 11, "#ffffffaa");
+    var txtTrack = track(inst, "text"), txt = (txtTrack && keyAt(txtTrack.keys, t).value) || d.text, x0 = at[0], y0 = at[1];
+    if (d.id === "phone" && txtTrack && keyAt(txtTrack.keys, t).value) { x0 += Math.sin(t * 90) * w * 0.03; o = '<rect x="' + (x0 - w * 0.1) + '" y="' + (y0 - h * 0.2) + '" width="' + w * 1.2 + '" height="' + h * 1.4 + '" rx="8" fill="#ffd84a" opacity="' + (0.25 + 0.2 * Math.sin(t * 14)).toFixed(2) + '"/>'; } else o = "";
+    o += d.shape === "circle" ? '<circle cx="' + (x0 + w / 2) + '" cy="' + (y0 + h / 2) + '" r="' + w / 2 + '" fill="' + d.fill + '"/>'
+      : d.shape === "oval" ? '<ellipse cx="' + (x0 + w / 2) + '" cy="' + (y0 + h / 2) + '" rx="' + w / 2 + '" ry="' + h / 2 + '" fill="' + d.fill + '"/>'
+      : '<rect x="' + x0 + '" y="' + y0 + '" width="' + w + '" height="' + h + '" rx="' + Math.min(8, h / 4) + '" fill="' + d.fill + '"/>';
+    if (d.id === "clock" && /^\d\d:\d\d$/.test(txt || "")) {
+      var hh = +txt.slice(0, 2) % 12, mm = +txt.slice(3), cx = x0 + w / 2, cy = y0 + h / 2, ha = (hh + mm / 60) * Math.PI / 6, ma = mm * Math.PI / 30;
+      o += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.sin(ha) * w * 0.26) + '" y2="' + (cy - Math.cos(ha) * w * 0.26) + '" stroke="#2a2a30" stroke-width="' + w * 0.05 + '" stroke-linecap="round"/><line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.sin(ma) * w * 0.4) + '" y2="' + (cy - Math.cos(ma) * w * 0.4) + '" stroke="#2a2a30" stroke-width="' + w * 0.03 + '" stroke-linecap="round"/>';
+    }
+    if (d.screen) { var s = screenAt(inst, t); if (s) o += drawScreen(x0 + w * 0.05, y0 + h * 0.08, w * 0.9, h * 0.84, s); }
+    return o + label(d.id + (txt ? " " + txt : ""), x0 + w / 2, y0 + h + 14, 11, "#ffffffaa");
   }
   function actorsOf(sh, cast) {
     return cast.map(function (c) {
@@ -117,23 +131,32 @@
     var ins = sh.inset; if (!ins) return "";
     var r = ins.rect, x = vb[0] + r[0] * vb[2], y = vb[1] + r[1] * vb[3], w = r[2] * vb[2], h = r[3] * vb[3], iv = ins.camera, id = "inset_" + sh.id, rad = (ins.radius || 0.03) * vb[2];
     var inner = drawSet(ins.set, iv) + ((S.sets || {})[ins.set] ? ((S.sets[ins.set].props || []).map(function (p) { return drawProp(p, t); }).join("")) : "") + drawCast(actorsOf(sh, ins.cast), t);
-    return '<clipPath id="' + id + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rad + '"/></clipPath><g clip-path="url(#' + id + ')"><svg x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" viewBox="' + iv.join(" ") + '" preserveAspectRatio="xMidYMid slice">' + inner + '</svg></g><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rad + '" fill="none" stroke="#f3e9d2" stroke-width="' + vb[2] * 0.004 + '"/>';
+    return '<clipPath id="' + id + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rad + '"/></clipPath><g clip-path="url(#' + id + ')"><svg x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" viewBox="' + iv.join(" ") + '" preserveAspectRatio="xMidYMid slice">' + inner + '</svg></g><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rad + '" fill="none" stroke="#f3e9d2" stroke-width="' + vb[2] * 0.004 + '"/>' + caller(ins, t, x, y, w, h, id, rad);
+  }
+  // Phone call card: name bar and a ringing animation over the inset (style "caller"); the avatar is the character's own head, lip-synced while he speaks.
+  function caller(ins, t, x, y, w, h, id, rad) {
+    if (ins.style !== "caller") return "";
+    var o = '<clipPath id="' + id + 'b"><rect x="' + x + '" y="' + (y + h * 0.82) + '" width="' + w + '" height="' + h * 0.18 + '"/></clipPath><g clip-path="url(#' + id + 'b)"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rad + '" fill="#101018" opacity="0.88"/></g>';
+    o += label(ins.name || "", x + w / 2, y + h * 0.935, h * 0.06, "#f3e9d2", 1);
+    if (ins.ringing) for (var i = 0; i < 3; i++) { var u = ((t * 1.4 + i / 3) % 1); o += '<rect x="' + (x - u * w * 0.08) + '" y="' + (y - u * w * 0.08) + '" width="' + (w + u * w * 0.16) + '" height="' + (h + u * w * 0.16) + '" rx="' + (rad + u * w * 0.08) + '" fill="none" stroke="#ffd84a" stroke-width="' + w * 0.012 + '" opacity="' + (1 - u).toFixed(2) + '"/>'; }
+    return o;
   }
   function transitions(t, vb) {
     var o = "";
     (S.transitions || []).forEach(function (tr) {
       if (t < tr.t0 || t >= tr.t1) return;
       var fade = tr.fade || 0.4, a = tr.type === "time_card" ? Math.min(1, (t - tr.t0) / fade) : 1 - Math.min(1, (t - tr.t0) / fade);
-      o += '<g opacity="' + a.toFixed(3) + '"><rect x="' + (vb[0] - 5) + '" y="' + (vb[1] - 5) + '" width="' + (vb[2] + 10) + '" height="' + (vb[3] + 10) + '" fill="' + (tr.color || "#0b0b10") + '"/>' + (tr.svg || label(tr.text, vb[0] + vb[2] / 2, vb[1] + vb[3] * 0.54, vb[3] * 0.14, "#f3e9d2")) + "</g>";
+      o += '<g opacity="' + a.toFixed(3) + '"><rect x="' + (vb[0] - 5) + '" y="' + (vb[1] - 5) + '" width="' + (vb[2] + 10) + '" height="' + (vb[3] + 10) + '" fill="' + (tr.color || "#0b0b10") + '"/>' + (tr.svg || label(tr.text, vb[0] + vb[2] / 2, vb[1] + vb[3] * 0.54, vb[3] * 0.14, "#f3e9d2", 1)) + "</g>";
     });
     return o;
   }
 
   function frame(t) {
     var sh = shotAt(t), vb = viewBox(t), set = sh.set || S.set, out = drawSet(set, vb);
-    var def = (S.sets || {})[set]; if (def && def.props) out += def.props.map(function (p) { return drawProp(p, t); }).join("");
-    out += (sh.props || []).map(function (p) { return drawProp(p, t); }).join("");
+    var def = (S.sets || {})[set], props = ((def && def.props) || []).concat(sh.props || []);
+    out += props.filter(function (p) { return !p.front; }).map(function (p) { return drawProp(p, t); }).join("");
     out += drawCast(actorsOf(sh, sh.cast), t);
+    out += props.filter(function (p) { return p.front; }).map(function (p) { return drawProp(p, t); }).join(""); // in front of the cast: a person behind a desk
     return out + drawInset(sh, t, vb) + captions(t, vb) + transitions(t, vb);
   }
   window.SpikeCore = { frame: frame, viewBox: viewBox, bg: function () { return ""; } };
