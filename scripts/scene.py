@@ -547,7 +547,7 @@ def main() -> None:
     if args.video:  # after everything above: the audio path above is the same with or without the flag
         import video
 
-        video.make(dest, timeline, sr=sr, duration=length, out=dest.with_suffix(".video"))
+        video.make(dest, timeline, sr=sr, duration=length, out=dest.with_suffix(".video"), scenario_src=Path(args.src))
 
 
 def log(msg: str) -> None:

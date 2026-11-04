@@ -13,6 +13,7 @@ the author then edits cues by hand, and a sheet that already exists is never ove
 
 import json
 import math
+import re
 import struct
 import wave
 from pathlib import Path
@@ -23,38 +24,130 @@ TIMELINE = "timeline/2"
 SHOTS = "shots/1"
 
 
-def timeline_v2(v1: list[dict[str, Any]], *, audio: str, duration: float, sr: int) -> dict[str, Any]:
-    """Wrap scene.py's timeline: add the audio name, its length and the scenes in order."""
+def timeline_v2(
+    v1: list[dict[str, Any]], *, audio: str, duration: float, sr: int, breaks: list[int] = (), cues: list[dict[str, Any]] = ()
+) -> dict[str, Any]:
+    """Wrap scene.py's timeline: add the audio name, its length, the scenes in order and the author's screen cues.
+
+    A scene is a scenario heading (location change) or the stretch after a `{pause}`: `breaks` are the item numbers of the pauses
+    (turn numbers count scenario items, so a pause sits between two turn numbers). A scene continued after a pause is titled
+    "<title> · 2", "<title> · 3"; the sheet has an entry per title. `cues` are scenario `<!-- screen: ... -->` directives.
+    """
+    turns = [e["turn"] for e in v1 if "turn" in e]
+    if len(turns) != len(set(turns)):
+        msg = "timeline has repeated turn numbers (an intro joined to an episode): not supported for video yet"
+        raise ValueError(msg)
     scenes: list[dict[str, Any]] = []
+    parts: dict[str, int] = {}
     for e in v1:
         if "turn" not in e:
             continue
         title = e.get("scene") or "(no scene)"
-        if not scenes or scenes[-1]["title"] != title:
-            scenes.append({"title": title, "ambience": e.get("ambience"), "turns": []})
-        scenes[-1]["turns"].append(e["turn"])
-    return {"schema": TIMELINE, "audio": audio, "sr": sr, "duration": round(duration, 3), "scenes": scenes, "entries": v1}
+        last = scenes[-1] if scenes else None
+        paused = last and any(last["turns"][-1] < k < e["turn"] for k in breaks)
+        if last and last["base"] == title and not paused:
+            last["turns"].append(e["turn"])
+            continue
+        parts[title] = parts.get(title, 0) + 1
+        scenes.append({"title": title if parts[title] == 1 else f"{title} · {parts[title]}", "base": title, "ambience": e.get("ambience"), "turns": [e["turn"]]})
+    return {
+        "schema": TIMELINE,
+        "audio": audio,
+        "sr": sr,
+        "duration": round(duration, 3),
+        "scenes": [{k: v for k, v in s.items() if k != "base"} for s in scenes],
+        "cues": list(cues),
+        "entries": v1,
+    }
+
+
+def _tags(text: str) -> list[str]:
+    m = re.match(r"\s*\[([^\]]*)\]", text)
+    return [t.strip().lower() for t in m.group(1).split(",")] if m else []
+
+
+def _pick(layout_map: dict[str, str], tags: list[str]) -> str | None:
+    """First tag (or a word in a tag) that the map knows."""
+    for t in tags:
+        if t in layout_map:
+            return layout_map[t]
+    for t in tags:
+        for w in t.split():
+            if w in layout_map:
+                return layout_map[w]
+    return None
+
+
+def _screen_cues(entries: list[dict[str, Any]], turns: list[int], authored: dict[int, dict[str, Any]], scr: dict[str, Any], ambience: str | None) -> list[dict[str, Any]]:
+    """Object (screen) cues of one scene from the timeline: ambience -> start state, text keywords, speaker tags, sfx, author directives.
+
+    Later rule wins on the same turn: keyword < speaker tag < author directive. A keyboard sfx shows `working` while it plays.
+    """
+    text_of = scr.get("text", {})
+    by_t = {e["turn"]: e for e in entries if "turn" in e}
+    state0 = scr.get("by_ambience", {}).get(ambience or "", scr.get("start", "idle"))
+    out: list[dict[str, Any]] = [{"state": state0, "t": by_t[turns[0]]["start"], "first": True}]
+    for n in turns:
+        e, want = by_t[n], None
+        for rule in scr.get("by_text", []):
+            if re.search(rule["re"], e["text"], re.IGNORECASE):
+                want = {"state": rule["state"], **({"text": rule["text"]} if "text" in rule else {})}
+                break
+        if (st := _pick(scr.get("by_tag", {}), _tags(e["text"]))) is not None:  # how it is said beats what is said: a panicked "all under control" is an error
+            want = {"state": st}
+        if n in authored:
+            want = authored[n]
+        if want:
+            out.append({"t": e["start"], **want})
+    lo, hi = by_t[turns[0]]["start"], by_t[turns[-1]]["end"]
+    for e in entries:
+        if (st := scr.get("by_sfx", {}).get(e.get("sfx", ""))) and lo <= e["start"] <= hi:
+            before = [c for c in out if c["t"] <= e["start"]][-1]["state"]
+            out += [{"t": e["start"], "state": st}, {"t": e["end"], "state": before}]
+    out.sort(key=lambda c: c["t"])
+    for c in out:
+        c.setdefault("text", text_of.get(c["state"], ""))
+    return out
 
 
 def emit_sheet(tl: dict[str, Any], layout: dict[str, Any]) -> dict[str, Any]:
-    """Default scene sheet: props always on stage, cast members on stage in scenes where their voice speaks."""
-    cast = layout.get("cast", {})
-    voices_by_scene = {s["title"]: {e["voice"] for e in tl["entries"] if e.get("turn") in s["turns"]} for s in tl["scenes"]}
+    """Default scene sheet from video/layout.json: each voice on screen as its own rig, only in the scenes where it speaks.
+
+    A voice with no entry in layout `cast` must be listed in `offscreen` (the narrator); anything else is an error, so no
+    speaker is ever drawn as someone else or silently dropped. Props are always on stage; the screen follows the timeline.
+    """
+    cast, offscreen = layout.get("cast", {}), set(layout.get("offscreen", ["narrator"]))
+    by_t = {e["turn"]: e for e in tl["entries"] if "turn" in e}
+    unknown = sorted({e["voice"] for e in by_t.values()} - set(cast) - offscreen)
+    if unknown:
+        msg = f"voices with no rig in video/layout.json (add a cast entry, or list them under offscreen): {', '.join(unknown)}"
+        raise ValueError(msg)
+    authored = {c["turn"]: {"state": c["screen"], **({"text": c["text"]} if "text" in c else {})} for c in tl.get("cues", [])}
     scenes: dict[str, Any] = {}
-    for title, voices in voices_by_scene.items():
-        actors = [{k: v for k, v in p.items() if k != "state"} for p in layout.get("props", [])]
-        cues: list[dict[str, Any]] = [
-            {"at": 0, "actor": p["id"], "channel": "state", "value": p.get("state", "idle")} for p in layout.get("props", [])
-        ]
-        seen: set[str] = set()
-        for voice in sorted(voices):
-            c = cast.get(voice)
-            if not c or c["id"] in seen:
-                continue
-            seen.add(c["id"])
-            actors.append({k: v for k, v in c.items() if k != "expr"})
-            cues.append({"at": 0, "actor": c["id"], "channel": "expr", "blend": 0.25, "value": c.get("expr", "tired_neutral")})
-        scenes[title] = {"actors": sorted(actors, key=lambda a: a.get("layer", 0)), "cues": cues}
+    for s in tl["scenes"]:
+        voices = {by_t[n]["voice"] for n in s["turns"]}
+        chars = []
+        for voice in sorted(voices & set(cast)):
+            if cast[voice]["id"] not in {c["id"] for c in chars}:
+                chars.append({"voice": voice, **cast[voice]})
+        props = layout.get("props", [])
+        actors = [{k: v for k, v in x.items() if k not in {"state", "expr", "expr_map", "voice"}} for x in [*props, *chars]]
+        cues: list[dict[str, Any]] = []
+        for p in props:
+            for c in _screen_cues(tl["entries"], s["turns"], authored, layout.get("screen", {}), s.get("ambience")):
+                t0 = 0 if c.pop("first", False) else None
+                cue = {"actor": p["id"], "channel": "state", "value": c["state"], **({"screen_text": c["text"]} if c["text"] else {})}
+                cues.append({"at": 0, **cue} if t0 == 0 else {"abs": c["t"], **cue})
+        for ch in chars:
+            cues.append({"at": 0, "actor": ch["id"], "channel": "expr", "blend": 0.25, "value": ch.get("expr", "neutral_anxious")})
+            for n in s["turns"]:
+                e = by_t[n]
+                if e["voice"] == ch["voice"] and (x := _pick(ch.get("expr_map", {}), _tags(e["text"]))):
+                    cues.append({"turn": n, "actor": ch["id"], "channel": "expr", "value": x})
+        ids = {a["id"] for a in actors}
+        cam = next((c["viewBox"] for c in layout.get("cameras", []) if set(c.get("actors", [])) <= ids), layout["camera"]["viewBox"])
+        bg = layout.get("looks", {}).get(s.get("ambience") or "", layout.get("background", "#26344f"))
+        scenes[s["title"]] = {"actors": sorted(actors, key=lambda a: a.get("layer", 0)), "cues": cues, "camera": {"viewBox": cam}, "background": bg}
     return {
         "schema": SHEET,
         "fps": layout.get("fps", 30),
@@ -137,12 +230,12 @@ def resolve_scene(group: dict[str, Any], sheet: dict[str, Any], wav: tuple[int, 
 
     tracks: list[dict[str, Any]] = []
     for c in d.get("cues", []):
-        t = c["at"] if "at" in c else turn_start(c["turn"]) + c.get("offset", 0)
+        t = c["at"] if "at" in c else max(0.0, rel(c["abs"])) if "abs" in c else turn_start(c["turn"]) + c.get("offset", 0)
         tr = next((x for x in tracks if x["actor"] == c["actor"] and x["channel"] == c["channel"]), None)
         if tr is None:
             tr = {"actor": c["actor"], "channel": c["channel"], **({"blend": c["blend"]} if "blend" in c else {}), "keys": []}
             tracks.append(tr)
-        tr["keys"].append({"t": round(t, 3)} | {k: v for k, v in c.items() if k not in {"at", "turn", "offset", "actor", "channel", "blend"}})
+        tr["keys"].append({"t": round(t, 3)} | {k: v for k, v in c.items() if k not in {"at", "abs", "turn", "offset", "actor", "channel", "blend"}})
     for tr in tracks:
         tr["keys"].sort(key=lambda k: k["t"])
         if tr["keys"][0]["t"] > 0:

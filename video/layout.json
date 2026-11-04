@@ -1,13 +1,37 @@
 {
-  "_doc": "Defaults for the scene-sheet emitter (scripts/videoplan.py emit_sheet). cast: timeline voice -> the rig that plays it (voices with no entry, e.g. narrator, are off screen). props: always on stage. pairing: Zinaida's `q` view with a fixed offset beside Mihalych's `sit_side`; their rigs have no common view where the screen faces the camera, so the offset is data here, not a per-scene hand edit. A proper pair needs a new Mihalych version with a `sit_q` pose (frozen versions are never edited).",
+  "_doc": "Defaults for the scene-sheet emitter (scripts/videoplan.py emit_sheet). cast: timeline voice -> the rig that plays it, one rig per voice, never shared; a voice not listed here or under offscreen is an error. A character is on stage only in scenes where its voice speaks. props: always on stage (Zinaida's screen follows the scenario: screen.by_tag / by_text / by_sfx here, and `<!-- screen: STATE \"text\" -->` directives in the scenario). cameras: first rule whose actors are all on stage wins. looks: scene background by ambience. Pairing: Zinaida's `q` view at a fixed offset; Mihalych `sit_side` beside her needs it (a proper pair needs a new Mihalych version with a `sit_q` pose; frozen versions are not edited).",
   "fps": 30,
   "size": [1280, 720],
-  "camera": { "viewBox": [-90, -20, 622, 350] },
+  "camera": { "viewBox": [-470, -380, 1564, 880] },
   "background": "#26344f",
+  "offscreen": ["narrator"],
+  "looks": { "office": "#4a5a7a", "night": "#0c1424" },
+  "cameras": [
+    { "actors": ["mihalych"], "viewBox": [-90, -20, 622, 350] },
+    { "actors": ["palych", "vadik", "zinaida"], "viewBox": [-470, -380, 1564, 880] },
+    { "actors": ["vadik", "zinaida"], "viewBox": [-300, -340, 1200, 675] }
+  ],
   "props": [
     { "id": "zinaida", "rig": "zinaida@1.0.0", "layer": 1, "pose": "q", "offset": [110, 0], "state": "idle" }
   ],
+  "screen": {
+    "start": "idle",
+    "by_ambience": { "night": "idle" },
+    "text": { "idle": "ждёт команды", "working": "деплой...", "error": "деплой упал", "love": "всё зелёное" },
+    "by_tag": { "panicking": "error", "panic": "error", "pleading": "working", "nervous": "working" },
+    "by_text": [
+      { "re": "красн|упал|ошибк|завис", "state": "error" },
+      { "re": "зелён|зелен|успешн", "state": "working" },
+      { "re": "под контролем", "state": "idle" }
+    ],
+    "by_sfx": { "keyboard": "working" }
+  },
   "cast": {
-    "vadik": { "id": "mihalych", "rig": "mihalych@1.0.0", "layer": 2, "pose": "sit_side", "pose_override": { "desk": 0 }, "expr": "tired_neutral" }
+    "vadik": { "id": "vadik", "rig": "vadik@1.2.0", "layer": 3, "pose": "stand_fidget", "offset": [-170, -134], "expr": "neutral_anxious",
+      "expr_map": { "panicking": "panic", "panic": "panic", "nervous": "neutral_anxious", "whisper": "side_glance", "pleading": "shame", "dry": "pretend" } },
+    "praporshchik": { "id": "palych", "rig": "palych@1.0.1", "layer": 2, "pose": "hold_receiver", "offset": [560, -134], "expr": "neutral_anxious",
+      "expr_map": { "loud": "bark", "suspicious": "clerk", "question": "clerk", "proud": "proud" } },
+    "mihalych": { "id": "mihalych", "rig": "mihalych@1.0.0", "layer": 2, "pose": "sit_side", "pose_override": { "desk": 0 }, "expr": "tired_neutral" },
+    "mikhalych": { "id": "mihalych", "rig": "mihalych@1.0.0", "layer": 2, "pose": "sit_side", "pose_override": { "desk": 0 }, "expr": "tired_neutral" }
   }
 }

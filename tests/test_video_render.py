@@ -44,7 +44,7 @@ def test_cache_hits_identical_frames_and_one_changed_cue_rerenders_one_scene(tmp
     cold, _ = run(tmp_path, tmp_path / "b")  # cold cache, other dir: the same frames
     assert framemd5(cold) == framemd5(mp4)
     sheet = json.loads((tmp_path / "demo.sheet.json").read_text())
-    sheet["scenes"]["Ночь"]["cues"].append({"turn": 4, "actor": "mihalych", "channel": "expr", "value": "panic"})
+    sheet["scenes"]["Ночь"]["cues"].append({"turn": 4, "actor": "vadik", "channel": "expr", "value": "panic"})
     (tmp_path / "edited.sheet.json").write_text(json.dumps(sheet))
     _, scenes = run(tmp_path, tmp_path / "a", tmp_path / "edited.sheet.json")
     assert [s["hit"] for s in scenes] == [True, False]

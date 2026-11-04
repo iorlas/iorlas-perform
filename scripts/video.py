@@ -17,6 +17,7 @@ Needs Node >= 20 and `npm ci` in video/engine. Scenes are cached by content: re-
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -77,12 +78,43 @@ def join_and_mux(files: list[Path], audio: Path, dest: Path) -> None:
         )
 
 
+SCREEN = re.compile(r'<!--\s*screen:\s*(\w+)(?:\s+"([^"]*)")?\s*-->')
+
+
+def scenario_marks(src: Path) -> tuple[list[int], list[dict[str, Any]]]:
+    """From the scenario: item numbers of its `{pause}`s (scene splits) and `<!-- screen: STATE "text" -->` directives (each on the next turn)."""
+    import scenario
+
+    sc = scenario.load(str(src))
+    text = src.read_text()
+    found = [(text.count("\n", 0, m.start()) + 1, m[1], m[2]) for m in SCREEN.finditer(text)]
+    breaks = [n for n, it in enumerate(sc.items, 1) if isinstance(it, scenario.Pause)]
+    cues, done = [], 0
+    for n, it in enumerate(sc.items, 1):
+        if not isinstance(it, scenario.Turn):
+            continue
+        while done < len(found) and found[done][0] < it.line:
+            _, state, shown = found[done]
+            cues.append({"turn": n, "screen": state, **({"text": shown} if shown else {})})
+            done += 1
+    return breaks, cues
+
+
 def make(
-    audio: Path, v1: list[dict[str, Any]], *, sr: int, duration: float, out: Path, sheet_path: Path | None = None, chrome: str | None = None
+    audio: Path,
+    v1: list[dict[str, Any]],
+    *,
+    sr: int,
+    duration: float,
+    out: Path,
+    sheet_path: Path | None = None,
+    chrome: str | None = None,
+    scenario_src: Path | None = None,
 ) -> Path:
-    """wav + scene.py timeline -> out/<stem>.mp4. Returns the mp4."""
+    """wav + scene.py timeline (+ the scenario, for pauses and screen directives) -> out/<stem>.mp4. Returns the mp4."""
     out.mkdir(parents=True, exist_ok=True)
-    tl = videoplan.timeline_v2(v1, audio=audio.name, duration=duration, sr=sr)
+    breaks, cues = scenario_marks(scenario_src) if scenario_src else ([], [])
+    tl = videoplan.timeline_v2(v1, audio=audio.name, duration=duration, sr=sr, breaks=breaks, cues=cues)
     (out / "timeline.v2.json").write_text(json.dumps(tl, ensure_ascii=False, indent=2) + "\n")
     sheet_path = sheet_path or audio.with_suffix(".sheet.json")
     if sheet_path.exists():
@@ -113,12 +145,13 @@ def main() -> None:
     p.add_argument("timeline", type=Path, help="scene.py's <out>.timeline.json")
     p.add_argument("--sheet", type=Path)
     p.add_argument("--out", type=Path, help="default: <audio stem>.video next to the wav")
+    p.add_argument("--scenario", type=Path, help="the scenario the audio came from: {pause} splits scenes, <!-- screen: ... --> directives drive the screen")
     p.add_argument("--chrome", help="Chrome/headless-shell binary (or PERFORM_CHROME)")
     a = p.parse_args()
     v1 = json.loads(a.timeline.read_text())
     sr, samples = videoplan.read_wav(a.audio)
     duration = len(samples) / sr
-    make(a.audio, v1, sr=sr, duration=duration, out=a.out or a.audio.with_suffix(".video"), sheet_path=a.sheet, chrome=a.chrome)
+    make(a.audio, v1, sr=sr, duration=duration, out=a.out or a.audio.with_suffix(".video"), sheet_path=a.sheet, chrome=a.chrome, scenario_src=a.scenario)
 
 
 if __name__ == "__main__":

@@ -12,6 +12,10 @@
     return Math.min(0.9, m.samples[f]);
   }
   function rigOf(a) { return HF.RIG[a.rig.split("@")[0]]; }
+  // Rigs register differently: expressions/poses on the rig (mihalych, palych) or in the shared HF.EXPR/HF.POSES (vadik); draw as HF.RIGS[id](st) or rig.draw(st).
+  function exprs(rig) { return rig.expr || HF.EXPR; }
+  function poses(rig) { return rig.poses || HF.POSES; }
+  function drawFn(rig, a) { var f = HF.RIGS && HF.RIGS[a.rig.split("@")[0]]; return f || rig.draw.bind(rig); }
 
   function drawActor(a, t) {
     var rig = rigOf(a), id = a.id;
@@ -21,15 +25,15 @@
       ["screen_text", "led", "shake", "cable"].forEach(function (p) { if (k[p] != null) s[p] = k[p]; });
       return rig.draw(s);
     }
-    var ex = track(id, "expr"), pk = track(id, "pose"), pose = clone(rig.poses[pk ? keyAt(pk.keys, t).value : a.pose]);
+    var ex = track(id, "expr"), pk = track(id, "pose"), poseName = pk ? keyAt(pk.keys, t).value : a.pose, pose = clone(poses(rig)[poseName]);
     for (var q in (a.pose_override || {})) pose[q] = a.pose_override[q];
-    var expr = rig.expr[a.expr || "tired_neutral"];
+    var E = exprs(rig), expr = E[a.expr || rig.default_expression || "neutral_anxious"] || E[Object.keys(E)[0]];
     if (ex) {
       var k2 = keyAt(ex.keys, t), i = ex.keys.indexOf(k2), prev = i > 0 ? ex.keys[i - 1] : k2;
       var u = k2 === prev ? 1 : Math.min(1, (t - k2.t) / (ex.blend || 0.25));
-      expr = lerpExpr(rig.expr[prev.value], rig.expr[k2.value], u);
+      expr = lerpExpr(E[prev.value], E[k2.value], u);
     }
-    return rig.draw({ ch: id, uid: "c_" + id, pose: pose, expr: expr, mouth: mouthAt(id, t), gaze: { x: 0, y: 0 }, t: t });
+    return drawFn(rig, a)({ ch: id, uid: "c_" + id, pose: pose, expr: expr, mouth: mouthAt(id, t), gaze: { x: 0, y: 0, cam: 0 }, key: 1, stand: !/^sit/.test(poseName), shake: { x: 0, y: 0, r: 0 }, t: t });
   }
 
   function captions(t, vb) {

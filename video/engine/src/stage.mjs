@@ -7,7 +7,7 @@ import { verifyRig, sceneCacheKey, sha } from "./rig_lock.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 export const RIGS_ROOT = join(here, "..", "..", "rigs");
-export const CORE = join(here, "core.js");
+export const CORE = join(here, "core.js"), PRELUDE = join(here, "prelude.js");
 
 /** refs: ["mihalych@1.0.0", ...] -> [{id,version,sha256,engine_api,manifest}], throws RIG TAMPERED on drift. */
 export function verifyRigs(refs, rigsRoot = RIGS_ROOT) {
@@ -22,6 +22,7 @@ export function stageRigs(publicDir, facts, rigsRoot = RIGS_ROOT) {
     verifyRig(dst, f.id, f.version);
   }
   cpSync(CORE, join(publicDir, "core.js"));
+  cpSync(PRELUDE, join(publicDir, "prelude.js"));
 }
 
 /** Fill kind/art on each actor from its rig manifest. */
@@ -51,7 +52,7 @@ export function stageScene(publicDir, sceneDir, facts, { engine, adapterVersion,
     writeFileSync(join(dir, f), t); mouth[f] = sha(t);
   }
   const rigs = facts.filter((f) => shots.actors.some((a) => a.rig === `${f.id}@${f.version}`)); // only rigs this scene uses
-  const key = sceneCacheKey({ rigs, shotsSha: sha(shotsText), extraInputs: { mouth, core: sha(readFileSync(CORE)), composition: sha(readFileSync(composition)), codec },
+  const key = sceneCacheKey({ rigs, shotsSha: sha(shotsText), extraInputs: { mouth, core: sha(readFileSync(CORE)), prelude: sha(readFileSync(PRELUDE)), composition: sha(readFileSync(composition)), codec },
     fps: shots.fps, size: shots.size, engine, adapterVersion });
   return { id: shots.scene, key, shots };
 }

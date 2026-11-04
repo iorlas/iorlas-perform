@@ -10,6 +10,7 @@ function boot(scene) {
     const shots = await (await fetch(staticFile(`scenes/${scene}/shots.json`))).json();
     window.__SHOTS = shots; window.__MOUTH = {};
     for (const a of shots.actors) if (a.mouth) window.__MOUTH[a.id] = await (await fetch(staticFile(`scenes/${scene}/${a.mouth}`))).json();
+    await loadScript(staticFile("prelude.js"));
     for (const a of shots.actors) { if (window.HF && window.HF.RIG && window.HF.RIG[a.rig.split("@")[0]]) continue; const [id, v] = a.rig.split("@"); await loadScript(staticFile(`rigs/${id}/${v}/${a.art}`)); }
     await loadScript(staticFile("core.js"));
     return shots;

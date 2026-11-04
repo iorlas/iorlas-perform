@@ -30,6 +30,6 @@ Needs Node >= 20 and a Chrome (`PERFORM_CHROME`, or Remotion downloads its own o
 
 ## Open items
 - **Rig-side blocker, pairing:** Mihalych `sit_side` is edge-on to Zinaida's `side`, so her screen is invisible; the pair is Zinaida `q` + a fixed offset from `layout.json` (same in every scene, no per-scene edit). A true pair needs a new Mihalych version with a `sit_q` pose (frozen versions are not edited).
-- Only rigs whose API matches `core.js` (`rig.expr`, `rig.poses`, `draw({pose, expr, mouth})`: Mihalych, Zinaida) run. Vadik, Palych, Friend, Kristina, Stas, Neyroset register differently: `layout.json` maps the voice `vadik` to Mihalych for now.
-- The default sheet has no acting (one expression, Zinaida idle); real cues are hand-written.
+- `core.js` runs rigs that register expressions/poses on the rig or in `HF.EXPR`/`HF.POSES` (Mihalych, Zinaida, Vadik, Palych). Not yet tried: Friend, Kristina, Stas, Neyroset (add a `layout.json` cast entry per voice; a voice with no entry is an error, never a stand-in).
+- Scenes come from scenario headings and `{pause}`; the default sheet acts from `[tags]` (expressions per rig, `layout.json` `expr_map`), keywords, sfx and `<!-- screen: STATE "text" -->` directives. Gaze, body poses and camera moves stay static unless hand-edited.
 - Untested: camera moves, ducking, 9:16, Remotion's own Chrome on a clean machine, scenes much longer than a minute.
