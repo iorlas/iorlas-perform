@@ -1,0 +1,15 @@
+{
+  "name": "perform-video-engine",
+  "private": true,
+  "type": "module",
+  "description": "Per-scene video render for iorlas-perform: timeline.json + scene sheet -> shots.json -> Remotion -> mp4 -> concat",
+  "scripts": { "test": "node --test test/" },
+  "dependencies": {
+    "remotion": "4.0.540",
+    "@remotion/bundler": "4.0.540",
+    "@remotion/renderer": "4.0.540",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": { "puppeteer-core": "24.0.0" }
+}

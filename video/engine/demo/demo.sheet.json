@@ -1,0 +1,36 @@
+{
+  "schema": "scene-sheet/1",
+  "fps": 30,
+  "size": [1280, 720],
+  "camera": { "viewBox": [-90, -20, 622, 350] },
+  "background": "#26344f",
+  "cast": { "vadik": { "actor": "mihalych" } },
+  "scenes": {
+    "Утро": {
+      "actors": [
+        { "id": "zinaida", "rig": "zinaida@1.0.0", "layer": 1, "pose": "q", "offset": [110, 0] },
+        { "id": "mihalych", "rig": "mihalych@1.0.0", "layer": 2, "pose": "sit_side", "pose_override": { "desk": 0 } }
+      ],
+      "cues": [
+        { "at": 0, "actor": "zinaida", "channel": "state", "value": "idle", "screen_text": "Резерв: вчера?" },
+        { "turn": 1, "actor": "zinaida", "channel": "state", "value": "working", "screen_text": "Копирую отчёт" },
+        { "turn": 2, "actor": "zinaida", "channel": "state", "value": "error", "screen_text": "Всё плохо" },
+        { "at": 0, "actor": "mihalych", "channel": "expr", "blend": 0.25, "value": "tired_neutral" },
+        { "turn": 2, "actor": "mihalych", "channel": "expr", "value": "panic" }
+      ]
+    },
+    "Ночь": {
+      "actors": [
+        { "id": "zinaida", "rig": "zinaida@1.0.0", "layer": 1, "pose": "q", "offset": [110, 0] },
+        { "id": "mihalych", "rig": "mihalych@1.0.0", "layer": 2, "pose": "sit_side", "pose_override": { "desk": 0 } }
+      ],
+      "cues": [
+        { "at": 0, "actor": "zinaida", "channel": "state", "value": "sleep" },
+        { "turn": 3, "actor": "zinaida", "channel": "state", "value": "idle", "screen_text": "Михалыч?" },
+        { "turn": 4, "offset": 0.4, "actor": "zinaida", "channel": "state", "value": "love", "screen_text": "Михалыч!" },
+        { "at": 0, "actor": "mihalych", "channel": "expr", "blend": 0.25, "value": "deadpan" },
+        { "turn": 4, "actor": "mihalych", "channel": "expr", "value": "soft_smile" }
+      ]
+    }
+  }
+}
