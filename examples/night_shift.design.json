@@ -312,25 +312,13 @@
      "mentions": [
       "дашборд"
      ]
-    },
+    }
+   ],
+   "sounds": [
     {
      "id": "cricket",
-     "size": [
-      0.1,
-      0.065
-     ],
-     "place": {
-      "x": -1.0,
-      "on": "window",
-      "up": -0.465
-     },
-     "role": "The cricket OUTSIDE, on the outer ledge, seen through the dark pane against the moon-lit sky. Chirps on the punchline.",
      "from": "сверчок за окном",
-     "side": "outside",
-     "mentions": [
-      "сверчок"
-     ],
-     "kind": "cricket"
+     "note": "Heard, never drawn: the `night` ambience bed (crickets). Its joke is the dashboard row «сверчок: падений 0»."
     }
    ]
   },
@@ -796,12 +784,6 @@
      "beat": 6,
      "target": "phone",
      "text": "в разговоре"
-    },
-    {
-     "beat": 8,
-     "offset": 2.6,
-     "target": "cricket",
-     "text": "chirp"
     }
    ]
   }

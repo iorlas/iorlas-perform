@@ -86,8 +86,7 @@ def test_objects_are_placed_by_relations_not_pixels(tmp_path):
     bottom = lambda o: o["at"][1] + o["h"]  # noqa: E731
     assert bottom(p["desk"]) == floor and p["desk"]["h"] == round(0.43 * big_h)
     assert all(bottom(p[k]) == p["desk"]["at"][1] for k in ("keyboard", "monitor", "phone"))
-    w, c = p["window"], p["cricket"]  # the cricket is outside: seen inside the window frame, not on the room's sill
-    assert w["at"][0] <= c["at"][0] and c["at"][0] + c["w"] <= w["at"][0] + w["w"] and w["at"][1] <= c["at"][1] and bottom(c) <= bottom(w)
+    assert "cricket" not in p  # «сверчок за окном» is a sound (the night bed), never a prop
     assert p["desk"]["front"] and p["monitor"]["front"] and not p["chair"].get("front")  # he sits behind the desk, on the chair
     assert abs(p["chair"]["at"][0] + p["chair"]["w"] / 2) < 2  # chair centred on his axis
 
@@ -96,7 +95,7 @@ def test_a_set_can_extend_another_and_drop_or_replace_objects(tmp_path):
     s1, s2 = resolved(tmp_path)
     a, b = props_of(s1, "setA_office_dusk"), props_of(s2, "setB_office_night")
     assert {"clock", "poster_friday"} <= set(a) and not ({"clock", "poster_friday"} & set(b))
-    assert {"dashboard", "cricket"} <= set(b) and a["desk"]["at"] == b["desk"]["at"]  # same room, re-lit
+    assert {"dashboard"} <= set(b) and a["desk"]["at"] == b["desk"]["at"]  # same room, re-lit
     assert a["window"]["fill"] != b["window"]["fill"]  # dusk vs night art kind
 
 
@@ -141,8 +140,7 @@ def test_the_punchline_shows_every_service_down_and_the_cricket_up(tmp_path):
     last = s2["shots"][-1]
     assert last["id"] == "2.7" and last["camera"]["push_to"][2] < last["camera"]["viewBox"][2]
     vb, p = last["camera"]["viewBox"], props_of(s2, "setB_office_night")
-    for k in ("dashboard", "cricket"):  # both are in the same frame
-        assert vb[0] <= p[k]["at"][0] and p[k]["at"][0] + p[k]["w"] <= vb[0] + vb[2], k
+    assert vb[0] <= p["dashboard"]["at"][0] and p["dashboard"]["at"][0] + p["dashboard"]["w"] <= vb[0] + vb[2]
 
 
 def test_the_cto_is_cut_to_full_frame_lip_synced_and_the_caller_id_is_on_the_phone(tmp_path):
@@ -220,15 +218,21 @@ def test_an_object_must_cite_the_script_or_say_it_is_invented():
 
 def test_an_outside_object_must_be_seen_through_the_window():
     def on_the_inner_sill(d):
-        cricket = next(o for o in d["sets"]["setB_office_night"]["objects"] if o["id"] == "cricket")
-        cricket["place"] = {"x": -0.9, "on": "sill"}  # the mistake we made: «за окном» drawn inside the room
+        d["sets"]["setB_office_night"]["objects"].append({"id": "moth", "size": [0.05, 0.03], "place": {"x": -0.9, "on": "sill"}, "from": "invented", "side": "outside"})
     with pytest.raises(ValueError, match="outside but not inside a window"):
         videodesign.emit_sheet(tl(), LAYOUT, _design(on_the_inner_sill))
 
 
+def test_a_sound_is_cited_and_never_drawn():
+    s2 = sheet()["sets"]["setB_office_night"]
+    assert "cricket" not in {x["id"] for x in s2["props"]}
+    with pytest.raises(ValueError, match="must cite the script"):
+        videodesign.emit_sheet(tl(), LAYOUT, _design(lambda d: d["sets"]["setB_office_night"]["sounds"][0].update({"from": "слон"})))
+
+
 def test_a_beat_that_names_an_object_must_show_it():
-    def hide_the_cricket(d):
+    def hide_the_phone(d):
         sc = d["scenes"]["Офис, ночь"]
-        sc["shots"] = [s for s in sc["shots"] if s["id"] != "2.7"]  # the only shot of the punchline beat
-    with pytest.raises(ValueError, match="says «сверчок»"):
-        videodesign.emit_sheet(tl(), LAYOUT, _design(hide_the_cricket))
+        sc["shots"] = [s for s in sc["shots"] if s["id"] != "2.4"]  # the only shot of the beat that says «телефон»
+    with pytest.raises(ValueError, match="says «телефон»"):
+        videodesign.emit_sheet(tl(), LAYOUT, _design(hide_the_phone))

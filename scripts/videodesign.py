@@ -99,6 +99,12 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
                     msg = f'set {n}: "{o["id"]}" is outside but not inside a window frame, so the viewer could not see it'
                     raise ValueError(msg)
 
+    for n, st in design["sets"].items():  # sounds: heard, never drawn (a cricket outside at night); they cite the script too
+        for snd in st.get("sounds", []):
+            if snd.get("from", "").casefold() not in script or not snd.get("from"):
+                msg = f'set {n}: sound "{snd["id"]}" must cite the script in "from"'
+                raise ValueError(msg)
+
     def stand(set_name: str, actor: str) -> dict[str, Any]:
         spec = merged[set_name]["characters"].get(actor)
         if spec is None:
@@ -289,6 +295,8 @@ def describe(tl: dict[str, Any], design: dict[str, Any]) -> str:
             if o["id"] not in seen:
                 seen.add(o["id"])
                 out.append(f"| `{o['id']}`{' (outside)' if o.get('side') == 'outside' else ''} | {'**invented**' if o.get('from') == 'invented' else '«' + o.get('from', '?') + '»'} |")
+    for n, st in design["sets"].items():
+        out += [f"| `{snd['id']}` (sound only, not drawn) | «{snd['from']}» |" for snd in st.get("sounds", [])]
     out.append("")
     for s in tl["scenes"]:
         d = design["scenes"][s["title"]]
