@@ -333,9 +333,11 @@ def write_scene(out: Path, scene: dict[str, Any]) -> Path:
     return d
 
 
-def plan(tl: dict[str, Any], sheet: dict[str, Any], audio: Path, out: Path, assets: Path | None = None, only: list[str] | None = None) -> list[dict[str, Any]]:
-    """Every scene of the timeline (or those ids in `only`) resolved and written under `out`; returns the groups with their `dir`."""
-    wav = read_wav(audio)
+def plan(tl: dict[str, Any], sheet: dict[str, Any], audio: Path | None, out: Path, assets: Path | None = None, only: list[str] | None = None, wav: tuple[int, list[float]] | None = None) -> list[dict[str, Any]]:
+    """Every scene of the timeline (or those ids in `only`) resolved and written under `out`; returns the groups with their `dir`.
+
+    `wav` replaces reading `audio`: pre-production passes (rate, []) so mouths stay closed and no audio exists yet."""
+    wav = wav or read_wav(audio)
     groups = [g for g in segment(tl, sheet) if not only or g["id"] in only]
     for g in groups:
         g["dir"] = write_scene(out, resolve_scene(g, sheet, wav, assets))

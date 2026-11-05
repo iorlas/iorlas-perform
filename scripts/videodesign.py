@@ -157,9 +157,13 @@ def _match_camera(prev_shot: dict[str, Any], prev_obj: dict[str, Any], obj: dict
     return [round((obj["at"][0] + obj["w"] / 2) - rcx * w, 1), round((obj["top"] + obj["bottom"]) / 2 - rcy * h, 1), round(w, 1), round(h, 1)]
 
 
-def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any]) -> dict[str, Any]:
+def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any], report: dict[str, Any] | None = None) -> dict[str, Any]:
     """Scene sheet from a design file. Voices on screen get their own rig (layout cast, overridden by the design); anything
-    unlisted that is not off screen is an error. Positions come from videoscene (relations), never from pixels."""
+    unlisted that is not off screen is an error. Positions come from videoscene (relations), never from pixels.
+
+    `report` (pre-production): a dict that collects the framing defects (cropped subject, seated without legs hidden, a named object
+    not in frame) as `report["problems"]` instead of raising on the first one, and the resolved subject boxes per shot as
+    `report["shots"][scene title][shot id]`. Without it the first defect raises, as the full render needs."""
     if design.get("schema") != DESIGN:
         msg = f"design file schema must be {DESIGN}"
         raise ValueError(msg)
@@ -255,7 +259,12 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             out.append({"id": cid, "offset": st["offset"], "pose": st.get("pose", "stand_still"), **{k: st[k] for k in ("scale", "clip_y_max", "filter", "deck") if k in st}, **({"seated": True} if st.get("seated") else {}), **({} if isinstance(c, str) else {k: v for k, v in c.items() if k != "id"})})
         return out
 
-    def check_legs(shot_id: str, set_name: str, ids: list[str], cam: dict[str, Any]) -> None:
+    def defect(kind: str, scene: str, shot_id: str, msg: str) -> None:
+        if report is None:
+            raise ValueError(msg)
+        report.setdefault("problems", []).append({"kind": kind, "scene": scene, "shot": shot_id, "message": msg})
+
+    def check_legs(shot_id: str, set_name: str, ids: list[str], cam: dict[str, Any], scene: str = "") -> None:
         """A seated character (rigs draw hips-up, no seated pose) is fine when a solid front object stands over his missing
         legs (top above the hips, bottom on the floor, wider than he is); otherwise the camera must stay above the hips."""
         bottom = max(cam["viewBox"][1] + cam["viewBox"][3], (cam.get("push_to") or [0, 0, 0, 0])[1] + (cam.get("push_to") or [0, 0, 0, 0])[3])
@@ -266,9 +275,8 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             dim = videoscene.rig_dim(by_id[cid]["rig"])["dim"]
             covers = [o for o in solved[set_name].values() if o.get("front") and abs(o["cx"] - st["offset"][0]) <= o["w"] / 2 - dim["sw"] and o["top"] <= st["hip_y"] and o["bottom"] >= stage["floor"] - 5]
             if not covers and bottom > st["hip_y"]:
-                msg = (f"shot {shot_id}: {cid} is seated but {by_id[cid]['rig']} has no seated pose and nothing solid (a front object from above his hips to the floor) "
-                       f"hides his missing legs; the camera shows down to y={bottom:.0f}, below his hips (y={st['hip_y']:.0f}): crop higher, add a desk, or wait for a rig version with a seated pose")
-                raise ValueError(msg)
+                defect("legs", scene, shot_id, (f"shot {shot_id}: {cid} is seated but {by_id[cid]['rig']} has no seated pose and nothing solid (a front object from above his hips to the floor) "
+                       f"hides his missing legs; the camera shows down to y={bottom:.0f}, below his hips (y={st['hip_y']:.0f}): crop higher, add a desk, or wait for a rig version with a seated pose"))
 
     scenes: dict[str, Any] = {}
     all_props: dict[str, Any] = {}
@@ -320,20 +328,25 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
                 start = _match_camera(prev_last[0], solved[prev_last[1]][match["from"]], solved[sset][match["to"]])
                 out["camera"] = {"viewBox": start, **({"push_to": out["camera"]["viewBox"]} if sh.get("pull_out") else {})}
                 out["match"] = match
-            check_legs(sh["id"], sset, ids, out["camera"])
+            check_legs(sh["id"], sset, ids, out["camera"], s["title"])
             for subj in sh.get("subjects", []):  # what the beat is about must be in frame: a framing that cuts it off is an error, not a taste
                 box = subject_box(sset, subj)
+                if report is not None:
+                    report.setdefault("shots", {}).setdefault(s["title"], {}).setdefault(sh["id"], {})[subj] = [round(v, 1) for v in box]
                 for x, y, w, h in (out["camera"]["viewBox"], out["camera"].get("push_to") or out["camera"]["viewBox"]):
                     if not (x <= box[0] and box[0] + box[2] <= x + w and y <= box[1] and box[1] + box[3] <= y + h):
-                        msg = f'shot {sh["id"]}: subject "{subj}" {[round(v) for v in box]} is not fully inside the camera {[round(v) for v in (x, y, w, h)]}: frame it, or take it out of the shot\'s subjects'
-                        raise ValueError(msg)
+                        defect("crop", s["title"], sh["id"], f'shot {sh["id"]}: subject "{subj}" {[round(v) for v in box]} is not fully inside the camera {[round(v) for v in (x, y, w, h)]}: frame it, or take it out of the shot\'s subjects')
+                        break
+            if report is not None:  # where each cast member's head is, for the pre-production framing gate (a face cut by the frame edge)
+                for cid in ids:
+                    report.setdefault("cast", {}).setdefault(s["title"], {}).setdefault(sh["id"], {})[cid] = [round(v, 1) for v in subject_box(sset, cid)]
             if "inset" in sh:
                 ins = sh["inset"]
                 iset = ins["set"]
                 iids = [c if isinstance(c, str) else c["id"] for c in ins["cast"]]
                 ifocus = ins.get("focus") or iids[0]
                 icam = {"viewBox": ins["view"]} if "view" in ins else _camera(ins.get("frame", "medium"), focus_xy(iset, ifocus, {}), layout, None, ins.get("camera"), ins["rect"][2] * 16 / (ins["rect"][3] * 9))
-                check_legs(sh["id"] + " inset", iset, iids, icam)
+                check_legs(sh["id"] + " inset", iset, iids, icam, s["title"])
                 out["inset"] = {**{k: v for k, v in ins.items() if k not in {"frame", "focus", "view", "slide"}}, **({"slide": {"at": at(ins["slide"]["beat"], ins["slide"].get("offset", 0.0)), "dur": ins["slide"].get("dur", 0.8)}} if "slide" in ins else {}), "cast": cast_entries(iset, ins["cast"]), "camera": icam["viewBox"]}
                 ids += iids
             for i in ids:
@@ -346,8 +359,7 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
                 if not any(m.casefold() in said for m in o.get("mentions", [])):
                     continue
                 if not any(_frame_has(sh, solved, o["id"]) for sh in shots if b in sh["beats"]):
-                    msg = f'scene "{s["title"]}" beat {b} says «{o["mentions"][0]}», but no shot of that beat shows "{o["id"]}" in frame'
-                    raise ValueError(msg)
+                    defect("mention", s["title"], "", f'scene "{s["title"]}" beat {b} says «{o["mentions"][0]}», but no shot of that beat shows "{o["id"]}" in frame')
         for i in d.get("assets", []):  # actors that are loaded for the scene but never placed on stage (the AI lives on screens)
             used.setdefault(i, {k: v for k, v in by_id[i].items() if k not in {"expr", "expr_map", "offset"}})
         cues: list[dict[str, Any]] = []

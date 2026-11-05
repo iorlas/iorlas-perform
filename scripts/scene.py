@@ -180,7 +180,9 @@ def speak_turn(
     path = args.takes / f"{take_key(item, args, levels)}.wav"
     if path.exists() and not args.fresh:  # the same line, voice and settings as a past run
         COUNTS["cached"] += 1
-        return level_hushed(sf.read(path, dtype="float32")[0], sr, item)
+        cached = sf.read(path, dtype="float32")[0]
+        index_take(args.takes, path.stem, item, len(cached) / sr)
+        return level_hushed(cached, sr, item)
     COUNTS["rendered"] += 1
     audio = said_right(model, item, ref, args)
     if args.speed != 1.0 or semitones_of(levels, item.voice):
@@ -196,7 +198,21 @@ def speak_turn(
         if (peak := np.abs(audio).max()) > TURN_PEAK:
             audio *= TURN_PEAK / peak
     sf.write(path, audio, sr)
+    index_take(args.takes, path.stem, item, len(audio) / sr)
     return level_hushed(audio, sr, item)
+
+
+_INDEXED: dict[Path, set[str]] = {}
+
+
+def index_take(takes: Path, key: str, item: Turn, seconds: float) -> None:
+    """takes/index.jsonl: which voice and text a cached take is, so `video.py animatic --scratch-audio` can find scratch voice without rendering."""
+    f = takes / "index.jsonl"
+    seen = _INDEXED.setdefault(takes, {json.loads(x)["key"] for x in f.read_text().splitlines()} if f.exists() else set())
+    if key not in seen:
+        seen.add(key)
+        with f.open("a") as out:
+            out.write(json.dumps({"key": key, "voice": item.voice, "text": item.text, "phone": item.phone, "seconds": round(seconds, 3)}, ensure_ascii=False) + "\n")
 
 
 def level_hushed(audio: np.ndarray, sr: int, item: Turn) -> np.ndarray:
