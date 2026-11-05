@@ -103,8 +103,8 @@ EDGE_IN, EDGE_OUT = 0.01, 0.06  # seconds of fade on each clip's edges: no hiss 
 TURN_PEAK = 10 ** (-1 / 20)  # -1 dBFS: the gain may raise a voice, never past clipping
 # Whispered and hushed turns come out 5-15 dB under a normal line: bring their speech level up to a
 # target (dBFS RMS over the spoken frames), never down, never past TURN_PEAK. Normal speech sits near -16.
-WHISPER_TAG = re.compile(r"\[[^\]]*\b(whisper\w*|hiss\w*)[^\]]*\]", re.I)
-HUSH_TAG = re.compile(r"\[[^\]]*\b(quiet|tiny voice|barely audible|soft|low voice)[^\]]*\]", re.I)
+WHISPER_TAG = re.compile(r"\[[^\]]*\b(whisper\w*|hiss\w*)[^\]]*\]", re.IGNORECASE)
+HUSH_TAG = re.compile(r"\[[^\]]*\b(quiet|tiny voice|barely audible|soft|low voice)[^\]]*\]", re.IGNORECASE)
 WHISPER_RMS_DB, HUSH_RMS_DB = -19.0, -21.0
 STAGES = dict.fromkeys(("load", "warm-up", "lines", "asr", "mix", "master"), 0.0)  # seconds, for the closing log line
 PACE: dict[str, list[float]] = {}  # voice -> seconds per spoken character of its accepted takes

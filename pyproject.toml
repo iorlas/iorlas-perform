@@ -42,6 +42,10 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 # Relaxations are written down here, never silent.
+"tests/*" = [
+    "S101",  # pytest asserts
+    "ANN201",  # test functions return nothing
+]
 "scripts/ambience.py" = [
     "PLR0917",  # the DSP helpers read (n, sr, rng, ...) like numpy signatures; call sites name the tail
 ]
