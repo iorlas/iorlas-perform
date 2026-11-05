@@ -1,6 +1,5 @@
 {
  "schema": "scene-design/2",
- "partial": true,
  "stage": {
   "H": 742,
   "floor": 478
@@ -88,6 +87,38 @@
      "front": true
     }
    ]
+  },
+  "setC_meeting": {
+   "art": "set_c",
+   "remove": [
+    "setC_meeting_wall_screen",
+    "setC_meeting_kristina_sticky",
+    "setC_meeting_ring_light",
+    "setC_meeting_kristina_notebook"
+   ],
+   "characters": {
+    "palych": {
+     "slot": "setC_slot_palych"
+    },
+    "vadik": {
+     "slot": "setC_slot_vadik"
+    }
+   },
+   "props": [
+    {
+     "id": "phone_card",
+     "svg": "<g><rect x=\"866\" y=\"450\" width=\"30\" height=\"19\" rx=\"3\" fill=\"#2b3345\"/><rect x=\"868\" y=\"452\" width=\"26\" height=\"15\" rx=\"2\" fill=\"#fbf0dc\"/><text x=\"881\" y=\"460\" font-family=\"Helvetica,Arial,sans-serif\" font-size=\"5.5\" font-weight=\"700\" fill=\"#1f3a6e\" text-anchor=\"middle\">Мама</text><text x=\"881\" y=\"465.5\" font-family=\"Helvetica,Arial,sans-serif\" font-size=\"3.4\" fill=\"#c0392b\" text-anchor=\"middle\">звонит…</text></g>",
+     "at": [
+      0,
+      0
+     ],
+     "front": true
+    }
+   ]
+  },
+  "setF_moscow": {
+   "svg_file": "set_f_wide",
+   "characters": {}
   }
  },
  "screens": {},
@@ -656,6 +687,443 @@
        "name": "НЕЙРОСЕТЬ",
        "text": "Врать можно только про опыт. Про файл — нельзя, Вадим.",
        "beat": 3,
+       "fade": true
+      }
+     ]
+    }
+   ]
+  },
+  "Переговорная, ровно два": {
+   "set": "setC_meeting",
+   "transition_out": {
+    "type": "time_card",
+    "text": "15:10",
+    "card": "time_3",
+    "dur": 1.2
+   },
+   "overlays_all": [
+    {
+     "kind": "wall",
+     "space": "set",
+     "rect": [
+      975,
+      86,
+      336,
+      210
+     ],
+     "fade": false,
+     "beat": 1,
+     "states": [
+      {
+       "beat": 1,
+       "offset": 0,
+       "lines": [
+        "Правило 1. Врать — только про опыт. В остальном — честно.",
+        "Правило 2. Бери трубку, если звонит Мама.",
+        "Правило 3. Правила не менять.",
+        "Правило 4. Палыч пусть идёт на хуй со своей тушёнкой."
+       ],
+       "hi": null,
+       "nod": false
+      },
+      {
+       "beat": 2,
+       "offset": 0,
+       "lines": [
+        "Правило 1. Врать — только про опыт. В остальном — честно.",
+        "Правило 2. Бери трубку, если звонит Мама.",
+        "Правило 3. Правила не менять.",
+        "Правило 4. Палыч пусть идёт на хуй со своей тушёнкой."
+       ],
+       "hi": 0,
+       "nod": false
+      },
+      {
+       "beat": 3,
+       "offset": 0,
+       "lines": [
+        "Правило 1. Врать — только про опыт. В остальном — честно.",
+        "Правило 2. Бери трубку, если звонит Мама.",
+        "Правило 3. Правила не менять.",
+        "Правило 4. Палыч пусть идёт на хуй со своей тушёнкой."
+       ],
+       "hi": 1,
+       "nod": false
+      },
+      {
+       "beat": 6,
+       "offset": 0,
+       "lines": [
+        "Правило 1. Врать — только про опыт. В остальном — честно.",
+        "Правило 2. Бери трубку, если звонит Мама.",
+        "Правило 3. Правила не менять.",
+        "Правило 4. Палыч пусть идёт на хуй со своей тушёнкой."
+       ],
+       "hi": null,
+       "nod": false
+      },
+      {
+       "beat": 9,
+       "offset": 0,
+       "lines": [
+        "Правило 1. Врать — только про опыт. В остальном — честно.",
+        "Правило 2. Бери трубку, если звонит Мама.",
+        "Правило 3. Правила не менять.",
+        "Правило 4. Палыч пусть идёт на хуй со своей тушёнкой."
+       ],
+       "hi": 3,
+       "nod": false
+      },
+      {
+       "beat": 11,
+       "offset": 0,
+       "lines": [
+        "Правило 1. Врать — только про опыт. В остальном — честно.",
+        "Правило 2. Бери трубку, если звонит Мама.",
+        "Правило 3. Правила не менять.",
+        "Правило 4. Палыч пусть идёт на хуй со своей тушёнкой."
+       ],
+       "hi": null,
+       "nod": true
+      }
+     ]
+    }
+   ],
+   "cues": [
+    {
+     "beat": 2,
+     "actor": "palych",
+     "expr": "clerk"
+    },
+    {
+     "beat": 2,
+     "offset": 4.33,
+     "actor": "palych",
+     "expr": "proud"
+    },
+    {
+     "beat": 3,
+     "actor": "palych",
+     "expr": "clerk"
+    },
+    {
+     "beat": 4,
+     "actor": "palych",
+     "expr": "blank"
+    },
+    {
+     "beat": 7,
+     "actor": "palych",
+     "expr": "bark"
+    },
+    {
+     "beat": 9,
+     "actor": "palych",
+     "expr": "pretend"
+    },
+    {
+     "beat": 10,
+     "actor": "palych",
+     "expr": "blank"
+    },
+    {
+     "beat": 12,
+     "actor": "palych",
+     "expr": "blank"
+    },
+    {
+     "beat": 7,
+     "actor": "vadik",
+     "expr": "shame"
+    },
+    {
+     "beat": 11,
+     "actor": "vadik",
+     "expr": "shame"
+    }
+   ],
+   "shots": [
+    {
+     "id": "4.1",
+     "beats": [
+      1
+     ],
+     "frame": "wide",
+     "view": [
+      500,
+      20,
+      780,
+      438.75
+     ],
+     "cast": [
+      "palych"
+     ],
+     "intent": "medium-wide: the wall display with Москва and the file; table cropped at the bottom"
+    },
+    {
+     "id": "4.2",
+     "beats": [
+      2
+     ],
+     "frame": "medium",
+     "view": [
+      520,
+      100,
+      520,
+      292.5
+     ],
+     "cast": [
+      "palych"
+     ],
+     "intent": "Палыч left third reads, approving; the screen small, off his face"
+    },
+    {
+     "id": "4.3",
+     "beats": [
+      3
+     ],
+     "offset": 6.11,
+     "frame": "close",
+     "view": [
+      545,
+      195,
+      190,
+      107
+     ],
+     "cast": [
+      "palych"
+     ],
+     "intent": "the quiet beat"
+    },
+    {
+     "id": "4.4",
+     "beats": [
+      5
+     ],
+     "frame": "insert",
+     "view": [
+      820,
+      428,
+      120,
+      67.5
+     ],
+     "cast": [],
+     "intent": "the phone card «Мама» on the table"
+    },
+    {
+     "id": "4.5",
+     "beats": [
+      7
+     ],
+     "offset": 1.68,
+     "frame": "close",
+     "view": [
+      336,
+      150,
+      280,
+      157.5
+     ],
+     "cast": [
+      "vadik"
+     ],
+     "intent": "Вадик close-up; the call frame slides in from the right only here",
+     "inset": {
+      "set": "setA_kitchen_noon",
+      "cast": [
+       {
+        "id": "mama",
+        "pose": "phone_ear"
+       }
+      ],
+      "rect": [
+       0.7,
+       0.06,
+       0.28,
+       0.7
+      ],
+      "view": [
+       270,
+       90,
+       300,
+       487
+      ],
+      "style": "caller",
+      "name": "Мама",
+      "rot": 4,
+      "slide": {
+       "beat": 8,
+       "offset": 0.0,
+       "dur": 0.8
+      }
+     }
+    },
+    {
+     "id": "4.6",
+     "beats": [
+      9
+     ],
+     "frame": "close",
+     "view": [
+      545,
+      195,
+      190,
+      107
+     ],
+     "push_to": [
+      575,
+      210,
+      130,
+      73.1
+     ],
+     "cast": [
+      "palych"
+     ],
+     "intent": "push-in on Палыч's face, flat; line 4 lit on the wall"
+    },
+    {
+     "id": "4.7",
+     "beats": [
+      10
+     ],
+     "frame": "close",
+     "view": [
+      550,
+      195,
+      180,
+      101
+     ],
+     "cast": [
+      "palych"
+     ],
+     "intent": "stubborn, no inset"
+    },
+    {
+     "id": "4.8",
+     "beats": [
+      11
+     ],
+     "frame": "medium",
+     "view": [
+      300,
+      50,
+      980,
+      551
+     ],
+     "cast": [
+      "palych",
+      "vadik"
+     ],
+     "intent": "Вадик small, low in frame; the Москва tile nods"
+    }
+   ]
+  },
+  "Москва, сорок второй этаж": {
+   "set": "setF_moscow",
+   "cues": [],
+   "shots": [
+    {
+     "id": "5.1",
+     "beats": [
+      1
+     ],
+     "frame": "wide",
+     "view": [
+      0,
+      0,
+      1280,
+      720
+     ],
+     "cast": [],
+     "intent": "three silhouettes at the glass wall"
+    },
+    {
+     "id": "5.2",
+     "beats": [
+      1
+     ],
+     "offset": 7.83,
+     "frame": "medium",
+     "view": [
+      630,
+      459,
+      360,
+      202.5
+     ],
+     "cast": [],
+     "intent": "the signing hand, the order"
+    },
+    {
+     "id": "5.3",
+     "beats": [
+      2
+     ],
+     "frame": "insert",
+     "view": [
+      0,
+      0,
+      1280,
+      720
+     ],
+     "cast": [],
+     "intent": "the résumé table: forty rows, all twelve",
+     "overlays": [
+      {
+       "kind": "resume",
+       "rect": [
+        0,
+        0,
+        1,
+        1
+       ],
+       "beat": 2,
+       "fade": true
+      }
+     ]
+    },
+    {
+     "id": "5.4",
+     "beats": [
+      3
+     ],
+     "frame": "close",
+     "view": [
+      0,
+      0,
+      1280,
+      720
+     ],
+     "cast": [],
+     "intent": "the row Вадик: 12 flips to 13, then the end card",
+     "overlays": [
+      {
+       "kind": "resume",
+       "rect": [
+        0,
+        0,
+        1,
+        1
+       ],
+       "zoom": 3.2,
+       "beat": 3,
+       "fade": false,
+       "states": [
+        {
+         "beat": 3,
+         "offset": 1.23
+        }
+       ]
+      },
+      {
+       "kind": "card",
+       "card": "end_1",
+       "rect": [
+        0,
+        0,
+        1,
+        1
+       ],
+       "beat": 3,
+       "offset": 2.83,
        "fade": true
       }
      ]

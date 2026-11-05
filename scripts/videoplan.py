@@ -290,6 +290,8 @@ def shots_v2(d: dict[str, Any], sheet: dict[str, Any], group: dict[str, Any], an
     for i, sh in enumerate(d["shots"]):
         t0 = 0.0 if i == 0 else round(max(0.0, anchor(sh["at"]) - sh.get("lead", 0.15)), 3)
         shots.append({k: v for k, v in sh.items() if k not in {"at", "overlays"}} | {"t0": t0})
+        if "slide" in sh.get("inset", {}):  # the call frame slides in from the right edge at this anchor
+            shots[-1]["inset"] = {**sh["inset"], "slide": {"t0": round(anchor(sh["inset"]["slide"]["at"]), 3), "dur": sh["inset"]["slide"]["dur"]}}
         if sh.get("overlays"):  # overlay anchors -> scene seconds; one without `until` stays to the end of its shot (set below)
             shots[-1]["overlays"] = [
                 {**{k: v for k, v in o.items() if k not in {"at", "until", "grow", "states"}}, "t0": round(anchor(o["at"]), 3),

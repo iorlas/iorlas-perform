@@ -243,10 +243,22 @@
     });
     return out;
   }
+  // The call frame: slides in from the right edge (overshoots a little, "lands"), tilted by `rot` degrees.
   function drawInset(sh, t, vb) {
     var ins = sh.inset; if (!ins) return "";
+    var sl = ins.slide, r = ins.rect, c = 1.70158;
+    if (sl) {
+      if (t < sl.t0) return "";
+      var u = Math.min(1, (t - sl.t0) / sl.dur), e = 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2);
+      sh = Object.assign({}, sh, { inset: Object.assign({}, ins, { rect: [r[0] + (1 - e) * (1.05 - r[0]), r[1], r[2], r[3]] }) });
+    }
+    var o = drawInset0(sh, t, vb);
+    return ins.rot ? '<g transform="rotate(' + ins.rot + " " + (vb[0] + (sh.inset.rect[0] + r[2] / 2) * vb[2]) + " " + (vb[1] + (r[1] + r[3] / 2) * vb[3]) + ')">' + o + "</g>" : o;
+  }
+  function drawInset0(sh, t, vb) {
+    var ins = sh.inset; if (!ins) return "";
     var r = ins.rect, x = vb[0] + r[0] * vb[2], y = vb[1] + r[1] * vb[3], w = r[2] * vb[2], h = r[3] * vb[3], iv = ins.camera, id = "inset_" + sh.id, rad = (ins.radius || 0.03) * vb[2];
-    var inner = drawSet(ins.set, iv) + ((S.sets || {})[ins.set] ? ((S.sets[ins.set].props || []).map(function (p) { return drawProp(p, t); }).join("")) : "") + drawCast(actorsOf(sh, ins.cast), t);
+    var idef = (S.sets || {})[ins.set] || {}, inner = drawSet(ins.set, iv) + (idef.props || []).filter(function (p) { return !p.front; }).map(function (p) { return drawProp(p, t); }).join("") + drawCast(actorsOf(sh, ins.cast), t) + (idef.front || "") + (idef.props || []).filter(function (p) { return p.front; }).map(function (p) { return drawProp(p, t); }).join("");
     return '<clipPath id="' + id + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rad + '"/></clipPath><g clip-path="url(#' + id + ')"><svg x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" viewBox="' + iv.join(" ") + '" preserveAspectRatio="xMidYMid slice">' + inner + '</svg></g><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rad + '" fill="none" stroke="#f3e9d2" stroke-width="' + vb[2] * 0.004 + '"/>' + caller(ins, t, x, y, w, h, id, rad);
   }
   // Phone call card: name bar and a ringing animation over the inset (style "caller"); the avatar is the character's own head, lip-synced while he speaks.
@@ -332,7 +344,33 @@
     return o;
   }
   function glow(ov, x, y, w, h) { return '<radialGradient id="gl' + ov.t0 + '"><stop offset="0" stop-color="' + ov.color + '" stop-opacity="0.95"/><stop offset="1" stop-color="' + ov.color + '" stop-opacity="0"/></radialGradient><ellipse cx="' + (x + w / 2) + '" cy="' + (y + h / 2) + '" rx="' + w + '" ry="' + h * 1.3 + '" fill="url(#gl' + ov.t0 + ')"/>'; }
-  var OVER = { voice_card: voiceCard, waveform: waveCard, crt: crtRules, tape: tape, bubble: bubble, glow: glow };
+  function cardOv(ov, x, y, w, h) { return '<svg x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" viewBox="0 0 1280 720">' + ov.card_svg + "</svg>"; }
+  // The wall display of the meeting room: Москва call tile (silent, three owners as small silhouettes, nodding) + the rules file, the current line loud.
+  function wallDisplay(ov, x, y, w, h, t) {
+    var st = ov.states.filter(function (k) { return k.t0 <= t; }).pop() || ov.states[0], o = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="9" fill="#26324a"/><rect x="' + (x + w * 0.03) + '" y="' + (y + h * 0.05) + '" width="' + w * 0.94 + '" height="' + h * 0.9 + '" rx="5" fill="#10192b"/>';
+    var tx = x + w * 0.05, ty = y + h * 0.1, tw = w * 0.27, th = h * 0.8;
+    o += '<rect x="' + tx + '" y="' + ty + '" width="' + tw + '" height="' + th * 0.62 + '" rx="4" fill="#3b4a66"/>' + T("Москва", tx + tw / 2, ty + th * 0.74, h * 0.07, "#8fa1b8", "middle", 700);
+    for (var i = 0; i < 3; i++) { var nod = st.nod ? Math.sin(t * 5 + i * 1.3) * h * 0.012 : 0, cx = tx + tw * (0.2 + i * 0.3); o += '<ellipse cx="' + cx + '" cy="' + (ty + th * 0.2 + nod) + '" rx="' + tw * 0.08 + '" ry="' + tw * 0.09 + '" fill="#1d2636"/><path d="M' + (cx - tw * 0.12) + " " + (ty + th * 0.55) + " q" + tw * 0.12 + " -" + th * 0.25 + " " + tw * 0.24 + ' 0 Z" fill="#1d2636"/>'; }
+    var lx = x + w * 0.36, fs = h * 0.056, first = Math.max(0, Math.min(st.lines.length - 2, (st.hi == null ? 0 : st.hi)));
+    o += T("rules.md", lx, y + h * 0.18, fs * 0.8, "#5f7396", "start", 700);
+    st.lines.slice(first, first + 2).forEach(function (l, j) {
+      var cur = first + j === st.hi, ls = wrapText(l, Math.floor(w * 0.6 / (fs * (cur ? 0.56 : 0.5))));
+      ls.forEach(function (q, k) { o += T(q, lx, y + h * (0.34 + j * 0.34) + k * fs * 1.2, cur ? fs : fs * 0.82, cur ? "#ffe9a8" : "#4c5f82", "start", cur ? 700 : 600); });
+    });
+    return o;
+  }
+  // A table of forty résumés: all «12 лет»; the one row that changes (Вадик) flips to 13 and is lit. `zoom` pushes the camera on that row.
+  function resume(ov, x, y, w, h, t) {
+    var fl = ov.states && ov.states[0] && t >= ov.states[0].t0, z = ov.zoom || 1, o = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="#f4efe4"/>', cols = 4, rows = 10, vr = 6, vc = 2;
+    var rw = w / cols, rh = h / rows, cx = x + vc * rw + rw / 2, cy = y + vr * rh + rh / 2, k = z, tr = k === 1 ? "translate(0 0)" : 'translate(' + (x + w / 2 - cx * k) + " " + (y + h / 2 - cy * k) + ") scale(" + k + ")";
+    o += '<clipPath id="rcl"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '"/></clipPath><g clip-path="url(#rcl)"><g transform="' + tr + '">';
+    for (var i = 0; i < 40; i++) {
+      var c = Math.floor(i / rows), r = i % rows, me = c === vc && r === vr, rx = x + c * rw, ry = y + r * rh, v = me && fl ? 13 : 12;
+      o += '<rect x="' + (rx + 3) + '" y="' + (ry + 3) + '" width="' + (rw - 6) + '" height="' + (rh - 6) + '" rx="4" fill="' + (me && fl ? "#f1c85a" : "#e5dcc6") + '"/>' + T(me ? "Вадик" : ["Орлов", "Белов", "Попов", "Исаев", "Громов", "Зайцев", "Седов", "Ким", "Лис", "Тихонов"][(i * 3) % 10], rx + rw * 0.08, ry + rh * 0.66, rh * 0.42, "#2c3a52", "start", 700) + T(v + " лет", rx + rw * 0.92, ry + rh * 0.66, rh * 0.42, me && fl ? "#b3261e" : "#7a6f58", "end", 700);
+    }
+    return o + "</g></g>";
+  }
+  var OVER = { card: cardOv, wall: wallDisplay, resume: resume, voice_card: voiceCard, waveform: waveCard, crt: crtRules, tape: tape, bubble: bubble, glow: glow };
   function overlays(sh, t, vb) {
     var o = "";
     (sh.overlays || []).forEach(function (ov) {
@@ -351,7 +389,10 @@
     var out = drawSet(set, vb);
     var def = (S.sets || {})[set], props = ((def && def.props) || []).concat(sh.props || []);
     out += props.filter(function (p) { return !p.front; }).map(function (p) { return drawProp(p, t); }).join("");
-    out += drawCast(actorsOf(sh, sh.cast), t);
+    var cast = actorsOf(sh, sh.cast);
+    out += drawCast(cast.filter(function (a) { return a.deck !== "cast_front"; }), t);
+    out += (def && def.mid) || "";   // a set with two cast layers: the furniture between them (a table in front of the one behind it)
+    out += drawCast(cast.filter(function (a) { return a.deck === "cast_front"; }), t);
     out += (def && def.front) || "";   // a drawn set: its layers in front of the cast (island, table, foreground)
     out += props.filter(function (p) { return p.front; }).map(function (p) { return drawProp(p, t); }).join(""); // in front of the cast: a person behind a desk
     if (sh.look === "hatch") out = hatch(out, vb);

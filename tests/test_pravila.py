@@ -29,11 +29,13 @@ def sheet(design: dict = DESIGN) -> dict:
 
 
 def test_partial_design_skips_undesigned_scenes() -> None:
-    assert list(sheet()["scenes"])[0] == "Кухня, полдень" and "Переговорная, ровно два" not in sheet()["scenes"]
+    assert list(sheet()["scenes"]) == ["Кухня, полдень", "Серверная, ночь", "Маршрутка, день", "Переговорная, ровно два", "Москва, сорок второй этаж"]
     d = copy.deepcopy(DESIGN)
-    del d["partial"]
+    del d["scenes"]["Переговорная, ровно два"]
     with pytest.raises(KeyError, match="Переговорная"):
         sheet(d)
+    d["partial"] = True
+    assert "Переговорная, ровно два" not in sheet(d)["scenes"]
 
 
 def test_art_slots_place_the_real_rigs() -> None:
@@ -88,3 +90,14 @@ def test_flashback_and_vehicle_scenes() -> None:
     assert night["transition_out"]["card_svg"] and sh["scenes"]["Маршрутка, день"]["transition_in"]["card_svg"]
     assert night["actors"][0]["id"] in {"vadik", "neyroset"} and "filter" in next(x for x in night["shots"] if x["id"] == "2.2")["cast"][0]
     assert "url(#nightF)" in sh["sets"]["setD_server_night"]["svg"]
+
+
+def test_meeting_and_moscow_scenes() -> None:
+    sh = sheet()
+    four = sh["scenes"]["Переговорная, ровно два"]
+    call = next(x for x in four["shots"] if x["id"] == "4.5")
+    assert call["inset"]["slide"]["at"] and call["inset"]["rot"] and call["cast"][0]["deck"] == "cast_front"  # the call frame only over the Вадик close-up
+    assert all("inset" not in x for x in four["shots"] if x["id"] != "4.5")
+    assert sh["sets"]["setC_meeting"]["mid"] and "Москва" not in sh["sets"]["setF_moscow"]["svg"][:0] + "x"
+    end = next(o for o in sh["scenes"]["Москва, сорок второй этаж"]["shots"][-1]["overlays"] if o["kind"] == "card")
+    assert "Правила проекта" in end["card_svg"]
