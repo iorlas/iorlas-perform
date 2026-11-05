@@ -13,23 +13,7 @@
   "palych": {},
   "kristina": {},
   "ai": {},
-  "mama": {
-   "id": "mama",
-   "rig": "friend@1.0.1",
-   "layer": 2,
-   "pose": "stand_still",
-   "expr": "neutral",
-   "stand_in": "BLOCKER: no mama rig exists (sheet says mama 1.0.0); friend@1.0.1 stands in until a Mama rig is drawn",
-   "expr_map": {
-    "warm": "smile",
-    "loud": "surprised",
-    "curious": "surprised",
-    "proud": "smile",
-    "delighted": "laughing",
-    "excited": "laughing",
-    "anxious": "embarrassed"
-   }
-  }
+  "mama": {}
  },
  "story": "Morning, Мама feeds Вадик and he lies «тимлид по качеству». Office: 14 red tests, the AI offers to delete the tests folder, he agrees, all green («100 % от нуля»). Meeting room: Палыч is delighted, makes him the lead for real, Мама calls, he tells her the truth by accident.",
  "sets": {
@@ -141,9 +125,9 @@
    ],
    "characters": {
     "mama": {
-     "x": -0.25,
-     "pose": "stand_still",
-     "role": "Stands between stove and table, feeding him with her eyes."
+     "x": -0.45,
+     "pose": "stir_hold",
+     "role": "Stands at the stove stirring, turned to the table."
     },
     "vadik": {
      "seated_on": "chair",
@@ -861,7 +845,7 @@
       "cast": [
        {
         "id": "mama",
-        "pose": "phone_hold"
+        "pose": "phone_ear"
        }
       ],
       "rect": [
@@ -892,7 +876,7 @@
       "cast": [
        {
         "id": "mama",
-        "pose": "phone_hold"
+        "pose": "phone_ear"
        }
       ],
       "rect": [

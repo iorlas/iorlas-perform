@@ -12,13 +12,13 @@
     return Math.min(0.9, m.samples[f]);
   }
   function rigOf(a) {
-    var id = a.rig.split("@")[0];   // the female rigs (kristina, friend) register no HF.RIG entry: expressions in HF.EXPR_F[id], poses in the shared HF.POSES_F
-    return HF.RIG[id] || { expr: HF.EXPR_F && HF.EXPR_F[id], poses: HF.POSES_F, draw: HF.RIGS[id], default_expression: "neutral" };
+    var id = a.rig.split("@")[0], snap = HF.SNAP && HF.SNAP[id];   // the female rigs (kristina, friend, mama) register no HF.RIG entry; their module is shared, so the loader snapshots each one's draw, expressions and poses
+    return HF.RIG[id] || { expr: snap && snap.expr, poses: snap && snap.poses, draw: snap && snap.draw, default_expression: "neutral" };
   }
   // Rigs register differently: expressions/poses on the rig (mihalych, palych) or in the shared HF.EXPR/HF.POSES (vadik); draw as HF.RIGS[id](st) or rig.draw(st).
   function exprs(rig) { return rig.expr || HF.EXPR; }
   function poses(rig) { return rig.poses || HF.POSES; }
-  function drawFn(rig, a) { var f = HF.RIGS && HF.RIGS[a.rig.split("@")[0]]; return f || rig.draw.bind(rig); }
+  function drawFn(rig, a) { var id = a.rig.split("@")[0], f = (HF.SNAP && HF.SNAP[id] && HF.SNAP[id].draw) || (HF.RIGS && HF.RIGS[id]); return f || rig.draw.bind(rig); }
 
   // Pose = the rig's named pose + the actor's static override + the pose track key's override (hand targets, head turn), eased over 0.3 s between keys.
   function isObj(x) { return x && typeof x === "object" && !Array.isArray(x); }

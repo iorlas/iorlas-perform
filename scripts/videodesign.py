@@ -28,6 +28,7 @@ DESIGN = "scene-design/2"
 SHEET = "scene-sheet/2"
 ROOT = Path(__file__).resolve().parent.parent / "video"
 PLACEHOLDERS = ROOT / "placeholders.json"
+RIGS = ROOT / "rigs"
 
 
 def beats(tl: dict[str, Any], scene: dict[str, Any]) -> list[int]:
@@ -85,13 +86,15 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
     stage = design["stage"]
     off = set(design.get("offscreen", layout.get("offscreen", ["narrator"])))
     cast = {v: {**layout["cast"][v], **ov} for v, ov in design.get("cast", {}).items() if v in layout["cast"]}
-    for v, ov in design.get("cast", {}).items():  # a stand-in: a character with no rig of its own, played by another rig, said so in the file
-        if v not in layout["cast"] and ov.get("stand_in") and "rig" in ov and "id" in ov:
-            cast[v] = ov
     missing = sorted({e["voice"] for e in tl["entries"] if "turn" in e} - set(cast) - off)
-    if missing or (bad := sorted(set(design.get("cast", {})) - set(layout["cast"]) - set(cast))):
+    if missing or (bad := sorted(set(design.get("cast", {})) - set(layout["cast"]))):
         msg = f"voices with no rig in video/layout.json (add a cast entry, or list under offscreen): {', '.join(missing or bad)}"
         raise ValueError(msg)
+    for v, c in cast.items():  # a character plays its own frozen rig: a missing one is an error, never a stand-in
+        rid, ver = c["rig"].split("@")
+        if c["id"] != rid or not (RIGS / rid / ver / "rig.lock").exists():
+            msg = f'voice "{v}": rig {c["rig"]} is not a frozen rig of its own (actor "{c["id"]}"): no stand-ins, add the rig or fix video/layout.json'
+            raise ValueError(msg)
     by_id = {c["id"]: c for c in cast.values()}
     voice_of = {c["id"]: v for v, c in cast.items()}
     merged = {n: videoscene.merge_set(design["sets"], n) for n in design["sets"]}

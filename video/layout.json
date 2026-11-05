@@ -204,6 +204,22 @@
         "polite": "neutral_helpful",
         "proud": "confident_wrong"
       }
+    },
+    "mama": {
+      "id": "mama",
+      "rig": "mama@1.0.0",
+      "layer": 2,
+      "pose": "stand_still",
+      "expr": "warm_default",
+      "expr_map": {
+        "warm": "warm_default",
+        "loud": "proud_beam",
+        "curious": "suspicious",
+        "proud": "proud_beam",
+        "delighted": "proud_beam",
+        "excited": "laugh",
+        "anxious": "worried_mom"
+      }
     }
   },
   "frames": {

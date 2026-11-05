@@ -60,13 +60,31 @@ def test_three_scenes_and_the_cast_changes_per_scene(built):
     assert [len(s["shots"]) for s in (s1, s2, s3)] == [5, 7, 10]
 
 
-def test_the_ai_has_no_body_and_mama_is_a_declared_stand_in(built):
-    _, (_, s2, s3) = built
+def test_the_ai_has_no_body_and_every_character_plays_its_own_rig(built):
+    _, (s1, s2, s3) = built
     ai = next(a for a in s2["actors"] if a["id"] == "neyroset")
     assert ai["kind"] == "asset" and "mouth" in ai  # lip-synced, drawn only inside screens
     assert all("neyroset" not in [c["id"] for c in sh["cast"]] for sh in s2["shots"])
-    mama = next(a for a in s3["actors"] if a["id"] == "mama")
-    assert mama["rig"] == "friend@1.0.1" and "BLOCKER" in mama["stand_in"]
+    for sc in (s1, s2, s3):
+        for a in sc["actors"]:
+            assert a["rig"].split("@")[0] == a["id"], f"{a['id']} is played by {a['rig']}: no stand-ins"
+            assert "stand_in" not in a
+    assert next(a for a in s1["actors"] if a["id"] == "mama")["rig"] == "mama@1.0.0"
+
+
+def test_a_voice_whose_rig_is_missing_is_a_hard_error_not_a_stand_in():
+    bad = json.loads(json.dumps(LAYOUT))
+    bad["cast"]["mama"]["rig"] = "mama@9.9.9"  # no such frozen version
+    with pytest.raises(ValueError, match="no stand-ins"):
+        videodesign.emit_sheet(tl(), bad, DESIGN)
+    bad = json.loads(json.dumps(LAYOUT))
+    bad["cast"]["mama"] = {**bad["cast"]["mama"], "rig": "friend@1.0.1"}  # another character's rig under Mama's name
+    with pytest.raises(ValueError, match="no stand-ins"):
+        videodesign.emit_sheet(tl(), bad, DESIGN)
+    missing = json.loads(json.dumps(LAYOUT))
+    del missing["cast"]["mama"]
+    with pytest.raises(ValueError, match="mama"):
+        videodesign.emit_sheet(tl(), missing, DESIGN)
 
 
 @pytest.mark.parametrize(("scene", "a", "b"), [(0, "plate_cutlets", "zinaida"), (1, "zinaida", "wallscreen")])
@@ -89,7 +107,7 @@ def test_time_card_push_in_pull_out_and_inset(built):
     assert cam(s2, "2.1")["push_to"][2] > cam(s2, "2.1")["viewBox"][2] and cam(s3, "3.9")["push_to"][2] > cam(s3, "3.9")["viewBox"][2]  # pull-out
     for i in ("3.7", "3.8"):  # the kitchen set again, as Mama's side of the phone call
         ins = shot(s3, i)["inset"]
-        assert ins["set"] == "setA_kitchen_morning" and ins["style"] == "caller" and [c["id"] for c in ins["cast"]] == ["mama"] and ins["cast"][0]["pose"] == "phone_hold"
+        assert ins["set"] == "setA_kitchen_morning" and ins["style"] == "caller" and [c["id"] for c in ins["cast"]] == ["mama"] and ins["cast"][0]["pose"] == "phone_ear"
     assert "setA_kitchen_morning" in s3["sets"] and "inset" not in shot(s3, "3.9")
 
 
@@ -130,4 +148,7 @@ def test_rig_blockers_are_still_true():
     for rid, ver in (("vadik", "1.2.0"), ("palych", "1.0.1")):
         poses = json.loads((rigs / rid / ver / "rig.json").read_text())["poses"]
         assert not [p for p in poses if p.startswith("sit")], f"{rid}@{ver} has a seated pose now: drop the hips-up trick"
-    assert not (rigs / "mama").exists(), "a mama rig exists now: replace the friend@1.0.1 stand-in"
+    zin = json.loads((rigs / "zinaida" / "1.0.0" / "rig.json").read_text())
+    assert "screen_rect" not in json.dumps(zin), "zinaida can take custom screen content now: replace the placeholder CRT"
+    kr = json.loads((rigs / "kristina" / "1.0.1" / "rig.json").read_text())["poses"]
+    assert not [p for p in kr if "clap" in p or "applaud" in p], "kristina can clap now: add it to 3.5"

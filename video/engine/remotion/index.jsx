@@ -11,7 +11,7 @@ function boot(scene) {
     window.__SHOTS = shots; window.__MOUTH = {};
     for (const a of shots.actors) if (a.mouth) window.__MOUTH[a.id] = await (await fetch(staticFile(`scenes/${scene}/${a.mouth}`))).json();
     await loadScript(staticFile("prelude.js"));
-    for (const a of shots.actors) { if (window.HF && ((window.HF.RIG && window.HF.RIG[a.rig.split("@")[0]]) || (window.HF.RIGS && window.HF.RIGS[a.rig.split("@")[0]]))) continue; const [id, v] = a.rig.split("@"); await loadScript(staticFile(`rigs/${id}/${v}/${a.art}`)); }
+    for (const a of shots.actors) { const [id, v] = a.rig.split("@"); window.HF.SNAP = window.HF.SNAP || {}; if (window.HF.SNAP[id]) continue; await loadScript(staticFile(`rigs/${id}/${v}/${a.art}`)); const H = window.HF; H.SNAP[id] = { draw: H.RIGS && H.RIGS[id], expr: H.EXPR_F && H.EXPR_F[id], poses: H.POSES_F }; } // the women rigs share one module: each register is snapshotted right after its own script, so a later script cannot replace it
     await loadScript(staticFile("core.js"));
     return shots;
   })();

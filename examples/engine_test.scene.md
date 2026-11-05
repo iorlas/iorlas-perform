@@ -14,7 +14,7 @@ Morning, Мама feeds Вадик and he lies «тимлид по качест�
 | `chair` | 0.28x0.55 | x=0.45 | Kitchen chair behind the table; he sits on it. |
 | `plate_cutlets` (front) | 0.3x0.11 | x=0.3, on=table | Plate with 14 cutlets in a 7x2 grid (the match-cut partner of the 7x2 test tiles). State via text cue: 14 / 13 / 13f (a fork lifts the last one). |
 
-Character `mama`: stands, base pose `stand_still`. Stands between stove and table, feeding him with her eyes.
+Character `mama`: stands, base pose `stir_hold`. Stands at the stove stirring, turned to the table.
 
 Character `vadik`: seated on `chair`, base pose `stand_still`. Sits at the table, mouth full.
 
