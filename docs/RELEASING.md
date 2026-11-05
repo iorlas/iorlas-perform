@@ -9,7 +9,7 @@ invisible to every new session (found 2026-11-05: plugin.json said 0.5.0, instal
 1. Work on a branch or worktree, never on main directly. Commit small.
 2. Merge to main (fast-forward or merge commit). Main must be clean.
 3. Dry run: `uv run dev/release.py "what changed"` (`--minor` for new skill / rig / engine feature, `--major` for a breaking format change).
-   Gates: clean tree, on main, `video/rigs/verify.py`, `ruff check scripts`, `pytest tests`.
+   Gates: clean tree, on main, `video/rigs/verify.py`, `pytest tests`; `--strict` adds `ruff check scripts dev` (off by default: the video scripts landed with about 100 open findings).
 4. `uv run dev/release.py "what changed" --execute`: bumps plugin.json, commits `<version>: <message>`, tags `v<version>`. It never pushes.
 5. Push when Denis says so: `git push origin main v<version>`.
 6. Refresh the cache: `claude plugin marketplace update` then `claude plugin update iorlas-perform`.

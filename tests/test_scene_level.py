@@ -12,12 +12,20 @@ from unittest import mock
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-for name in ("mlx", "mlx.core", "engines", "heard", "master", "profiles", "sfx", "voices", "ambience"):
-    sys.modules.setdefault(name, mock.MagicMock(spec=types.ModuleType(name)))
+STUBS = ("mlx", "mlx.core", "engines", "heard", "master", "profiles", "sfx", "voices", "ambience")
+saved = {n: sys.modules.get(n) for n in STUBS}
+for name in STUBS:
+    sys.modules[name] = mock.MagicMock(spec=types.ModuleType(name))
 sys.modules["mlx"].core = sys.modules["mlx.core"]
 
 import scene  # noqa: E402
 from scenario import Turn  # noqa: E402
+
+for name, mod in saved.items():  # leave no stub behind for the other test files
+    if mod is None:
+        sys.modules.pop(name, None)
+    else:
+        sys.modules[name] = mod
 
 SR = 16000
 
