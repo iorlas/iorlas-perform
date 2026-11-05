@@ -115,7 +115,7 @@
     } else if (d.kind === "dialog") {
       var cur = d.cursor || [], pos = cur.length ? cur.reduce(function (a, c) { return c.dt <= sc.dt ? c : a; }, cur[0]) : null, clicked = d.click_dt != null && sc.dt >= d.click_dt;
       o += '<rect x="' + (x + w * 0.1) + '" y="' + (y + h * 0.12) + '" width="' + w * 0.8 + '" height="' + h * 0.72 + '" rx="5" fill="#e9e4d4" stroke="#556" stroke-width="2"/><rect x="' + (x + w * 0.1) + '" y="' + (y + h * 0.12) + '" width="' + w * 0.8 + '" height="' + h * 0.15 + '" fill="#3b5aa0"/>'
-        + T(d.title || "", x + w * 0.14, y + h * 0.235, h * 0.1, "#fff", "start") + T(d.text || "", x + w / 2, y + h * 0.5, h * 0.11, "#222", "middle");
+        + T(d.title || "", x + w * 0.14, y + h * 0.235, h * 0.1, "#fff", "start") + T(d.text || "", x + w / 2, y + h * 0.5, Math.min(h * 0.11, w * 0.76 / Math.max(1, (d.text || "").length * 0.58)), "#222", "middle");
       (d.buttons || []).forEach(function (b, i) {
         var bx = x + w * (0.2 + i * 0.32), by = y + h * 0.6, hit = clicked && d.click === b.id;
         o += '<rect x="' + bx + '" y="' + by + '" width="' + w * 0.26 + '" height="' + h * 0.16 + '" rx="4" fill="' + (hit ? "#3ad07a" : "#cfc8b0") + '" stroke="#445" stroke-width="1.5"/>' + T(b.label, bx + w * 0.13, by + h * 0.115, h * 0.1, "#111", "middle");
@@ -132,7 +132,7 @@
     } else if (d.kind === "neyroset") {
       o += neyScreen(d, x, y, w, h, sc);
     } else if (d.kind === "rows") {
-      var n2 = d.rows.length + (d.ok ? 1 : 0), rh = h * 0.84 / n2, all = d.rows.concat(d.ok ? [{ label: d.ok.label, ok: true }] : []);
+      var n2 = d.rows.length + (d.ok ? 1 : 0), rh = h * (d.footer ? 0.68 : 0.84) / n2, all = d.rows.concat(d.ok ? [{ label: d.ok.label, ok: true }] : []);
       o += label(d.title || "", x + w * 0.06, y + h * 0.1, h * 0.09, "#aab", 1).replace('text-anchor="middle"', 'text-anchor="start"');
       all.forEach(function (r, i) {
         var down = !r.ok && !r.up && sc.dt >= (r.at || 0), pulse = r.ok && sc.dt >= (d.ok.pulse_after || 1e9) ? 0.65 + 0.35 * Math.sin(sc.dt * 8) : 1, ry = y + h * 0.14 + i * rh;
