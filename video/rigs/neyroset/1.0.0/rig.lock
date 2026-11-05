@@ -1,0 +1,13 @@
+{
+ "id": "neyroset",
+ "version": "1.0.0",
+ "algorithm": "sha256-tree-v1",
+ "sha256": "56d8dc9bea1309f09a05c17d52bc906a1a0e2f6aa86d22ead1fbce3f21d25d23",
+ "files": {
+  "RIG.md": "ca5019b9253718fe1c78256aad6f9768ff05d8e9cd719e3ac963dbf279f03854",
+  "art/neyroset_cut.js": "b81b7f712950c8d8ed772d2e8f083b615b31cfe1d33f8c473b69384ce78efdac",
+  "golden/golden.html": "4291d81e30f5cd38d4e871486efacef226c739b5ac4a48bdb5386b4d8992e378",
+  "golden/render.mjs": "a194bc6aa25a30a4ffa0db28a9db3352f37f1adff9fa37aaf350df28297c13de",
+  "rig.json": "087d7485380c0a2f002cc85ddd60e24bda09da43b95b6cbdb12d0ed2adbe9ce3"
+ }
+}

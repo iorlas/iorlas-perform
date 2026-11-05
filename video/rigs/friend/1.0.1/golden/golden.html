@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#1c2740}</style></head><body><div id="c"></div>
+<script src="harness/hf.js"></script><script src="harness/poses.js"></script><script src="harness/puppet.js"></script>
+<script src="../../../vadik/1.1.0/art/vadik_cut.js"></script><script src="../art/female_cut.js"></script><script src="notes12.js"></script>
+<script>
+var HF=window.HF,W=2400,H=1800,FONT="'Marker Felt','Marker Felt Wide',Helvetica,sans-serif",ERR=[];
+function J(x){return JSON.parse(JSON.stringify(x))}
+function T(x,y,s,txt,fill,anchor){return '<text x="'+x+'" y="'+y+'" text-anchor="'+(anchor||'middle')+'" font-size="'+s+'" font-family="'+FONT+'" fill="'+(fill||'#efe7d2')+'">'+txt+'</text>'}
+var uidn=0;
+function act(id,pose,expr,mouth,extra,pmod){var st={ch:id,uid:'q'+(++uidn),pose:J(HF.POSES_F[pose]),expr:J(HF.EXPR_F[id][expr]),mouth:mouth||0,gaze:{x:0,y:0,cam:0},key:1,stand:true,t:0.8,shake:{x:0,y:0,r:0}};
+ if(extra)for(var k in extra)st[k]=extra[k];if(pmod)pmod(st.pose);
+ try{return HF.RIGS[id](st,HF.CHARS[id])}catch(e){ERR.push(id+pose+expr+': '+e.message);return '<text fill="#f66" font-size="14">ERR '+e.message+'</text>'}}
+function vadik(pose){var st={ch:"vadik_cut",uid:"gvv"+(++uidn),pose:J(HF.POSES[pose||'stand_still']),expr:J(HF.EXPR.neutral_anxious),mouth:0,gaze:{x:0,y:0,cam:0},key:1,stand:true,t:0.8,shake:{x:0,y:0,r:0}};
+ return HF.drawActor(st)}
+var shade=['#33476a','#2f4263'];
+function cell(x,y,w,h,i){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="10" fill="'+shade[(i||0)%2]+'"/>'}
+function box(x,y,w,h,vb,inner,i){var p=vb.split(' ');return cell(x,y,w,h,i)+'<svg x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" viewBox="'+vb+'" overflow="hidden" preserveAspectRatio="xMidYMid meet"><rect x="'+p[0]+'" y="'+p[1]+'" width="'+p[2]+'" height="'+p[3]+'" fill="'+shade[((i||0)+1)%2]+'"/>'+inner+'</svg>'}
+var o='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'"><rect width="'+W+'" height="'+H+'" fill="#2a3a55"/>';
+o+='<defs><filter id="sil" x="-5%" y="-5%" width="110%" height="110%"><feColorMatrix type="matrix" values="0 0 0 0 .55  0 0 0 0 .62  0 0 0 0 .78  0 0 0 1 0"/></filter></defs>';
+var SV='-110 -152 220 712',SF='-120 -40 240 600',SP='-85 -40 330 600',FC='-52 -160 104 130';
+function pm0(p){p.hipsh=0;p.unload=0;p.ptilt=0;p.shrot=0;p.sh=0}
+function A(id,pose,ex){return act(id,pose,ex||(id==='kristina'?'smile':'deadpan'),0)}
+var o_=o;
+o_+=cell(14,16,2372,600,1);
+[['stand_still','фронт'],['stand_3q','3/4'],['stand_side','профиль'],['back_view','спина']].forEach(function(q,i){['kristina','friend'].forEach(function(id,j){var x=20+(i*2+j)*296;o_+=box(x,24,290,560,SV,A(id,q[0],'neutral'),(i*2+j)%2)+T(x+145,606,14,(id==='kristina'?'К':'П')+' · '+q[1],'#efe7d2')})});
+o_+=cell(14,628,2372,540,0);
+[['kristina','sit_front','К · сидя, фронт',SF],['friend','sit_front','П · сидя, фронт',SF],['kristina','sit_side','К · сидя, профиль',SP],['friend','sit_side','П · сидя, профиль',SP]].forEach(function(q,i){var x=20+i*228;o_+=box(x,640,222,500,q[3],A(q[0],q[1]),i%2)+T(x+111,1158,13,q[2],'#efe7d2')});
+o_+=box(936,640,260,500,'-130 -152 260 712',A('kristina','walk_f1','neutral'),0)+T(1066,1158,13,'К · ход, кадр 1','#efe7d2');
+var MV=[0,.25,.55,1],ML=['закрыт','малый','средний','широкий'];
+['kristina','friend'].forEach(function(id,r){MV.forEach(function(m,j){var x=1210+j*294,y=640+r*262;o_+=box(x,y,288,228,FC,act(id,'stand_still',id==='kristina'?'smile':'deadpan',m,null,pm0),(j+r)%2)+T(x+144,y+248,13,(id==='kristina'?'К':'П')+' · рот '+ML[j],'#efe7d2')})});
+o_+=cell(14,1180,2372,606,1)+T(30,1204,16,'ПРОВЕРКА · 4 формы ног сидя (плоские цвета)','#9fb0cc','start');
+o_+='<image href="dbgc.png" x="24" y="1220" width="900" height="273"/>';
+var ny=0;function wrapT(l,w,col,x,sz,step){var t=l,wrap=[];while(t.length>w){var k=t.lastIndexOf(' ',w);if(k<10)k=w;wrap.push(t.slice(0,k));t=t.slice(k+1)}wrap.push(t);wrap.forEach(function(q){ny++;o_+=T(x,1200+ny*step,sz,q,col,'start')})}
+(window.NOTES1||[]).forEach(function(l){wrapT(l,142,(l.indexOf('·')===0)?'#d6d0bb':'#e8c26a',960,14.5,22)});
+(window.NOTES2||[]).forEach(function(l){wrapT(l,142,(l.indexOf('·')===0||l.indexOf('СЛАБО')===0)?'#d6d0bb':'#e8c26a',960,14.5,22)});
+o_+='<defs><filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="5"/><feColorMatrix type="saturate" values="0"/></filter></defs><rect width="'+W+'" height="'+H+'" filter="url(#grain)" opacity=".05"/>';
+o_+='</svg>';document.getElementById('c').innerHTML=o_;window.__err=ERR;window.__ok=1;
+</script></body></html>

@@ -1,0 +1,17 @@
+{
+ "id": "mama",
+ "version": "1.1.0",
+ "algorithm": "sha256-tree-v1",
+ "sha256": "a3b5d4ce835fbcf574e4f8beed4d49d194990c17753fb4f6277b998083c6525c",
+ "files": {
+  "RIG.md": "586621bbfdcd25dc7b4f8fe37fca501736229e531788949e904f0b3d12155ae8",
+  "art/female_cut.js": "7fa3309a2eaa9955baec011b1a648de2640fc7b60ef87aea289bc98c399c0754",
+  "golden/golden.html": "ae6667393c41d00b93ac15ed65b3e526fab107d7ab3cd471cb3d10eb73a977fe",
+  "golden/harness/hf.js": "910f3ae4f739ab00df162fc19dec3223d0661b3f959e9102a348f35dfe2ba06d",
+  "golden/harness/poses.js": "7ddc4d24d271392a37812c322e11a9f833d8bec1d6ef70527878463e80ef3604",
+  "golden/harness/puppet.js": "76e4a0b41671e488e4c38c6ea37314f9018ab891a35bc2d8022f47b43032556a",
+  "golden/notes_mama.js": "1fd330a5d7b6fe3fe640c8eb912b74e00f91d78e6b7b3d4cc8da1ac1b145e511",
+  "golden/render.mjs": "9e0a326e8f53eedf0a2cbfb525f8c043ff93a156a6b2564b78622ff0cea8e078",
+  "rig.json": "001942f5455ae554a59cd076f5bffd1151ea6c0d48c4c40e8bcaf12aa45aa914"
+ }
+}

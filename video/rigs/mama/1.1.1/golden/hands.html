@@ -1,0 +1,11 @@
+<!doctype html><html><body style="margin:0;background:#33476a"><div id=c></div><script src="file:///Users/iorlas/Workspaces/iorlas-perform-rig-freeze/video/rigs/mama/1.1.1/golden/harness/hf.js"></script><script src="file:///Users/iorlas/Workspaces/iorlas-perform-rig-freeze/video/rigs/mama/1.1.1/golden/harness/poses.js"></script><script src="file:///Users/iorlas/Workspaces/iorlas-perform-rig-freeze/video/rigs/mama/1.1.1/golden/harness/puppet.js"></script><script src="file:///Users/iorlas/Workspaces/iorlas-perform-rig-freeze/video/rigs/vadik/1.2.0/art/vadik_cut.js"></script><script src="file:///Users/iorlas/Workspaces/iorlas-perform-rig-freeze/video/rigs/mama/1.1.1/art/female_cut.js"></script><script>function J(x){return JSON.parse(JSON.stringify(x))}
+var Z=4,o='',CW=420,CH=420;
+function cell(i,label,svg,vb){var x=i*CW;o+='<svg x="'+x+'" y="0" width="'+CW+'" height="'+CH+'" viewBox="'+vb.join(' ')+'" overflow="hidden"><rect x="-999" y="-999" width="3000" height="3000" fill="'+(i%2?'#2f4263':'#33476a')+'"/>'+svg+'</svg><text x="'+(x+CW/2)+'" y="'+(CH-8)+'" text-anchor="middle" font-size="20" fill="#efe7d2" font-family="Helvetica">'+label+'</text>'}
+function mk(pn,u,mod){var st={ch:'mama',uid:u,pose:J(HF.POSES_F[pn]),expr:J(HF.EXPR_F['mama'][Object.keys(HF.EXPR_F['mama'])[0]]),mouth:0,gaze:{x:0,y:0,cam:0},key:1,stand:true,t:0.8,shake:{x:0,y:0,r:0}};if(mod)mod(st.pose);return st}
+ function dr(st){return HF.RIGS['mama'](st,HF.CHARS['mama'])}
+ var PH={on:'phone',rot:-10},LA={on:'ladle',rot:190,at:[-2,0]},CU={on:'cup'};
+ function mk2(pn,u,prop){var st=mk(pn,u);if(prop)st.prop=prop;return st}
+ var P=[['phone_ear','phone_ear',PH,[-5,-95]],['stir_hold','stir_hold',LA,[-18,78]],['sit_table_cup','sit_table_cup',CU,[-12,92]]];
+ P.forEach(function(p,i){cell(i,p[0],'<g>'+dr(mk2(p[1],'h'+i,p[2]))+'</g>',[p[3][0],p[3][1],CW/Z,CH/Z])});
+ //P.forEach(function(p,i){cell(i,p[0],'<g>'+dr(mk(p[1],'h'+i,p[2]))+'</g>',[p[3][0],p[3][1],CW/Z,CH/Z])});
+document.getElementById('c').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="'+(CW*3)+'" height="'+CH+'">'+o+'</svg>';window.__ok=1;</script></body></html>

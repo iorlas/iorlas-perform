@@ -1,0 +1,17 @@
+{
+ "id": "vadik",
+ "version": "1.0.0",
+ "algorithm": "sha256-tree-v1",
+ "sha256": "e8c8ab7e5b3a7c6a9bfbf7c114c73ba8e5e21632c982de87c2a713186de47578",
+ "files": {
+  "RIG.md": "eb2942d11d9d5070abe8f8ae3b05968a7e80699427440d60c3c4224ebe665443",
+  "art/vadik_cut.js": "009f4edf472f3e7541ea7829bfdba7e36bd3d9da555db1f2fe65d3cb67505b99",
+  "golden/golden.html": "21c993cb3bbaa5edbe0dc26eff5007e1804ce13511a51e5e0c840896f580b22c",
+  "golden/harness/hf.js": "910f3ae4f739ab00df162fc19dec3223d0661b3f959e9102a348f35dfe2ba06d",
+  "golden/harness/poses.js": "7ddc4d24d271392a37812c322e11a9f833d8bec1d6ef70527878463e80ef3604",
+  "golden/harness/puppet.js": "76e4a0b41671e488e4c38c6ea37314f9018ab891a35bc2d8022f47b43032556a",
+  "golden/render.mjs": "cf18385116452f15d4846419f906ec160cab4620d05da7b7f0bc41016f00af6d",
+  "rig.json": "a38e5fef14d5874582a26c6ca5f3215ed21497efd2c9d1d261b0762e8fd02696",
+  "variants/variants.json": "05dff3138876526cdc54a04700b738a374ce51d3afcc602b1e7b4f11c37230d7"
+ }
+}

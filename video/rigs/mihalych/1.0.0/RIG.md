@@ -1,0 +1,14 @@
+# mihalych 1.0.0 - male cut-paper rig (Михалыч)
+
+Михалыч, ~60, ex-НИИ, ex-plumber, now sysadmin; tired, slightly stooped (default lean 7 deg), smoker, loves the 90s beige CRT PC. Locked look: face, grey hair on a bald crown, round glasses, drooping nicotine-yellow mustache and ear cigarette from cast_sheet20 variant 2; belt-less A-line lab coat (rumpled, pen in the breast pocket, pliers in the lower pocket) from variant 6; worn work boots. Flat filled paper shapes, one flat shadow shape per part, soft drop shadow per part (`look: cutout`).
+
+- Machine-readable spec: `rig.json` (vadik 1.1.0 manifest format, `body_type: m`, `view_support`, `walk_cycle`). Art: `art/mihalych_cut.js`, seed 17, pure function of (state, t). Registers: `HF.RIGS.mihalych`, `HF.RIG.mihalych`, `HF.EXPR_M`, `HF.POSES_M`, `HF.CHARS.mihalych_cut`. Standalone module: `R.draw(state)` needs no shared harness (so `golden/` has no `harness/`).
+- Views: front, 3/4 (body turn up to ~30 deg: asymmetric coat and torso, far arm behind the coat, head yaw ~25), side (+flip), back (bald crown, thin grey fringe over ears and nape, no mask band). Sit front and side with a desk edge and a CRT silhouette corner; walk side, 8 frames (coat hem flaps open, far limbs darker).
+- Coat: belt-less A-line (waist y=165, hips ~250, hem swing), lapel plus one flat shadow shape, at most 3 fold crescents, centre vent in sit/back.
+- Hands: palm + thumb + 3-finger block; kinds relaxed / fist / pinch (holding the cigarette), shirt cuff + coat cuff.
+- Skull: one cubic-Bezier egg, 4 anchors with axis-aligned handles, tangent mismatch 0.000 deg, max turn per 1/60 step 1.8 deg (front), 2.1 deg (side).
+- Expressions (10): tired_neutral (default), deadpan, wince, panic, pretend, shame, realize, blank, soft_smile, drag. `mouth_open` 0 / .3 / .6 / .9. Panic uses `big` (eye ry x1.5, rx x1.36, small pupil slightly up, no under-eye cap), a dark oval mouth (corners down, no teeth or tongue; `mt`/`mg` -1 now mean "off"), brows high with inner ends up, and a temple sweat drop (`sweat`).
+- Props: cigarette (ear; in hand via pose smoke_hand; never in the mouth), pliers (pocket; hand via pliers_hand), handset (hold_receiver).
+- `golden/golden.png`: full sheet (views, sit with desk, walk, mouth_open grid, all expressions, numbers); `golden/golden_panic.png`: six expressions at 2x and working size. Re-render with `golden/render.mjs` (needs PUPPETEER_CORE and CHROME): `node render.mjs golden.png golden.html 2400 1800`, `node render.mjs golden_panic.png golden_panic.html 2710 770`.
+
+Frozen from the scratchpad draft 0.2.3 (poc_rig22). Known weaknesses: see `rig.json` `known_weaknesses` (3/4 far arm still fully visible but narrower; yaw 31..89 deg unsupported; faint seam between the side coat and its hem flaps; flat fringe ring in back view; desk and CRT are simple silhouettes; hands are blocks; panic lens-tint ring; not run in the engine).

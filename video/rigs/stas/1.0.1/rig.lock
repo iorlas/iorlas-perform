@@ -1,0 +1,16 @@
+{
+ "id": "stas",
+ "version": "1.0.1",
+ "algorithm": "sha256-tree-v1",
+ "sha256": "439a6a41cad21afea0bcd41ae71c2aa577a83065a5f8517ebdd062a07446ec81",
+ "files": {
+  "RIG.md": "d861fb0bcb08d5658caa55978e6f4a5e199b221bb8ae6bcf6005a21e0351425a",
+  "art/stas_cut.js": "76dcb47901b921b87a9dc741fb1c2f6812317964e5c5477b5081d8276f7f85a2",
+  "golden/golden.html": "acad5e1332a19b0c6bd28b3c5d6f0c82e3274ddb2d16e7322f0af2074a298ca6",
+  "golden/harness/hf.js": "910f3ae4f739ab00df162fc19dec3223d0661b3f959e9102a348f35dfe2ba06d",
+  "golden/harness/poses.js": "7ddc4d24d271392a37812c322e11a9f833d8bec1d6ef70527878463e80ef3604",
+  "golden/harness/puppet.js": "76e4a0b41671e488e4c38c6ea37314f9018ab891a35bc2d8022f47b43032556a",
+  "golden/render.mjs": "22951a325d6837a9cd0571d72ed6586f7c7ad0284eece77fff47d8aef03bd399",
+  "rig.json": "104e4f9b80a3f3122f0938bb07a115ebe0e8ea0b4b8f315046eb55b7f7bb5041"
+ }
+}

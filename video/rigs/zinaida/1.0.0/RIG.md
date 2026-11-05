@@ -1,0 +1,12 @@
+# zinaida 1.0.0 - object rig (Зинаида, the old beige CRT computer)
+
+Faceless object character of the series «Сеньор Вадик»: 90s yellowed-beige CRT monitor on a desk, tower case under the desk, keyboard (cigarette burn from Михалыч), mouse, power strip, cables. Locked look from cast sheet 5 scene 1: flat smooth-edged cut paper (`look: cutout`), one flat shadow shape per solid, soft drop shadow between layers, no gradients, no circles, no thin stripes, no face, no doily. Personality = screen content, LEDs, shake and hum, moving cables, dust, dented top-left corner, sticker «НЕ ВЫКЛЮЧАТЬ!!!», inventory tag «ИНВ. №0417», name tape «Зинаида» on the tower.
+
+- Machine-readable spec: `rig.json` (vadik 1.1.0 manifest format, `body_type: object`). Art: `art/zinaida_cut.js`, seed 5, pure function of (state, t). Registers: `HF.RIGS.zinaida`, `HF.RIG.zinaida`, `HF.EXPR_Z`, `HF.POSES_Z`, `HF.PARTS_Z`. Standalone module: `R.draw({uid, pose, state, screen_text, led, shake, t})` needs no shared harness.
+- Coordinates match mihalych 1.0.0 sit poses: floor y=478, desk top y=267, CRT x 70..190 (120x110, depth 130), side view screen at x=246, desk 64..404, leg 372..386. Overlay check with mihalych `sit_side` (desk flag 0): hands land on the keyboard, knees under the desk.
+- Views (poses): `front` (yaw 0), `q` (3/4, yaw 35), `side` (yaw 90, screen on the left), `q_chair`, `side_chair` (flat chair silhouette slot on the user side). Tiny box model with hull-rounded silhouettes; faces and screen content use affine plane transforms.
+- States (`state`): off, idle (C:\> prompt, blinking cursor, «Резерв: вчера?»), boot (memory lines, progress blocks), working (hourglass, HDD LED flicker, dust puffs), error (dialog «Ошибка», jolting), bsod, love (single pulsing heart, pink LED, bounce), sleep (floating Z, amber pulse), static (noise blocks).
+- Parameters: `screen_text` (short string), `led` (auto, off, green, amber, red, pink, blink_red, pulse_amber), `shake` (0..1.5), `cable` (0..1.5), `t`.
+- `golden/golden.png`: full sheet (3 views, chair versions, 9 states, 6 shake frames, 6 LED states, cable frames, details, numbers in Russian). Re-render with `golden/render.mjs` (needs PUPPETEER_CORE and CHROME): `node render.mjs golden.png golden.html 2400 1800`.
+
+Frozen from the scratchpad draft poc_obj1. Known weaknesses: see `rig.json` `known_weaknesses` (yaw 0..90 only; chair is a placeholder silhouette; desk 40 px wider than the mihalych silhouette; monospace system font; no grain; engine verbs not wired).

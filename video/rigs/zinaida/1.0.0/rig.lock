@@ -1,0 +1,13 @@
+{
+ "id": "zinaida",
+ "version": "1.0.0",
+ "algorithm": "sha256-tree-v1",
+ "sha256": "3c2d9e53eb6f3811f3747662c338dedfc6d262bc3b9eb62eaa3229274060e310",
+ "files": {
+  "RIG.md": "0ef9b9de40b455c85aee325e8a95ca9231c9410b97b4950d1a6333fdaf1dee02",
+  "art/zinaida_cut.js": "0802af2449fdaff22a61a88f31a7b61f865897902a694ab79f8f84a397d1e0ee",
+  "golden/golden.html": "7b4b28cbdb986e51638804a555f6733f16c9e55a09d603dbd11df56e37bec6ff",
+  "golden/render.mjs": "790aa8be193b1e1cbe101724a62ff03de861717f8bc1b3a07f8a1b03e6e543b6",
+  "rig.json": "cadb9039de753513c5ea99e9b80c0e7a00fbd2360788ca1e157061b93b2d1b1f"
+ }
+}

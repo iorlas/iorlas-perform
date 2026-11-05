@@ -1,0 +1,1103 @@
+{
+ "id": "mihalych",
+ "version": "1.0.0",
+ "body_type": "m",
+ "look": "cutout",
+ "seed": 17,
+ "description": "Михалыч, ~60, ex-НИИ, ex-plumber, now sysadmin, tired and stooped. Round glasses, grey combed hair on a bald crown, drooping nicotine-yellow mustache, ear cigarette (screen-right ear in front view), belt-less A-line lab coat over a cardigan, work boots. Look: cast_sheet20 variant 2 head + variant 6 coat. Standalone module (no shared harness).",
+ "module": {
+  "file": "art/mihalych_cut.js",
+  "registers": {
+   "rig": "HF.RIGS.mihalych",
+   "data": "HF.RIG.mihalych",
+   "expressions": "HF.EXPR_M",
+   "poses": "HF.POSES_M",
+   "char": "HF.CHARS.mihalych_cut"
+  },
+  "purity": "pure function of (state, t); no randomness"
+ },
+ "space": {
+  "origin": "neck base (standing)",
+  "y_axis": "down",
+  "units": "px",
+  "floor_y": 478,
+  "hip_y": 210,
+  "head_scale": 1.2
+ },
+ "dim": {
+  "HS": 1.2,
+  "sw": 64,
+  "bel": 12,
+  "shY": 24,
+  "UA": 90,
+  "FA": 84,
+  "UL": 123,
+  "LL": 123,
+  "hipY": 210,
+  "hemY": 340,
+  "ankleY": 454,
+  "floor": 478,
+  "neckY": -20,
+  "headCY": -99,
+  "eyeY": -99
+ },
+ "palette": {
+  "skin": "#dcab8c",
+  "skinSh": "#c4896d",
+  "skin2": "#d0a083",
+  "hair": "#9a9a98",
+  "hair2": "#7f7f7d",
+  "brow": "#86837b",
+  "stache": "#b4a37c",
+  "stache2": "#9b8a63",
+  "stain": "#c9a24a",
+  "frame": "#2b2f3d",
+  "lens": "#bed7eb",
+  "coat": "#8e9aa8",
+  "coatSh": "#74818f",
+  "coatHi": "#a2adba",
+  "coatDk": "#667381",
+  "button": "#59616e",
+  "card": "#8b6b58",
+  "cardSh": "#6f5445",
+  "shirt": "#d7d0bb",
+  "shirtSh": "#b9b19b",
+  "pants": "#444a5f",
+  "pantsSh": "#343a4c",
+  "boot": "#4b3a2c",
+  "bootSh": "#352a20",
+  "bootHi": "#6a5340",
+  "sole": "#17110f",
+  "lace": "#c9b79c",
+  "pen": "#3d6fa8",
+  "plier": "#c0553b",
+  "metal": "#a9b2bb",
+  "metalSh": "#8590a0",
+  "eyeW": "#f1ecdf",
+  "pupil": "#2a2024",
+  "mouth": "#6a3030",
+  "mouthIn": "#4a1f20",
+  "lip": "#c98572",
+  "teeth": "#e3d6a3",
+  "tongue": "#c8685f",
+  "cigW": "#efe9da",
+  "cigTip": "#c98a4a",
+  "ember": "#e0682f",
+  "chair": "#8a6a48",
+  "chairSh": "#6d5238",
+  "desk": "#7d6a54",
+  "deskSh": "#5f4f3e",
+  "crt": "#d3cbb1",
+  "crtSh": "#b3ab92",
+  "crtScreen": "#2c3a4a",
+  "crtGlow": "#3d5169",
+  "shadow": "#0b1020"
+ },
+ "parts": [
+  {
+   "name": "skull",
+   "draw": "P.skull",
+   "frame": "head",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "ear",
+   "draw": "P.ear",
+   "frame": "head",
+   "pivot": [
+    -60,
+    2
+   ]
+  },
+  {
+   "name": "hair",
+   "draw": "P.hair",
+   "frame": "head",
+   "pivot": [
+    0,
+    -50
+   ]
+  },
+  {
+   "name": "nose",
+   "draw": "P.nose",
+   "frame": "head",
+   "pivot": [
+    0,
+    10
+   ]
+  },
+  {
+   "name": "face",
+   "draw": "P.face",
+   "frame": "head",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "mouth",
+   "draw": "P.mouth",
+   "frame": "head",
+   "pivot": [
+    0,
+    46
+   ]
+  },
+  {
+   "name": "mustache",
+   "draw": "P.mustache",
+   "frame": "head",
+   "pivot": [
+    0,
+    32
+   ]
+  },
+  {
+   "name": "glasses",
+   "draw": "P.glasses",
+   "frame": "head",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "wrinkles",
+   "draw": "P.wrinkles",
+   "frame": "head",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "cig",
+   "draw": "P.cig",
+   "frame": "head",
+   "pivot": [
+    0,
+    10
+   ]
+  },
+  {
+   "name": "head_back",
+   "draw": "P.head_back",
+   "frame": "head",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "neck",
+   "draw": "P.neck",
+   "frame": "torso",
+   "pivot": [
+    0,
+    -10
+   ]
+  },
+  {
+   "name": "neck_side",
+   "draw": "P.neck_side",
+   "frame": "torso",
+   "pivot": [
+    0,
+    -10
+   ]
+  },
+  {
+   "name": "torso",
+   "draw": "P.torso",
+   "frame": "torso",
+   "pivot": [
+    0,
+    30
+   ]
+  },
+  {
+   "name": "coat",
+   "draw": "P.coat",
+   "frame": "torso",
+   "pivot": [
+    0,
+    30
+   ]
+  },
+  {
+   "name": "coat_flap",
+   "draw": "P.coat_flap",
+   "frame": "hip",
+   "pivot": [
+    0,
+    10
+   ]
+  },
+  {
+   "name": "desk",
+   "draw": "P.desk",
+   "frame": "root",
+   "pivot": [
+    0,
+    270
+   ]
+  },
+  {
+   "name": "upper_arm",
+   "draw": "P.upper_arm",
+   "frame": "shoulder",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "forearm",
+   "draw": "P.forearm",
+   "frame": "elbow",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "hand",
+   "draw": "P.hand",
+   "frame": "wrist",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pelvis",
+   "draw": "P.pelvis",
+   "frame": "hip",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "upper_leg",
+   "draw": "P.upper_leg",
+   "frame": "hip_joint",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "lower_leg",
+   "draw": "P.lower_leg",
+   "frame": "knee",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "boot",
+   "draw": "P.boot",
+   "frame": "ankle",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "pliers",
+   "draw": "P.pliers",
+   "frame": "prop",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "cigarette",
+   "draw": "P.cigarette",
+   "frame": "prop",
+   "pivot": [
+    0,
+    -10
+   ]
+  },
+  {
+   "name": "handset",
+   "draw": "P.handset",
+   "frame": "prop",
+   "pivot": [
+    0,
+    0
+   ]
+  },
+  {
+   "name": "chair",
+   "draw": "P.chair",
+   "frame": "hip",
+   "pivot": [
+    0,
+    340
+   ]
+  }
+ ],
+ "pivots": {
+  "root": {
+   "at": [
+    0,
+    478
+   ],
+   "note": "floor contact, between feet"
+  },
+  "hip": {
+   "at": [
+    0,
+    210
+   ],
+   "parent": "root",
+   "note": "upper body lean pivot (side view rotates the upper group about this point; front view skews + sinks head)"
+  },
+  "torso": {
+   "at": [
+    0,
+    30
+   ],
+   "parent": "torso",
+   "note": "cardigan + shirt under the coat"
+  },
+  "neck": {
+   "at": [
+    0,
+    -20
+   ],
+   "parent": "torso",
+   "note": "wide tapered neck (38 px front, 52 px side), not a stalk"
+  },
+  "head": {
+   "at": [
+    0,
+    -20
+   ],
+   "parent": "neck",
+   "note": "chin/neck joint; head frame drawn at scale 1.2; tilt about chin; features in head frame, eye line y=0"
+  },
+  "skull": {
+   "at": [
+    0,
+    0
+   ],
+   "parent": "head",
+   "note": "one smooth cubic-Bezier egg, 4 anchors with axis-aligned handles (G1 at every joint); flat shadow = part clipped to x>44 (front) / x>46 (side)"
+  },
+  "ear_L_R": {
+   "at": [
+    -60,
+    2
+   ],
+   "parent": "head",
+   "note": "R mirrored; far ear hidden when head yaw >= 8 deg"
+  },
+  "hair": {
+   "at": [
+    0,
+    -50
+   ],
+   "parent": "head",
+   "note": "single smooth grey mass: temples + combed strip over the crown, clipped to the skull"
+  },
+  "cig": {
+   "at": [
+    0,
+    10
+   ],
+   "parent": "head",
+   "note": "cigarette behind the screen-RIGHT ear in front view (yaw<8), behind the near (screen-left) ear in 3/4 and side; not in the mouth"
+  },
+  "face": {
+   "at": [
+    0,
+    0
+   ],
+   "parent": "head",
+   "note": "eyes, lids, brows, eye bags; clipped lids; mouth/nose/mustache are separate layers"
+  },
+  "mouth": {
+   "at": [
+    0,
+    46
+   ],
+   "parent": "head",
+   "note": "below the mustache; mouth_open 0..1"
+  },
+  "mustache": {
+   "at": [
+    0,
+    32
+   ],
+   "parent": "head",
+   "note": "drooping, nicotine-yellowed centre"
+  },
+  "glasses": {
+   "at": [
+    0,
+    0
+   ],
+   "parent": "head",
+   "note": "round frames; side view single ring"
+  },
+  "upper_arm_L_R": {
+   "at": [
+    -58,
+    36
+   ],
+   "parent": "torso",
+   "note": "shoulder; R mirrored; sh pose key sinks shoulders"
+  },
+  "forearm_L_R": {
+   "at": "elbow (IK, UA 90 / FA 84)",
+   "parent": "upper_arm"
+  },
+  "hand_L_R": {
+   "at": "wrist (IK, pose target)",
+   "parent": "forearm",
+   "note": "palm + thumb + 3-finger block; kinds relaxed/fist/pinch; stained fingertips"
+  },
+  "coat": {
+   "at": [
+    0,
+    30
+   ],
+   "parent": "torso",
+   "note": "belt-less A-line lab coat (waist 165, hips ~250, hem swing, centre vent, lapel + 1 shadow shape, max 3 folds), hem y=340 (standing) / 250 (sit front) / 206 (sit side); V opening shows cardigan + shirt; pen in breast pocket, pliers in lower pocket"
+  },
+  "pelvis": {
+   "at": [
+    0,
+    210
+   ],
+   "parent": "root",
+   "note": "trouser seat (side view and sit)"
+  },
+  "upper_leg_L_R": {
+   "at": [
+    -22,
+    212
+   ],
+   "parent": "root",
+   "note": "front: straight capsule to the ankle; side: IK knee forward"
+  },
+  "lower_leg_L_R": {
+   "at": "knee (IK)",
+   "parent": "upper_leg"
+  },
+  "boot_L_R": {
+   "at": [
+    -30,
+    454
+   ],
+   "parent": "lower_leg",
+   "note": "ankle; toes OUTWARD in front/back: rotate +-9 deg, toe sign +-1; side: toe +x, heel lifts in walk"
+  },
+  "chair": {
+   "at": "hip when pose.sit=1",
+   "parent": "root",
+   "note": "detachable; drawn behind legs"
+  },
+  "prop": {
+   "at": "hand wrist + along forearm",
+   "parent": "hand",
+   "note": "pose.prop: cig_R | pliers_R | handset_L"
+  }
+ },
+ "expressions": {
+  "tired_neutral": {
+   "open": 1,
+   "lid": 0.38,
+   "shut": 0,
+   "by": 1,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 5,
+   "btR": 5,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0,
+   "mc": -0.3,
+   "mw": 1,
+   "mo": 0,
+   "ms": 0,
+   "mt": 0,
+   "mg": 0,
+   "wob": 0,
+   "hol": 0,
+   "pk": 0,
+   "lk": 0,
+   "bags": 1,
+   "big": 0,
+   "sweat": 0
+  },
+  "deadpan": {
+   "open": 1,
+   "lid": 0.46,
+   "shut": 0,
+   "by": 2,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 0,
+   "btR": 0,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0,
+   "mc": -0.05,
+   "mw": 0.9,
+   "mo": 0,
+   "ms": 0,
+   "mt": 0,
+   "mg": 0,
+   "wob": 0,
+   "hol": 0,
+   "pk": 0,
+   "lk": 0,
+   "bags": 1,
+   "big": 0,
+   "sweat": 0
+  },
+  "wince": {
+   "open": 1,
+   "lid": 0.38,
+   "shut": 1,
+   "by": 4,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 18,
+   "btR": 18,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0,
+   "mc": -0.7,
+   "mw": 1.05,
+   "mo": 0.2,
+   "ms": 0,
+   "mt": 1,
+   "mg": 0,
+   "wob": 1,
+   "hol": 0,
+   "pk": 0,
+   "lk": 0,
+   "bags": 1,
+   "big": 0,
+   "sweat": 0
+  },
+  "panic": {
+   "open": 1.3,
+   "lid": 0,
+   "shut": 0,
+   "by": -15,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 34,
+   "btR": 34,
+   "pup": 0.4,
+   "gx": 0,
+   "gy": 0,
+   "mc": -1.5,
+   "mw": 0.62,
+   "mo": 0.85,
+   "ms": 0,
+   "mt": -1,
+   "mg": -1,
+   "wob": 0,
+   "hol": 0,
+   "pk": 0,
+   "lk": 1,
+   "bags": 1,
+   "big": 1,
+   "sweat": 1
+  },
+  "pretend": {
+   "open": 1,
+   "lid": 0.3,
+   "shut": 0,
+   "by": -2,
+   "bdL": 0,
+   "bdR": -3,
+   "btL": 8,
+   "btR": 8,
+   "pup": 1,
+   "gx": 0.4,
+   "gy": 0,
+   "mc": 0.4,
+   "mw": 1.15,
+   "mo": 0.14,
+   "ms": 1,
+   "mt": 1,
+   "mg": 0,
+   "wob": 0,
+   "hol": 0,
+   "pk": 0,
+   "lk": 0,
+   "bags": 1,
+   "big": 0,
+   "sweat": 0
+  },
+  "shame": {
+   "open": 1,
+   "lid": 0.55,
+   "shut": 0,
+   "by": -1,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 22,
+   "btR": 22,
+   "pup": 1,
+   "gx": 0,
+   "gy": 1,
+   "mc": -1,
+   "mw": 0.95,
+   "mo": 0,
+   "ms": 0,
+   "mt": 0,
+   "mg": 0,
+   "wob": 0,
+   "hol": 0,
+   "pk": 0,
+   "lk": 0,
+   "bags": 1,
+   "big": 0,
+   "sweat": 0
+  },
+  "realize": {
+   "open": 1.25,
+   "lid": 0.05,
+   "shut": 0,
+   "by": -4,
+   "bdL": -9,
+   "bdR": 0,
+   "btL": 2,
+   "btR": 12,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0,
+   "mc": 0,
+   "mw": 0.7,
+   "mo": 0.5,
+   "ms": 0,
+   "mt": 0,
+   "mg": 0,
+   "wob": 0,
+   "hol": 0,
+   "pk": 0,
+   "lk": 0,
+   "bags": 1,
+   "big": 0,
+   "sweat": 0
+  },
+  "blank": {
+   "open": 1.05,
+   "lid": 0.2,
+   "shut": 0,
+   "by": 0,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 0,
+   "btR": 0,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0,
+   "mc": -0.05,
+   "mw": 0.95,
+   "mo": 0,
+   "ms": 0,
+   "mt": 0,
+   "mg": 0,
+   "wob": 0,
+   "hol": 0,
+   "pk": 0,
+   "lk": 0,
+   "bags": 1,
+   "big": 0,
+   "sweat": 0
+  },
+  "soft_smile": {
+   "open": 1,
+   "lid": 0.55,
+   "shut": 0,
+   "by": -2,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": -2,
+   "btR": -2,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0,
+   "mc": 1,
+   "mw": 1.15,
+   "mo": 0.08,
+   "ms": 0,
+   "mt": 0,
+   "mg": 0,
+   "wob": 0,
+   "hol": 0,
+   "pk": 0,
+   "lk": 0,
+   "bags": 1.2,
+   "big": 0,
+   "sweat": 0
+  },
+  "drag": {
+   "open": 1,
+   "lid": 0.74,
+   "shut": 0,
+   "by": 1,
+   "bdL": 0,
+   "bdR": 0,
+   "btL": 6,
+   "btR": 6,
+   "pup": 1,
+   "gx": 0,
+   "gy": 0,
+   "mc": 0,
+   "mw": 0.5,
+   "mo": 0,
+   "ms": 0,
+   "mt": 0,
+   "mg": 0,
+   "wob": 0,
+   "hol": 1,
+   "pk": 1,
+   "lk": 0,
+   "bags": 1,
+   "big": 0,
+   "sweat": 0
+  }
+ },
+ "poses": [
+  "stand_still",
+  "stand_slump",
+  "hold_receiver",
+  "smoke_hand",
+  "pliers_hand",
+  "stand_q",
+  "stand_side",
+  "stand_back",
+  "sit_front",
+  "sit_side",
+  "walk_0",
+  "walk_1",
+  "walk_2",
+  "walk_3",
+  "walk_4",
+  "walk_5",
+  "walk_6",
+  "walk_7"
+ ],
+ "walk_cycle": {
+  "frames": 8,
+  "poses": [
+   "walk_0",
+   "walk_1",
+   "walk_2",
+   "walk_3",
+   "walk_4",
+   "walk_5",
+   "walk_6",
+   "walk_7"
+  ],
+  "note": "side view, IK legs: stance foot slides +62..-62 px, swing foot smoothstep with 26 px lift, heel lift; arms swing opposite the same-side leg; hips 14 px lower than standing (bent knees)"
+ },
+ "pose_keys": [
+  "view front|side|back",
+  "turn (body yaw deg, front view, <=30)",
+  "lean (deg, forward stoop; default 6)",
+  "dy (upper body drop, sit = 115)",
+  "sh (shoulder sink px)",
+  "sit",
+  "walk (frame 0..7, side)",
+  "flip",
+  "head{yaw,tilt,dx,dy}",
+  "L/R{h,bend,hand,rot} (front)",
+  "N/F{h,bend,hand,rot} (side, near/far arm in the shoulder frame)",
+  "legs{spread,ank,kin}",
+  "Ln/Lf{a} (side ankle targets)",
+  "prop"
+ ],
+ "parameters": {
+  "expression_channels": {
+   "open": {
+    "default": 1,
+    "range": [
+     0,
+     1.4
+    ],
+    "note": "eye openness, 1 = rig base"
+   },
+   "lid": {
+    "default": 0.38,
+    "range": [
+     0,
+     1
+    ],
+    "note": "upper-lid cover fraction of the eye (tired default .38)"
+   },
+   "shut": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "eye closed 0..1"
+   },
+   "by": {
+    "default": 1,
+    "range": [
+     -12,
+     8
+    ],
+    "note": "brow height offset (px, + lower)"
+   },
+   "bdL": {
+    "default": 0,
+    "range": [
+     -12,
+     8
+    ],
+    "note": "expression channel"
+   },
+   "bdR": {
+    "default": 0,
+    "range": [
+     -12,
+     8
+    ],
+    "note": "expression channel"
+   },
+   "btL": {
+    "default": 5,
+    "range": [
+     -10,
+     30
+    ],
+    "note": "inner end of screen-left brow raised (px*5): + worry, - anger"
+   },
+   "btR": {
+    "default": 5,
+    "range": [
+     -10,
+     30
+    ],
+    "note": "same, screen-right"
+   },
+   "pup": {
+    "default": 1,
+    "range": [
+     0.3,
+     1.2
+    ],
+    "note": "expression channel"
+   },
+   "gx": {
+    "default": 0,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "expression channel"
+   },
+   "gy": {
+    "default": 0,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "expression channel"
+   },
+   "mc": {
+    "default": -0.3,
+    "range": [
+     -1,
+     1
+    ],
+    "note": "mouth curve +1 smile .. -1 frown"
+   },
+   "mw": {
+    "default": 1,
+    "range": [
+     0.5,
+     1.5
+    ],
+    "note": "mouth width scalar"
+   },
+   "mo": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "base mouth open 0..1; mouth_open layers on top"
+   },
+   "ms": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "lopsided smirk"
+   },
+   "mt": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "upper teeth strip (open mouth)"
+   },
+   "mg": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "tongue (open mouth)"
+   },
+   "wob": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "gritted teeth grimace"
+   },
+   "hol": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "hollow cheeks (cigarette drag)"
+   },
+   "pk": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "pursed lips (drag)"
+   },
+   "lk": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "lid kill: wide eyes"
+   },
+   "bags": {
+    "default": 1,
+    "range": [
+     0.5,
+     1.5
+    ],
+    "note": "eye-bag scale"
+   },
+   "big": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "panic eyes: ry x1.5, rx x1.36, pupil up, no under-eye cap at 1 (whites visible); panic uses 1"
+   },
+   "sweat": {
+    "default": 0,
+    "range": [
+     0,
+     1
+    ],
+    "note": "sweat drop at the right temple"
+   }
+  },
+  "mouth_open": {
+   "state_key": "st.mouth",
+   "range": [
+    0,
+    1
+   ],
+   "default": 0,
+   "note": "eff = 1-(1-mo)*(1-mouth_open); opening height = eff*17 px; teeth from eff>.4 (nicotine #e3d6a3), tongue from .55",
+   "visemes": {
+    "closed": 0,
+    "small": 0.3,
+    "mid": 0.6,
+    "wide": 0.9
+   }
+  },
+  "mouth_style": {
+   "y": 46,
+   "w": 12,
+   "dk": 17,
+   "col": {
+    "teeth": "#e3d6a3",
+    "tongue": "#c8685f"
+   }
+  },
+  "view_support": {
+   "front": "yaw 0",
+   "q34": "body turn + head yaw up to 30 deg; features shift sin(yaw)*40 px, face narrows by cos",
+   "side": "head yaw 90 (faces +x), flip=1 faces -x",
+   "back": "head_back, no face; head yaw >30 and <90 are NOT supported"
+  }
+ },
+ "requires": {
+  "engine_api": 1,
+  "engine_verbs": [
+   "pose",
+   "express",
+   "gaze",
+   "turn_head",
+   "lean",
+   "move",
+   "hold"
+  ],
+  "engine_globals": [],
+  "draw_state": [
+   "ch",
+   "uid",
+   "pose",
+   "expr",
+   "mouth",
+   "gaze{x,y}",
+   "t"
+  ],
+  "optional_engine_features": [],
+  "fonts": [],
+  "assets": []
+ },
+ "draw_order": [
+  "chair",
+  "legs (upper, lower, boot)",
+  "neck",
+  "torso (cardigan)",
+  "coat",
+  "arms (far arm first in side)",
+  "props",
+  "head (back layer: ear, cig, skull; features: cheeks, wrinkles, eyes, nose, mouth, mustache, glasses; hair mass on top)"
+ ],
+ "known_weaknesses": [
+  "3/4 far arm still fully visible beside the coat (only narrowed), head yaw 31..89 unsupported",
+  "side coat: upper part and hem flaps are separate shapes, faint seam at the join",
+  "back fringe is a flat ring, thin at small size",
+  "desk and CRT are simple silhouettes; front desk hides hands/knees in sit_front",
+  "far limbs in side view are a darker recolour plus shared drop shadow",
+  "hands are small blocks (3 fingers + thumb), not articulated",
+  "cigarette side differs by view: right ear in front, near ear in 3/4 and side",
+  "panic: the lens tint leaves a thin skin-coloured ring round the wide whites; mouth is a plain dark oval (no teeth), no head recoil",
+  "not run through the real engine; standalone module (own draw), no use of the shared harness"
+ ],
+ "frozen_from": "scratchpad poc_rig22 (mihalych 0.2.3-draft)"
+}
