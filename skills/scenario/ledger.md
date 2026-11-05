@@ -14,6 +14,13 @@ read the rules this ledger produced; before a release of the skill, run the chec
 | 5 | 01-dvenadtsat | «[warning, slow] ... [beat] Хотя ты не умеешь.» | the insult voiced as more warning | punch shares the setup's tag | T14 | ear only: one tag over 3+ sentences is half of all laugh turns, too common to lint |
 | 6 | 01-dvenadtsat | «Добавь... письма Палыча!» | what letters? why his? | a choice without its reason; the map's `because` left it out too | T15 | ear only so far: listen.py checks laughs, not choices |
 | 7 | 01-dvenadtsat | «мой сеньор интеллект внедрил!» | «сеньор интеллект», stress on the wrong word | two nouns touch with the verb last; the boast shares the setup's tag | T13, T14 | ear only |
+| 8 | pravila v2 | end of the meeting scene | nothing happens after the last line; the hero waits for a verdict | the scene ended on a punchline with no consequence; fix: table read (3 of 4 actors); a final line from the boss and the mother closes | 8c | table read |
+| 9 | pravila v2 | the boss jumps from rule two to rule four | the third rule skipped | the script cut a step the listener counts; fix: read it in half a line | 8c | table read |
+| 10 | pravila v2 | the hero stays silent when his mother calls; the boss orders the speakerphone for him | a reaction missing | a witness not played; fix: the hero hisses first, then the boss orders | 8c | table read |
+| 11 | pravila v2 | the boss approves «Врать — только про опыт» with «Правильно. Дисциплина.» | out of character: he would not say that to the owners | a stock approval; fix: he reads it on autopilot, no verdict | 8c | table read |
+| 12 | pravila v2 | the AI quotes the dictation with different words | a quote that differs from its source | paraphrase in a callback; fix: quote word for word (T11) | 8c | table read |
+| 13 | pravila v2 | rule three forbids changes, then the AI adds rule four | a logic contradiction | no distinction between adding and changing; fix: «Это дополнение, не изменение.» | 8c | table read |
+| 14 | pravila v2 | the mother hears a curse and says nothing | a witness silent | not played; fix: one exclamation line | 8c | table read |
 
 ## The rules check on 01-dvenadtsat (after cases 4-7 were fixed)
 
