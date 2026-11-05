@@ -17,3 +17,4 @@ profiles/
 .remotion/
 .DS_Store
 uv.lock
+!tests/fixtures/**/*.timeline.json

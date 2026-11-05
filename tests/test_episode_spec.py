@@ -792,7 +792,7 @@ def test_import_the_real_export_if_present():
     if not f.exists():
         pytest.skip("export not on this machine")
     data = {"hypotheses": []}
-    assert len(hypotheses.import_md(f.read_text(), data)[0]) == 19
+    assert hypotheses.import_md(f.read_text(), data)[0]  # the export grows as research runs: no fixed count
     assert not levels(hypotheses.validate(data), "error")
 
 

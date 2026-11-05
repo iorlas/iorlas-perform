@@ -1,0 +1,110 @@
+[
+ {
+  "turn": 1,
+  "voice": "vadik",
+  "text": "[deadpan] Я удалил продакшен.",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 0.2,
+  "end": 1.927
+ },
+ {
+  "turn": 2,
+  "voice": "palych",
+  "text": "[sharp, rising intonation] Вадик, почему сайт лежит? Клиенты звонят!",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 2.277,
+  "end": 6.005
+ },
+ {
+  "turn": 3,
+  "voice": "vadik",
+  "text": "[calm] Это не лежит, это такой режим. Тихий.",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 6.355,
+  "end": 9.718
+ },
+ {
+  "turn": 4,
+  "voice": "palych",
+  "text": "[incredulous, rising intonation] Какой ещё тихий режим? Где резервная копия, Вадик?",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 10.068,
+  "end": 14.614
+ },
+ {
+  "turn": 5,
+  "voice": "vadik",
+  "text": "[thoughtful] Копия была. Я её тоже удалил, чтобы они не скучали друг без друга.",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 14.964,
+  "end": 20.964
+ },
+ {
+  "turn": 6,
+  "voice": "palych",
+  "text": "[low, dangerous] Ты удалил базу, чтобы ей было не одиноко?",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 21.314,
+  "end": 25.041
+ },
+ {
+  "turn": 7,
+  "voice": "vadik",
+  "text": "[earnest] Ну да. Она давно жаловалась, что её никто не читает.",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 25.391,
+  "end": 30.118
+ },
+ {
+  "turn": 8,
+  "voice": "palych",
+  "text": "[tired, quiet] Хорошо. Пойдём в серверную, ты мне всё покажешь.",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 30.468,
+  "end": 34.832
+ },
+ {
+  "turn": 9,
+  "voice": "vadik",
+  "text": "[relieved] Там тоже тишина. Я и серверную... в режиме тишины.",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 35.182,
+  "end": 39.727
+ },
+ {
+  "turn": 10,
+  "voice": "palych",
+  "text": "[quiet, ominous] Знаешь, что самое страшное? Я тебе даже верю.",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 40.077,
+  "end": 44.168
+ },
+ {
+  "turn": 11,
+  "voice": "palych",
+  "text": "[flat] Я удалил продакшен.",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 44.518,
+  "end": 46.245
+ },
+ {
+  "turn": 12,
+  "voice": "vadik",
+  "text": "[proud] Мы в тишине работаем.",
+  "scene": "Офис, утро",
+  "ambience": null,
+  "start": 46.595,
+  "end": 48.505
+ }
+]
