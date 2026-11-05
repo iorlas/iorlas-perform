@@ -1,0 +1,41 @@
+{
+  "schema": "formats/1",
+  "note": "Format profiles: universal platform shapes. A world picks from them in world.brief; a world may add its own in <world>/formats.json (same shape, same ids override).",
+  "formats": {
+    "shorts-9x16-60s": {
+      "platform": "youtube-shorts",
+      "aspect": "9:16",
+      "target_s": [45, 58],
+      "hard_max_s": 60,
+      "hard_max_strict": true,
+      "hook_window_s": 3,
+      "hook_voice_by_s": 0.5,
+      "hook_max_words": 12,
+      "hook_on_screen_max_words": 6,
+      "words_per_s": [1.4, 3.2],
+      "safe_zone_pct": {"top": 12, "bottom": 30, "right": 15},
+      "subtitle_band_pct": [55, 70],
+      "structure_templates": ["shorts-45-60-v1", "shorts-reverse-open-v1"],
+      "confidence": "FOLK",
+      "source": "research/shorts_hooks.md sections 1, 4, 7 (hook window, safe zones: 3P and FOLK, no official pixel spec). hard_max_s 60 is a house pacing gate: Shorts may run to 3 min since 2024-10 [FACT, support.google.com/youtube/answer/10059070]; test 'length-55s-vs-180s' decides.",
+      "note": "words_per_s is a sanity band, not a target: outside it the script or the audio is wrong."
+    },
+    "landscape-16x9-3min": {
+      "platform": "youtube",
+      "aspect": "16:9",
+      "target_s": [150, 178],
+      "hard_max_s": 180,
+      "hard_max_strict": false,
+      "hook_window_s": 15,
+      "hook_voice_by_s": 3,
+      "hook_max_words": 20,
+      "hook_on_screen_max_words": 10,
+      "words_per_s": [1.2, 3.0],
+      "safe_zone_pct": {"top": 5, "bottom": 10, "right": 5},
+      "subtitle_band_pct": [75, 90],
+      "structure_templates": ["landscape-3min-v1"],
+      "confidence": "FOLK",
+      "source": "research/shorts_hooks.md section 6 (hook within 5-30 s: FOLK, no official number)."
+    }
+  }
+}
