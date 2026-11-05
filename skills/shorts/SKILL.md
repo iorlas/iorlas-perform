@@ -5,7 +5,7 @@ description: Make and package a YouTube Short (9:16, up to 3 minutes, best 40-60
 
 # shorts
 
-Facts and numbers carry tags: **FACT** primary source, **3P** third-party/unverified, **FOLK** creator wisdom, **JUDGE** our recommendation. YouTube publishes almost no hook/retention numbers; the channel's own Studio curve beats every benchmark here. Source research: `research/shorts_hooks.md`, `research/kylo_workflow_digest.md`, `research/claude_video_workflows.md` (in the ru-voice-clone folder, backed up in git).
+Facts and numbers carry tags: **FACT** primary source, **3P** third-party/unverified, **FOLK** creator wisdom, **JUDGE** our recommendation. YouTube publishes almost no hook/retention numbers; the channel's own Studio curve beats every benchmark here. Source research: `docs/research/shorts_hooks.md`, `docs/research/kylo_workflow_digest.md`, `docs/research/claude_video_workflows.md` (in this repo; the audit is `docs/research/toolkit_audit.md`).
 
 | file | holds |
 |---|---|

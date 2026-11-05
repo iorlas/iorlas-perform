@@ -16,3 +16,4 @@ profiles/
 .beads/issues.jsonl
 .remotion/
 .DS_Store
+uv.lock
