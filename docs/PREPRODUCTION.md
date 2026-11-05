@@ -74,6 +74,8 @@ The stills page loads the same rigs (verified against `rig.lock`, as the full re
 
 `video.py AUDIO TIMELINE --draft` renders the full engine at 640x360, 15 fps into `<stem>.draft.mp4`. Size and fps are part of `shots.json`, so draft scenes have their own cache entries and never reach the final join. Use it for a motion check (push-ins, transitions, mouth sync) once the audio exists.
 
+Measured, scene s03 (14.9 s) of the Pravila render, machine under load 50-80: draft 74.5 s render (19.7 s CPU, 0.6 MB), full 76.2 s (24.3 s CPU, 1.0 MB). The draft profile saves about 20% CPU and almost no wall time: Remotion's bundling and Chrome start dominate a short scene. It is not the fast loop; the animatic is (28 s for the whole film).
+
 ## Files a run writes (`<scenario stem>.pre/`)
 
 `estimate.json` (timeline v1), `scenes/<id>/shots.json`, `storyboard/*.png`, `storyboard/contact_sheet*.png`, `storyboard/storyboard.json`, `animatic/animatic.mp4`, `capability.md|json`, `gates.md|json`, `retime.md|json`.
