@@ -68,6 +68,7 @@ Each model downloads on its first use, with a log line saying so.
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 import sys
 import time
@@ -97,6 +98,11 @@ MLX_CACHE = 1 << 30  # bytes MLX may keep in its buffer cache: the rest goes bac
 TAKES_VERSION = "2"  # bump when a change to rendering makes old cached takes wrong; 2: fixed seed per voice
 EDGE_IN, EDGE_OUT = 0.01, 0.06  # seconds of fade on each clip's edges: no hiss switching on and off
 TURN_PEAK = 10 ** (-1 / 20)  # -1 dBFS: the gain may raise a voice, never past clipping
+# Whispered and hushed turns come out 5-15 dB under a normal line: bring their speech level up to a
+# target (dBFS RMS over the spoken frames), never down, never past TURN_PEAK. Normal speech sits near -16.
+WHISPER_TAG = re.compile(r"\[[^\]]*\b(whisper\w*|hiss\w*)[^\]]*\]", re.I)
+HUSH_TAG = re.compile(r"\[[^\]]*\b(quiet|tiny voice|barely audible|soft|low voice)[^\]]*\]", re.I)
+WHISPER_RMS_DB, HUSH_RMS_DB = -19.0, -21.0
 STAGES = dict.fromkeys(("load", "warm-up", "lines", "asr", "mix", "master"), 0.0)  # seconds, for the closing log line
 PACE: dict[str, list[float]] = {}  # voice -> seconds per spoken character of its accepted takes
 COUNTS = dict.fromkeys(("cached", "rendered", "heard"), 0)  # turns from the take cache, rendered, transcribed
@@ -170,7 +176,7 @@ def speak_turn(
     path = args.takes / f"{take_key(item, args, levels)}.wav"
     if path.exists() and not args.fresh:  # the same line, voice and settings as a past run
         COUNTS["cached"] += 1
-        return sf.read(path, dtype="float32")[0]
+        return level_hushed(sf.read(path, dtype="float32")[0], sr, item)
     COUNTS["rendered"] += 1
     audio = said_right(model, item, ref, args)
     if args.speed != 1.0 or semitones_of(levels, item.voice):
@@ -186,6 +192,34 @@ def speak_turn(
         if (peak := np.abs(audio).max()) > TURN_PEAK:
             audio *= TURN_PEAK / peak
     sf.write(path, audio, sr)
+    return level_hushed(audio, sr, item)
+
+
+def level_hushed(audio: np.ndarray, sr: int, item: Turn) -> np.ndarray:
+    """A whispered or hushed turn raised to a speech level a listener can follow; other turns unchanged.
+
+    Applied after the take cache is read, so the cached file stays as rendered and the target can change
+    without rendering again.
+    """
+    if WHISPER_TAG.search(item.text):
+        target = WHISPER_RMS_DB
+    elif HUSH_TAG.search(item.text):
+        target = HUSH_RMS_DB
+    else:
+        return audio
+    frame = max(int(sr * 0.02), 1)
+    n = len(audio) // frame
+    if n == 0:
+        return audio
+    rms = np.sqrt((audio[: n * frame].reshape(n, frame) ** 2).mean(axis=1))
+    spoken = rms[rms > rms.max() * 0.1]  # frames of speech, not the gaps between words
+    if len(spoken) == 0:
+        return audio
+    current = 20 * np.log10(np.sqrt((spoken**2).mean()) + 1e-9)
+    gain = 10 ** (max(target - current, 0.0) / 20)
+    audio = audio * gain
+    if (peak := np.abs(audio).max()) > TURN_PEAK:
+        audio = audio * (TURN_PEAK / peak)
     return audio
 
 
