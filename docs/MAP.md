@@ -41,6 +41,9 @@ Written by the skills-absorb session. State read from git, not from memory; re-c
 
 Evidence behind the skills is copied into this repo: `docs/research/` (audit, Shorts hooks, Kylo digest, video-workflows landscape, scenario structure). `uv.lock` is ignored: the scripts are PEP 723 and the file was a churning stub.
 
+## Skills added by this branch
+`video`, `video-art`, `shorts`, `world-bootstrap` (staged workflow 0-8, brief, distinctness gate, retrofit), `platform-research` (hypothesis lifecycle). First-world retrofit: `docs/retrofit/senior-vadik.md` (answers marked OPEN for Denis). Tooling for briefs/specs/distinctness is being built on `claude/episode-spec-eebd80` (`docs/contracts/`); the skills point at it, they do not duplicate it.
+
 ## Open items (not coded; specified in the skills)
 - De-hardcode (audit item 7): per-world `layout.json`, `--world`, rig capability flags, format profiles. Spec: `skills/video/pipeline.md`, `contracts.md`.
 - Shorts route (item 8): 9:16 profile, portrait cameras, subtitles component, hook and length gates. Spec: `skills/shorts/spec.md`.
