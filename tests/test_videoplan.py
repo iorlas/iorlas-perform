@@ -80,8 +80,8 @@ def test_segment_is_contiguous_on_whole_frames_and_covers_the_audio():
 def test_every_voice_is_drawn_as_its_own_rig_and_only_where_it_speaks():
     sheet = sheet_of()
     day, night = sheet["scenes"]["Офис, вечер"], sheet["scenes"]["Офис, ночь"]
-    assert [(a["id"], a["rig"]) for a in day["actors"] if a["id"] != "zinaida"] == [("vadik", "vadik@1.2.0")]
-    assert sorted((a["id"], a["rig"]) for a in night["actors"] if a["id"] != "zinaida") == [("palych", "palych@1.0.1"), ("vadik", "vadik@1.2.0")]
+    assert [(a["id"], a["rig"]) for a in day["actors"] if a["id"] != "zinaida"] == [("vadik", "vadik@1.3.0")]
+    assert sorted((a["id"], a["rig"]) for a in night["actors"] if a["id"] != "zinaida") == [("palych", "palych@1.0.2"), ("vadik", "vadik@1.3.0")]
     assert sheet["cast"] == {v: {"actor": c["id"]} for v, c in LAYOUT["cast"].items()}
 
 

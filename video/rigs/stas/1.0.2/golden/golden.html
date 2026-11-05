@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#1c2740}</style></head><body><div id="c"></div>
+<script src="harness/hf.js"></script><script src="harness/poses.js"></script><script src="harness/puppet.js"></script><script src="../art/stas_cut.js"></script>
+<script>
+/* Golden reference: all expressions (stand_still, bust) + poses (full body, one with the habit prop ON in hand), baseline variant, t fixed, rig seed fixed. Layout is part of the golden. */
+var ID="stas",W=2000,H=2000,cw=Math.floor(W/6),ch=500,R=HF.RIG[ID],FONT="Helvetica, Arial, sans-serif";
+var names=["deadpan","neutral_anxious","wince","side_glance","panic","pretend","shame","realize","blank","flat_stare_at_off","file_it"];
+var bodies=[["stand_still","deadpan",0],["stand_fidget","file_it",0],["hold_receiver","neutral_anxious",0],["hold_prop","deadpan",0,1]];
+function J(x){return JSON.parse(JSON.stringify(x))}
+var o='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'"><rect width="'+W+'" height="'+H+'" fill="#2a3a55"/>';
+function txt(x,y,s){return '<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="24" font-family="'+FONT+'" fill="#efe7d2">'+s+'</text>'}
+function cell(i,label,pose,expr,t,stand,view,prop,mo){
+  var cx=(i%6)*cw,cy=Math.floor(i/6)*ch,tw=cw-16,ah=ch-50,k=view[2];
+  o+='<rect x="'+(cx+8)+'" y="'+(cy+8)+'" width="'+tw+'" height="'+(ch-16)+'" rx="10" fill="'+(i%2?"#2f4263":"#33476a")+'"/>';
+  var st={ch:ID+"_cut",uid:"g"+i,pose:J(pose),expr:J(expr),mouth:mo||0,gaze:{x:0,y:0,cam:0},key:1,stand:stand,t:t,shake:{x:0,y:0,r:0}};
+  if(prop)st.prop=prop;
+  o+='<svg x="'+(cx+8)+'" y="'+(cy+8)+'" width="'+tw+'" height="'+ah+'" viewBox="'+(view[0]-tw/2/k)+' '+view[1]+' '+(tw/k)+' '+(ah/k)+'" overflow="hidden"><g>'+HF.drawActor(st)+'</g></svg>';
+  o+=txt(cx+cw/2,cy+ch-18,label);
+}
+names.forEach(function(n,i){cell(i,n,R.poses.stand_still,R.expr[n],0.3,false,[0,-200,1.25])});
+bodies.forEach(function(b,j){cell(names.length+j,b[0]+(b[3]?" + prop":""),R.poses[b[0]],R.expr[b[1]],0.8,true,[b[2],-170,0.66],b[3]?{on:true,at:"hand",hand:"R"}:null)});
+[["closed",0],["small",0.3],["mid",0.6],["wide",1]].forEach(function(v,j){cell(18+j,"mouth_open "+v[0]+" "+v[1],R.poses.stand_still,R.expr["deadpan"],0.3,false,[0,-200,1.25],null,v[1])});
+o+='</svg>';
+document.getElementById('c').innerHTML=o;window.__ok=1;
+</script></body></html>

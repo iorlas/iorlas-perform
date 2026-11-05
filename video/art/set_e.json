@@ -1,6 +1,6 @@
 {
  "set": "setE_marshrutka",
- "version": "0.1.0",
+ "version": "0.2.0",
  "look": "Вырезка (flat cut paper)",
  "canvas": [
   1280,
@@ -91,9 +91,9 @@
   }
  },
  "props_on_hero": {
-  "earbud": "white rounded rect at his left ear (x361,y206)",
-  "phone": "26x50 rounded rect at (340,420) over his viewer-left hand; screen = AI chat",
-  "rail_fist": "fist over the pole at (423,420)"
+  "earbud": "white rounded rect at his left ear",
+  "phone": "held: palm behind, thumb on left edge, 3 fingertips on right edge; mitten clipped out",
+  "rail_fist": "palm + 3 fingers wrapping pole, thumb behind; rig mitten clipped out (vclip)"
  },
  "overlays": {
   "setE_overlay_ai_line": {
@@ -136,7 +136,8 @@
   "vadik: no hanging-on-a-rail pose; stand_still + yellow stanchion behind the body + skin fist in cast_fg at hand x~440,y~435; the arm hangs down, not raised to the rail",
   "vadik: no phone-at-ear pose; earbud prop at the ear and the phone held at hip level in the other hand",
   "rig side_glance + gaze x .8 reads as looking right but yaw 0 (front view)",
-  "fist/phone positions placed by eye for scale .6; change with scale"
+  "fist/phone positions placed by eye for scale .6; change with scale",
+  "hands: rig mittens are clipped out of both hands (clipPath vclip on slot_vadik, tight mitten silhouettes) and redrawn as set props; if the rig moves the hands (scale/pose), move vclip, rail_fist, vadik_phone and vadik_hand_patch_left with it"
  ],
  "objects": [
   {
@@ -249,9 +250,24 @@
    "svg": "<rect x=\"416\" y=\"208\" width=\"332\" height=\"114\" rx=\"16\" fill=\"#eef2f1\" fill-opacity=\".5\"/><rect x=\"450\" y=\"236\" width=\"150\" height=\"34\" rx=\"16\" fill=\"#cfd6d9\" fill-opacity=\".8\"/>"
   },
   {
-   "id": "setE_marshrutka_ceiling_bar",
+   "id": "setE_marshrutka_window_sticker",
    "layer": "bg",
    "z": 8,
+   "bbox": [
+    1070,
+    122,
+    38,
+    48
+   ],
+   "desc": "tiny quiet sticker on pane 3: cream plate with an exclamation mark",
+   "module": "vehicle_shell",
+   "note": "quiet: lighter than glass, one pictogram",
+   "svg": "<rect x=\"1075\" y=\"127.45\" width=\"34\" height=\"44\" rx=\"5\" fill=\"#b7bcb8\"/><rect x=\"1072\" y=\"124\" width=\"34\" height=\"44\" rx=\"5\" fill=\"#cfd3cc\"/><rect x=\"1086\" y=\"131\" width=\"7\" height=\"19\" rx=\"3.5\" fill=\"#a9afa9\"/><rect x=\"1086\" y=\"154\" width=\"7\" height=\"7\" rx=\"2\" fill=\"#a9afa9\"/>"
+  },
+  {
+   "id": "setE_marshrutka_ceiling_bar",
+   "layer": "bg",
+   "z": 9,
    "bbox": [
     0,
     60,
@@ -265,7 +281,7 @@
   {
    "id": "setE_marshrutka_seats",
    "layer": "mid",
-   "z": 9,
+   "z": 10,
    "bbox": [
     24,
     326,
@@ -278,9 +294,24 @@
    "svg": "<path d=\"M40 520 V380 Q40 350 68 350 H242 Q270 350 270 380 V520Z\" transform=\"translate(5,5)\" fill=\"#a8a48e\"/><path d=\"M40 520 V380 Q40 350 68 350 H242 Q270 350 270 380 V520Z\" fill=\"#bdb9a2\"/><rect x=\"129\" y=\"330.6\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#a8a48e\"/><rect x=\"125\" y=\"326\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#bdb9a2\"/><path d=\"M300 520 V380 Q300 350 328 350 H502 Q530 350 530 380 V520Z\" transform=\"translate(5,5)\" fill=\"#a8a48e\"/><path d=\"M300 520 V380 Q300 350 328 350 H502 Q530 350 530 380 V520Z\" fill=\"#bdb9a2\"/><rect x=\"389\" y=\"330.6\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#a8a48e\"/><rect x=\"385\" y=\"326\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#bdb9a2\"/><path d=\"M560 520 V380 Q560 350 588 350 H762 Q790 350 790 380 V520Z\" transform=\"translate(5,5)\" fill=\"#a8a48e\"/><path d=\"M560 520 V380 Q560 350 588 350 H762 Q790 350 790 380 V520Z\" fill=\"#bdb9a2\"/><rect x=\"649\" y=\"330.6\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#a8a48e\"/><rect x=\"645\" y=\"326\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#bdb9a2\"/><path d=\"M820 520 V380 Q820 350 848 350 H1052 Q1080 350 1080 380 V520Z\" transform=\"translate(5,5)\" fill=\"#a8a48e\"/><path d=\"M820 520 V380 Q820 350 848 350 H1052 Q1080 350 1080 380 V520Z\" fill=\"#bdb9a2\"/><rect x=\"924\" y=\"330.6\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#a8a48e\"/><rect x=\"920\" y=\"326\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#bdb9a2\"/>"
   },
   {
+   "id": "setE_marshrutka_seat_scratch",
+   "layer": "mid",
+   "z": 11,
+   "bbox": [
+    1040,
+    404,
+    40,
+    30
+   ],
+   "desc": "scratched initials on the right seat back, tone on tone",
+   "module": "vehicle_shell",
+   "story_text": "ДМБ (scratched, tone-on-tone)",
+   "svg": "<g transform=\"rotate(-5 1060 420)\"><text x=\"1060\" y=\"422\" font-size=\"15\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#a8a48d\" text-anchor=\"middle\">ДМБ</text><rect x=\"1042\" y=\"428\" width=\"36\" height=\"4\" rx=\"2\" fill=\"#a8a48d\"/></g>"
+  },
+  {
    "id": "setE_marshrutka_puddle",
    "layer": "bg",
-   "z": 10,
+   "z": 12,
    "bbox": [
     540,
     656,
@@ -295,7 +326,7 @@
   {
    "id": "setE_marshrutka_partition",
    "layer": "mid",
-   "z": 12,
+   "z": 14,
    "bbox": [
     1130,
     0,
@@ -309,7 +340,7 @@
   {
    "id": "setE_marshrutka_driver_mirror",
    "layer": "mid",
-   "z": 13,
+   "z": 15,
    "bbox": [
     1166,
     60,
@@ -319,12 +350,12 @@
    "desc": "driver rear-view mirror on a stalk, with dangling air freshener (pine tree) and a small icon",
    "module": "vehicle_shell",
    "note": "icon+freshener are the story-trace of the driver",
-   "svg": "<rect x=\"1214\" y=\"70\" width=\"12\" height=\"38\" fill=\"#7e888e\"/><rect x=\"1170\" y=\"108.6\" width=\"100\" height=\"32\" rx=\"8\" fill=\"#5d6266\"/><rect x=\"1166\" y=\"104\" width=\"100\" height=\"32\" rx=\"8\" fill=\"#767b7f\"/><rect x=\"1174\" y=\"110\" width=\"84\" height=\"20\" rx=\"5\" fill=\"#b9c6cb\"/><rect x=\"1180\" y=\"136\" width=\"8\" height=\"26\" fill=\"#6b5a40\"/><path d=\"M1184 160 L1210 188 H1198 L1218 214 H1150 L1170 188 H1158Z\" transform=\"translate(4,4)\" fill=\"#557f52\"/><path d=\"M1184 160 L1210 188 H1198 L1218 214 H1150 L1170 188 H1158Z\" fill=\"#6fa06a\"/><rect x=\"1240\" y=\"136\" width=\"8\" height=\"22\" fill=\"#6b5a40\"/><rect x=\"1230\" y=\"160.6\" width=\"36\" height=\"46\" rx=\"5\" fill=\"#b8944a\"/><rect x=\"1226\" y=\"156\" width=\"36\" height=\"46\" rx=\"5\" fill=\"#e9c46a\"/><rect x=\"1232\" y=\"162\" width=\"24\" height=\"34\" rx=\"3\" fill=\"#b5483a\"/><rect x=\"1240\" y=\"168\" width=\"8\" height=\"22\" rx=\"2\" fill=\"#e9c46a\"/>"
+   "svg": "<rect x=\"1214\" y=\"70\" width=\"12\" height=\"38\" fill=\"#7e888e\"/><rect x=\"1170\" y=\"108.6\" width=\"100\" height=\"32\" rx=\"8\" fill=\"#5d6266\"/><rect x=\"1166\" y=\"104\" width=\"100\" height=\"32\" rx=\"8\" fill=\"#767b7f\"/><rect x=\"1174\" y=\"110\" width=\"84\" height=\"20\" rx=\"5\" fill=\"#b9c6cb\"/><rect x=\"1181\" y=\"136\" width=\"7\" height=\"32\" fill=\"#6b5a40\"/><path d=\"M1184.5 166 L1203 192 H1166Z M1184.5 182 L1212 214 H1157Z M1184.5 202 L1220 238 H1149Z\" transform=\"translate(4,4)\" fill=\"#467a4d\"/><path d=\"M1184.5 166 L1203 192 H1166Z M1184.5 182 L1212 214 H1157Z M1184.5 202 L1220 238 H1149Z\" fill=\"#5f9a64\"/><rect x=\"1180\" y=\"238\" width=\"9\" height=\"9\" fill=\"#6b5a40\"/><rect x=\"1240\" y=\"136\" width=\"8\" height=\"22\" fill=\"#6b5a40\"/><rect x=\"1230\" y=\"160.6\" width=\"36\" height=\"46\" rx=\"5\" fill=\"#b8944a\"/><rect x=\"1226\" y=\"156\" width=\"36\" height=\"46\" rx=\"5\" fill=\"#e9c46a\"/><rect x=\"1232\" y=\"162\" width=\"24\" height=\"34\" rx=\"3\" fill=\"#b5483a\"/><rect x=\"1240\" y=\"168\" width=\"8\" height=\"22\" rx=\"2\" fill=\"#e9c46a\"/>"
   },
   {
    "id": "setE_marshrutka_fare_tray",
    "layer": "mid",
-   "z": 14,
+   "z": 16,
    "bbox": [
     1136,
     420,
@@ -338,7 +369,7 @@
   {
    "id": "setE_marshrutka_poster",
    "layer": "mid",
-   "z": 15,
+   "z": 17,
    "bbox": [
     1146,
     476,
@@ -353,7 +384,7 @@
   {
    "id": "setE_marshrutka_crowd_back1",
    "layer": "crowd_back",
-   "z": 16,
+   "z": 18,
    "bbox": [
     194,
     298,
@@ -363,12 +394,12 @@
    "desc": "back row: man in grey coat and hat, closed umbrella",
    "module": "crowd",
    "slot": "back1",
-   "svg": "<g transform=\"translate(250,606) scale(0.7)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.1\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#8f969a\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#a3a9ac\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-30 -418 H30 L24 -440 H-24Z M-34 -416 H34 V-408 H-34Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-30 -418 H30 L24 -440 H-24Z M-34 -416 H34 V-408 H-34Z\" fill=\"#7d7a74\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" transform=\"translate(3,3)\" fill=\"#262f42\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" fill=\"#33415a\"/><rect x=\"58\" y=\"-146\" width=\"20\" height=\"22\" rx=\"6\" fill=\"#d3ae90\"/></g>"
+   "svg": "<g transform=\"translate(250,606) scale(0.7)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.1\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#8f969a\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#a3a9ac\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-30 -418 H30 L24 -440 H-24Z M-34 -416 H34 V-408 H-34Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-30 -418 H30 L24 -440 H-24Z M-34 -416 H34 V-408 H-34Z\" fill=\"#7d7a74\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" transform=\"translate(3,3)\" fill=\"#262f42\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" fill=\"#33415a\"/><g transform=\"translate(68,-130)\"><rect x=\"-11\" y=\"-2\" width=\"22\" height=\"25\" rx=\"5\" fill=\"#b99476\"/><rect x=\"-8\" y=\"-12\" width=\"15\" height=\"15\" rx=\"5\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"1\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"8.5\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"16\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"6\" y=\"-8\" width=\"6\" height=\"12\" rx=\"3\" fill=\"#b99476\"/></g></g>"
   },
   {
    "id": "setE_marshrutka_crowd_back2",
    "layer": "crowd_back",
-   "z": 17,
+   "z": 19,
    "bbox": [
     464,
     298,
@@ -383,7 +414,7 @@
   {
    "id": "setE_marshrutka_crowd_back3",
    "layer": "crowd_back",
-   "z": 18,
+   "z": 20,
    "bbox": [
     744,
     298,
@@ -398,7 +429,7 @@
   {
    "id": "setE_marshrutka_crowd_back4",
    "layer": "crowd_back",
-   "z": 19,
+   "z": 21,
    "bbox": [
     934,
     298,
@@ -408,12 +439,12 @@
    "desc": "back row: man with phone, lilac-grey coat",
    "module": "crowd",
    "slot": "back4",
-   "svg": "<g transform=\"translate(990,606) scale(0.7)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.1\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#9b97a2\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#aca8b0\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" fill=\"#4b4540\"/><rect x=\"-12\" y=\"-262\" width=\"26\" height=\"42\" rx=\"5\" fill=\"#2a3040\"/><rect x=\"-8\" y=\"-258\" width=\"18\" height=\"30\" rx=\"3\" fill=\"#9fc3d9\"/></g>"
+   "svg": "<g transform=\"translate(990,606) scale(0.7)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.1\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#9b97a2\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#aca8b0\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" fill=\"#4b4540\"/><rect x=\"-12\" y=\"-262\" width=\"26\" height=\"42\" rx=\"5\" fill=\"#2a3040\"/><rect x=\"-8\" y=\"-258\" width=\"18\" height=\"30\" rx=\"3\" fill=\"#9fc3d9\"/><rect x=\"-14\" y=\"-236\" width=\"30\" height=\"18\" rx=\"7\" fill=\"#d3ae90\"/><rect x=\"-18\" y=\"-244\" width=\"9\" height=\"16\" rx=\"4\" fill=\"#b99476\"/></g>"
   },
   {
    "id": "setE_marshrutka_crowd_front1",
    "layer": "crowd_front",
-   "z": 20,
+   "z": 22,
    "bbox": [
     49.599999999999994,
     274.8,
@@ -423,12 +454,12 @@
    "desc": "front row: broad man in olive coat with closed wet umbrella, left edge",
    "module": "crowd",
    "slot": "front1",
-   "svg": "<g transform=\"translate(120,662) scale(0.88)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.16\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#4a4b46\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#7d8774\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#909989\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" fill=\"#4b4540\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" transform=\"translate(3,3)\" fill=\"#262f42\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" fill=\"#33415a\"/><rect x=\"58\" y=\"-146\" width=\"20\" height=\"22\" rx=\"6\" fill=\"#d3ae90\"/></g>"
+   "svg": "<g transform=\"translate(120,662) scale(0.88)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.16\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#4a4b46\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#7d8774\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#909989\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" fill=\"#4b4540\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" transform=\"translate(3,3)\" fill=\"#262f42\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" fill=\"#33415a\"/><g transform=\"translate(68,-130)\"><rect x=\"-11\" y=\"-2\" width=\"22\" height=\"25\" rx=\"5\" fill=\"#b99476\"/><rect x=\"-8\" y=\"-12\" width=\"15\" height=\"15\" rx=\"5\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"1\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"8.5\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"16\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"6\" y=\"-8\" width=\"6\" height=\"12\" rx=\"3\" fill=\"#b99476\"/></g></g>"
   },
   {
    "id": "setE_marshrutka_crowd_front2_grandma",
    "layer": "crowd_front",
-   "z": 21,
+   "z": 23,
    "bbox": [
     572.8,
     290.40000000000003,
@@ -438,12 +469,12 @@
    "desc": "front row: grandmother in headscarf, shopping bag, side-eyes Вадик (insert subject)",
    "module": "crowd",
    "slot": "front2_grandma",
-   "svg": "<g transform=\"translate(640,660) scale(0.84)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.16\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#6f5d68\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#85727d\"/><path d=\"M-34 -372 Q-40 -444 0 -446 Q40 -444 34 -372 L24 -356 H-24Z\" transform=\"translate(4,4)\" fill=\"#7b5560\"/><path d=\"M-34 -372 Q-40 -444 0 -446 Q40 -444 34 -372 L24 -356 H-24Z\" fill=\"#9a6f78\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-27 -405 Q-26 -436 0 -436 Q26 -436 27 -405 Q12 -418 0 -418 Q-12 -418 -27 -405Z\" fill=\"#9a6f78\"/><path d=\"M-62 -132 H-26 L-22 -64 H-66Z\" transform=\"translate(4,4)\" fill=\"#876650\"/><path d=\"M-62 -132 H-26 L-22 -64 H-66Z\" fill=\"#a8826b\"/><rect x=\"-58\" y=\"-140\" width=\"28\" height=\"12\" rx=\"4\" fill=\"#876650\"/><rect x=\"-22\" y=\"-406\" width=\"14\" height=\"9\" rx=\"3\" fill=\"#f7f3e6\"/><rect x=\"-18\" y=\"-405\" width=\"8\" height=\"7\" rx=\"2\" fill=\"#33302c\"/><path d=\"M-26 -415 L-6 -412\" stroke=\"#5b524a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M-26 -396 L-34 -388 L-24 -386Z\" fill=\"#b99476\"/></g>"
+   "svg": "<g transform=\"translate(640,660) scale(0.84)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.16\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#6f5d68\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#85727d\"/><rect x=\"-10\" y=\"-366\" width=\"22\" height=\"22\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M30 -378 Q40 -448 0 -450 Q-24 -450 -24 -420 L-22 -380 L-14 -352 H26Z\" transform=\"translate(4,4)\" fill=\"#7b5560\"/><path d=\"M30 -378 Q40 -448 0 -450 Q-24 -450 -24 -420 L-22 -380 L-14 -352 H26Z\" fill=\"#9a6f78\"/><path d=\"M-22 -416 Q-22 -430 -6 -430 H12 Q18 -430 18 -420 V-378 Q18 -364 4 -364 H-12 Q-20 -364 -20 -374 L-20 -388 L-31 -396 L-22 -402Z\" transform=\"translate(3,3)\" fill=\"#b99476\"/><path d=\"M-22 -416 Q-22 -430 -6 -430 H12 Q18 -430 18 -420 V-378 Q18 -364 4 -364 H-12 Q-20 -364 -20 -374 L-20 -388 L-31 -396 L-22 -402Z\" fill=\"#d3ae90\"/><path d=\"M-24 -418 Q-22 -438 -2 -438 H12 Q22 -436 22 -422 Q4 -424 -20 -410Z\" fill=\"#9a6f78\"/><rect x=\"-20\" y=\"-412\" width=\"12\" height=\"8\" rx=\"3\" fill=\"#f7f3e6\"/><rect x=\"-20\" y=\"-411\" width=\"6\" height=\"6\" rx=\"2\" fill=\"#33302c\"/><rect x=\"-24\" y=\"-419\" width=\"18\" height=\"5\" rx=\"2.5\" fill=\"#5b4148\" transform=\"rotate(8 -15 -416)\"/><path d=\"M-22 -376 q6 2 12 0\" stroke=\"#a5776b\" stroke-width=\"3.5\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M-62 -108 H-26 L-22 -44 H-66Z\" transform=\"translate(4,4)\" fill=\"#876650\"/><path d=\"M-62 -108 H-26 L-22 -44 H-66Z\" fill=\"#a8826b\"/><rect x=\"-48\" y=\"-130\" width=\"8\" height=\"24\" fill=\"#876650\"/><g transform=\"translate(-44,-132)\"><rect x=\"-11\" y=\"-2\" width=\"22\" height=\"25\" rx=\"5\" fill=\"#b99476\"/><rect x=\"-8\" y=\"-12\" width=\"15\" height=\"15\" rx=\"5\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"1\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"8.5\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"16\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"6\" y=\"-8\" width=\"6\" height=\"12\" rx=\"3\" fill=\"#b99476\"/></g></g>"
   },
   {
    "id": "setE_marshrutka_crowd_front3_kid",
    "layer": "crowd_front",
-   "z": 22,
+   "z": 24,
    "bbox": [
     720,
     444,
@@ -458,7 +489,7 @@
   {
    "id": "setE_marshrutka_crowd_front4",
    "layer": "crowd_front",
-   "z": 23,
+   "z": 25,
    "bbox": [
     841.2,
     285.6,
@@ -468,41 +499,69 @@
    "desc": "front row: woman in grey coat, wet umbrella",
    "module": "crowd",
    "slot": "front4",
-   "svg": "<g transform=\"translate(910,664) scale(0.86)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.16\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#8c897f\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#a3a096\"/><path d=\"M-6 -352 H6 L6 -134 H-6Z\" fill=\"#8c897f\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" fill=\"#6a5a4a\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" transform=\"translate(3,3)\" fill=\"#262f42\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" fill=\"#33415a\"/><rect x=\"58\" y=\"-146\" width=\"20\" height=\"22\" rx=\"6\" fill=\"#d3ae90\"/></g>"
+   "svg": "<g transform=\"translate(910,664) scale(0.86)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.16\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#8c897f\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#a3a096\"/><path d=\"M-6 -352 H6 L6 -134 H-6Z\" fill=\"#8c897f\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" fill=\"#6a5a4a\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" transform=\"translate(3,3)\" fill=\"#262f42\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" fill=\"#33415a\"/><g transform=\"translate(68,-130)\"><rect x=\"-11\" y=\"-2\" width=\"22\" height=\"25\" rx=\"5\" fill=\"#b99476\"/><rect x=\"-8\" y=\"-12\" width=\"15\" height=\"15\" rx=\"5\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"1\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"8.5\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"-11\" y=\"16\" width=\"21\" height=\"6\" rx=\"3\" fill=\"#d3ae90\"/><rect x=\"6\" y=\"-8\" width=\"6\" height=\"12\" rx=\"3\" fill=\"#b99476\"/></g></g>"
+  },
+  {
+   "id": "setE_marshrutka_floor_bag",
+   "layer": "crowd_front",
+   "z": 26,
+   "bbox": [
+    552,
+    614,
+    56,
+    60
+   ],
+   "desc": "plastic bag with a bread loaf at the grandmother feet",
+   "module": "crowd",
+   "note": "story trace: bread",
+   "svg": "<path d=\"M560 670 H600 L590 636 H566Z\" fill=\"#c3c9c9\" transform=\"translate(4,4)\"/><path d=\"M560 670 H600 L590 636 H566Z\" fill=\"#e1e5e4\"/><rect x=\"566\" y=\"622\" width=\"40\" height=\"15\" rx=\"7.5\" fill=\"#b88a3e\" transform=\"rotate(-20 586 630) translate(3,3)\"/><rect x=\"566\" y=\"622\" width=\"40\" height=\"15\" rx=\"7.5\" fill=\"#d9a85a\" transform=\"rotate(-20 586 630)\"/><rect x=\"575\" y=\"624\" width=\"5\" height=\"9\" rx=\"2.5\" fill=\"#c0904a\" transform=\"rotate(-20 586 630)\"/><rect x=\"585\" y=\"624\" width=\"5\" height=\"9\" rx=\"2.5\" fill=\"#c0904a\" transform=\"rotate(-20 586 630)\"/><rect x=\"595\" y=\"624\" width=\"5\" height=\"9\" rx=\"2.5\" fill=\"#c0904a\" transform=\"rotate(-20 586 630)\"/><path d=\"M572 640 L582 628 L586 640Z\" fill=\"#e1e5e4\"/>"
   },
   {
    "id": "setE_marshrutka_rail_pole",
    "layer": "mid_front",
-   "z": 24,
+   "z": 27,
    "bbox": [
-    427,
+    430,
     70,
     16,
     590
    ],
    "desc": "yellow vertical stanchion the hero holds (the set accent)",
    "module": "vehicle_shell",
-   "svg": "<rect x=\"437\" y=\"74\" width=\"14\" height=\"590\" fill=\"#b9821b\"/><rect x=\"433\" y=\"74\" width=\"14\" height=\"590\" fill=\"#e2a52c\"/><rect x=\"419\" y=\"640\" width=\"46\" height=\"14\" rx=\"6\" fill=\"#b9821b\"/>"
+   "svg": "<rect x=\"439\" y=\"74\" width=\"12\" height=\"590\" fill=\"#b9821b\"/><rect x=\"436\" y=\"74\" width=\"12\" height=\"590\" fill=\"#e2a52c\"/><rect x=\"422\" y=\"640\" width=\"40\" height=\"14\" rx=\"6\" fill=\"#b9821b\"/>"
   },
   {
    "id": "setE_marshrutka_rail_fist",
    "layer": "cast_fg",
-   "z": 25,
+   "z": 28,
    "bbox": [
-    423,
-    420,
-    38,
+    430,
+    419,
+    24,
     34
    ],
-   "desc": "hand-on-rail overlay: skin fist over the pole (rig has no hanging pose)",
+   "desc": "hand on the rail: palm, 3 separate fingers wrapping the pole in front, thumb behind; flat shadow shape + rig-style soft drop shadow (rig mitten is clipped out, see vclip)",
    "module": "vehicle_shell",
-   "note": "placed by eye after render; adjust to rig hand",
-   "svg": "<rect x=\"423\" y=\"420\" width=\"34\" height=\"32\" rx=\"10\" fill=\"#e6bd98\"/><rect x=\"423\" y=\"434\" width=\"34\" height=\"5\" fill=\"#cf9f7a\"/>"
+   "note": "finger geometry fits the rig wrist x436-447 at scale .6",
+   "svg": "<path d=\"M430.6 421 H434.4 L431.8 447.5 H430.6Z\" fill=\"#7c838b\"/><g style=\"filter:drop-shadow(0 1.5px 2px rgba(70,55,40,.4))\"><rect x=\"432.5\" y=\"427\" width=\"17.5\" height=\"23\" rx=\"5\" fill=\"#cf9f7a\"/><rect x=\"446.5\" y=\"424.5\" width=\"4.5\" height=\"9\" rx=\"2.2\" fill=\"#cf9f7a\"/><path d=\"M436 420.5 H447 L449 432 Q449.5 439 444 440 H438 Q435 439 435 432Z\" fill=\"#e6bd98\"/><rect x=\"433.5\" y=\"430.5\" width=\"16.5\" height=\"5.5\" rx=\"2.8\" fill=\"#e6bd98\"/><rect x=\"433.5\" y=\"437\" width=\"16.5\" height=\"5.5\" rx=\"2.8\" fill=\"#e6bd98\"/><rect x=\"433.5\" y=\"443.5\" width=\"16.5\" height=\"5.5\" rx=\"2.8\" fill=\"#e6bd98\"/></g>"
+  },
+  {
+   "id": "setE_marshrutka_vadik_hand_patch_left",
+   "layer": "cast_fg",
+   "z": 29,
+   "bbox": [
+    365,
+    421,
+    6,
+    27
+   ],
+   "desc": "shirt patch where the rig mitten is clipped out (left hand)",
+   "svg": "<path d=\"M365.8 421 H369.8 V447.5 H367Z\" fill=\"#8b9199\"/><path d=\"M367.2 438 H369.8 V447.5 H367Z\" fill=\"#7f868e\"/>"
   },
   {
    "id": "setE_marshrutka_shadow_vadik",
    "layer": "bg",
-   "z": 26,
+   "z": 30,
    "bbox": [
     320,
     646,
@@ -512,5 +571,11 @@
    "desc": "flat contact shadow under Вадик",
    "svg": "<path d=\"M330 648 H478 L488 664 H320Z\" fill=\"#000\" fill-opacity=\".18\"/>"
   }
+ ],
+ "details_v2": [
+  "setE_marshrutka_floor_bag (bread loaf in plastic bag at grandma feet)",
+  "setE_marshrutka_window_sticker (pane 3)",
+  "setE_marshrutka_seat_scratch (ДМБ on right seat back)",
+  "air freshener ёлочка enlarged to 3 tiers"
  ]
 }

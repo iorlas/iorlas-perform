@@ -64,29 +64,28 @@
    "art": "set_e",
    "characters": {
     "vadik": {
-     "slot": "setE_slot_vadik"
+     "slot": "setE_slot_vadik",
+     "pose": "grip_rail_phone",
+     "dx": -12
     }
    },
    "props": [
     {
      "id": "earbud",
-     "svg": "<rect x=\"359\" y=\"204\" width=\"9\" height=\"15\" rx=\"4.5\" fill=\"#fffaf0\"/>",
-     "at": [
-      0,
-      0
-     ],
-     "front": true
-    },
-    {
-     "id": "phone",
-     "svg": "<rect x=\"340\" y=\"420\" width=\"26\" height=\"50\" rx=\"5\" fill=\"#2b3345\"/><rect x=\"343\" y=\"424\" width=\"20\" height=\"38\" rx=\"2\" fill=\"#7fb2d6\"/>",
+     "svg": "<rect x=\"347\" y=\"204\" width=\"9\" height=\"15\" rx=\"4.5\" fill=\"#fffaf0\"/>",
      "at": [
       0,
       0
      ],
      "front": true
     }
-   ]
+   ],
+   "remove": [
+    "setE_marshrutka_rail_fist"
+   ],
+   "move": {
+    "setE_marshrutka_rail_pole": "mid"
+   }
   },
   "setC_meeting": {
    "art": "set_c",

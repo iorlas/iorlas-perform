@@ -1,6 +1,6 @@
 {
  "set": "setC_meeting",
- "version": "0.3.1",
+ "version": "0.4.0",
  "look": "Вырезка (flat cut paper)",
  "canvas": [
   1280,
@@ -114,7 +114,7 @@
   {
    "shot": "3.3 push-in",
    "subject": "Вадик",
-   "viewBox": "336 150 280 157.5"
+   "viewBox": "292 150 280 157.5"
   },
   {
    "shot": "3.4 insert",
@@ -124,7 +124,7 @@
   {
    "shot": "3.6/3.7 close-up + call overlay",
    "subject": "Вадик",
-   "viewBox": "336 150 280 157.5",
+   "viewBox": "292 150 280 157.5",
    "overlay": "setC_overlay_call_inset"
   }
  ],
@@ -140,7 +140,8 @@
   "palych: no seated pose (lowered standing, legs hidden)",
   "kristina: phone prop (st.prop 'phone') did not attach to the hand, so she holds no phone; sticky + ring light carry her trace",
   "vadik standing near the camera uses scale 0.6 from floor y650 to read as 'in front of the table'",
-  "3/4 and side views of all rigs look weak: front view is the default, turned views only for rare deliberate shots"
+  "3/4 and side views of all rigs look weak: front view is the default, turned views only for rare deliberate shots",
+  "hands wider than 1.3x wrist in all three rigs; patched in-set with clipped overlay hands (faint rect edge of the rig drop-shadow may show at 3x zoom)"
  ],
  "objects": [
   {
@@ -522,6 +523,46 @@
    "desc": "screen remote with a label",
    "quiet_text": "ПУЛЬТ",
    "svg": "<g transform=\"translate(534,0)\"><rect x=\"296\" y=\"458\" width=\"32\" height=\"10\" rx=\"2\" fill=\"#3b4254\"/><rect x=\"300\" y=\"452\" width=\"22\" height=\"7\" fill=\"#f5f3e8\"/><text x=\"311\" y=\"458\" font-size=\"4.8\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#8a8a80\" text-anchor=\"middle\">ПУЛЬТ</text></g>"
+  },
+  {
+   "id": "setC_meeting_whiteboard",
+   "layer": "bg",
+   "z": 28,
+   "bbox": [
+    430,
+    40,
+    160,
+    100
+   ],
+   "desc": "whiteboard corner, half-erased diagram: тесты → CI → прод? (right half wiped)",
+   "quiet_text": "тесты → CI → прод?",
+   "svg": "<rect x=\"434\" y=\"44.6\" width=\"156\" height=\"92\" rx=\"3\" fill=\"#c4cab8\"/><rect x=\"430\" y=\"40\" width=\"156\" height=\"92\" rx=\"3\" fill=\"#eef0e4\"/><rect x=\"430\" y=\"40\" width=\"156\" height=\"4\" fill=\"#b9bfae\"/><rect x=\"430\" y=\"128\" width=\"156\" height=\"4\" fill=\"#b9bfae\"/><rect x=\"440\" y=\"54\" width=\"36\" height=\"20\" fill=\"none\" stroke=\"#7d93ab\" stroke-width=\"2.4\"/><text x=\"458\" y=\"67\" font-size=\"8\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#7d93ab\" text-anchor=\"middle\">тесты</text><path d=\"M476 64 H492\" stroke=\"#7d93ab\" stroke-width=\"2.4\" fill=\"none\"/><path d=\"M492 64 l-5 -4 v8z\" fill=\"#7d93ab\"/><rect x=\"494\" y=\"54\" width=\"30\" height=\"20\" fill=\"none\" stroke=\"#7d93ab\" stroke-width=\"2.4\"/><text x=\"509\" y=\"67\" font-size=\"8\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#7d93ab\" text-anchor=\"middle\">CI</text><path d=\"M509 74 V96\" stroke=\"#7d93ab\" stroke-width=\"2.4\" fill=\"none\"/><rect x=\"488\" y=\"96\" width=\"42\" height=\"18\" fill=\"none\" stroke=\"#b07a70\" stroke-width=\"2.4\"/><text x=\"509\" y=\"108\" font-size=\"8\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#b07a70\" text-anchor=\"middle\">прод?</text><path d=\"M528 48 H580 V102 L548 124 H522Z\" fill=\"#e4e8da\"/><rect x=\"440\" y=\"134\" width=\"30\" height=\"5\" rx=\"2\" fill=\"#a9b09a\"/><rect x=\"444\" y=\"131\" width=\"22\" height=\"3\" fill=\"#7d93ab\"/>"
+  },
+  {
+   "id": "setC_meeting_conference_phone",
+   "layer": "mid_front",
+   "z": 29,
+   "bbox": [
+    486,
+    439,
+    72,
+    44
+   ],
+   "desc": "star-shaped conference phone, three arms, one button",
+   "svg": "<g transform=\"translate(523,459) scale(1,.42)\" fill=\"#8a7a68\"><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(0)\"/><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(120)\"/><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(240)\"/><rect x=\"-12\" y=\"-12\" width=\"24\" height=\"24\" rx=\"12\"/></g><g transform=\"translate(520,455) scale(1,.42)\" fill=\"#4a5266\"><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(0)\"/><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(120)\"/><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(240)\"/><rect x=\"-12\" y=\"-12\" width=\"24\" height=\"24\" rx=\"12\"/></g><rect x=\"516\" y=\"452\" width=\"8\" height=\"5\" rx=\"2.5\" fill=\"#cfd6dc\"/>"
+  },
+  {
+   "id": "setC_meeting_paper_cups",
+   "layer": "mid_front",
+   "z": 30,
+   "bbox": [
+    555,
+    438,
+    32,
+    38
+   ],
+   "desc": "stack of paper cups with a red band",
+   "svg": "<path d=\"M559 468 H583 L586 474 H556Z\" fill=\"#7e5c3e\" fill-opacity=\".6\"/><path d=\"M561 450 H579 L576 470 H564Z\" fill=\"#f4efe4\"/><rect x=\"560\" y=\"448\" width=\"20\" height=\"3\" rx=\"1.5\" fill=\"#cbbfa2\"/><path d=\"M561 446 H579 L576 466 H564Z\" fill=\"#f4efe4\"/><rect x=\"560\" y=\"444\" width=\"20\" height=\"3\" rx=\"1.5\" fill=\"#cbbfa2\"/><path d=\"M561 442 H579 L576 462 H564Z\" fill=\"#f4efe4\"/><rect x=\"560\" y=\"440\" width=\"20\" height=\"3\" rx=\"1.5\" fill=\"#cbbfa2\"/><path d=\"M561 438 H579 L576 458 H564Z\" fill=\"#f4efe4\"/><rect x=\"560\" y=\"436\" width=\"20\" height=\"3\" rx=\"1.5\" fill=\"#cbbfa2\"/>"
   }
  ],
  "overlays": [
@@ -539,7 +580,7 @@
    "exit": "slide_to_right",
    "size_in_frame": "width ~22% (63 of 280), height ~66% of the Вадик close-up (104 of 157.5)",
    "rest_rect_in_close_up_viewBox": [
-    545,
+    503,
     160,
     63,
     104
@@ -549,30 +590,36 @@
     {
      "t": 0.0,
      "name": "off-screen",
-     "x": 622,
-     "shadow": 8
+     "x": 580,
+     "shadow": 10
     },
     {
      "t": 0.35,
      "name": "half",
-     "x": 585,
-     "shadow": 8
+     "x": 543,
+     "shadow": 10
     },
     {
      "t": 0.7,
      "name": "overshoot (bounce)",
-     "x": 538,
-     "shadow": 18
+     "x": 496,
+     "shadow": 10
     },
     {
      "t": 1.0,
-     "name": "settled, soft shadow",
-     "x": 545,
+     "name": "settled",
+     "x": 503,
      "shadow": 10
     }
    ],
-   "emphasis": "overshoot 7 px left and shadow 8→18→10 (the call 'lands'); card already reads «Мама · звонит…» + нет/да",
+   "emphasis": "overshoot 7 px left then settle; same size, tilt and shadow (10) in every still",
    "note": "inset shows in the close-up only; in other shots the set has no inset"
   }
- ]
+ ],
+ "hands": {
+  "note": "rig hands are mitten-wide (~1.75x wrist for Вадик, ~1.6x for Кристина); redrawn in-set as overlays, 14/11=1.27x and 8/6=1.3x, four separate fingers, one shadow shape; rigs untouched, rig hands clipped out",
+  "vadik": "x397 and x482, y420",
+  "kristina": "x866.5 y343 and x952.5 y351",
+  "palych": "hands under the table, none visible"
+ }
 }

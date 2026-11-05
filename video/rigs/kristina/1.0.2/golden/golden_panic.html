@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#26344f}</style></head><body><div id="c"></div>
+<script src="harness/hf.js"></script><script src="harness/poses.js"></script><script src="harness/puppet.js"></script>
+<script src="../../../vadik/1.1.0/art/vadik_cut.js"></script><script src="../art/female_cut.js"></script>
+<script>
+/* Golden panic sheet: kristina bust crops, expression states at 2x (top) and working size (bottom). Layout is part of the golden. */
+var HF=window.HF,ID="kristina",VB="-87 -210 220 220",NAMES=["neutral","laughing","surprised","panic"],FONT="Helvetica, Arial, sans-serif";
+function J(x){return JSON.parse(JSON.stringify(x))}
+var W=NAMES.length*450+10,H=730,n=0;
+var o='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'"><rect width="'+W+'" height="'+H+'" fill="#26344f"/>';
+function T(x,y,s,t,fill){return '<text x="'+x+'" y="'+y+'" font-size="'+s+'" font-family="'+FONT+'" fill="'+(fill||'#efe7d2')+'">'+t+'</text>'}
+function bust(x,y,sz,name){var st={ch:ID,uid:'g'+(n++),pose:J(HF.POSES_F.stand_still),expr:J(HF.EXPR_F[ID][name]),mouth:0,gaze:{x:0,y:0,cam:0},key:1,stand:true,t:0.8,shake:{x:0,y:0,r:0}};
+ return '<rect x="'+x+'" y="'+y+'" width="'+sz+'" height="'+sz+'" fill="#33476a"/><svg x="'+x+'" y="'+y+'" width="'+sz+'" height="'+sz+'" viewBox="'+VB+'" overflow="hidden">'+HF.RIGS[ID](st,HF.CHARS[ID])+'</svg>'}
+o+=T(10,22,20,ID+'@1.0.1  expression states: 2x (top), working size (bottom)','#ffd678');
+NAMES.forEach(function(nm,i){var x=10+i*450;o+=bust(x,34,440,nm)+T(x+6,58,20,nm)+bust(x+110,34+444,220,nm)});
+o+='</svg>';document.getElementById('c').innerHTML=o;window.__ok=1;
+</script></body></html>

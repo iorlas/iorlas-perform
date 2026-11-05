@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#1c2740}</style></head><body><div id="c"></div>
+<script src="harness/hf.js"></script><script src="harness/poses.js"></script><script src="harness/puppet.js"></script><script src="../art/vadik_cut.js"></script>
+<script>
+/* Golden reference: 8 expressions (stand_still) + stand_fidget, baseline variant, t fixed, rig seed fixed. Layout is part of the golden. */
+var W=2000,H=2040,cw=400,ch=560,k=1.6;
+var names=["neutral_anxious","wince","side_glance","panic","pretend","shame","realize","blank"];
+function J(x){return JSON.parse(JSON.stringify(x))}
+var o='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'"><rect width="'+W+'" height="'+H+'" fill="#2a3a55"/>';
+function cell(i,label,pose,expr,t,mo){
+  var cx=(i%5)*cw,cy=Math.floor(i/5)*ch*1.3,tw=cw-28,ah=ch-60;
+  o+='<rect x="'+(cx+14)+'" y="'+(cy+14)+'" width="'+tw+'" height="'+(ch-28)+'" rx="10" fill="'+(i%2?"#2f4263":"#33476a")+'"/>';
+  var st={ch:"vadik_cut",uid:"g"+i,pose:J(pose),expr:J(expr),mouth:mo||0,gaze:{x:0,y:0,cam:0},key:1,stand:false,t:t,shake:{x:0,y:0,r:0}};
+  o+='<svg x="'+(cx+14)+'" y="'+(cy+14)+'" width="'+tw+'" height="'+ah+'" viewBox="'+(-tw/2/k)+' -196 '+(tw/k)+' '+(ah/k)+'" overflow="hidden"><g>'+HF.drawActor(st)+'</g></svg>';
+  o+='<text x="'+(cx+cw/2)+'" y="'+(cy+ch-24)+'" text-anchor="middle" font-size="30" font-family="Helvetica, Arial, sans-serif" fill="#efe7d2">'+label+'</text>';
+}
+names.forEach(function(n,i){cell(i,(i+1)+". "+n,HF.POSES.stand_still,HF.EXPR[n],0.3)});
+[["closed",0],["small",0.3],["mid",0.6],["wide",1]].forEach(function(v,j){cell(10+j,"mouth_open "+v[0]+" "+v[1],HF.POSES.stand_still,HF.EXPR.neutral_anxious,0.3,v[1])});
+/* stand_fidget: full body, own cell scaled to show legs */
+var cx=4*cw,cy=0,fx=8*cw-28;
+o+='<rect x="'+(cx+14)+'" y="'+(ch*1.3+14)+'" width="'+(cw-28)+'" height="'+(ch-28)+'" rx="10" fill="#2f4263"/>';
+var s2=0.82,st2={ch:"vadik_cut",uid:"gf",pose:J(HF.POSES.stand_fidget),expr:J(HF.EXPR.neutral_anxious),mouth:0,gaze:{x:0.2,y:0.1,cam:0},key:1,stand:true,t:0.8,shake:{x:0,y:0,r:0}};
+o+='<g transform="translate('+(cx+cw/2)+','+(ch*1.3+40+192*s2)+') scale('+s2+')">'+HF.drawActor(st2)+'</g>';
+o+='<text x="'+(cx+cw/2)+'" y="'+(ch*1.3+ch-24)+'" text-anchor="middle" font-size="30" font-family="Helvetica, Arial, sans-serif" fill="#efe7d2">stand_fidget</text>';
+o+='</svg>';
+document.getElementById('c').innerHTML=o;window.__ok=1;
+</script></body></html>

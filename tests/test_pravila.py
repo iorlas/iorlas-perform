@@ -44,7 +44,7 @@ def test_art_slots_place_the_real_rigs() -> None:
     by = {c["id"]: c for c in shot["cast"]}
     assert by["mama"]["offset"] == [403, 285] and by["mama"]["scale"] == 0.62 and by["mama"]["pose"] == "stir_hold"
     assert by["vadik"]["offset"] == [975, 352] and by["vadik"]["clip_y_max"] == 640
-    assert {"mama": "mama@1.0.0", "vadik": "vadik@1.2.0", "neyroset": "neyroset@1.0.0"}.items() <= {a["id"]: a["rig"] for a in sc["actors"]}.items()
+    assert {"mama": "mama@1.1.1", "vadik": "vadik@1.3.0", "neyroset": "neyroset@1.0.0"}.items() <= {a["id"]: a["rig"] for a in sc["actors"]}.items()
 
 
 def test_art_set_is_drawn_back_and_front_with_removals() -> None:
@@ -101,3 +101,10 @@ def test_meeting_and_moscow_scenes() -> None:
     assert sh["sets"]["setC_meeting"]["mid"] and "Москва" not in sh["sets"]["setF_moscow"]["svg"][:0] + "x"
     end = next(o for o in sh["scenes"]["Москва, сорок второй этаж"]["shots"][-1]["overlays"] if o["kind"] == "card")
     assert "Правила проекта" in end["card_svg"]
+
+
+def test_marshrutka_uses_the_rail_pose_not_a_fist_prop() -> None:
+    sh = sheet()
+    cast = sh["scenes"]["Маршрутка, день"]["shots"][1]["cast"][0]
+    assert cast["pose"] == "grip_rail_phone" and cast["offset"][0] == 388
+    assert "rail_fist" not in sh["sets"]["setE_marshrutka"]["front"] and [p["id"] for p in sh["sets"]["setE_marshrutka"]["props"]] == ["earbud"]

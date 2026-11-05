@@ -1,0 +1,18 @@
+{
+ "id": "kristina",
+ "version": "1.0.2",
+ "algorithm": "sha256-tree-v1",
+ "sha256": "2968b147eb92e8edf6a0821da8199f9f2285edbd01b43c11d13ae6d70f08976d",
+ "files": {
+  "RIG.md": "f1fd9d7d41305cb552b3332dfc1fd2d082b0c9998fc4fa7f7d9d49b985598c15",
+  "art/female_cut.js": "fe686db8539f3d98a7817b2debd454dd617ce0142fc2c0cd4b0001f2ea9b7bc1",
+  "golden/golden.html": "8caf5389261092e73469f8593475aa392320f873b69742ff3f7a0257fec4f99b",
+  "golden/golden_panic.html": "fb25df55f448ec18470ff01dc02fad6c3ddcad10977d336ee328d45a0f269358",
+  "golden/harness/hf.js": "910f3ae4f739ab00df162fc19dec3223d0661b3f959e9102a348f35dfe2ba06d",
+  "golden/harness/poses.js": "7ddc4d24d271392a37812c322e11a9f833d8bec1d6ef70527878463e80ef3604",
+  "golden/harness/puppet.js": "76e4a0b41671e488e4c38c6ea37314f9018ab891a35bc2d8022f47b43032556a",
+  "golden/notes12.js": "175cccfedded00718ad2b2e9c6bc82523091334544897e0c532aff8727a80831",
+  "golden/render.mjs": "9e0a326e8f53eedf0a2cbfb525f8c043ff93a156a6b2564b78622ff0cea8e078",
+  "rig.json": "e02c98f34b561c74751aef1232f42d9d41ced5b9504823cb8a35b9a56f4e8daf"
+ }
+}

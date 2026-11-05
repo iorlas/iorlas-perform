@@ -50,6 +50,9 @@ def art_set(spec: dict[str, Any]) -> dict[str, Any]:
     order = a["layer_order"]
     cast_at = next(i for i, n in enumerate(order) if n.startswith("cast"))
     drop = set(spec.get("remove", []))
+    for o in a["objects"]:  # `move`: an object drawn on another layer (a rail the hand must grip in front of)
+        if o["id"] in spec.get("move", {}):
+            o["layer"] = spec["move"][o["id"]]
     objs = sorted((o for o in a["objects"] if o["id"] not in drop), key=lambda o: (order.index(o["layer"]), o["z"]))
     variant = spec.get("variant")  # a set drawn in two lights keeps svg_<variant> per object; at night everything not `lit` goes through the night filter
     if variant:
@@ -179,7 +182,7 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             if slot is None:
                 msg = f'set {set_name}: character "{actor}" names slot "{spec["slot"]}", which the art does not have'
                 raise ValueError(msg)
-            return {"offset": list(slot["pos"]), "scale": slot["scale"], **({"clip_y_max": slot["clip_y_max"]} if "clip_y_max" in slot else {}), **({"filter": spec["filter"]} if "filter" in spec else {}), "pose": spec.get("pose") or slot.get("pose", "stand_still").split(",")[0], **({"layer": spec["layer"]} if "layer" in spec else {}), **({"deck": slot["layer"]} if "layer" in slot else {})}
+            return {"offset": [slot["pos"][0] + spec.get("dx", 0), slot["pos"][1]], "scale": slot["scale"], **({"clip_y_max": slot["clip_y_max"]} if "clip_y_max" in slot else {}), **({"filter": spec["filter"]} if "filter" in spec else {}), "pose": spec.get("pose") or slot.get("pose", "stand_still").split(",")[0], **({"layer": spec["layer"]} if "layer" in spec else {}), **({"deck": slot["layer"]} if "layer" in slot else {})}
         return {**spec, **videoscene.place_character(by_id[actor], by_id[actor]["rig"], spec, solved[set_name], raw[set_name], stage)}
 
     def focus_xy(set_name: str, focus: str | None, sh: dict[str, Any]) -> tuple[float, float]:

@@ -69,7 +69,7 @@ def test_the_ai_has_no_body_and_every_character_plays_its_own_rig(built):
         for a in sc["actors"]:
             assert a["rig"].split("@")[0] == a["id"], f"{a['id']} is played by {a['rig']}: no stand-ins"
             assert "stand_in" not in a
-    assert next(a for a in s1["actors"] if a["id"] == "mama")["rig"] == "mama@1.0.0"
+    assert next(a for a in s1["actors"] if a["id"] == "mama")["rig"] == "mama@1.1.1"
 
 
 def test_a_voice_whose_rig_is_missing_is_a_hard_error_not_a_stand_in():
