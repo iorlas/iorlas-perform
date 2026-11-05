@@ -1,0 +1,114 @@
+{
+  "schema": "platform_rules/1",
+  "note": "Platform lore: what a platform says (and what we only suspect). Floor, not the whole picture: rules change ad hoc and part of them are unwritten. `OPEN` means unresolved: policy.py check lists it before publishing. Copy to <world>/platform_rules.json with `policy.py init`.",
+  "rules": [
+    {
+      "id": "yt-inauth-template",
+      "platform": "youtube",
+      "written": true,
+      "statement": "Generic or repetitive content (renamed from 'repetitious content' to 'inauthentic content', 2025-07-15) includes content that looks like it's made with a template.",
+      "quote": "Generic or repetitive content includes content that looks like it's made with a template",
+      "source_url": "https://support.google.com/youtube/answer/1311392",
+      "fetched": "2026-11-05",
+      "confidence": "FACT",
+      "status": "known",
+      "check": "distinct",
+      "note": "Our guard: distinct check on the novelty keys; vary mechanism, outcome, set and title pattern across episodes."
+    },
+    {
+      "id": "yt-inauth-same-situation",
+      "platform": "youtube",
+      "written": true,
+      "statement": "Characters put in the same situation over and over with the same outcome are repetitive content.",
+      "quote": "Videos where characters are put in the same situation over and over again with the same outcome",
+      "source_url": "https://support.google.com/youtube/answer/1311392",
+      "fetched": "2026-11-05",
+      "confidence": "FACT",
+      "status": "known",
+      "check": "distinct",
+      "note": "Maps to novelty keys premise, mechanism+outcome."
+    },
+    {
+      "id": "yt-inauth-minimal-variation",
+      "platform": "youtube",
+      "written": true,
+      "statement": "Similar content with minimal variation across videos is repetitive content.",
+      "quote": "Similar or repetitive content with low educational value, commentary, narratives, or minimal variation across videos",
+      "source_url": "https://support.google.com/youtube/answer/1311392",
+      "fetched": "2026-11-05",
+      "confidence": "FACT",
+      "status": "known",
+      "check": "distinct",
+      "note": "Maps to the whole novelty-key set: a run of episodes sharing most keys is minimal variation."
+    },
+    {
+      "id": "yt-series-set-characters",
+      "platform": "youtube",
+      "written": true,
+      "statement": "A series following a set of characters across episodes is listed as allowed. Our reading, not the page's: each video needs its own storyline, focus or concept.",
+      "quote": "Similar content, like a series following a set of characters across episodes",
+      "source_url": "https://support.google.com/youtube/answer/1311392",
+      "fetched": "2026-11-05",
+      "confidence": "FACT",
+      "status": "known",
+      "check": "distinct",
+      "note": "The distinct-storyline condition is the research file's reading (3P), not a quoted line. Enforced by the distinct check."
+    },
+    {
+      "id": "yt-animation-treatment",
+      "platform": "youtube",
+      "written": false,
+      "statement": "How stylised, reusable animation (one rig, many episodes) is judged under the repetitive-content rule.",
+      "source_url": "https://support.google.com/youtube/answer/1311392",
+      "fetched": "2026-11-05",
+      "confidence": "OPEN",
+      "status": "OPEN",
+      "note": "The page does not mention animation. Unresolved; resolve with an experiment or a platform answer, or acknowledge in world.brief policy.acks."
+    },
+    {
+      "id": "yt-synthetic-voice",
+      "platform": "youtube",
+      "written": false,
+      "statement": "How synthetic or cloned voices are treated: monetisation, and whether any disclosure applies.",
+      "source_url": "https://support.google.com/youtube/answer/1311392",
+      "fetched": "2026-11-05",
+      "confidence": "OPEN",
+      "status": "OPEN",
+      "note": "The page does not mention synthetic voice. Unresolved; check YouTube's other policy pages for a disclosure rule before publishing and record the finding here."
+    },
+    {
+      "id": "yt-mass-upload",
+      "platform": "youtube",
+      "written": false,
+      "statement": "Dozens of near-identical templated uploads a day risk demonetisation of the whole channel.",
+      "source_url": "https://ppc.land/youtube-clarifies-inauthentic-content-policy-changes/",
+      "fetched": "2026-11-05",
+      "confidence": "3P",
+      "status": "known",
+      "check": "cadence",
+      "note": "Third-party reading of the policy; the cadence in world.brief is the lever."
+    },
+    {
+      "id": "yt-deceptive-metadata",
+      "platform": "youtube",
+      "written": true,
+      "statement": "A first frame or title that does not match the content can be treated as deceptive practice.",
+      "source_url": "https://support.google.com/youtube/answer/2801973",
+      "fetched": "2026-11-05",
+      "confidence": "3P",
+      "status": "known",
+      "note": "Stated in research/shorts_hooks.md section 5 without a fetched quote: not re-read for this seed. Re-fetch before relying on it."
+    },
+    {
+      "id": "yt-unwritten",
+      "platform": "youtube",
+      "written": false,
+      "statement": "Enforcement details (thresholds, how many near-duplicates trip the rule, human or automatic review) are not published.",
+      "source_url": "",
+      "fetched": "2026-11-05",
+      "confidence": "OPEN",
+      "status": "OPEN",
+      "note": "Standing unknown: treat the written policy as a floor. Track by experiments and by our own channel's Studio notices."
+    }
+  ]
+}

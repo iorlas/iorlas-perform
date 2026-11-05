@@ -1,0 +1,13 @@
+{
+  "schema": "hooks/1",
+  "note": "Hook pattern ids an episode.spec may name. Universal; a world may add ids in <world>/hooks.json. Source: research/shorts_hooks.md section 2; all FOLK, no controlled studies.",
+  "hooks": {
+    "reverse-open": {"what": "start on the aftermath or the worst line, then rewind", "fails_when": "the aftermath is less funny than the build-up; spoils instead of teases", "confidence": "FOLK"},
+    "open-loop": {"what": "a question or a half-confession the viewer wants closed", "fails_when": "never closed, or closed weakly", "confidence": "FOLK"},
+    "odd-image": {"what": "a visually wrong first frame (wrong prop, wrong scale)", "fails_when": "the image has no link to the joke", "confidence": "FOLK"},
+    "text-on-screen": {"what": "a big 3-6 word line printed in frame 1", "fails_when": "reading time over 1.5 s; collides with the UI overlay; repeats the voice", "confidence": "FOLK"},
+    "in-medias-res": {"what": "open mid-argument, no setup", "fails_when": "the viewer cannot tell who is who in 2 s", "confidence": "FOLK"},
+    "pattern-interrupt": {"what": "silence then a loud shout; a hard cut", "fails_when": "used every 2 s it becomes noise; one per video", "confidence": "FOLK"},
+    "standalone-line": {"what": "open on the funniest sentence that works alone, spoken by 0.5 s", "fails_when": "the line needs context to be funny", "confidence": "FOLK"}
+  }
+}

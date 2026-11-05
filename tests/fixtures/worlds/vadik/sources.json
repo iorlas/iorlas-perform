@@ -1,0 +1,108 @@
+{
+  "schema": "sources/1",
+  "note": "What to scan to keep the hypotheses alive, and how. `last_scanned` null = never. Add the world's communities, channels and forums here; a world may also hold them in an a2kay research note (see the sync step). A refresh reads `steps` in order.",
+  "sources": [
+    {
+      "id": "yt-policy-page",
+      "name": "YouTube monetization policies (inauthentic / repetitive content)",
+      "kind": "official",
+      "url": "https://support.google.com/youtube/answer/1311392",
+      "bias": "STRATEGIC",
+      "how_to_scan": "Fetch the page; diff the 'Generic or Repetitive Content' section against platform_rules.json quotes; update `fetched`; open any new wording as a rule.",
+      "cadence_days": 30,
+      "last_scanned": "2026-11-05",
+      "feeds": [
+        "policy"
+      ]
+    },
+    {
+      "id": "yt-shorts-length",
+      "name": "YouTube Help: Shorts length and upload",
+      "kind": "official",
+      "url": "https://support.google.com/youtube/answer/10059070",
+      "bias": "STRATEGIC",
+      "how_to_scan": "Fetch; check max length and aspect rules against contracts/formats.json.",
+      "cadence_days": 90,
+      "last_scanned": null,
+      "feeds": [
+        "length"
+      ]
+    },
+    {
+      "id": "press-policy-coverage",
+      "name": "Trade press on YouTube policy changes (socialmediatoday, ppc.land)",
+      "kind": "press",
+      "url": "https://ppc.land/youtube-clarifies-inauthentic-content-policy-changes/",
+      "bias": "3P",
+      "how_to_scan": "Search the site for 'YouTube' policy news since last_scanned; add each claim as evidence (stance for/against) to the matching hypothesis with the article URL and date.",
+      "cadence_days": 14,
+      "last_scanned": null,
+      "feeds": [
+        "policy",
+        "metrics"
+      ]
+    },
+    {
+      "id": "own-studio",
+      "name": "Own channel YouTube Studio analytics",
+      "kind": "own-data",
+      "url": "",
+      "bias": "OWN",
+      "how_to_scan": "48-72 h after each upload read viewed-vs-swiped, retention 3 s / 10 s / end, avg view %. Record results with `experiments.py result`; never re-judge a hook before then.",
+      "cadence_days": 3,
+      "last_scanned": null,
+      "feeds": [
+        "hook",
+        "intro",
+        "subtitles",
+        "cover",
+        "length"
+      ]
+    },
+    {
+      "id": "communities",
+      "name": "Creator communities (forums, Discord, Telegram, Reddit): the world's own list",
+      "kind": "community",
+      "url": "",
+      "bias": "3P",
+      "how_to_scan": "Add one source row per community here with its URL. Scan for reports of demonetisation, template flags and format experiments with numbers; each report is one evidence entry with the post URL, date and author as attribution.",
+      "cadence_days": 7,
+      "last_scanned": null,
+      "feeds": [
+        "policy",
+        "hook",
+        "length"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "do": "List due sources: `hypotheses.py refresh WORLD` (cadence_days since last_scanned)."
+    },
+    {
+      "step": 2,
+      "do": "Scan each due source as its `how_to_scan` says; collect claims with date, URL, attribution."
+    },
+    {
+      "step": 3,
+      "do": "Attach each claim: `hypotheses.py add-evidence`, or `add` for a new hypothesis. Evidence is never removed."
+    },
+    {
+      "step": 4,
+      "do": "Re-evaluate: `hypotheses.py promote --all` applies the lifecycle rule; read what moved."
+    },
+    {
+      "step": 5,
+      "do": "Mark the source: `hypotheses.py scanned WORLD SOURCE_ID`."
+    },
+    {
+      "step": 6,
+      "do": "Policy: if a platform rule changed, edit platform_rules.json and run `policy.py check`."
+    },
+    {
+      "step": 7,
+      "do": "Optional, when the a2kay MCP is available: sync with research/youtube-algorithm-research-optimization (hypotheses, log); `hypotheses.py export` writes the flat copy, `import` reads one back. a2kay is a backend, never required."
+    }
+  ]
+}

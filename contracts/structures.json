@@ -1,0 +1,62 @@
+{
+  "schema": "structures/1",
+  "note": "Structure templates as data. A beat id is a name the scenario lint already knows (hook, setup, incident, ladder, turn, button, tag), so beats map 1:1 into <!-- beat: ID --> comments. start_s/end_s are for the template's total_s; `episode.py new` scales them to the spec's target. `rules` overrides scenario.Rules fields for the lint run by `episode.py check`.",
+  "templates": {
+    "shorts-45-60-v1": {
+      "format": "shorts-9x16-60s",
+      "title": "Shorts, linear: hook, setup, incident, two ladder rungs, turn, button",
+      "total_s": 52,
+      "tolerance_s": 4,
+      "confidence": "JUDGE",
+      "source": "research/shorts_hooks.md section 4, re-cut to the lint's beat names (twist = turn, escalate = ladder)",
+      "rules": {"needed": ["hook", "incident", "turn", "button"], "laugh_gap": 10, "laughs_per_min": 4, "cast_max": 3, "button_words": 8, "scenes_per_min": 3},
+      "beats": [
+        {"id": "hook", "start_s": 0, "end_s": 3, "role": "the strongest standalone line or odd image; no context, no greeting"},
+        {"id": "setup", "start_s": 3, "end_s": 7, "role": "who, where, what is wrong; one fast exchange, one premise"},
+        {"id": "incident", "start_s": 7, "end_s": 10, "role": "the thing that starts the trouble"},
+        {"id": "ladder", "start_s": 10, "end_s": 22, "role": "escalation 1, mid-video re-hook (new info, new voice or visual change)"},
+        {"id": "ladder", "start_s": 22, "end_s": 34, "role": "escalation 2, worse than 1"},
+        {"id": "turn", "start_s": 34, "end_s": 46, "role": "the twist: the hook's answer or the hook re-contextualised; not in the last second"},
+        {"id": "button", "start_s": 46, "end_s": 52, "role": "the reaction and the last line; a loop bridge back to frame 1"}
+      ]
+    },
+    "shorts-reverse-open-v1": {
+      "format": "shorts-9x16-60s",
+      "title": "Shorts, reverse open: aftermath first, rewind, the turn pays a different joke",
+      "total_s": 54,
+      "tolerance_s": 4,
+      "confidence": "JUDGE",
+      "source": "research/shorts_hooks.md section 2 (punchline-in-reverse cold open) and section 4",
+      "rules": {"needed": ["hook", "incident", "turn", "button"], "laugh_gap": 10, "laughs_per_min": 4, "cast_max": 3, "button_words": 8, "scenes_per_min": 3},
+      "beats": [
+        {"id": "hook", "start_s": 0, "end_s": 4, "role": "the aftermath: the worst line or image, then a hard cut marks the rewind"},
+        {"id": "setup", "start_s": 4, "end_s": 10, "role": "forty seconds earlier: who, where, what is wrong"},
+        {"id": "incident", "start_s": 10, "end_s": 14, "role": "the thing that starts the trouble"},
+        {"id": "ladder", "start_s": 14, "end_s": 26, "role": "escalation 1"},
+        {"id": "ladder", "start_s": 26, "end_s": 38, "role": "escalation 2"},
+        {"id": "turn", "start_s": 38, "end_s": 49, "role": "the hook line returns with a new meaning; a different joke than the opener"},
+        {"id": "button", "start_s": 49, "end_s": 54, "role": "reaction, last line; loop bridge"}
+      ]
+    },
+    "landscape-3min-v1": {
+      "format": "landscape-16x9-3min",
+      "title": "16:9 three minutes: cold open, setup, incident, three rungs, turn, button, tag",
+      "total_s": 170,
+      "tolerance_s": 10,
+      "confidence": "JUDGE",
+      "source": "research/shorts_hooks.md section 6 (cold open 10-20 s, title card 2 s, no intro) and the scenario lint's default shares",
+      "rules": {"needed": ["hook", "incident", "turn", "button"], "laugh_gap": 20, "laughs_per_min": 3},
+      "beats": [
+        {"id": "hook", "start_s": 0, "end_s": 12, "role": "cold open: the best 10 s of the sketch, then a 2 s title card"},
+        {"id": "setup", "start_s": 12, "end_s": 30, "role": "who, where, what is wrong"},
+        {"id": "incident", "start_s": 30, "end_s": 42, "role": "the thing that starts the trouble"},
+        {"id": "ladder", "start_s": 42, "end_s": 80, "role": "escalation 1"},
+        {"id": "ladder", "start_s": 80, "end_s": 112, "role": "escalation 2"},
+        {"id": "ladder", "start_s": 112, "end_s": 134, "role": "escalation 3"},
+        {"id": "turn", "start_s": 134, "end_s": 156, "role": "the twist"},
+        {"id": "button", "start_s": 156, "end_s": 165, "role": "the last line"},
+        {"id": "tag", "start_s": 165, "end_s": 170, "role": "a second small joke or the serial hook"}
+      ]
+    }
+  }
+}

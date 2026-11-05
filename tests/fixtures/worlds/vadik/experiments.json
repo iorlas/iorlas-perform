@@ -1,0 +1,258 @@
+{
+  "schema": "experiments/2",
+  "note": "Seed experiments, all PROPOSED, no results. Each tests the hypothesis of the same id. Copy to <world>/experiments.json with `experiments.py init`.",
+  "seeded": "2026-11-05",
+  "experiments": [
+    {
+      "id": "exp-hook-voice-by-0.5s",
+      "hypotheses": [
+        "hook-voice-by-0.5s"
+      ],
+      "status": "PROPOSED",
+      "design": "Two Shorts of the same quality, voice at 0.3 s vs 1.5 s; same cast and length class.",
+      "metric": [
+        "viewed_vs_swiped",
+        "retention_3s"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-hook-standalone-line",
+      "hypotheses": [
+        "hook-standalone-line"
+      ],
+      "status": "PROPOSED",
+      "design": "Alternate the two openings across episodes; compare viewed-vs-swiped.",
+      "metric": [
+        "viewed_vs_swiped",
+        "retention_3s"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-hook-reverse-open",
+      "hypotheses": [
+        "hook-reverse-open"
+      ],
+      "status": "PROPOSED",
+      "design": "Alternate templates shorts-reverse-open-v1 and shorts-45-60-v1.",
+      "metric": [
+        "viewed_vs_swiped",
+        "retention_10s",
+        "avg_view_pct"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-intro-none-shorts",
+      "hypotheses": [
+        "intro-none-shorts"
+      ],
+      "status": "PROPOSED",
+      "design": "A/B on two uploads: no intro vs 2 s card; compare viewed-vs-swiped.",
+      "metric": [
+        "viewed_vs_swiped",
+        "retention_3s"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-sting-end-0.5s",
+      "hypotheses": [
+        "sting-end-0.5s"
+      ],
+      "status": "PROPOSED",
+      "design": "Episodes with and without the sting; compare avg view percentage.",
+      "metric": [
+        "avg_view_pct"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-subs-karaoke-colour",
+      "hypotheses": [
+        "subs-karaoke-colour"
+      ],
+      "status": "PROPOSED",
+      "design": "Alternate styles across episodes of one format.",
+      "metric": [
+        "retention_end",
+        "avg_view_pct"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-subs-band-55-70",
+      "hypotheses": [
+        "subs-band-55-70"
+      ],
+      "status": "PROPOSED",
+      "design": "Upload a test grid first (no official pixel spec), then compare retention between zones.",
+      "metric": [
+        "retention_end"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-cover-hero-left",
+      "hypotheses": [
+        "cover-hero-left"
+      ],
+      "status": "PROPOSED",
+      "design": "Alternate cover styles; compare impressions click-through where the cover shows (feed/search).",
+      "metric": [
+        "ctr"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-length-55s-vs-180s",
+      "hypotheses": [
+        "length-55s-vs-180s"
+      ],
+      "status": "PROPOSED",
+      "design": "Publish the 55 s cut and the full 3 min of comparable sketches; compare.",
+      "metric": [
+        "viewed_vs_swiped",
+        "avg_view_duration",
+        "avg_view_pct"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-loop-seam",
+      "hypotheses": [
+        "loop-seam"
+      ],
+      "status": "PROPOSED",
+      "design": "Episodes with and without a loop bridge in the button; compare avg view percentage.",
+      "metric": [
+        "avg_view_pct"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-mid-rehook-8-15s",
+      "hypotheses": [
+        "mid-rehook-8-15s"
+      ],
+      "status": "PROPOSED",
+      "design": "Episodes with and without a marked re-hook rung.",
+      "metric": [
+        "retention_10s"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-cta-oncreen-vs-spoken",
+      "hypotheses": [
+        "cta-oncreen-vs-spoken"
+      ],
+      "status": "PROPOSED",
+      "design": "Spoken CTA vs on-screen question vs none.",
+      "metric": [
+        "retention_end",
+        "comments_per_view"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-title-numbered-series",
+      "hypotheses": [
+        "title-numbered-series"
+      ],
+      "status": "PROPOSED",
+      "design": "Numbered vs unnumbered titles on comparable episodes.",
+      "metric": [
+        "ctr",
+        "subscribers_per_view"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-viewed-baseline",
+      "hypotheses": [
+        "viewed-baseline"
+      ],
+      "status": "PROPOSED",
+      "design": "Collect our own first 10 episodes; set our own baseline; do not judge a hook before it exists.",
+      "metric": [
+        "viewed_vs_swiped"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-ru-feed-behaviour",
+      "hypotheses": [
+        "ru-feed-behaviour"
+      ],
+      "status": "PROPOSED",
+      "design": "Compare our baseline against the 3P numbers once there is one.",
+      "metric": [
+        "viewed_vs_swiped",
+        "retention_3s"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    },
+    {
+      "id": "exp-repetition-tolerance",
+      "hypotheses": [
+        "repetition-tolerance"
+      ],
+      "status": "PROPOSED",
+      "design": "Keep the distinct check green across a run of episodes; watch Studio monetisation notices; any notice is the result.",
+      "metric": [
+        "studio_policy_notice"
+      ],
+      "started": null,
+      "result": null,
+      "decision": "OPEN",
+      "completed": null
+    }
+  ]
+}

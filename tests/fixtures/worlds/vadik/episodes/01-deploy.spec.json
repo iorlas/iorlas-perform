@@ -1,0 +1,91 @@
+{
+  "schema": "episode.spec/1",
+  "number": 1,
+  "slug": "deploy",
+  "status": "scripted",
+  "format": "shorts-9x16-60s",
+  "title": {
+    "working": "Удалил продакшен",
+    "pattern": "rule-number"
+  },
+  "hook": {
+    "pattern": "standalone-line",
+    "line": "Я удалил продакшен.",
+    "voice": "vadik",
+    "on_screen": "Удалил продакшен",
+    "by_s": 3
+  },
+  "premise": {
+    "text": "Вадик удалил продакшен и называет это тихим режимом",
+    "key": "deleted-prod"
+  },
+  "mechanism": "literal-obedience",
+  "outcome": {
+    "type": "boss-believes-it",
+    "note": "fixture"
+  },
+  "set": "office",
+  "cast": [
+    "vadik",
+    "palych"
+  ],
+  "structure": {
+    "template": "shorts-45-60-v1",
+    "target_s": 52,
+    "tolerance_s": 4,
+    "beats": [
+      {
+        "id": "hook",
+        "start_s": 0,
+        "end_s": 3,
+        "what": "the strongest standalone line or odd image"
+      },
+      {
+        "id": "setup",
+        "start_s": 3,
+        "end_s": 7,
+        "what": "who, where, what is wrong"
+      },
+      {
+        "id": "incident",
+        "start_s": 7,
+        "end_s": 10,
+        "what": "the thing that starts the trouble"
+      },
+      {
+        "id": "ladder",
+        "start_s": 10,
+        "end_s": 22,
+        "what": "escalation 1, mid-video re-hook (new info, new voice or visual change)"
+      },
+      {
+        "id": "ladder",
+        "start_s": 22,
+        "end_s": 34,
+        "what": "escalation 2, worse than 1"
+      },
+      {
+        "id": "turn",
+        "start_s": 34,
+        "end_s": 46,
+        "what": "the twist: the hook's answer or the hook re-contextualised"
+      },
+      {
+        "id": "button",
+        "start_s": 46,
+        "end_s": 52,
+        "what": "the reaction and the last line"
+      }
+    ]
+  },
+  "subtitles": {
+    "style": "karaoke-2x3"
+  },
+  "cover": {
+    "style": "hero-left",
+    "text": "Удалил продакшен"
+  },
+  "experiments": [
+    "exp-subs-karaoke-colour"
+  ]
+}

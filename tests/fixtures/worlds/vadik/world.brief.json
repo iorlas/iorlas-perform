@@ -1,0 +1,13 @@
+{
+  "schema": "world.brief/1",
+  "world": "vadik",
+  "platforms": ["youtube-shorts"],
+  "formats": ["shorts-9x16-60s"],
+  "length_s": {"min": 45, "max": 58},
+  "audience": {"language": "ru", "who": "office workers, 20-40"},
+  "genre": "office comedy",
+  "tone": "dry, deadpan",
+  "cadence": {"per_week": 2, "note": "OPEN until the first uploads give a baseline"},
+  "policy": {"constraints": ["no spoken CTA", "no real company names"], "acks": [{"rule": "yt-synthetic-voice", "decision": "publish and watch Studio notices", "date": "2026-11-05"}], "distinct": {"last_n": 6}},
+  "metrics": {"primary": "viewed_vs_swiped", "secondary": ["retention_3s", "avg_view_pct"]}
+}
