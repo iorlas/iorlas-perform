@@ -76,7 +76,13 @@ def compare(spec: dict[str, Any], before: list[dict[str, Any]], lim: dict[str, i
     for ep in window:
         other = keys(ep)
         if me["mechanism"] and me["outcome"] and (me["mechanism"], me["outcome"]) == (other["mechanism"], other["outcome"]):
-            out.append(("error", where, f"same mechanism «{me['mechanism']}» and outcome «{me['outcome']}» as {name(ep)}: same situation, same outcome"))
+            out.append(
+                (
+                    "error",
+                    where,
+                    f"same mechanism «{me['mechanism']}» and outcome «{me['outcome']}» as {name(ep)}: same situation, same outcome",
+                )
+            )
         elif me["premise"] and me["premise"] == other["premise"]:
             out.append(("error", where, f"same premise key «{me['premise']}» as {name(ep)}"))
     out += _run(me, window, "set", lim["set_run"], "error", where, "the same set")
@@ -87,7 +93,9 @@ def compare(spec: dict[str, Any], before: list[dict[str, Any]], lim: dict[str, i
             out.append(("warn", where, f"{key} «{me[key]}» in {n} of the last {len(window) + 1} episodes: minimal variation"))
     shared = [k for k, v in me.items() if v is not None and window and v == keys(window[-1])[k]]
     if len(shared) >= 4:
-        out.append(("error", where, f"shares {len(shared)} of 5 novelty keys ({', '.join(shared)}) with the previous episode {name(window[-1])}"))
+        out.append(
+            ("error", where, f"shares {len(shared)} of 5 novelty keys ({', '.join(shared)}) with the previous episode {name(window[-1])}")
+        )
     return out
 
 

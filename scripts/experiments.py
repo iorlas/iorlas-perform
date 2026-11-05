@@ -56,7 +56,9 @@ def validate(data: dict[str, Any]) -> list[Finding]:
             if not isinstance(e.get(k), str) or not e[k]:
                 out.append(("error", w, f"missing `{k}`"))
         contract.one_of(e.get("area"), AREAS, f"{w}.area", out, what="area")
-        contract.one_of(e.get("confidence"), [c for c in contract.CONFIDENCE if c != contract.OPEN], f"{w}.confidence", out, what="confidence")
+        contract.one_of(
+            e.get("confidence"), [c for c in contract.CONFIDENCE if c != contract.OPEN], f"{w}.confidence", out, what="confidence"
+        )
         ms = e.get("metric")
         if not isinstance(ms, list) or not ms:
             out.append(("error", w, "`metric` must be a non-empty list"))

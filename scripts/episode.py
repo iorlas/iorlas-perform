@@ -18,7 +18,6 @@ See docs/contracts/episode-spec.md.
 """
 
 import dataclasses
-import json
 import re
 import sys
 import wave
@@ -50,7 +49,9 @@ def template_of(spec: dict[str, Any], world: Path | None) -> dict[str, Any] | No
     return contract.templates(world).get(name) if isinstance(name, str) else None
 
 
-def new_spec(world: Path, slug: str, *, fmt: str, template: str | None = None, target: float | None = None, number: int | None = None) -> dict[str, Any]:
+def new_spec(
+    world: Path, slug: str, *, fmt: str, template: str | None = None, target: float | None = None, number: int | None = None
+) -> dict[str, Any]:
     fmts = contract.formats(world)
     if fmt not in fmts:
         sys.exit(f"unknown format {fmt}; known: {', '.join(fmts)}")
@@ -61,7 +62,8 @@ def new_spec(world: Path, slug: str, *, fmt: str, template: str | None = None, t
     t = tpls[template]
     k = (target or t["total_s"]) / t["total_s"]
     beats = [
-        {"id": b["id"], "start_s": round(b["start_s"] * k * 2) / 2, "end_s": round(b["end_s"] * k * 2) / 2, "what": OPEN} for b in t["beats"]
+        {"id": b["id"], "start_s": round(b["start_s"] * k * 2) / 2, "end_s": round(b["end_s"] * k * 2) / 2, "what": OPEN}
+        for b in t["beats"]
     ]
     if number is None:
         number = max((s["number"] for s in distinct.ledger(world) if isinstance(s.get("number"), int)), default=0) + 1
@@ -169,15 +171,20 @@ def validate_structure(spec: dict[str, Any], fmt: dict[str, Any] | None, world: 
             out.append(("error", w, f"starts at {s} s, the previous beat ended at {prev_end} s"))
         prev_end = e
         contract.need(b, "what", str, w, out)
-    if beats and tpl:
-        if [b.get("id") for b in beats] != [b["id"] for b in tpl["beats"]]:
-            out.append(("warn", "structure.beats", f"beat sequence differs from template {tname}"))
+    if beats and tpl and [b.get("id") for b in beats] != [b["id"] for b in tpl["beats"]]:
+        out.append(("warn", "structure.beats", f"beat sequence differs from template {tname}"))
     if beats and fmt:
         hard, strict = fmt["hard_max_s"], fmt.get("hard_max_strict")
         if prev_end >= hard if strict else prev_end > hard:
             out.append(("error", "structure.beats", f"plan ends at {prev_end} s: the format's hard max is {hard} s"))
         elif not fmt["target_s"][0] <= prev_end <= fmt["target_s"][1]:
-            out.append(("warn", "structure.beats", f"plan ends at {prev_end} s, the format's target is {fmt['target_s'][0]}-{fmt['target_s'][1]} s"))
+            out.append(
+                (
+                    "warn",
+                    "structure.beats",
+                    f"plan ends at {prev_end} s, the format's target is {fmt['target_s'][0]}-{fmt['target_s'][1]} s",
+                )
+            )
     return out
 
 
@@ -204,13 +211,19 @@ def outline(spec: dict[str, Any], world: Path | None) -> str:
     fmt = contract.formats(world)[spec["format"]]
     tpl = template_of(spec, world) or {"beats": []}
     roles = {i: b["role"] for i, b in enumerate(tpl["beats"])}
-    for i, b in enumerate(spec["structure"]["beats"]):
+    for b in spec["structure"]["beats"]:
         b["words"] = budget(b, fmt)
     rows = ["| # | beat | window | words | role | what |", "|---|---|---|---|---|---|"]
     for i, b in enumerate(spec["structure"]["beats"]):
-        rows.append(f"| {i + 1} | {b['id']} | {b['start_s']:g}-{b['end_s']:g} s | {b['words'][0]}-{b['words'][1]} | {roles.get(i, '')} | {b['what']} |")
-    head = f"# {spec.get('slug')}: outline\n\nFormat {spec['format']}, template {spec['structure']['template']}, plan {spec['structure']['target_s']} s.\n\n"
-    return head + "\n".join(rows) + "\n\nFill each beat's `what` in the spec (one line: what happens, who says what), then `expand --script`.\n"
+        window, lo_hi = f"{b['start_s']:g}-{b['end_s']:g} s", f"{b['words'][0]}-{b['words'][1]}"
+        rows.append(f"| {i + 1} | {b['id']} | {window} | {lo_hi} | {roles.get(i, '')} | {b['what']} |")
+    st = spec["structure"]
+    head = f"# {spec.get('slug')}: outline\n\nFormat {spec['format']}, template {st['template']}, plan {st['target_s']} s.\n\n"
+    return (
+        head
+        + "\n".join(rows)
+        + "\n\nFill each beat's `what` in the spec (one line: what happens, who says what), then `expand --script`.\n"
+    )
 
 
 def skeleton(spec: dict[str, Any], world: Path | None) -> str:
@@ -317,7 +330,9 @@ def beat_starts(sc: scenario.Scenario, entries: list[dict[str, Any]]) -> tuple[l
     timed = [e for e in entries if "turn" in e]
     turns = sc.turns
     if len(timed) != len(turns):
-        return [], [("error", "timeline", f"{len(timed)} turns rendered, the script has {len(turns)}: the timeline is from another version")]
+        return [], [
+            ("error", "timeline", f"{len(timed)} turns rendered, the script has {len(turns)}: the timeline is from another version")
+        ]
     for t, e in zip(turns, timed, strict=True):
         if t.text != e.get("text"):
             return [], [("error", "timeline", f"turn at script line {t.line} differs from the rendered one: re-render")]
@@ -329,7 +344,9 @@ def beat_starts(sc: scenario.Scenario, entries: list[dict[str, Any]]) -> tuple[l
     return starts, []
 
 
-def check_timing(spec: dict[str, Any], sc: scenario.Scenario, entries: list[dict[str, Any]], total: float, fmt: dict[str, Any], *, exact: bool) -> list[Finding]:
+def check_timing(
+    spec: dict[str, Any], sc: scenario.Scenario, entries: list[dict[str, Any]], total: float, fmt: dict[str, Any], *, exact: bool
+) -> list[Finding]:
     out: list[Finding] = []
     lv = "error" if exact else "warn"
     src = "rendered" if exact else "estimated from characters"
@@ -345,11 +362,11 @@ def check_timing(spec: dict[str, Any], sc: scenario.Scenario, entries: list[dict
         if not lo <= rate <= hi:
             out.append(("warn", "word-rate", f"{rate:.2f} words/s ({n_words} words in {total:.1f} s), sane band {lo}-{hi}"))
     if exact:
-        out += check_beat_times(spec, sc, entries, total, fmt)
+        out += check_beat_times(spec, sc, entries, fmt)
     return out
 
 
-def check_beat_times(spec: dict[str, Any], sc: scenario.Scenario, entries: list[dict[str, Any]], total: float, fmt: dict[str, Any]) -> list[Finding]:
+def check_beat_times(spec: dict[str, Any], sc: scenario.Scenario, entries: list[dict[str, Any]], fmt: dict[str, Any]) -> list[Finding]:
     out: list[Finding] = []
     starts, errs = beat_starts(sc, entries)
     if errs:
@@ -406,7 +423,9 @@ def check_distinct(spec: dict[str, Any], world: Path | None) -> list[Finding]:
     return distinct.compare(spec, before, distinct.limits(world))
 
 
-def check(spec: dict[str, Any], world: Path | None, *, script: Path | None = None, timeline: Path | None = None, audio: Path | None = None) -> list[Finding]:
+def check(
+    spec: dict[str, Any], world: Path | None, *, script: Path | None = None, timeline: Path | None = None, audio: Path | None = None
+) -> list[Finding]:
     out = validate(spec, world)
     if any(f[0] == "error" and f[1] in ("schema", "format") for f in out):
         return out

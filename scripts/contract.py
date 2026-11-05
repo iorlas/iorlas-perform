@@ -99,7 +99,7 @@ def need(d: dict[str, Any], key: str, kind: type | tuple[type, ...], where: str,
         out.append(("open", f"{where}.{key}" if where else key, "OPEN"))
         return None
     kinds = kind if isinstance(kind, tuple) else (kind,)
-    if isinstance(v, bool) and bool not in kinds or not isinstance(v, kinds):
+    if (isinstance(v, bool) and bool not in kinds) or not isinstance(v, kinds):
         out.append(("error", f"{where}.{key}", f"expected {'/'.join(k.__name__ for k in kinds)}, got {type(v).__name__}"))
         return None
     return v

@@ -1,0 +1,89 @@
+{
+  "schema": "episode.spec/1",
+  "number": 3,
+  "slug": "standup",
+  "status": "draft",
+  "format": "shorts-9x16-60s",
+  "title": {
+    "working": "Стендап",
+    "pattern": "one-line"
+  },
+  "hook": {
+    "pattern": "open-loop",
+    "line": "Вчера я ничего не делал.",
+    "voice": "palych",
+    "on_screen": "Стендап",
+    "by_s": 3
+  },
+  "premise": {
+    "text": "Вадик на стендапе честно рассказывает, что делал",
+    "key": "honest-standup"
+  },
+  "mechanism": "over-honesty",
+  "outcome": {
+    "type": "cover-up-fails",
+    "note": "fixture"
+  },
+  "set": "kitchen",
+  "cast": [
+    "vadik",
+    "palych"
+  ],
+  "structure": {
+    "template": "shorts-reverse-open-v1",
+    "target_s": 54,
+    "tolerance_s": 4,
+    "beats": [
+      {
+        "id": "hook",
+        "start_s": 0,
+        "end_s": 4,
+        "what": "the aftermath: the worst line or image, then a hard cut marks the rewind"
+      },
+      {
+        "id": "setup",
+        "start_s": 4,
+        "end_s": 10,
+        "what": "forty seconds earlier: who, where, what is wrong"
+      },
+      {
+        "id": "incident",
+        "start_s": 10,
+        "end_s": 14,
+        "what": "the thing that starts the trouble"
+      },
+      {
+        "id": "ladder",
+        "start_s": 14,
+        "end_s": 26,
+        "what": "escalation 1"
+      },
+      {
+        "id": "ladder",
+        "start_s": 26,
+        "end_s": 38,
+        "what": "escalation 2"
+      },
+      {
+        "id": "turn",
+        "start_s": 38,
+        "end_s": 49,
+        "what": "the hook line returns with a new meaning"
+      },
+      {
+        "id": "button",
+        "start_s": 49,
+        "end_s": 54,
+        "what": "reaction, last line"
+      }
+    ]
+  },
+  "subtitles": {
+    "style": "karaoke-2x3"
+  },
+  "cover": {
+    "style": "hero-left",
+    "text": "Стендап"
+  },
+  "experiments": []
+}
