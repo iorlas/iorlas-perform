@@ -2478,11 +2478,10 @@ function trapMouth(X,e,lcy,w0,pal,lc){var w=w0*(.86+.22*e),Hh=3+Math.min(1,e)*9.
   return s}
 /* ---------------------------------------------------------------- real hands: palm + 4 grouped fingers + thumb, pivot at the wrist (origin) */
 PF.hand=function(S,sd,type){var c=S.c,sk=c.skin,sh=c.skinSh,s2=c.skin2,o='',i;
-  if(type==='grip'){/* 1.x patch: slim palm + 4 separate fingers wrapped across + thumb; one flat shadow shape (back of the palm), no strokes */
-    var gl=[11.8,13.4,12.8,10.4];
-    o+='<path d="M-5.2,-3 L5.2,-3 C7,3 7.2,9 6.8,14 Q0,16.4 -6.8,14 C-7.2,9 -7,3 -5.2,-3Z" fill="'+sk+'"/>';
-    o+='<path d="M-5.2,-3 L-1,-3 C-2.6,3 -2.6,9 -2.6,15 Q-4.6,15 -6.8,14 C-7.2,9 -7,3 -5.2,-3Z" fill="'+s2+'"/>';
-    for(i=0;i<4;i++)o+='<rect x="'+f(-6.8+i*.4)+'" y="'+f(4.4+i*4.9)+'" width="'+gl[i]+'" height="4.1" rx="2.05" fill="'+sk+'"/>';
+  if(type==='grip'){
+    o+='<g transform="scale('+sd+',1)"><path d="M4.6,1 C11,2 14.6,7.4 13.4,13.4 Q10.4,16.2 8,12Z" fill="'+s2+'"/></g>';
+    o+='<path d="M-6,-3 L6,-3 C8.4,4 9.4,11 8.8,17.4 Q0,23 -8.8,17.4 C-9.4,11 -8.4,4 -6,-3Z" fill="'+sk+'"/>';
+    for(i=0;i<4;i++)o+='<rect x="'+f(-8.8+i*.5)+'" y="'+f(5+i*4.1)+'" width="17.4" height="4.8" rx="2.4" fill="'+sk+'"/><path d="M'+f(-7.4+i*.5)+','+f(9.5+i*4.1)+' L'+f(7.6)+','+f(9.5+i*4.1)+'" stroke="'+sh+'" stroke-width=".9" opacity=".45"/>';
     o+='<g transform="scale('+sd+',1)"><path d="M3,.5 C9.4,1 13.4,5.6 12.4,10.6 Q9.8,12.4 7.4,9.6 C5.2,7.6 3.8,4.6 3,.5Z" fill="'+sk+'"/></g>';
     return o}
   /* smaller hand: palm + 4 slender grouped fingers + thumb, wrist pivot at the origin */
@@ -2837,8 +2836,8 @@ var CHM=(function(){var o,g14,g15;G14={sk:vM.sd,ex:vM.w-.5,ed:vM.ed};G15={es:vM.
    pal:{skin:'#f0cfb4',skin2:'#d6b090',skinSh:'#d2ab8e',hair:'#8d6a4a',hair2:'#725339',hair3:'#5a4230',silv:'#d9b04e',gold:'#d9b04e',
         top:'#d9ab3e',top2:'#b8862d',topHi:'#e8c46a',collarIn:'#b8862d',blouse:'#93a9bf',blouse2:'#7d93a9',pants:'#4a5873',pants2:'#3a465c',pantsHi:'#5f6e8c',
         shoe:'#f3f1ea',shoe2:'#d9d6cf',sole:'#c9c5bb',shoeAcc:'#e9e4da',mouthIn:'#4a1c26',teeth:'#f7f0e6',tongue:'#d4666e',shadow:'#0b1020',pantsHi2:'#566585',pantsSh:'#37425a',pantsSh2:'#2d3649',topHi2:'#ecc874',topSh:'#bb8c31'},
-   dim:{sw:45,shY:27,UA:92,FA:82,UL:143,LL:139,hipY:246,hemY:258,waistY:148,ww:50,hemW:62,ankleY:528,floor:548,neckY:-22,
-        sitDy:99,hs:21,ank:28,boot:0,tee:0,hips:61,wTop:46,legA:44,legB:19.5,calfW:19.6,ankW:16.5,kneeW:19,bw:50,rb:46,ap:40}}})();
+   dim:{sw:45,shY:27,UA:92,FA:82,UL:143,LL:139,hipY:246,hemY:258,waistY:148,ww:38,hemW:62,ankleY:528,floor:548,neckY:-17,
+        sitDy:99,hs:21,ank:28,boot:0,tee:0,hips:61,wTop:46,legA:44,legB:19.5,calfW:19.6,ankW:16.5,kneeW:19,bw:54,rb:48,ap:40}}})();
 CHM.lipK=1;CHM.mwK=1;CHM.wideK=0;
 CHM.o.skin=CHM.pal.skin;
 var SLIP={shoe:'#c9906b',shoe2:'#a8704f',sole:'#7a553f',shoeAcc:'#f1dcc0'},SNEAK={shoe:'#f3f1ea',shoe2:'#d9d6cf',sole:'#c9c5bb',shoeAcc:'#e9e4da'};
@@ -3016,8 +3015,8 @@ PF.collar=function(S){if(!isM(S)||nF(S.p.back,0))return PFcollar0(S);
 /* neck: short and thick, flat skin with ONE flat shadow under the jaw */
 var PFneck0=PF.neck;
 PF.neck=function(S){if(!isM(S))return PFneck0(S);var c=S.c,tx=S.tx;
-  return '<path d="M'+f(tx-17.5)+',-52 L'+f(tx+17.5)+',-52 C'+f(tx+17.5)+',-24 '+f(tx+18)+',-8 '+f(tx+22)+',-2 L'+f(tx+17)+',4 Q'+f(tx)+',9 '+f(tx-17)+',4 L'+f(tx-22)+',-2 C'+f(tx-18)+',-8 '+f(tx-17.5)+',-24 '+f(tx-17.5)+',-52 Z" fill="'+c.skin+'"/>'
-   +'<path d="M'+f(tx-17.5)+',-30 L'+f(tx+17.5)+',-30 L'+f(tx+17.7)+',-22 C'+f(tx+10)+',-12 '+f(tx-10)+',-12 '+f(tx-17.7)+',-22Z" fill="'+c.skinSh+'" opacity=".5"/>'};
+  return '<path d="M'+f(tx-21)+',-52 L'+f(tx+21)+',-52 C'+f(tx+21)+',-24 '+f(tx+22)+',-8 '+f(tx+27)+',-2 L'+f(tx+21)+',4 Q'+f(tx)+',9 '+f(tx-21)+',4 L'+f(tx-27)+',-2 C'+f(tx-22)+',-8 '+f(tx-21)+',-24 '+f(tx-21)+',-52 Z" fill="'+c.skin+'"/>'
+   +'<path d="M'+f(tx-21)+',-30 L'+f(tx+21)+',-30 L'+f(tx+21.2)+',-22 C'+f(tx+12)+',-12 '+f(tx-12)+',-12 '+f(tx-21.2)+',-22Z" fill="'+c.skinSh+'" opacity=".5"/>'};
 /* sleeves: knit to the wrist, full soft arms, ribbed cuff */
 var PFua0=PF.upper_arm,PFfa0=PF.forearm;
 PF.upper_arm=function(S){if(!isM(S))return PFua0(S);var c=S.c,UA=S.dim.UA;

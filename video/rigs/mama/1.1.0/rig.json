@@ -1,10 +1,10 @@
 {
  "id": "mama",
- "version": "1.0.1",
+ "version": "1.1.0",
  "body_type": "f",
  "look": "cutout",
  "seed": 9,
- "description": "\u041c\u0430\u043c\u0430 \u0412\u0430\u0434\u0438\u043a\u0430, ~46, warm, rounder body (0.3.0): longer torso, shorter legs (hip-to-floor ~43% of figure height), waist ~82% of hip, soft belly under the jacket, fuller arms x1.2, shorter thicker neck. Look = cast_sheet22 variant 2 (poc_cast24): wavy lob built as hair_back / hair_side / fringe layers, round thin glasses (detachable part, default on), hazel eyes (eyes_mama cell 2), zip knit yellow jacket over a blue-grey tee, straight trousers, white sneakers (house slippers via st.shoes), phone prop. Built on the frozen women rig (kristina/friend 1.0.1 art/female_cut.js) as an overlay block; face and hair redrawn flat in the rig head frame.",
+ "description": "Мама Вадика, ~46, warm, rounder body (0.3.0): longer torso, shorter legs (hip-to-floor ~43% of figure height), waist ~82% of hip, soft belly under the jacket, fuller arms x1.2, shorter thicker neck. Look = cast_sheet22 variant 2 (poc_cast24): wavy lob built as hair_back / hair_side / fringe layers, round thin glasses (detachable part, default on), hazel eyes (eyes_mama cell 2), zip knit yellow jacket over a blue-grey tee, straight trousers, white sneakers (house slippers via st.shoes), phone prop. Built on the frozen women rig (kristina/friend 1.0.1 art/female_cut.js) as an overlay block; face and hair redrawn flat in the rig head frame. 1.1.0: shorter visible neck, wider neck stem, shaped waist (ww 50->38, bw 50->54).",
  "module": {
   "file": "art/female_cut.js",
   "registers": {
@@ -37,11 +37,11 @@
   "hipY": 246,
   "hemY": 258,
   "waistY": 148,
-  "ww": 50,
+  "ww": 38,
   "hemW": 62,
   "ankleY": 528,
   "floor": 548,
-  "neckY": -22,
+  "neckY": -17,
   "sitDy": 99,
   "hs": 21,
   "ank": 28,
@@ -54,8 +54,8 @@
   "calfW": 19.6,
   "ankW": 16.5,
   "kneeW": 19,
-  "bw": 50,
-  "rb": 46,
+  "bw": 54,
+  "rb": 48,
   "ap": 40,
   "tableY": 300,
   "tableSY": 338
@@ -1213,11 +1213,11 @@
   "profile double chin is one flat shape under the jaw; the profile neck is still two pieces (base neck + tapered skin piece)",
   "3/4 glasses narrow the far lens and drop the far temple only above |fx|~4; at yaw .32 the far arm is hidden, at smaller yaw both arms show",
   "back view: layers are flat (back mass, two curtains, parting, wave shadows); no ear or neck detail",
-  "torso is a loose jacket tube: waist/hip read only through the hem flare, the belly is visible in profile only",
   "table, counter and pot are flat shapes, not rig parts; the stove pot/counter are offset +32 for the new hip height",
   "3/4 only to ~30 deg",
   "sit poses use the women chair; thighs end-on schematic",
   "pose keys table/pot exist only for Mama",
-  "mama walk adapter changes the shared walk_f poses only inside the mama rig, shared pose data is untouched"
+  "mama walk adapter changes the shared walk_f poses only inside the mama rig, shared pose data is untouched",
+  "torso is a loose jacket with a soft waist taper (1.1.0); belly still visible in profile only; hands unchanged (mitten-like, fatter than 1.3x wrist) - slim fingered hands are a separate later version"
  ]
 }

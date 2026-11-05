@@ -1,4 +1,4 @@
-# mama 1.0.1 - cut-paper rig (frozen)
+# mama 1.1.0 - cut-paper rig (neck + waist fix of 1.0.0)
 
 Мама Вадика, ~46. Look: poc_cast24/cast_sheet22.png variant 2 (wavy lob, round thin glasses, yellow zip knit jacket, straight trousers, white sneakers, phone). Eyes: poc_cast25/eyes_mama.png cell 2 (hazel, iris x1.3, two catchlights, kind crease) as warm_default, brows of cell 5 for worried_mom, cell 4 (smiling lower lid) for proud_beam / tearful_happy / laugh.
 
@@ -17,6 +17,9 @@ Known weaknesses: see rig.json known_weaknesses.
 
 Known weaknesses: loose jacket reads tube-like (belly visible only in profile); profile neck is two pieces; hand targets patched by a per-pose y offset in RIGS.mama; 3/4 glasses lightly checked; table/counter/pot are flat shapes, not parts; sit uses the women chair.
 
-## 1.0.1 changes (hand fix, from 1.0.0)
-- Hands: grip hand: 4 stacked bars on a block palm -> slim palm + 4 separate wrapped fingers + thumb. Flat skin shapes, one flat shadow shape (skin2), no strokes or gradients. Wrist pivot, length (~46 px), poses, mouth/eye anchors and every other part are unchanged; only `PF.hand` changed (the `grip` type; the relaxed hand already had separate fingers).
-- 1.0.0 stays intact; scenes pin `mama@1.0.1` to get the new hands. Before/after: `golden/hands.png` shows this version only; compare with 1.0.0's golden.
+
+## 1.1.0 changes (from 1.0.0; 1.0.0 stays intact)
+- Neck: `dim.neckY` -22 -> -17 (head sits 5 units lower, chin closer to the collar); neck stem half-width 17.5 -> 21 with a wider base flare, same single flat jaw shadow.
+- Waist: `dim.ww` 50 -> 38, `bw` 50 -> 54, `rb` 46 -> 48, `hemW` 62 (unchanged): the jacket tapers at the waist and flares to the hem instead of reading as a tube. Pose data, pivots, props, expressions untouched.
+- Not changed: hands (still the shared 1.0.0 hand, wider than 1.3x wrist). Slim fingered hands are a separate later version.
+- Why: set A review (kitchen, Мама behind the island) showed a thin neck against a wide tube torso.
