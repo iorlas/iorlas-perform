@@ -1,0 +1,316 @@
+{
+  "schema": "hypotheses/1",
+  "note": "Seed hypotheses from the Shorts hook research and the Kylo digest. All ACTIVE, no evidence entries yet: `origin` says where the claim came from, it is not evidence. Copy to <world>/hypotheses.json with `hypotheses.py init`.",
+  "seeded": "2026-11-05",
+  "hypotheses": [
+    {
+      "id": "hook-voice-by-0.5s",
+      "claim": "A voice line starting by 0.5 s (no pre-roll silence) keeps more viewers than one starting after 1.5 s.",
+      "area": "hook",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 3"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-hook-voice-by-0.5s"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "hook-standalone-line",
+      "claim": "Opening on the funniest standalone sentence beats opening on narration.",
+      "area": "hook",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 2"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-hook-standalone-line"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "hook-reverse-open",
+      "claim": "A reverse cold open (aftermath first) beats a linear open for story sketches.",
+      "area": "hook",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 2"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-hook-reverse-open"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "intro-none-shorts",
+      "claim": "A Short with no intro screen and at most a 0.5 s sting at the end retains better than one with a 1-3 s title card.",
+      "area": "intro",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 7",
+        "note": "no study found"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-intro-none-shorts"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "sting-end-0.5s",
+      "claim": "A brand sound of 0.3-0.5 s on the last frame costs nothing and builds recognition.",
+      "area": "intro",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 3"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-sting-end-0.5s"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "subs-karaoke-colour",
+      "claim": "Burned-in karaoke subtitles, 1-3 words, speaker colour, accent on the punch word, beat plain white subtitles.",
+      "area": "subtitles",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/kylo_workflow_digest.md; research/shorts_hooks.md section 7"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-subs-karaoke-colour"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "subs-band-55-70",
+      "claim": "Subtitles at 55-70% of frame height avoid the UI overlay and read better than the default caption zone.",
+      "area": "subtitles",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "3P"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 1",
+        "url": "https://www.clipspeed.ai/blog/youtube-shorts-size.html"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-subs-band-55-70"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "cover-hero-left",
+      "claim": "A cover with the hero large on the left, up to 8 words, key word accented, converts better than a frame grab.",
+      "area": "cover",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/kylo_workflow_digest.md"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-cover-hero-left"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "length-55s-vs-180s",
+      "claim": "A 55 s cut of a dialogue sketch beats the full 3 min as a Short on viewed-vs-swiped and average view percentage.",
+      "area": "length",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md sections 1, 7"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-length-55s-vs-180s"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "loop-seam",
+      "claim": "A seamless loop (last line links to the first frame) raises average view percentage above 100.",
+      "area": "length",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "3P"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 1"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-loop-seam"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "mid-rehook-8-15s",
+      "claim": "A deliberate re-hook at 8-15 s (new info, voice or visual) lifts retention at 10 s.",
+      "area": "hook",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 4"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-mid-rehook-8-15s"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "cta-oncreen-vs-spoken",
+      "claim": "A spoken subscribe line lowers late retention; an on-screen comment question does not.",
+      "area": "cta",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 4"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-cta-oncreen-vs-spoken"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "title-numbered-series",
+      "claim": "Numbering episodes in the title and the corner mark builds a series without intro time.",
+      "area": "title",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 4; research/claude_video_workflows.md"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-title-numbered-series"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "viewed-baseline",
+      "claim": "Blog thresholds (70% viewed good, 75-80% strong) hold for our channel.",
+      "area": "metrics",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "3P"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 1",
+        "url": "https://vidiq.com/blog/post/youtube-shorts-algorithm/"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-viewed-baseline"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "ru-feed-behaviour",
+      "claim": "The Russian-language Shorts feed behaves like the global benchmarks.",
+      "area": "audience",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md Unknowns",
+        "note": "no data found"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-ru-feed-behaviour"
+      ],
+      "refs": {},
+      "history": []
+    },
+    {
+      "id": "repetition-tolerance",
+      "claim": "A cast-and-rig series passes the repetitive-content rule when each episode changes mechanism and outcome.",
+      "area": "policy",
+      "status": "ACTIVE",
+      "confidence": "low",
+      "source_bias": [
+        "FOLK"
+      ],
+      "origin": {
+        "doc": "research/shorts_hooks.md section 5 (JUDGE)",
+        "url": "https://support.google.com/youtube/answer/1311392"
+      },
+      "evidence": [],
+      "experiments": [
+        "exp-repetition-tolerance"
+      ],
+      "refs": {},
+      "history": []
+    }
+  ]
+}

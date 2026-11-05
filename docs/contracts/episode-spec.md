@@ -88,6 +88,6 @@ Fixture `tests/fixtures/worlds/vadik/episodes/01-deploy.spec.json` (beats shorte
   ]},
   "subtitles": {"style": "karaoke-2x3"},
   "cover": {"style": "hero-left", "text": "Удалил продакшен"},
-  "experiments": ["subs-karaoke-colour"]
+  "experiments": ["exp-subs-karaoke-colour"]
 }
 ```

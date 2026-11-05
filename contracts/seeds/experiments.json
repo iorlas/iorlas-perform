@@ -1,279 +1,258 @@
 {
-  "schema": "experiments/1",
-  "note": "Seed hypotheses from the Shorts hook research and the Kylo digest. No results: every `result` is null and every decision OPEN. Copy to <world>/experiments.json with `experiments.py init`.",
+  "schema": "experiments/2",
+  "note": "Seed experiments, all PROPOSED, no results. Each tests the hypothesis of the same id. Copy to <world>/experiments.json with `experiments.py init`.",
   "seeded": "2026-11-05",
   "experiments": [
     {
-      "id": "hook-voice-by-0.5s",
-      "area": "hook",
-      "claim": "A voice line starting by 0.5 s (no pre-roll silence) keeps more viewers than one starting after 1.5 s.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/shorts_hooks.md section 3"
-      },
-      "test_plan": "Two Shorts of the same quality, voice at 0.3 s vs 1.5 s; same cast and length class.",
+      "id": "exp-hook-voice-by-0.5s",
+      "hypotheses": [
+        "hook-voice-by-0.5s"
+      ],
+      "status": "PROPOSED",
+      "design": "Two Shorts of the same quality, voice at 0.3 s vs 1.5 s; same cast and length class.",
       "metric": [
         "viewed_vs_swiped",
         "retention_3s"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "hook-standalone-line",
-      "area": "hook",
-      "claim": "Opening on the funniest standalone sentence beats opening on narration.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/shorts_hooks.md section 2"
-      },
-      "test_plan": "Alternate the two openings across episodes; compare viewed-vs-swiped.",
+      "id": "exp-hook-standalone-line",
+      "hypotheses": [
+        "hook-standalone-line"
+      ],
+      "status": "PROPOSED",
+      "design": "Alternate the two openings across episodes; compare viewed-vs-swiped.",
       "metric": [
         "viewed_vs_swiped",
         "retention_3s"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "hook-reverse-open",
-      "area": "hook",
-      "claim": "A reverse cold open (aftermath first) beats a linear open for story sketches.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/shorts_hooks.md section 2"
-      },
-      "test_plan": "Alternate templates shorts-reverse-open-v1 and shorts-45-60-v1.",
+      "id": "exp-hook-reverse-open",
+      "hypotheses": [
+        "hook-reverse-open"
+      ],
+      "status": "PROPOSED",
+      "design": "Alternate templates shorts-reverse-open-v1 and shorts-45-60-v1.",
       "metric": [
         "viewed_vs_swiped",
         "retention_10s",
         "avg_view_pct"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "intro-none-shorts",
-      "area": "intro",
-      "claim": "A Short with no intro screen and at most a 0.5 s sting at the end retains better than one with a 1-3 s title card.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/shorts_hooks.md section 7",
-        "note": "no study found"
-      },
-      "test_plan": "A/B on two uploads: no intro vs 2 s card; compare viewed-vs-swiped.",
+      "id": "exp-intro-none-shorts",
+      "hypotheses": [
+        "intro-none-shorts"
+      ],
+      "status": "PROPOSED",
+      "design": "A/B on two uploads: no intro vs 2 s card; compare viewed-vs-swiped.",
       "metric": [
         "viewed_vs_swiped",
         "retention_3s"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "sting-end-0.5s",
-      "area": "intro",
-      "claim": "A brand sound of 0.3-0.5 s on the last frame costs nothing and builds recognition.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/shorts_hooks.md section 3"
-      },
-      "test_plan": "Episodes with and without the sting; compare avg view percentage.",
+      "id": "exp-sting-end-0.5s",
+      "hypotheses": [
+        "sting-end-0.5s"
+      ],
+      "status": "PROPOSED",
+      "design": "Episodes with and without the sting; compare avg view percentage.",
       "metric": [
         "avg_view_pct"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "subs-karaoke-colour",
-      "area": "subtitles",
-      "claim": "Burned-in karaoke subtitles, 1-3 words, speaker colour, accent on the punch word, beat plain white subtitles.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/kylo_workflow_digest.md; research/shorts_hooks.md section 7"
-      },
-      "test_plan": "Alternate styles across episodes of one format.",
+      "id": "exp-subs-karaoke-colour",
+      "hypotheses": [
+        "subs-karaoke-colour"
+      ],
+      "status": "PROPOSED",
+      "design": "Alternate styles across episodes of one format.",
       "metric": [
         "retention_end",
         "avg_view_pct"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "subs-band-55-70",
-      "area": "subtitles",
-      "claim": "Subtitles at 55-70% of frame height avoid the UI overlay and read better than the default caption zone.",
-      "confidence": "3P",
-      "source": {
-        "doc": "research/shorts_hooks.md section 1",
-        "url": "https://www.clipspeed.ai/blog/youtube-shorts-size.html"
-      },
-      "test_plan": "Upload a test grid first (no official pixel spec), then compare retention between zones.",
+      "id": "exp-subs-band-55-70",
+      "hypotheses": [
+        "subs-band-55-70"
+      ],
+      "status": "PROPOSED",
+      "design": "Upload a test grid first (no official pixel spec), then compare retention between zones.",
       "metric": [
         "retention_end"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "cover-hero-left",
-      "area": "cover",
-      "claim": "A cover with the hero large on the left, up to 8 words, key word accented, converts better than a frame grab.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/kylo_workflow_digest.md"
-      },
-      "test_plan": "Alternate cover styles; compare impressions click-through where the cover shows (feed/search).",
+      "id": "exp-cover-hero-left",
+      "hypotheses": [
+        "cover-hero-left"
+      ],
+      "status": "PROPOSED",
+      "design": "Alternate cover styles; compare impressions click-through where the cover shows (feed/search).",
       "metric": [
         "ctr"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "length-55s-vs-180s",
-      "area": "length",
-      "claim": "A 55 s cut of a dialogue sketch beats the full 3 min as a Short on viewed-vs-swiped and average view percentage.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/shorts_hooks.md sections 1, 7"
-      },
-      "test_plan": "Publish the 55 s cut and the full 3 min of comparable sketches; compare.",
+      "id": "exp-length-55s-vs-180s",
+      "hypotheses": [
+        "length-55s-vs-180s"
+      ],
+      "status": "PROPOSED",
+      "design": "Publish the 55 s cut and the full 3 min of comparable sketches; compare.",
       "metric": [
         "viewed_vs_swiped",
         "avg_view_duration",
         "avg_view_pct"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "loop-seam",
-      "area": "length",
-      "claim": "A seamless loop (last line links to the first frame) raises average view percentage above 100.",
-      "confidence": "3P",
-      "source": {
-        "doc": "research/shorts_hooks.md section 1"
-      },
-      "test_plan": "Episodes with and without a loop bridge in the button; compare avg view percentage.",
+      "id": "exp-loop-seam",
+      "hypotheses": [
+        "loop-seam"
+      ],
+      "status": "PROPOSED",
+      "design": "Episodes with and without a loop bridge in the button; compare avg view percentage.",
       "metric": [
         "avg_view_pct"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "mid-rehook-8-15s",
-      "area": "hook",
-      "claim": "A deliberate re-hook at 8-15 s (new info, voice or visual) lifts retention at 10 s.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/shorts_hooks.md section 4"
-      },
-      "test_plan": "Episodes with and without a marked re-hook rung.",
+      "id": "exp-mid-rehook-8-15s",
+      "hypotheses": [
+        "mid-rehook-8-15s"
+      ],
+      "status": "PROPOSED",
+      "design": "Episodes with and without a marked re-hook rung.",
       "metric": [
         "retention_10s"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "cta-oncreen-vs-spoken",
-      "area": "cta",
-      "claim": "A spoken subscribe line lowers late retention; an on-screen comment question does not.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/shorts_hooks.md section 4"
-      },
-      "test_plan": "Spoken CTA vs on-screen question vs none.",
+      "id": "exp-cta-oncreen-vs-spoken",
+      "hypotheses": [
+        "cta-oncreen-vs-spoken"
+      ],
+      "status": "PROPOSED",
+      "design": "Spoken CTA vs on-screen question vs none.",
       "metric": [
         "retention_end",
         "comments_per_view"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "title-numbered-series",
-      "area": "title",
-      "claim": "Numbering episodes in the title and the corner mark builds a series without intro time.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/shorts_hooks.md section 4; research/claude_video_workflows.md"
-      },
-      "test_plan": "Numbered vs unnumbered titles on comparable episodes.",
+      "id": "exp-title-numbered-series",
+      "hypotheses": [
+        "title-numbered-series"
+      ],
+      "status": "PROPOSED",
+      "design": "Numbered vs unnumbered titles on comparable episodes.",
       "metric": [
         "ctr",
         "subscribers_per_view"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "viewed-baseline",
-      "area": "metrics",
-      "claim": "Blog thresholds (70% viewed good, 75-80% strong) hold for our channel.",
-      "confidence": "3P",
-      "source": {
-        "doc": "research/shorts_hooks.md section 1",
-        "url": "https://vidiq.com/blog/post/youtube-shorts-algorithm/"
-      },
-      "test_plan": "Collect our own first 10 episodes; set our own baseline; do not judge a hook before it exists.",
+      "id": "exp-viewed-baseline",
+      "hypotheses": [
+        "viewed-baseline"
+      ],
+      "status": "PROPOSED",
+      "design": "Collect our own first 10 episodes; set our own baseline; do not judge a hook before it exists.",
       "metric": [
         "viewed_vs_swiped"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "ru-feed-behaviour",
-      "area": "audience",
-      "claim": "The Russian-language Shorts feed behaves like the global benchmarks.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/shorts_hooks.md Unknowns",
-        "note": "no data found"
-      },
-      "test_plan": "Compare our baseline against the 3P numbers once there is one.",
+      "id": "exp-ru-feed-behaviour",
+      "hypotheses": [
+        "ru-feed-behaviour"
+      ],
+      "status": "PROPOSED",
+      "design": "Compare our baseline against the 3P numbers once there is one.",
       "metric": [
         "viewed_vs_swiped",
         "retention_3s"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     },
     {
-      "id": "repetition-tolerance",
-      "area": "policy",
-      "claim": "A cast-and-rig series passes the repetitive-content rule when each episode changes mechanism and outcome.",
-      "confidence": "FOLK",
-      "source": {
-        "doc": "research/shorts_hooks.md section 5 (JUDGE)",
-        "url": "https://support.google.com/youtube/answer/1311392"
-      },
-      "test_plan": "Keep the distinct check green across a run of episodes; watch Studio monetisation notices; any notice is the result.",
+      "id": "exp-repetition-tolerance",
+      "hypotheses": [
+        "repetition-tolerance"
+      ],
+      "status": "PROPOSED",
+      "design": "Keep the distinct check green across a run of episodes; watch Studio monetisation notices; any notice is the result.",
       "metric": [
         "studio_policy_notice"
       ],
+      "started": null,
       "result": null,
       "decision": "OPEN",
-      "decided": null
+      "completed": null
     }
   ]
 }

@@ -22,6 +22,7 @@ import contract  # noqa: E402
 import distinct  # noqa: E402
 import episode  # noqa: E402
 import experiments  # noqa: E402
+import hypotheses  # noqa: E402
 import policy  # noqa: E402
 import world as worldmod  # noqa: E402
 
@@ -212,12 +213,11 @@ def test_template_must_match_format(vadik: Path):
 
 
 def test_unknown_experiment_id_is_an_error(vadik: Path):
-    experiments.main(["experiments.py", "init", str(vadik)]) if not (vadik / "experiments.json").exists() else None
     s = spec_of(vadik)
-    s["experiments"] = ["subs-karaoke-colour", "made-up"]
+    s["experiments"] = ["exp-subs-karaoke-colour", "made-up"]
     f = episode.validate(s, vadik)
     assert has(f, "error", "unknown experiment «made-up»")
-    assert not has(f, "error", "subs-karaoke-colour")
+    assert not has(f, "error", "exp-subs-karaoke-colour")
 
 
 def test_world_specific_vocab_is_free_text(neutral: Path):
@@ -525,69 +525,94 @@ def test_candidate_not_yet_in_ledger_is_compared_with_earlier_numbers(vadik: Pat
 # --- experiments --------------------------------------------------------------------------------
 
 
-def test_seed_experiments_are_valid_and_have_no_results():
-    data = json.loads((ROOT / "contracts" / "seeds" / "experiments.json").read_text())
-    assert not levels(experiments.validate(data), "error")
-    assert all(e["result"] is None and e["decision"] == "OPEN" for e in data["experiments"])
-    assert not any(e["confidence"] == "TESTED" for e in data["experiments"])
-    ids = {e["id"] for e in data["experiments"]}
+def test_seed_experiments_and_hypotheses_are_valid_and_linked():
+    ex = json.loads((ROOT / "contracts" / "seeds" / "experiments.json").read_text())
+    hy = json.loads((ROOT / "contracts" / "seeds" / "hypotheses.json").read_text())
+    assert not levels(hypotheses.validate(hy), "error")
+    assert not levels(experiments.validate(ex), "error")
+    assert all(e["status"] == "PROPOSED" and e["result"] is None and e["decision"] == "OPEN" for e in ex["experiments"])
+    assert all(h["status"] == "ACTIVE" and h["evidence"] == [] and h["confidence"] == "low" for h in hy["hypotheses"])
+    ids = {h["id"] for h in hy["hypotheses"]}
     assert {"hook-voice-by-0.5s", "intro-none-shorts", "length-55s-vs-180s", "subs-karaoke-colour"} <= ids
+    assert {x for e in ex["experiments"] for x in e["hypotheses"]} == ids
+    assert all(set(h["experiments"]) <= {e["id"] for e in ex["experiments"]} for h in hy["hypotheses"])
 
 
-def test_init_list_open_and_area(neutral: Path, capsys: pytest.CaptureFixture):
+def test_init_list_and_start(neutral: Path, capsys: pytest.CaptureFixture):
     assert experiments.main(["experiments.py", "init", str(neutral)]) == 0
     with pytest.raises(SystemExit):
         experiments.main(["experiments.py", "init", str(neutral)])
     assert len(experiments.list_rows(neutral)) == 16
-    assert {e["area"] for e in experiments.list_rows(neutral, area="subtitles")} == {"subtitles"}
     assert experiments.main(["experiments.py", "list", str(neutral)]) == 0
-    assert "16 hypotheses" in capsys.readouterr().out
-
-
-def test_record_result_makes_it_tested_and_closed(vadik: Path):
-    e = experiments.record(
-        vadik, "intro-none-shorts", n=6, value="viewed 78% without intro vs 71% with", decision="adopt", date="2026-12-01"
-    )
-    assert e["confidence"] == "TESTED" and e["decided"] == "2026-12-01"
-    assert "intro-none-shorts" not in {x["id"] for x in experiments.list_rows(vadik)}
-    assert not levels(experiments.validate(experiments.load(vadik)), "error")
+    assert "16 experiments" in capsys.readouterr().out
+    e = experiments.start(neutral, "exp-loop-seam", "2026-12-01")
+    assert e["status"] == "RUNNING"
+    assert [x["id"] for x in experiments.list_rows(neutral, status="RUNNING")] == ["exp-loop-seam"]
     with pytest.raises(SystemExit):
-        experiments.record(vadik, "intro-none-shorts", n=1, value="again", decision="reject")
+        experiments.start(neutral, "exp-loop-seam")
 
 
-def test_inconclusive_keeps_confidence(vadik: Path):
-    e = experiments.record(vadik, "loop-seam", n=2, value="too few", decision="inconclusive")
-    assert e["confidence"] == "3P"
-    assert e["decision"] == "inconclusive"
+def test_result_completes_and_feeds_the_hypothesis(vadik: Path):
+    e, moves = experiments.record(vadik, "exp-intro-none-shorts", n=6, value="78% vs 71%", decision="adopt", date="2026-12-01")
+    assert e["status"] == "COMPLETED" and e["completed"] == "2026-12-01"
+    assert "exp-intro-none-shorts" not in {x["id"] for x in experiments.list_rows(vadik)}
+    assert moves == [
+        "intro-none-shorts: ACTIVE -> SUPPORTED (own experiment confirmed it)",
+        "intro-none-shorts: SUPPORTED -> VALIDATED (own experiment confirmed it)",
+    ]
+    h = hypotheses.get(hypotheses.load(vadik), "intro-none-shorts")
+    assert (
+        h["status"] == "VALIDATED"
+        and h["evidence"][0]["bias"] == "OWN"
+        and h["evidence"][0]["attribution"] == "own experiment exp-intro-none-shorts"
+    )
+    assert [x["to"] for x in h["history"]] == ["SUPPORTED", "VALIDATED"]
+    assert not levels(experiments.validate(experiments.load(vadik), vadik), "error")
+    with pytest.raises(SystemExit):
+        experiments.record(vadik, "exp-intro-none-shorts", n=1, value="again", decision="reject")
+
+
+def test_reject_contradicts_then_invalidates(vadik: Path):
+    experiments.record(vadik, "exp-loop-seam", n=4, value="no lift", decision="reject", date="2026-12-02")
+    assert hypotheses.get(hypotheses.load(vadik), "loop-seam")["status"] == "CONTRADICTED"
+    # a second, own, rejecting experiment on the same hypothesis refutes it for good
+    experiments.main(
+        ["experiments.py", "add", str(vadik), "exp-loop-seam-2", "--hypotheses", "loop-seam", "--plan", "again", "--metric", "avg_view_pct"]
+    )
+    experiments.record(vadik, "exp-loop-seam-2", n=6, value="still none", decision="reject", date="2026-12-20")
+    assert hypotheses.get(hypotheses.load(vadik), "loop-seam")["status"] == "INVALIDATED"
+
+
+def test_inconclusive_changes_nothing(vadik: Path):
+    e, moves = experiments.record(vadik, "exp-loop-seam", n=2, value="too few", decision="inconclusive")
+    assert moves == [] and e["decision"] == "inconclusive"
+    h = hypotheses.get(hypotheses.load(vadik), "loop-seam")
+    assert h["status"] == "ACTIVE" and h["evidence"] == []
 
 
 def test_result_cli_requires_sample_and_value(vadik: Path):
     with pytest.raises(SystemExit):
-        experiments.main(["experiments.py", "result", str(vadik), "loop-seam", "--decision", "adopt"])
-    assert experiments.main(["experiments.py", "result", str(vadik), "loop-seam", "--n", "4", "--value", "x", "--decision", "reject"]) == 0
+        experiments.main(["experiments.py", "result", str(vadik), "exp-loop-seam", "--decision", "adopt"])
     assert (
-        experiments.load(vadik)["experiments"][[x["id"] for x in experiments.load(vadik)["experiments"]].index("loop-seam")]["confidence"]
-        == "TESTED"
+        experiments.main(["experiments.py", "result", str(vadik), "exp-loop-seam", "--n", "4", "--value", "x", "--decision", "reject"]) == 0
     )
-
-
-def test_unknown_experiment_and_decision(vadik: Path):
     with pytest.raises(SystemExit):
         experiments.record(vadik, "nope", n=1, value="x", decision="adopt")
     with pytest.raises(SystemExit):
-        experiments.record(vadik, "loop-seam", n=1, value="x", decision="maybe")
+        experiments.record(vadik, "exp-hook-reverse-open", n=1, value="x", decision="maybe")
 
 
 def test_validate_catches_inconsistent_ledger(vadik: Path):
     data = experiments.load(vadik)
-    e = data["experiments"][0]
-    e["confidence"] = "TESTED"
+    data["experiments"][0]["status"] = "COMPLETED"
     data["experiments"][1]["decision"] = "adopt"
     data["experiments"][2]["metric"] = ["vibes"]
-    f = experiments.validate(data)
-    assert has(f, "error", "TESTED without a result")
+    data["experiments"][3]["hypotheses"] = ["no-such"]
+    f = experiments.validate(data, vadik)
+    assert has(f, "error", "COMPLETED without a result")
     assert has(f, "error", "a decision without a result")
     assert has(f, "error", "unknown metric «vibes»")
+    assert has(f, "error", "unknown hypothesis «no-such»")
 
 
 def test_add_and_trace_to_episodes(vadik: Path, capsys: pytest.CaptureFixture):
@@ -597,11 +622,9 @@ def test_add_and_trace_to_episodes(vadik: Path, capsys: pytest.CaptureFixture):
                 "experiments.py",
                 "add",
                 str(vadik),
-                "cover-red-word",
-                "--area",
-                "cover",
-                "--claim",
-                "red key word",
+                "exp-cover-red",
+                "--hypotheses",
+                "cover-hero-left",
                 "--plan",
                 "alternate",
                 "--metric",
@@ -610,15 +633,186 @@ def test_add_and_trace_to_episodes(vadik: Path, capsys: pytest.CaptureFixture):
         )
         == 0
     )
-    assert experiments.referencing(vadik, "subs-karaoke-colour") == ["01-deploy"]
-    experiments.main(["experiments.py", "show", str(vadik), "subs-karaoke-colour"])
+    assert experiments.referencing(vadik, "exp-subs-karaoke-colour") == ["01-deploy"]
+    experiments.main(["experiments.py", "show", str(vadik), "exp-subs-karaoke-colour"])
     assert "episodes: 01-deploy" in capsys.readouterr().out
     assert (
         experiments.main(
-            ["experiments.py", "add", str(vadik), "bad", "--area", "nowhere", "--claim", "c", "--plan", "p", "--metric", "ctr"]
+            ["experiments.py", "add", str(vadik), "bad", "--hypotheses", "cover-hero-left", "--plan", "p", "--metric", "vibes"]
         )
         == 1
     )
+
+
+# --- hypotheses: evidence, lifecycle, refresh, export/import ------------------------------------
+
+
+def ev(who: str, stance: str = "for", bias: str = "3P", **kw) -> dict:
+    return {"date": "2026-11-06", "stance": stance, "attribution": who, "url": f"https://x/{who}", "bias": bias, "note": "", **kw}
+
+
+def hyp(**kw) -> dict:
+    return {
+        "id": "h",
+        "claim": "c",
+        "area": "hook",
+        "status": "ACTIVE",
+        "confidence": "low",
+        "source_bias": ["3P"],
+        "evidence": [],
+        "experiments": [],
+        **kw,
+    }
+
+
+def test_three_independent_points_support_but_one_attribution_counts_once():
+    h = hyp(evidence=[ev("a"), ev("a"), ev("b")])
+    assert hypotheses.promote(h, {}) == []
+    h["evidence"].append(ev("c"))
+    assert hypotheses.promote(h, {}) == [("ACTIVE", "SUPPORTED", "3 independent points for")]
+    assert h["status"] == "SUPPORTED" and h["history"][0]["to"] == "SUPPORTED"
+
+
+def test_strategic_evidence_alone_cannot_support():
+    h = hyp(evidence=[ev(x, bias="STRATEGIC") for x in "abc"])
+    assert hypotheses.promote(h, {}) == []
+    h["evidence"].append(ev("d", bias="3P"))
+    assert hypotheses.promote(h, {})[0][1] == "SUPPORTED"
+
+
+def test_contradiction_by_strong_point_or_majority_against():
+    assert hypotheses.promote(hyp(evidence=[ev("a", "against", strong=True)]), {})[0][1] == "CONTRADICTED"
+    assert hypotheses.promote(hyp(evidence=[ev("a", "against"), ev("b", "against")]), {})[0][1] == "CONTRADICTED"
+    assert hypotheses.promote(hyp(evidence=[ev("a", "against"), ev("b", "against"), ev("c"), ev("d")]), {}) == []
+
+
+def test_validated_needs_a_completed_own_experiment_that_confirms():
+    h = hyp(status="SUPPORTED", experiments=["e"])
+    assert hypotheses.promote(h, {"e": {"status": "RUNNING", "decision": "adopt"}}) == []
+    assert hypotheses.promote(h, {"e": {"status": "COMPLETED", "decision": "inconclusive"}}) == []
+    assert hypotheses.promote(h, {"e": {"status": "COMPLETED", "decision": "adopt"}})[0][:2] == ("SUPPORTED", "VALIDATED")
+
+
+def test_dry_run_changes_nothing_and_invalidated_is_terminal():
+    h = hyp(evidence=[ev(x) for x in "abc"])
+    assert hypotheses.promote(h, {}, apply=False) and h["status"] == "ACTIVE"
+    assert hypotheses.promote(hyp(status="INVALIDATED", evidence=[ev("a", "against", strong=True)]), {}) == []
+
+
+def test_validate_hypothesis_ledger():
+    data = {
+        "hypotheses": [
+            hyp(status="VALIDATED"),
+            hyp(id="g", confidence="huge", source_bias=["VIBES"], evidence=[{"stance": "maybe", "date": "11/06"}]),
+        ]
+    }
+    f = hypotheses.validate(data)
+    assert has(f, "error", "VALIDATED without a linked experiment")
+    assert has(f, "error", "unknown confidence «huge»") and has(f, "error", "unknown source bias «VIBES»")
+    assert has(f, "error", "unknown stance «maybe»") and has(f, "error", "missing `attribution`") and has(f, "error", "YYYY-MM-DD")
+
+
+def test_cli_add_evidence_promote_demote(vadik: Path, capsys: pytest.CaptureFixture):
+    w = str(vadik)
+    for who, bias in (("blog-a", "3P"), ("creator-b", "3P"), ("yt-doc", "STRATEGIC")):
+        assert (
+            hypotheses.main(
+                [
+                    "hypotheses.py",
+                    "add-evidence",
+                    w,
+                    "loop-seam",
+                    "--stance",
+                    "for",
+                    "--attribution",
+                    who,
+                    "--bias",
+                    bias,
+                    "--url",
+                    f"https://x/{who}",
+                    "--date",
+                    "2026-11-06",
+                ]
+            )
+            == 0
+        )
+    assert hypotheses.main(["hypotheses.py", "promote", w, "loop-seam", "--dry-run"]) == 0
+    assert hypotheses.get(hypotheses.load(vadik), "loop-seam")["status"] == "ACTIVE"
+    assert hypotheses.main(["hypotheses.py", "promote", w, "--all"]) == 0
+    assert hypotheses.get(hypotheses.load(vadik), "loop-seam")["status"] == "SUPPORTED"
+    with pytest.raises(SystemExit):
+        hypotheses.main(["hypotheses.py", "demote", w, "loop-seam", "--to", "ACTIVE"])  # no reason
+    assert hypotheses.main(["hypotheses.py", "demote", w, "loop-seam", "--to", "ACTIVE", "--reason", "one source was a repost"]) == 0
+    h = hypotheses.get(hypotheses.load(vadik), "loop-seam")
+    assert h["status"] == "ACTIVE" and len(h["evidence"]) == 3 and h["history"][-1]["why"].startswith("demoted")
+    with pytest.raises(SystemExit):
+        hypotheses.main(["hypotheses.py", "demote", w, "loop-seam", "--to", "SUPPORTED", "--reason", "x"])  # not a step back
+    assert "loop-seam: ACTIVE -> SUPPORTED" in capsys.readouterr().out
+    assert (
+        hypotheses.main(["hypotheses.py", "add-evidence", w, "loop-seam", "--stance", "for", "--attribution", "x", "--date", "06-11"]) == 1
+    )
+
+
+def test_list_add_and_check(vadik: Path, capsys: pytest.CaptureFixture):
+    w = str(vadik)
+    assert hypotheses.main(["hypotheses.py", "add", w, "new-one", "--claim", "c", "--area", "cover", "--bias", "FOLK,3P"]) == 0
+    assert hypotheses.main(["hypotheses.py", "add", w, "bad", "--claim", "c", "--area", "nowhere"]) == 1
+    assert hypotheses.main(["hypotheses.py", "list", w, "--area", "cover"]) == 0
+    assert "2 hypotheses" in capsys.readouterr().out
+    assert hypotheses.main(["hypotheses.py", "check", w]) == 0
+
+
+def test_export_import_roundtrip_keeps_existing_and_maps_status(vadik: Path):
+    text = hypotheses.export_md(hypotheses.load(vadik))
+    assert "| loop-seam |" in text and "| ACTIVE |" in text
+    data = {"hypotheses": []}
+    added, kept = hypotheses.import_md(text, data)
+    assert len(added) == 16 and kept == []
+    assert hypotheses.import_md(text, data) == ([], added)
+    flat = (
+        "| id | claim | confidence | source-bias | status | a2kay ref | tests |\n|---|---|---|---|---|---|---|\n"
+        "| X01 | a claim | medium | STRATEGIC (FACT text) | contested | assessment/9 | experiment/1, 2 |\n"
+        "| X02 | other | low | 3P/FOLK | supported | assessment/10 | |\n"
+    )
+    data = {"hypotheses": []}
+    assert hypotheses.import_md(flat, data)[0] == ["X01", "X02"]
+    x1, x2 = data["hypotheses"]
+    assert (x1["status"], x1["source_bias"], x1["refs"]["a2kay"], x1["note"]) == (
+        "ACTIVE",
+        ["STRATEGIC", "FACT"],
+        "assessment/9",
+        "contested in the source",
+    )
+    assert (x2["status"], x2["source_bias"], x2["confidence"]) == ("SUPPORTED", ["3P", "FOLK"], "low")
+    assert not levels(hypotheses.validate(data), "error")
+
+
+def test_import_the_real_export_if_present():
+    f = Path("/Users/iorlas/Workspaces/ru-voice-clone/research/hypotheses_export.md")
+    if not f.exists():
+        pytest.skip("export not on this machine")
+    data = {"hypotheses": []}
+    assert len(hypotheses.import_md(f.read_text(), data)[0]) == 19
+    assert not levels(hypotheses.validate(data), "error")
+
+
+def test_refresh_lists_due_sources_and_scanned_clears_them(vadik: Path, capsys: pytest.CaptureFixture):
+    ids = {s["id"] for s in hypotheses.due(vadik, now=dt.date(2026, 11, 6))}
+    assert "yt-policy-page" not in ids and {"own-studio", "communities", "yt-shorts-length"} <= ids
+    assert "yt-policy-page" in {s["id"] for s in hypotheses.due(vadik, now=dt.date(2026, 12, 20))}
+    hypotheses.mark_scanned(vadik, "own-studio", "2026-11-06")
+    assert "own-studio" not in {s["id"] for s in hypotheses.due(vadik, now=dt.date(2026, 11, 7))}
+    assert hypotheses.main(["hypotheses.py", "refresh", str(vadik)]) == 0
+    out = capsys.readouterr().out
+    assert "1. List due sources" in out and "a2kay" in out and "sources due" in out
+    with pytest.raises(SystemExit):
+        hypotheses.mark_scanned(vadik, "nope")
+
+
+def test_seed_sources_have_how_to_scan_and_known_biases():
+    src = json.loads((ROOT / "contracts" / "seeds" / "sources.json").read_text())
+    assert all(s["how_to_scan"] and s["cadence_days"] > 0 and s["bias"] in hypotheses.BIASES for s in src["sources"])
+    assert [s["step"] for s in src["steps"]] == list(range(1, len(src["steps"]) + 1))
 
 
 # --- platform_rules and check_policy ------------------------------------------------------------
@@ -686,7 +880,7 @@ def test_check_policy_with_spec_includes_distinct(vadik: Path):
 
 def test_new_modules_name_no_world():
     banned = re.compile(r"vadik|вадик|палыч|palych|mikhalych|mama\b|сеньор", re.IGNORECASE)
-    for name in ("contract", "world", "distinct", "episode", "experiments", "policy"):
+    for name in ("contract", "world", "distinct", "episode", "experiments", "hypotheses", "policy"):
         assert not banned.search((ROOT / "scripts" / f"{name}.py").read_text()), name
     for f in (ROOT / "contracts").rglob("*.json"):
         assert not banned.search(f.read_text()), f
@@ -695,6 +889,7 @@ def test_new_modules_name_no_world():
 def test_the_whole_flow_runs_in_a_world_with_no_vadik(neutral: Path):
     assert worldmod.main(["world.py", "new", str(neutral)]) == 0
     assert experiments.main(["experiments.py", "init", str(neutral)]) == 0
+    assert hypotheses.main(["hypotheses.py", "init", str(neutral)]) == 0
     assert policy.main(["policy.py", "init", str(neutral)]) == 0
     assert episode.main(["episode.py", "new", str(neutral), "pilot", "--target", "50"]) == 0
     spec_path = neutral / "episodes" / "01-pilot.spec.json"
