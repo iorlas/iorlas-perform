@@ -13,7 +13,7 @@ Written by the skills-absorb session. State read from git, not from memory; re-c
 | `/Users/iorlas/Workspaces/ru-voice-clone` | art, scenarios, research, 2026-10 prototypes | **now a local git repo** (backup only, no remote); see below |
 | profile dir `~/.claude/plugins/data/iorlas-perform-iorlas-marketplace/profiles/<world>/` | world docs, voices, episodes, renders | user data, **no git, no backup**: `git init` it (world-bootstrap checklist) |
 | plugin cache `~/.claude/plugins/cache/iorlas-marketplace/iorlas-perform/` | 0.1.0-0.4.0 | **installed is still 0.4.0** (no scenario, no video skills): run the refresh in `docs/RELEASING.md` |
-| `~/Library/Application Support/Claude/side-session-notes/...` | spike report, voice science, RCA, set tooling `*.mjs` | session notes only; the `set*.mjs` / `shot.mjs` tooling exists nowhere else |
+| `~/Library/Application Support/Claude/side-session-notes/...` | spike report, voice science, RCA, set tooling `*.mjs` | session notes; the `*.mjs` set/shot tooling and notes are now also in `ru-voice-clone/tools` and `research/` (backup repo) |
 
 ## ru-voice-clone contents
 `art/` (sets A-F, cards, brand kit, stress frames; 12 MB), `scenarios/pravila/` (script v1-v3, design sheet, set census; renders are 55 MB and ignored), `research/` (audit, Shorts hooks, Kylo digest, video-workflows landscape, scenario research), plus the old prototypes (`clone.py`, `speak*.py`, `drama3*`, `queue*.sh`) that duplicate `iorlas-perform/scripts`, and big outputs (`stories/` 222 MB, `scenes/` 48 MB, `out.wav`) that are ignored. `research/_inbox/` holds another creator's zip: not committed.
@@ -38,6 +38,8 @@ Written by the skills-absorb session. State read from git, not from memory; re-c
 | 7 Turns, 7b Punch-up, 7c Short scenes | `skills/scenario/writing.md` |
 | 8 Lint, 8a Listener check, 8b Line check, **8c Table read (new)**, 9 Doctor | `skills/scenario/checks.md` |
 | SKILL.md keeps | profile/mode (0), approve (10), canon (11), fix mode, headings with pointers |
+
+Evidence behind the skills is copied into this repo: `docs/research/` (audit, Shorts hooks, Kylo digest, video-workflows landscape, scenario structure). `uv.lock` is ignored: the scripts are PEP 723 and the file was a churning stub.
 
 ## Open items (not coded; specified in the skills)
 - De-hardcode (audit item 7): per-world `layout.json`, `--world`, rig capability flags, format profiles. Spec: `skills/video/pipeline.md`, `contracts.md`.
