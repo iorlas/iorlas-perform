@@ -27,11 +27,13 @@ def test_scene_py_audio_output_is_byte_identical_with_and_without_the_video_work
     old.write_text(subprocess.run(["git", "show", f"{BEFORE}:scripts/scene.py"], cwd=ROOT, check=True, capture_output=True, text=True).stdout)
     try:
         runs = {}
+        warm = tmp_path / "warm"  # takes are cached as 16-bit wavs: a fresh take and a cached one differ, so both compared runs must read the cache
+        warm.mkdir()
+        subprocess.run(["uv", "run", f"scripts/{old.name}", str(SCENARIO), str(warm / "out.wav")], cwd=ROOT, check=True, capture_output=True)
         for name, script in (("before", old.name), ("after", "scene.py")):
             d = tmp_path / name
             d.mkdir()
-            if name == "after":
-                shutil.copytree(tmp_path / "before" / ".takes", d / ".takes")  # same takes: this compares the mix, master and timeline
+            shutil.copytree(warm / ".takes", d / ".takes")  # same takes: this compares the mix, master and timeline
             subprocess.run(["uv", "run", f"scripts/{script}", str(SCENARIO), str(d / "out.wav")], cwd=ROOT, check=True, capture_output=True)
             runs[name] = (sha(d / "out.wav"), sha(d / "out.timeline.json"))
         assert runs["before"] == runs["after"]
