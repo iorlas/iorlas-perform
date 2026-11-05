@@ -25,7 +25,7 @@ policy.py check WORLD [--stale-days N] [--spec SPEC]    check_policy: run before
 Lists, then exits 1 while anything is unresolved:
 - every OPEN rule not acknowledged (level `open`);
 - an OPEN rule acknowledged in `world.brief` `policy.acks` (`{rule, decision, date}`): a warning, a conscious decision to publish anyway;
-- a rule with no `source_url`, or no valid `fetched`; a rule fetched more than 90 days ago;
+- a known rule with no `source_url` (an OPEN rule may have none), or any rule with no valid `fetched`; a rule fetched more than 90 days ago;
 - with `--spec`: the distinct check for that episode.
 
 Resolve a rule by reading the platform and editing its `status`, `confidence`, `quote`, `fetched` (or by an experiment).

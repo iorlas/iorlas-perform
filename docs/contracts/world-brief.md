@@ -20,7 +20,7 @@ What a world is for, decided once by a human. `world.py new WORLD` writes it wit
 
 | id | length | hook window | words/s band | notes |
 |---|---|---|---|---|
-| `shorts-9x16-60s` | target 45-58 s, gate: under 60 s | 3 s (voice by 0.5 s) | 1.4-3.2 | hook line at most 12 words; safe zone top 12%, bottom 30%, right 15% |
+| `shorts-9x16-60s` | target 45-58 s, gate: under 60 s | 3 s (voice by 0.5 s) | 1.4-3.2 | hook line at most 9 words (fits 3 s at 3.2 words/s); safe zone top 12%, bottom 30%, right 15% |
 | `landscape-16x9-3min` | target 150-178 s, at most 180 s | 15 s (voice by 3 s) | 1.2-3.0 | |
 
 Values carry a `confidence` (FOLK or 3P: the research has no official numbers) and a `source`. The 60 s gate is a

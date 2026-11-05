@@ -16,7 +16,7 @@ episode.py distinct SPEC
 | `schema`, `number`, `slug`, `status` | `episode.spec/1`; order in the ledger; `draft`, `scripted`, `rendered`, `published`, `dropped` |
 | `format` | a format id |
 | `title` | `{working, pattern}`: pattern is a world-chosen id of the title's shape |
-| `hook` | `{pattern, line, voice, on_screen, by_s}`: pattern is an id from `contracts/hooks.json`; line at most the format's `hook_max_words` (12 for Shorts); `on_screen` at most 6 words; `by_s` not past the format's hook window |
+| `hook` | `{pattern, line, voice, on_screen, by_s}`: pattern is an id from `contracts/hooks.json`; line at most the format's `hook_max_words` (9 for Shorts: what fits a 3 s window at 3.2 words/s); `on_screen` at most 6 words; `by_s` not past the format's hook window |
 | `premise` | `{text, key}`: key is a short id of the situation, compared across episodes |
 | `mechanism` | id of the central joke mechanism, world-chosen |
 | `outcome` | `{type, note}`: twist or outcome type, world-chosen id |

@@ -31,7 +31,6 @@ from contract import OPEN, Finding
 
 BEAT_NAMES = ("hook", "setup", "incident", "ladder", "turn", "button", "tag")
 STATUSES = ("draft", "scripted", "rendered", "published", "dropped")
-SKELETON_TEXT = {"hook": "hook line"}
 
 
 def world_of(spec_path: Path, arg: str | None = None) -> Path | None:

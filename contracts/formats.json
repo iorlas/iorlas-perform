@@ -10,7 +10,7 @@
       "hard_max_strict": true,
       "hook_window_s": 3,
       "hook_voice_by_s": 0.5,
-      "hook_max_words": 12,
+      "hook_max_words": 9,
       "hook_on_screen_max_words": 6,
       "words_per_s": [1.4, 3.2],
       "safe_zone_pct": {"top": 12, "bottom": 30, "right": 15},

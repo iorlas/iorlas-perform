@@ -160,6 +160,7 @@ def test_all_templates_use_known_beats_and_fit_their_format():
         assert {b["id"] for b in t["beats"]} <= set(episode.BEAT_NAMES)
         assert t["beats"][-1]["end_s"] == t["total_s"]
         f = fmts[t["format"]]
+        assert f["hook_max_words"] <= f["hook_window_s"] * f["words_per_s"][1], "a hook line that long cannot land in the window"
         assert t["total_s"] < f["hard_max_s"] or not f["hard_max_strict"]
         assert name in f["structure_templates"]
         assert set(t["rules"]) <= set(__import__("scenario").Rules.__dataclass_fields__)
@@ -171,7 +172,7 @@ def test_hook_line_word_cap_and_window(vadik: Path):
     s["hook"]["by_s"] = 5
     s["hook"]["on_screen"] = "раз два три четыре пять шесть семь"
     f = episode.validate(s, vadik)
-    assert has(f, "error", "13 words, at most 12")
+    assert has(f, "error", "13 words, at most 9")
     assert has(f, "error", "past the format's hook window 3 s")
     assert has(f, "warn", "7 words on screen")
 
