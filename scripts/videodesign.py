@@ -243,7 +243,7 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
                 cues.append({**anchor, "actor": c["actor"], "channel": "pose", "value": c["pose"]})
         for who in sorted({c["actor"] for c in cues if c["channel"] == "pose"} - {i["actor"] for i in d.get("interactions", [])}):
             cues.append({"at": 0, "actor": who, "channel": "pose", "value": stand(d["set"], who).get("pose", "stand_still")})  # the base pose the pose cues return from
-        cues += [{"at": 0, "actor": t, "channel": "text", "value": ""} for t in sorted({c["actor"] for c in cues if c["channel"] == "text"})]  # a first text cue must not reach back to t=0: the phone would ring from the start
+        cues += [{"at": 0, "actor": t, "channel": "text", "value": ""} for t in sorted({c["actor"] for c in cues if c["channel"] == "text"} - {c["target"] for c in d.get("cues", []) if "text" in c and c["beat"] == 1})]  # a first text cue must not reach back to t=0: the phone would ring from the start
         cues += [{"at": 0, "actor": t, "channel": "visible", "value": True} for t in sorted({c["actor"] for c in cues if c["channel"] == "visible"} | {i["object"] for i in d.get("interactions", []) if i["type"] == "holds"})]
         cues += _interaction_cues(d.get("interactions", []), merged[d["set"]], solved[d["set"]], stand, d["set"], by_id, at, len(bl), s["title"])
         nxt = tl["scenes"][si + 1]["title"] if si + 1 < len(tl["scenes"]) else None

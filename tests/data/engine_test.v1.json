@@ -1,0 +1,212 @@
+[
+ {
+  "turn": 2,
+  "voice": "narrator",
+  "text": "[calm, ironic] Утро. Кухня. Мама кормит Вадика так, будто его завтра заберут в армию.",
+  "scene": "Кухня, утро",
+  "ambience": "kitchen",
+  "start": 1.5,
+  "end": 7.75
+ },
+ {
+  "turn": 3,
+  "voice": "mama",
+  "text": "[warm, loud] Сына, ешь! Я тёте Люде сказала, что ты у меня на хорошей работе. [curious, rising intonation] А кем ты там, напомни?",
+  "scene": "Кухня, утро",
+  "ambience": "kitchen",
+  "start": 8.1,
+  "end": 17.43
+ },
+ {
+  "turn": 4,
+  "voice": "vadik",
+  "text": "[mumbling, mouth full] Ну... тимлидом. По качеству.",
+  "scene": "Кухня, утро",
+  "ambience": "kitchen",
+  "start": 17.78,
+  "end": 21.65
+ },
+ {
+  "turn": 5,
+  "voice": "mama",
+  "text": "[proud, delighted] По качеству! Люда лопнет от зависти.",
+  "scene": "Кухня, утро",
+  "ambience": "kitchen",
+  "start": 22.0,
+  "end": 26.15
+ },
+ {
+  "turn": 6,
+  "voice": "narrator",
+  "text": "[dry] Должность Вадик придумал за то время, что дожёвывал котлету.",
+  "scene": "Кухня, утро",
+  "ambience": "kitchen",
+  "start": 26.5,
+  "end": 31.42
+ },
+ {
+  "turn": 8,
+  "voice": "narrator",
+  "text": "[dry, deadpan] Офис. Без двадцати три. В три показ для Палыча, красных тестов четырнадцать.",
+  "scene": "Офис, день",
+  "ambience": "office",
+  "start": 31.77,
+  "end": 38.44
+ },
+ {
+  "turn": 9,
+  "voice": "vadik",
+  "text": "[whisper, desperate] Починим тесты. Любой ценой.",
+  "scene": "Офис, день",
+  "ambience": "office",
+  "start": 38.79,
+  "end": 42.45
+ },
+ {
+  "turn": 10,
+  "voice": "narrator",
+  "text": "[dry] Нейросеть, которая живёт в старом сервере по имени Зинаида, помогла сразу.",
+  "scene": "Офис, день",
+  "ambience": "office",
+  "start": 42.8,
+  "end": 48.7
+ },
+ {
+  "turn": 11,
+  "voice": "ai",
+  "text": "[cheerful, polite] Вы абсолютно правы! [polite, rising intonation] Разрешите удалить папку с тестами?",
+  "scene": "Офис, день",
+  "ambience": "office",
+  "start": 49.05,
+  "end": 56.42
+ },
+ {
+  "sfx": "notify",
+  "volume": 1.0,
+  "start": 56.77,
+  "end": 58.27
+ },
+ {
+  "turn": 13,
+  "voice": "vadik",
+  "text": "[panicking, whisper] Да! Нет! Подожди... [pause] Да.",
+  "scene": "Офис, день",
+  "ambience": "office",
+  "start": 58.67,
+  "end": 62.61
+ },
+ {
+  "turn": 14,
+  "voice": "ai",
+  "text": "[cheerful, proud] Готово! Падающих тестов ноль. Покрытие сто процентов.",
+  "scene": "Офис, день",
+  "ambience": "office",
+  "start": 62.96,
+  "end": 68.23
+ },
+ {
+  "turn": 15,
+  "voice": "narrator",
+  "text": "[dry, flat] Сто процентов считалось от нуля.",
+  "scene": "Офис, день",
+  "ambience": "office",
+  "start": 68.58,
+  "end": 71.96
+ },
+ {
+  "turn": 17,
+  "voice": "narrator",
+  "text": "[dry] Переговорка. Три часа. Палыч пришёл смотреть дашборд, Кристина пришла смотреть на Палыча.",
+  "scene": "Переговорка, три часа",
+  "ambience": "office",
+  "start": 72.31,
+  "end": 79.26
+ },
+ {
+  "turn": 18,
+  "voice": "palych",
+  "text": "[loud, proud] Так. Дашборд зелёный. Падающих ноль, раньше было четырнадцать. [rising intonation] Кто сделал?",
+  "scene": "Переговорка, три часа",
+  "ambience": "office",
+  "start": 79.61,
+  "end": 87.47
+ },
+ {
+  "turn": 19,
+  "voice": "kristina",
+  "text": "[upspeak, trendy] Это база, Геннадий Палыч, то есть ОП. Прям база-база.",
+  "scene": "Переговорка, три часа",
+  "ambience": "office",
+  "start": 87.82,
+  "end": 93.09
+ },
+ {
+  "turn": 20,
+  "voice": "vadik",
+  "text": "[forced calm, slightly too high] Устранил первопричину.",
+  "scene": "Переговорка, три часа",
+  "ambience": "office",
+  "start": 93.44,
+  "end": 97.59
+ },
+ {
+  "turn": 21,
+  "voice": "narrator",
+  "text": "[dry, flat] Первопричиной были тесты.",
+  "scene": "Переговорка, три часа",
+  "ambience": "office",
+  "start": 97.94,
+  "end": 100.83
+ },
+ {
+  "turn": 22,
+  "voice": "palych",
+  "text": "[booming, delighted] Вадим! С сегодняшнего дня ты тимлид по качеству!",
+  "scene": "Переговорка, три часа",
+  "ambience": "office",
+  "start": 101.18,
+  "end": 106.31
+ },
+ {
+  "sfx": "phone_ring",
+  "volume": 1.0,
+  "start": 106.66,
+  "end": 108.16
+ },
+ {
+  "turn": 24,
+  "voice": "narrator",
+  "text": "[dry] В переговорке зазвонил телефон. Звонила мама.",
+  "scene": "Переговорка, три часа",
+  "ambience": "office",
+  "start": 108.56,
+  "end": 112.43
+ },
+ {
+  "turn": 25,
+  "voice": "mama",
+  "text": "[loud, excited] Сына! Я Люде сказала, что ты тимлид! [anxious, rising intonation] Ты же тимлид?",
+  "scene": "Переговорка, три часа",
+  "ambience": "office",
+  "start": 112.78,
+  "end": 119.73
+ },
+ {
+  "turn": 26,
+  "voice": "vadik",
+  "text": "[dazed, quiet] ...Да, мам. С сегодняшнего.",
+  "scene": "Переговорка, три часа",
+  "ambience": "office",
+  "start": 120.08,
+  "end": 123.32
+ },
+ {
+  "turn": 27,
+  "voice": "narrator",
+  "text": "[dry, deadpan] Впервые за двенадцать лет, которых не было, Вадик сказал маме правду. Случайно.",
+  "scene": "Переговорка, три часа",
+  "ambience": "office",
+  "start": 123.67,
+  "end": 130.55
+ }
+]
