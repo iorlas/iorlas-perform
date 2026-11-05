@@ -13,7 +13,7 @@ The cache key includes the format name, size and fps. Loudness target is a forma
 
 ## 2. Portrait cameras
 - Sets stay wide drawings. The portrait view is a 9:16 **crop window** moving over the art: `subjects_camera` with canvas = the art, aspect = 9/16.
-- Default **one subject per shot**; two-subject dialogue becomes alternating singles (shot-reverse-shot) with AR7 positions mirrored; a two-shot only when the two fit the crop at zoom >= 1.0 (a wide set gives about 3-4 person-widths of height).
+- Default **one subject per shot**; two-subject dialogue becomes alternating singles (shot-reverse-shot) with AR7 positions mirrored; a two-shot only when both subjects fit the crop within the zoom clamp.
 - `place` thirds apply horizontally; vertical placement puts faces at 35-45 % of height (above the subtitle band, below the top safe zone).
 - Set tiers A/B/C get a `portrait` check: the crop must not cut a set into nonsense; sets with a strong horizontal composition need a tall variant (flagged in the census).
 - Inserts (screens, cards) are drawn full-width in the portrait frame; text >= 34 px; never in the safe-zone margins.
