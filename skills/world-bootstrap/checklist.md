@@ -1,5 +1,7 @@
 # world-bootstrap: new-world checklist
 
+**Item 0, before all of these: the world brief** (`brief-template.md`, stage 0): platform, format and length, audience, genre, cadence, policy, success. The eight items below are built for that brief, not before it.
+
 A world supplies eight things. Each has a **done-test**; do not move on without it. "Today" = what the first world had.
 
 | # | item | where it lives | done-test | skill that does it |

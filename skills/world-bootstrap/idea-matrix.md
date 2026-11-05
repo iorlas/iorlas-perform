@@ -9,8 +9,9 @@ Use when the next episode idea is open. A two-axis list feeds a scorer; the huma
    - **Twist:** is there a non-obvious turn that is not the first thing anyone thinks of?
    - **Showability:** can it be shown with the kit's places, rigs and poses and simple pictures, without a new rig?
    Add a **fit** note (a character who owns this situation; a place already built).
-4. **Top 3** by the sum (ties broken by showability, then clarity). For each: a 2-line premise, the hook line (<= 12 words) x 5, the rig/set cost (what is new).
-5. **STOP:** the human picks one. Record the others in `ideas/parked.md` with their scores.
+4. **Distinctness check** (`distinctness.md`) for each of the top candidates against the last N episodes; a candidate that repeats the premise or mechanism of a recent episode is dropped.
+5. **Top 3** by the sum (ties broken by showability, then clarity). For each: a 2-line premise, the hook line (<= 12 words) x 5, the rig/set cost (what is new).
+6. **STOP:** the human picks one. Record the others in `ideas/parked.md` with their scores.
 Scorer table:
 | pair (situation x place) | clarity 0-2 | twist 0-2 | showable 0-2 | sum | new art needed |
 Rules: scores are the model's; refuse an idea that scores 0 on clarity whatever the sum; a sketch that needs 40 s of setup is long-form (shorts `cut-down.md`).

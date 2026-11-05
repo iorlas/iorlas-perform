@@ -12,6 +12,7 @@ Facts and numbers carry tags: **FACT** primary source, **3P** third-party/unveri
 | `hooks.md` | format facts, hook patterns, the 15-line checklist, beat sheet, loop, CTA, fair craft vs penalised |
 | `packaging.md` | subtitle spec, safe zones, intro/sting/corner mark, cover, titles, delivery, policy, licences |
 | `cut-down.md` | turning a 3-minute sketch into 45-60 s |
+| `originality.md` | the originality / demonetisation guardrail (policy text, what is allowed, the guard rules); the gate itself is `world-bootstrap/distinctness.md` |
 | `spec.md` | the engine requirements for 9:16 (for the later coding): format profile, portrait cameras, hook gate, length gate |
 
 ## The seven decisions
@@ -21,4 +22,5 @@ Facts and numbers carry tags: **FACT** primary source, **3P** third-party/unveri
 4. **Muted viewing:** plan for 30-50 % muted (JUDGE): burned-in subtitles are mandatory.
 5. **Intro:** none. A <= 0.5 s sting on the punchline or last frame; a 1 s corner mark; the series name in the title and a corner number.
 6. **Ending:** twist in the last 20 %, a 2-4 s tag, a loop bridge; play the file twice and listen for the seam.
-7. **Honesty:** the first frame matches what the video delivers; each episode has an original script, voices and scenes (policy).
+7. **Originality:** every episode passes the distinctness gate (`${CLAUDE_SKILL_DIR}/../world-bootstrap/distinctness.md`) before script approval and before delivery.
+8. **Honesty:** the first frame matches what the video delivers; each episode has an original script, voices and scenes (policy).
