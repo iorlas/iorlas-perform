@@ -37,3 +37,6 @@ Stages 0-2 happen once per world; 3-8 once per episode. Never skip a stop to sav
 1. `uv run ${CLAUDE_SKILL_DIR}/../../scripts/profiles.py new <name>` (profile template), then stage 0.
 2. Before the brief: refresh the platform hypotheses (`platform-research` skill) so format and policy answers rest on current evidence.
 3. Init the profile dir as a git repo; back it up.
+
+## Tooling (another session builds it; check what exists before using it)
+The `episode-spec` session is building machine-readable forms of these steps, documented in `docs/contracts/` on its branch (world.brief, episode.spec, distinctness, experiments, platform_rules; tools `world.py`, `episode.py`, `distinct.py`, `policy.py`, `experiments.py`). When they are on main: `world.py new/check` replaces the markdown brief (same fields; an undecided field holds the string `OPEN`), `distinct.py` is the deterministic form of `distinctness.md` (it compares keys, a reviewer still reads them), `policy.py check` runs before publishing. Until then use the markdown templates here. A rule to keep either way: **OPEN is never filled in by the tool or by Claude.**
