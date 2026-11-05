@@ -1,0 +1,37 @@
+{
+ "set": "setF_moscow",
+ "version": "0.1",
+ "look": "Вырезка (flat cut paper)",
+ "canvas": [1280, 720],
+ "layer_order": ["bg", "mid", "cast_back", "mid_front", "cast_front", "fg"],
+ "floor_y": 660,
+ "wall_floor_line": 490,
+ "table": {"x": [260, 1020], "top_far_y": 568, "top_near_y": 618, "front_bottom_y": 634},
+ "light": {"source": "cold daylight from the glass wall, behind; shadows fall toward camera"},
+ "palette": {"sky":"#d3e0ea","far":"#bccbd8","cloud":"#eef3f7","near":"#8fa1b1","steel":"#7e8c99","wall":"#dfe4e8","floor":"#5f6c79","table_top":"#e6d6b8","table_front":"#cdb48b","chair_accent":"#b27a52","silhouette":"#232c38","paper":"#fbf9f2"},
+ "framings": {
+  "wide": {"viewBox": [0,0,1280,720], "focus": "skyline", "owners": true},
+  "medium": {"viewBox": [630,459,360,202.5], "focus": "the order + signing hand, right third", "owners": true},
+  "insert": {"viewBox": [827,570,160,90], "focus": "line п.1, left third", "owners": false}
+ },
+ "objects": [
+  {"id":"setF_moscow_bg","layer":"bg"},
+  {"id":"setF_moscow_skyline","layer":"bg","note":"two value layers + stepped high-rise"},
+  {"id":"setF_moscow_clouds","layer":"bg"},
+  {"id":"setF_moscow_roofs","layer":"bg"},
+  {"id":"setF_moscow_pier","layer":"bg"},
+  {"id":"setF_moscow_dash","layer":"bg","note":"tone-on-tone, «СРЕДНИЙ ОПЫТ 12,0 лет»"},
+  {"id":"setF_moscow_glass","layer":"bg","note":"mullions x=560,1070, sill y=490"},
+  {"id":"setF_moscow_floor","layer":"bg"},
+  {"id":"setF_moscow_chairs","layer":"mid","x":[330,480,630,780,930]},
+  {"id":"setF_moscow_owners","layer":"cast_back","x":[480,780,930],"optional":true},
+  {"id":"setF_moscow_table","layer":"mid_front"},
+  {"id":"setF_moscow_notebooks","layer":"mid_front","x":[480,780]},
+  {"id":"setF_moscow_water_1","layer":"mid_front","x":396},
+  {"id":"setF_moscow_water_2","layer":"mid_front","x":700},
+  {"id":"setF_moscow_order","layer":"mid_front","pos":[837,574],"text":"ПРИКАЗ. Кодекс: правила проекта. п.1 Врать — только про опыт."},
+  {"id":"setF_moscow_pen","layer":"mid_front","optional":true},
+  {"id":"setF_moscow_hand","layer":"cast_front","optional":true},
+  {"id":"setF_moscow_plant","layer":"fg","x":1183}
+ ]
+}

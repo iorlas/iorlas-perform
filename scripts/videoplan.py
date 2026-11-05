@@ -289,7 +289,16 @@ def shots_v2(d: dict[str, Any], sheet: dict[str, Any], group: dict[str, Any], an
     shots = []
     for i, sh in enumerate(d["shots"]):
         t0 = 0.0 if i == 0 else round(max(0.0, anchor(sh["at"]) - sh.get("lead", 0.15)), 3)
-        shots.append({k: v for k, v in sh.items() if k != "at"} | {"t0": t0})
+        shots.append({k: v for k, v in sh.items() if k not in {"at", "overlays"}} | {"t0": t0})
+        if sh.get("overlays"):  # overlay anchors -> scene seconds; one without `until` stays to the end of its shot (set below)
+            shots[-1]["overlays"] = [
+                {**{k: v for k, v in o.items() if k not in {"at", "until", "grow"}}, "t0": round(anchor(o["at"]), 3), **({"t1": round(anchor(o["until"]), 3)} if "until" in o else {}),
+                 **({"grow": {"t0": round(anchor(o["grow"]["at"]), 3), "dur": o["grow"].get("dur", 1.0)}} if "grow" in o else {})}
+                for o in sh["overlays"]
+            ]
+    for a, b in zip(shots, [*shots[1:], {"t0": group["duration"]}], strict=False):
+        for o in a.get("overlays", []):
+            o.setdefault("t1", b["t0"])
     if any(b["t0"] <= a["t0"] for a, b in zip(shots, shots[1:], strict=False)):
         msg = f'scene "{group["title"]}": shots are not in time order: {[s["id"] for s in shots]}'
         raise ValueError(msg)
@@ -316,10 +325,10 @@ def write_scene(out: Path, scene: dict[str, Any]) -> Path:
     return d
 
 
-def plan(tl: dict[str, Any], sheet: dict[str, Any], audio: Path, out: Path, assets: Path | None = None) -> list[dict[str, Any]]:
-    """Every scene of the timeline resolved and written under `out`; returns the groups with their `dir`."""
+def plan(tl: dict[str, Any], sheet: dict[str, Any], audio: Path, out: Path, assets: Path | None = None, only: list[str] | None = None) -> list[dict[str, Any]]:
+    """Every scene of the timeline (or those ids in `only`) resolved and written under `out`; returns the groups with their `dir`."""
     wav = read_wav(audio)
-    groups = segment(tl, sheet)
+    groups = [g for g in segment(tl, sheet) if not only or g["id"] in only]
     for g in groups:
         g["dir"] = write_scene(out, resolve_scene(g, sheet, wav, assets))
     return groups

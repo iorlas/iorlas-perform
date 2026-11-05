@@ -112,6 +112,7 @@ def make(
     chrome: str | None = None,
     scenario_src: Path | None = None,
     design_path: Path | None = None,
+    only: list[str] | None = None,
 ) -> Path:
     """wav + scene.py timeline (+ the scenario, for pauses and screen directives) -> out/<stem>.mp4. Returns the mp4."""
     out.mkdir(parents=True, exist_ok=True)
@@ -130,7 +131,7 @@ def make(
         sheet_path.write_text(json.dumps(videoplan.emit_sheet(tl, layout), ensure_ascii=False, indent=2) + "\n")
         log(f"sheet: wrote default {sheet_path}; edit its cues to act the scenes")
     sheet = json.loads(sheet_path.read_text())
-    groups = videoplan.plan(tl, sheet, audio, out / "scenes", ROOT / "assets")
+    groups = videoplan.plan(tl, sheet, audio, out / "scenes", ROOT / "assets", only)
     results = []
     for g in groups:
         r = render_scene(g["dir"], out / "cache", chrome, out / "work")
@@ -140,6 +141,10 @@ def make(
         msg = "scene videos come from different engines or adapter versions: refusing to join"
         raise RuntimeError(msg)
     dest = out / f"{audio.stem}.mp4"
+    if only:  # a slice: the mix is cut to the scenes that were rendered
+        part = out / f"{audio.stem}.slice.wav"
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{groups[0]['t0']:.3f}", "-t", f"{groups[-1]['t1'] - groups[0]['t0']:.3f}", "-i", audio, part], check=True)
+        audio = part
     join_and_mux([Path(r["file"]) for r in results], audio, dest)
     (out / "manifest.json").write_text(json.dumps({"audio": audio.name, "scenes": results}, indent=1) + "\n")
     log(f"video: {dest}")
@@ -155,6 +160,7 @@ def main() -> None:
     p.add_argument("--scenario", type=Path, help="the scenario the audio came from: {pause} splits scenes, <!-- screen: ... --> directives drive the screen")
     p.add_argument("--design", type=Path, help="design file (default: <scenario>.design.json next to the scenario)")
     p.add_argument("--describe", action="store_true", help="write the design as a review document (<design stem>.md) and exit")
+    p.add_argument("--only", help="render only these scenes (ids s01,s02 ...) and cut the audio to them; the design file may be `partial`")
     p.add_argument("--chrome", help="Chrome/headless-shell binary (or PERFORM_CHROME)")
     a = p.parse_args()
     v1 = json.loads(a.timeline.read_text())
@@ -167,7 +173,7 @@ def main() -> None:
         return
     sr, samples = videoplan.read_wav(a.audio)
     duration = len(samples) / sr
-    make(a.audio, v1, sr=sr, duration=duration, out=a.out or a.audio.with_suffix(".video"), sheet_path=a.sheet, chrome=a.chrome, scenario_src=a.scenario, design_path=a.design)
+    make(a.audio, v1, sr=sr, duration=duration, out=a.out or a.audio.with_suffix(".video"), sheet_path=a.sheet, chrome=a.chrome, scenario_src=a.scenario, design_path=a.design, only=a.only.split(",") if a.only else None)
 
 
 if __name__ == "__main__":

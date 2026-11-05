@@ -29,6 +29,27 @@ SHEET = "scene-sheet/2"
 ROOT = Path(__file__).resolve().parent.parent / "video"
 PLACEHOLDERS = ROOT / "placeholders.json"
 RIGS = ROOT / "rigs"
+ART = ROOT / "art"
+
+
+def art_set(spec: dict[str, Any]) -> dict[str, Any]:
+    """A drawn set from video/art/<id>.json (the set sessions' output): `back` svg (layers up to the first cast layer), `front` svg (after it),
+    objects as boxes (for focus and match cuts) and the slots a character stands in. `remove` drops objects by id (a morning light at noon)."""
+    a = json.loads((ART / f"{spec['art']}.json").read_text())
+    order = a["layer_order"]
+    cast_at = next(i for i, n in enumerate(order) if n.startswith("cast"))
+    drop = set(spec.get("remove", []))
+    objs = sorted((o for o in a["objects"] if o["id"] not in drop), key=lambda o: (order.index(o["layer"]), o["z"]))
+    unknown = drop - {o["id"] for o in a["objects"]}
+    if unknown:
+        msg = f'art set {spec["art"]}: remove names objects that do not exist: {sorted(unknown)}'
+        raise ValueError(msg)
+    boxes = {o["id"]: {"id": o["id"], "at": [o["bbox"][0], o["bbox"][1]], "w": o["bbox"][2], "h": o["bbox"][3], "cx": o["bbox"][0] + o["bbox"][2] / 2, "top": o["bbox"][1], "bottom": o["bbox"][1] + o["bbox"][3]} for o in objs}
+    return {
+        "back": "".join(o["svg"] for o in objs if order.index(o["layer"]) < cast_at),
+        "front": "".join(o["svg"] for o in objs if order.index(o["layer"]) > cast_at),
+        "boxes": boxes, "slots": a.get("slots", {}), "canvas": a["canvas"],
+    }
 
 
 def beats(tl: dict[str, Any], scene: dict[str, Any]) -> list[int]:
@@ -98,7 +119,8 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
     by_id = {c["id"]: c for c in cast.values()}
     voice_of = {c["id"]: v for v, c in cast.items()}
     merged = {n: videoscene.merge_set(design["sets"], n) for n in design["sets"]}
-    solved = {n: videoscene.solve_objects(m["objects"], stage) for n, m in merged.items()}
+    arts = {n: art_set(st) for n, st in design["sets"].items() if "art" in st}  # drawn sets: their objects are boxes read off the art, not solved from relations
+    solved = {n: (arts[n]["boxes"] if n in arts else videoscene.solve_objects(m["objects"], stage)) for n, m in merged.items()}
     raw = {n: {o["id"]: o for o in m["objects"]} for n, m in merged.items()}
 
     script = " ".join((e.get("text") or e.get("sfx") or "").casefold() for e in tl["entries"])  # words and sound effects
@@ -129,6 +151,12 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
         if spec is None:
             msg = f'character "{actor}" has no place in set "{set_name}" (sets.{set_name}.characters)'
             raise ValueError(msg)
+        if set_name in arts:  # a slot of the drawn set: its neck-base position and scale, with the clip that hides the rig's missing legs
+            slot = arts[set_name]["slots"].get(spec["slot"])
+            if slot is None:
+                msg = f'set {set_name}: character "{actor}" names slot "{spec["slot"]}", which the art does not have'
+                raise ValueError(msg)
+            return {"offset": list(slot["pos"]), "scale": slot["scale"], **({"clip_y_max": slot["clip_y_max"]} if "clip_y_max" in slot else {}), "pose": spec.get("pose") or slot["pose"].split(",")[0], **({"layer": spec["layer"]} if "layer" in spec else {})}
         return {**spec, **videoscene.place_character(by_id[actor], by_id[actor]["rig"], spec, solved[set_name], raw[set_name], stage)}
 
     def focus_xy(set_name: str, focus: str | None, sh: dict[str, Any]) -> tuple[float, float]:
@@ -146,7 +174,7 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
         for c in entries:
             cid = c if isinstance(c, str) else c["id"]
             st = stand(set_name, cid)
-            out.append({"id": cid, "offset": st["offset"], "pose": st.get("pose", "stand_still"), **({"seated": True} if st.get("seated") else {}), **({} if isinstance(c, str) else {k: v for k, v in c.items() if k != "id"})})
+            out.append({"id": cid, "offset": st["offset"], "pose": st.get("pose", "stand_still"), **{k: st[k] for k in ("scale", "clip_y_max") if k in st}, **({"seated": True} if st.get("seated") else {}), **({} if isinstance(c, str) else {k: v for k, v in c.items() if k != "id"})})
         return out
 
     def check_legs(shot_id: str, set_name: str, ids: list[str], cam: dict[str, Any]) -> None:
@@ -169,6 +197,8 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
     prev_last: tuple[dict[str, Any], str] | None = None  # the previous scene's last shot and its set, for match cuts
     for si, s in enumerate(tl["scenes"]):
         d = design["scenes"].get(s["title"])
+        if d is None and design.get("partial"):  # a slice of a longer episode: the scenes not designed yet are not in the sheet
+            continue
         if d is None:
             msg = f'design file has no scene "{s["title"]}"'
             raise KeyError(msg)
@@ -192,6 +222,9 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             if "pull_from" in sh:  # pull-out: start tight (another frame type on the same focus), end on this shot's frame
                 out["camera"] = {"viewBox": _camera(sh["pull_from"], fxy, layout, None, sh.get("camera"))["viewBox"], "push_to": out["camera"]["viewBox"]}
             out["cast"] = cast_entries(sset, sh.get("cast", []))
+            if "overlays" in sh:  # shot layers in screen space (a voice-message card, the AI's waveform): beats become timeline anchors, resolved to seconds by the resolver
+                out["overlays"] = [{**{k: v for k, v in o.items() if k not in {"beat", "offset", "until", "grow"}}, "at": at(o["beat"], o.get("offset", 0.0)),
+                                    **({"until": at(o["until"]["beat"], o["until"].get("offset", 0.0))} if "until" in o else {}), **({"grow": {**o["grow"], "at": at(o["grow"]["beat"], o["grow"].get("offset", 0.0))}} if "grow" in o else {})} for o in sh["overlays"]]
             match = design["scenes"].get(tl["scenes"][si - 1]["title"], {}).get("transition_out", {}).get("match") if si and not shots else None
             if match:  # match cut into this scene: the first shot starts framed so `to` sits where `from` ended the previous scene
                 if prev_last is None or match["from"] not in solved[prev_last[1]] or match["to"] not in solved[sset]:
@@ -263,6 +296,9 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
         for o in solved[n].values():
             look = placeholders["props"].get(o.get("kind", o["id"]), {})
             props.append({**look, **{k: v for k, v in o.items() if k not in {"cx", "top", "bottom"}}})
+        if n in arts:
+            sets[n] = {"svg": arts[n]["back"], "front": arts[n]["front"], "props": [dict(p) for p in design["sets"][n].get("props", [])]}
+            continue
         sets[n] = {**placeholders["sets"].get(n, {}), "props": props}
     return {
         "schema": SHEET,

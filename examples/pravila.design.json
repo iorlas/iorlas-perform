@@ -1,0 +1,183 @@
+{
+ "schema": "scene-design/2",
+ "partial": true,
+ "stage": {
+  "H": 742,
+  "floor": 478
+ },
+ "offscreen": [
+  "narrator"
+ ],
+ "cast": {
+  "vadik": {
+   "expr": "pretend"
+  },
+  "mama": {},
+  "palych": {},
+  "ai": {}
+ },
+ "sets": {
+  "setA_kitchen_noon": {
+   "art": "set_a",
+   "remove": [
+    "setA_kitchen_windowglow",
+    "setA_kitchen_floorlight",
+    "setA_kitchen_bread",
+    "setA_kitchen_pickles"
+   ],
+   "characters": {
+    "mama": {
+     "slot": "setA_slot_mama",
+     "pose": "stir_hold"
+    },
+    "vadik": {
+     "slot": "setA_slot_vadik"
+    }
+   },
+   "props": [
+    {
+     "id": "laptop",
+     "svg": "<g><rect x=\"806\" y=\"438\" width=\"140\" height=\"9\" rx=\"3\" fill=\"#8d9ca5\"/><rect x=\"814\" y=\"378\" width=\"124\" height=\"64\" rx=\"5\" fill=\"#aab8c0\"/><rect x=\"819\" y=\"383\" width=\"114\" height=\"52\" rx=\"3\" fill=\"#2f3b4d\"/><rect x=\"825\" y=\"389\" width=\"40\" height=\"4\" fill=\"#e2845f\"/><rect x=\"831\" y=\"397\" width=\"62\" height=\"4\" fill=\"#8fc4bb\"/><rect x=\"831\" y=\"405\" width=\"46\" height=\"4\" fill=\"#ebb64e\"/><rect x=\"825\" y=\"413\" width=\"70\" height=\"4\" fill=\"#8fc4bb\"/><rect x=\"831\" y=\"421\" width=\"34\" height=\"4\" fill=\"#e2845f\"/><rect x=\"806\" y=\"446\" width=\"140\" height=\"4\" fill=\"#00000022\"/></g>",
+     "at": [
+      0,
+      0
+     ],
+     "front": true
+    }
+   ]
+  }
+ },
+ "screens": {},
+ "scenes": {
+  "Кухня, полдень": {
+   "set": "setA_kitchen_noon",
+   "assets": [
+    "neyroset"
+   ],
+   "shots": [
+    {
+     "id": "1.1",
+     "beats": [
+      1
+     ],
+     "frame": "wide",
+     "at_xy": [
+      640,
+      360
+     ],
+     "camera": {
+      "w": 1280,
+      "cy": 360,
+      "dx": 0
+     },
+     "cast": [
+      "mama",
+      "vadik"
+     ],
+     "intent": "establish: both, code on the laptop"
+    },
+    {
+     "id": "1.2",
+     "beats": [
+      2
+     ],
+     "frame": "medium",
+     "focus": "mama",
+     "camera": {
+      "w": 760,
+      "dx": 127,
+      "cy": 300
+     },
+     "cast": [
+      "mama"
+     ],
+     "intent": "Мама left third"
+    },
+    {
+     "id": "1.3",
+     "beats": [
+      3,
+      4
+     ],
+     "frame": "medium",
+     "focus": "vadik",
+     "camera": {
+      "w": 760,
+      "dx": -127,
+      "cy": 330
+     },
+     "cast": [
+      "vadik"
+     ],
+     "overlays": [
+      {
+       "kind": "voice_card",
+       "name": "Палыч",
+       "rect": [
+        0.79,
+        0.07,
+        0.19,
+        0.1
+       ],
+       "beat": 3
+      }
+     ],
+     "intent": "voice-message card small, right of his look"
+    },
+    {
+     "id": "1.4",
+     "beats": [
+      5
+     ],
+     "frame": "close",
+     "focus": "vadik",
+     "camera": {
+      "w": 480,
+      "dx": -80,
+      "cy": 335
+     },
+     "cast": [
+      "vadik"
+     ],
+     "intent": "whisper, close"
+    },
+    {
+     "id": "1.5",
+     "beats": [
+      6,
+      7,
+      8
+     ],
+     "frame": "close",
+     "focus": "vadik",
+     "camera": {
+      "w": 480,
+      "dx": -80,
+      "cy": 335
+     },
+     "cast": [
+      "vadik"
+     ],
+     "overlays": [
+      {
+       "kind": "waveform",
+       "rect": [
+        0.8,
+        0.1,
+        0.18,
+        0.2
+       ],
+       "beat": 6,
+       "grow": {
+        "beat": 8,
+        "offset": 4.2,
+        "dur": 1.6
+       }
+      }
+     ],
+     "intent": "AI waveform opposite his look, then fills the frame"
+    }
+   ]
+  }
+ }
+}

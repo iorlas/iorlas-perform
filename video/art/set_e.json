@@ -1,0 +1,516 @@
+{
+ "set": "setE_marshrutka",
+ "version": "0.1.0",
+ "look": "Вырезка (flat cut paper)",
+ "canvas": [
+  1280,
+  720
+ ],
+ "layer_order": [
+  "bg",
+  "mid",
+  "crowd_back",
+  "cast",
+  "crowd_front",
+  "mid_front",
+  "cast_fg",
+  "fg"
+ ],
+ "layers": {
+  "bg": "cabin shell: ceiling, wall, floor, window panes (rainy street), window frames, steam, ceiling bar, puddle, Вадик's floor shadow",
+  "mid": "seat backs, driver partition, mirror+freshener+icon, fare tray, poster",
+  "crowd_back": "4 passengers, back row (scale .7, feet y606, toned down)",
+  "cast": "slot Вадик (between crowd_back and crowd_front? drawn after crowd_front, before rail fist)",
+  "crowd_front": "4 passengers, front row (feet y660-664)",
+  "mid_front": "yellow stanchion behind Вадик's body",
+  "cast_fg": "skin fist over the stanchion (hand-on-rail cheat), phone prop, earbud",
+  "fg": "empty (framer slot: reserved for parallax 1.15 rail/seat-back)"
+ },
+ "floor_y": 650,
+ "wall_floor_line": 560,
+ "back_row_floor_y": 606,
+ "palette": {
+  "wall": "#d6d0bc",
+  "ceiling": "#c2bcab",
+  "floor": "#aaa8a0",
+  "glass_sky": "#cfd6d9",
+  "rain_slab": "#a6b1b7",
+  "reflection_slab": "#e7edee",
+  "partition": "#8a8f93",
+  "accent_rail": "#e2a52c",
+  "seat": "#bdb9a2"
+ },
+ "light": {
+  "source": "overcast through the window band, even; no light patches",
+  "note": "one flat shadow per part"
+ },
+ "accent": "yellow stanchion #e2a52c (the rail Вадик holds); everything else muted",
+ "kit_modules": {
+  "vehicle_shell": [
+   "setE_marshrutka_ceiling",
+   "setE_marshrutka_wall",
+   "setE_marshrutka_floor",
+   "setE_marshrutka_window_frames",
+   "setE_marshrutka_ceiling_bar",
+   "setE_marshrutka_seats",
+   "setE_marshrutka_partition",
+   "setE_marshrutka_driver_mirror",
+   "setE_marshrutka_fare_tray",
+   "setE_marshrutka_poster",
+   "setE_marshrutka_rail_pole",
+   "setE_marshrutka_rail_fist"
+  ],
+  "crowd": [
+   "setE_marshrutka_crowd_*"
+  ],
+  "weather_window": [
+   "setE_marshrutka_window_1..3",
+   "setE_marshrutka_window_steam",
+   "setE_marshrutka_puddle"
+  ]
+ },
+ "crowd_module_params": "person(x,floorY,scale,coat,coatS,type[hat|hood|scarf],umb,bag,phone,back_pack,look): 420-unit tall faceless paper figure, floor shadow, one shadow per part; back row scale .7, front .84-.88, kid .5",
+ "slots": {
+  "setE_slot_vadik": {
+   "rig": "vadik@1.2.0",
+   "pos": [
+    400,
+    283.2
+   ],
+   "scale": 0.6,
+   "pose": "stand_still",
+   "expr": "side_glance",
+   "gaze": {
+    "x": 0.8,
+    "y": 0
+   },
+   "layer": "cast",
+   "floor_y": 650,
+   "third": "left third (x~400/1280)",
+   "looks": "right, toward open space then grandma at x640"
+  }
+ },
+ "props_on_hero": {
+  "earbud": "white rounded rect at his left ear (x361,y206)",
+  "phone": "26x50 rounded rect at (340,420) over his viewer-left hand; screen = AI chat",
+  "rail_fist": "fist over the pole at (423,420)"
+ },
+ "overlays": {
+  "setE_overlay_ai_line": {
+   "desc": "cream bubble «НЕЙРОСЕТЬ: Врать можно только про опыт. Про файл — нельзя, Вадим.», left of the phone, tail to phone",
+   "translate": [
+    -116,
+    -8
+   ],
+   "used_in": "framing 3 only"
+  }
+ },
+ "framings": [
+  {
+   "shot": "establish",
+   "subject": "Вадик among the crowd",
+   "viewBox": "0 0 1280 720"
+  },
+  {
+   "shot": "medium",
+   "subject": "Вадик at the rail",
+   "viewBox": "215 168 400 225"
+  },
+  {
+   "shot": "close",
+   "subject": "phone + AI line",
+   "viewBox": "30 300 420 236.25",
+   "overlay": "setE_overlay_ai_line"
+  },
+  {
+   "shot": "insert",
+   "subject": "grandmother side-eyeing Вадик",
+   "viewBox": "540 240 340 191.25"
+  }
+ ],
+ "story_texts": [
+  "передаём за проезд (poster, tone-on-tone)",
+  "Врать можно только про опыт. Про файл — нельзя, Вадим. (AI line overlay)"
+ ],
+ "rig_gaps": [
+  "vadik: no hanging-on-a-rail pose; stand_still + yellow stanchion behind the body + skin fist in cast_fg at hand x~440,y~435; the arm hangs down, not raised to the rail",
+  "vadik: no phone-at-ear pose; earbud prop at the ear and the phone held at hip level in the other hand",
+  "rig side_glance + gaze x .8 reads as looking right but yaw 0 (front view)",
+  "fist/phone positions placed by eye for scale .6; change with scale"
+ ],
+ "objects": [
+  {
+   "id": "setE_marshrutka_ceiling",
+   "layer": "bg",
+   "z": 0,
+   "bbox": [
+    0,
+    0,
+    1280,
+    74
+   ],
+   "desc": "ceiling band",
+   "svg": "<rect width=\"1280\" height=\"74\" fill=\"#c2bcab\"/><rect y=\"62\" width=\"1280\" height=\"12\" fill=\"#aba592\"/>"
+  },
+  {
+   "id": "setE_marshrutka_wall",
+   "layer": "bg",
+   "z": 1,
+   "bbox": [
+    0,
+    74,
+    1280,
+    486
+   ],
+   "desc": "side wall under the window band",
+   "svg": "<rect y=\"74\" width=\"1280\" height=\"486\" fill=\"#d6d0bc\"/><rect y=\"322\" width=\"1280\" height=\"10\" fill=\"#c3bda8\"/>"
+  },
+  {
+   "id": "setE_marshrutka_floor",
+   "layer": "bg",
+   "z": 2,
+   "bbox": [
+    0,
+    560,
+    1280,
+    160
+   ],
+   "desc": "wet rubber floor, one shade band",
+   "svg": "<rect y=\"560\" width=\"1280\" height=\"160\" fill=\"#aaa8a0\"/><rect y=\"690\" width=\"1280\" height=\"30\" fill=\"#96958e\"/><rect y=\"552\" width=\"1280\" height=\"10\" fill=\"#c3bda8\"/>"
+  },
+  {
+   "id": "setE_marshrutka_window_1",
+   "layer": "bg",
+   "z": 3,
+   "bbox": [
+    24,
+    100,
+    356,
+    222
+   ],
+   "desc": "window pane 1: rainy grey street (flat blocks, chunky rain slabs, lighter wet-reflection slabs)",
+   "module": "weather_window",
+   "svg": "<rect x=\"24\" y=\"100\" width=\"356\" height=\"222\" fill=\"#cfd6d9\"/><rect x=\"24\" y=\"174\" width=\"78\" height=\"96\" fill=\"#bcc4c8\"/><rect x=\"95\" y=\"127\" width=\"71\" height=\"143\" fill=\"#aeb8bd\"/><rect x=\"174\" y=\"164\" width=\"64\" height=\"106\" fill=\"#c6ccc9\"/><rect x=\"238\" y=\"143\" width=\"78\" height=\"127\" fill=\"#bcc4c8\"/><rect x=\"316\" y=\"148\" width=\"71\" height=\"122\" fill=\"#aeb8bd\"/><rect x=\"24\" y=\"270\" width=\"356\" height=\"52\" fill=\"#a3abae\"/><rect x=\"64\" y=\"260\" width=\"92\" height=\"30\" rx=\"8\" fill=\"#8d979d\"/><rect x=\"230\" y=\"256\" width=\"110\" height=\"34\" rx=\"9\" fill=\"#b4a79b\"/><path d=\"M67 110 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M174 119 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M273 113 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M344 122 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M131 138 h14 l-26 80 h-14Z\" fill=\"#e7edee\"/><path d=\"M245 130 h14 l-26 80 h-14Z\" fill=\"#e7edee\"/>"
+  },
+  {
+   "id": "setE_marshrutka_window_2",
+   "layer": "bg",
+   "z": 4,
+   "bbox": [
+    404,
+    100,
+    356,
+    222
+   ],
+   "desc": "window pane 2: rainy grey street (flat blocks, chunky rain slabs, lighter wet-reflection slabs)",
+   "module": "weather_window",
+   "svg": "<rect x=\"404\" y=\"100\" width=\"356\" height=\"222\" fill=\"#cfd6d9\"/><rect x=\"404\" y=\"157\" width=\"78\" height=\"113\" fill=\"#aeb8bd\"/><rect x=\"475\" y=\"140\" width=\"71\" height=\"130\" fill=\"#c6ccc9\"/><rect x=\"554\" y=\"177\" width=\"64\" height=\"93\" fill=\"#bcc4c8\"/><rect x=\"618\" y=\"126\" width=\"78\" height=\"144\" fill=\"#aeb8bd\"/><rect x=\"696\" y=\"161\" width=\"71\" height=\"109\" fill=\"#c6ccc9\"/><rect x=\"404\" y=\"270\" width=\"356\" height=\"52\" fill=\"#a3abae\"/><rect x=\"504\" y=\"260\" width=\"92\" height=\"30\" rx=\"8\" fill=\"#8d979d\"/><rect x=\"580\" y=\"256\" width=\"110\" height=\"34\" rx=\"9\" fill=\"#b4a79b\"/><path d=\"M447 110 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M554 119 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M653 113 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M724 122 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M511 138 h14 l-26 80 h-14Z\" fill=\"#e7edee\"/><path d=\"M625 130 h14 l-26 80 h-14Z\" fill=\"#e7edee\"/>"
+  },
+  {
+   "id": "setE_marshrutka_window_3",
+   "layer": "bg",
+   "z": 5,
+   "bbox": [
+    784,
+    100,
+    336,
+    222
+   ],
+   "desc": "window pane 3: rainy grey street (flat blocks, chunky rain slabs, lighter wet-reflection slabs)",
+   "module": "weather_window",
+   "svg": "<rect x=\"784\" y=\"100\" width=\"336\" height=\"222\" fill=\"#cfd6d9\"/><rect x=\"784\" y=\"170\" width=\"74\" height=\"100\" fill=\"#c6ccc9\"/><rect x=\"851\" y=\"123\" width=\"67\" height=\"147\" fill=\"#bcc4c8\"/><rect x=\"925\" y=\"190\" width=\"60\" height=\"80\" fill=\"#aeb8bd\"/><rect x=\"986\" y=\"139\" width=\"74\" height=\"131\" fill=\"#c6ccc9\"/><rect x=\"1060\" y=\"144\" width=\"67\" height=\"126\" fill=\"#bcc4c8\"/><rect x=\"784\" y=\"270\" width=\"336\" height=\"52\" fill=\"#a3abae\"/><rect x=\"944\" y=\"260\" width=\"92\" height=\"30\" rx=\"8\" fill=\"#8d979d\"/><rect x=\"910\" y=\"256\" width=\"110\" height=\"34\" rx=\"9\" fill=\"#b4a79b\"/><path d=\"M824 110 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M925 119 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M1019 113 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M1086 122 h20 l-34 120 h-20Z\" fill=\"#a6b1b7\"/><path d=\"M885 138 h14 l-26 80 h-14Z\" fill=\"#e7edee\"/><path d=\"M992 130 h14 l-26 80 h-14Z\" fill=\"#e7edee\"/>"
+  },
+  {
+   "id": "setE_marshrutka_window_frames",
+   "layer": "bg",
+   "z": 6,
+   "bbox": [
+    0,
+    86,
+    1130,
+    246
+   ],
+   "desc": "window frames and pillars (cut paper, flat)",
+   "module": "vehicle_shell",
+   "svg": "<path fill-rule=\"evenodd\" d=\"M0 86 H1130 V332 H0Z M24 100 H380 V322 H24Z M404 100 H760 V322 H404Z M784 100 H1120 V322 H784Z\" fill=\"#a9a694\"/><rect y=\"322\" width=\"1130\" height=\"10\" fill=\"#8f8c7b\"/>"
+  },
+  {
+   "id": "setE_marshrutka_window_steam",
+   "layer": "bg",
+   "z": 7,
+   "bbox": [
+    420,
+    210,
+    330,
+    112
+   ],
+   "desc": "steamed lower part of pane 2 (flat pale rounded shape)",
+   "module": "weather_window",
+   "svg": "<rect x=\"416\" y=\"208\" width=\"332\" height=\"114\" rx=\"16\" fill=\"#eef2f1\" fill-opacity=\".5\"/><rect x=\"450\" y=\"236\" width=\"150\" height=\"34\" rx=\"16\" fill=\"#cfd6d9\" fill-opacity=\".8\"/>"
+  },
+  {
+   "id": "setE_marshrutka_ceiling_bar",
+   "layer": "bg",
+   "z": 8,
+   "bbox": [
+    0,
+    60,
+    1130,
+    22
+   ],
+   "desc": "ceiling handrail with brackets",
+   "module": "vehicle_shell",
+   "svg": "<rect x=\"0\" y=\"66\" width=\"1130\" height=\"16\" fill=\"#7e888e\"/><rect x=\"0\" y=\"62\" width=\"1130\" height=\"16\" fill=\"#98a1a7\"/><rect x=\"120\" y=\"62\" width=\"14\" height=\"22\" fill=\"#7e888e\"/><rect x=\"520\" y=\"62\" width=\"14\" height=\"22\" fill=\"#7e888e\"/><rect x=\"920\" y=\"62\" width=\"14\" height=\"22\" fill=\"#7e888e\"/>"
+  },
+  {
+   "id": "setE_marshrutka_seats",
+   "layer": "mid",
+   "z": 9,
+   "bbox": [
+    24,
+    326,
+    1090,
+    200
+   ],
+   "desc": "three tone-on-tone seat backs and headrests along the wall",
+   "module": "vehicle_shell",
+   "note": "seat cushions hidden by the crowd; tone on tone with the wall (AR3)",
+   "svg": "<path d=\"M40 520 V380 Q40 350 68 350 H242 Q270 350 270 380 V520Z\" transform=\"translate(5,5)\" fill=\"#a8a48e\"/><path d=\"M40 520 V380 Q40 350 68 350 H242 Q270 350 270 380 V520Z\" fill=\"#bdb9a2\"/><rect x=\"129\" y=\"330.6\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#a8a48e\"/><rect x=\"125\" y=\"326\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#bdb9a2\"/><path d=\"M300 520 V380 Q300 350 328 350 H502 Q530 350 530 380 V520Z\" transform=\"translate(5,5)\" fill=\"#a8a48e\"/><path d=\"M300 520 V380 Q300 350 328 350 H502 Q530 350 530 380 V520Z\" fill=\"#bdb9a2\"/><rect x=\"389\" y=\"330.6\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#a8a48e\"/><rect x=\"385\" y=\"326\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#bdb9a2\"/><path d=\"M560 520 V380 Q560 350 588 350 H762 Q790 350 790 380 V520Z\" transform=\"translate(5,5)\" fill=\"#a8a48e\"/><path d=\"M560 520 V380 Q560 350 588 350 H762 Q790 350 790 380 V520Z\" fill=\"#bdb9a2\"/><rect x=\"649\" y=\"330.6\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#a8a48e\"/><rect x=\"645\" y=\"326\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#bdb9a2\"/><path d=\"M820 520 V380 Q820 350 848 350 H1052 Q1080 350 1080 380 V520Z\" transform=\"translate(5,5)\" fill=\"#a8a48e\"/><path d=\"M820 520 V380 Q820 350 848 350 H1052 Q1080 350 1080 380 V520Z\" fill=\"#bdb9a2\"/><rect x=\"924\" y=\"330.6\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#a8a48e\"/><rect x=\"920\" y=\"326\" width=\"60\" height=\"30\" rx=\"8\" fill=\"#bdb9a2\"/>"
+  },
+  {
+   "id": "setE_marshrutka_puddle",
+   "layer": "bg",
+   "z": 10,
+   "bbox": [
+    540,
+    656,
+    230,
+    46
+   ],
+   "desc": "puddle on the floor under the umbrellas: flat blob + one lighter reflection slab",
+   "module": "weather_window",
+   "note": "floor puddle",
+   "svg": "<path d=\"M556 676 Q548 660 600 658 Q690 654 748 662 Q776 668 752 684 Q690 700 610 698 Q564 696 556 676Z\" fill=\"#93a3ad\"/><path d=\"M640 664 h34 l-12 30 h-34Z\" fill=\"#b9c6cc\"/>"
+  },
+  {
+   "id": "setE_marshrutka_partition",
+   "layer": "mid",
+   "z": 12,
+   "bbox": [
+    1130,
+    0,
+    150,
+    560
+   ],
+   "desc": "driver partition, right edge (cropped, calm)",
+   "module": "vehicle_shell",
+   "svg": "<rect x=\"1130\" y=\"0\" width=\"150\" height=\"560\" fill=\"#8a8f93\"/><rect x=\"1130\" y=\"0\" width=\"12\" height=\"560\" fill=\"#767b7f\"/><rect x=\"1142\" y=\"90\" width=\"138\" height=\"170\" fill=\"#cfd6d9\"/><path d=\"M1180 100 h20 l-30 110 h-20Z M1250 110 h16 l-26 90 h-16Z\" fill=\"#a6b1b7\"/>"
+  },
+  {
+   "id": "setE_marshrutka_driver_mirror",
+   "layer": "mid",
+   "z": 13,
+   "bbox": [
+    1166,
+    60,
+    100,
+    120
+   ],
+   "desc": "driver rear-view mirror on a stalk, with dangling air freshener (pine tree) and a small icon",
+   "module": "vehicle_shell",
+   "note": "icon+freshener are the story-trace of the driver",
+   "svg": "<rect x=\"1214\" y=\"70\" width=\"12\" height=\"38\" fill=\"#7e888e\"/><rect x=\"1170\" y=\"108.6\" width=\"100\" height=\"32\" rx=\"8\" fill=\"#5d6266\"/><rect x=\"1166\" y=\"104\" width=\"100\" height=\"32\" rx=\"8\" fill=\"#767b7f\"/><rect x=\"1174\" y=\"110\" width=\"84\" height=\"20\" rx=\"5\" fill=\"#b9c6cb\"/><rect x=\"1180\" y=\"136\" width=\"8\" height=\"26\" fill=\"#6b5a40\"/><path d=\"M1184 160 L1210 188 H1198 L1218 214 H1150 L1170 188 H1158Z\" transform=\"translate(4,4)\" fill=\"#557f52\"/><path d=\"M1184 160 L1210 188 H1198 L1218 214 H1150 L1170 188 H1158Z\" fill=\"#6fa06a\"/><rect x=\"1240\" y=\"136\" width=\"8\" height=\"22\" fill=\"#6b5a40\"/><rect x=\"1230\" y=\"160.6\" width=\"36\" height=\"46\" rx=\"5\" fill=\"#b8944a\"/><rect x=\"1226\" y=\"156\" width=\"36\" height=\"46\" rx=\"5\" fill=\"#e9c46a\"/><rect x=\"1232\" y=\"162\" width=\"24\" height=\"34\" rx=\"3\" fill=\"#b5483a\"/><rect x=\"1240\" y=\"168\" width=\"8\" height=\"22\" rx=\"2\" fill=\"#e9c46a\"/>"
+  },
+  {
+   "id": "setE_marshrutka_fare_tray",
+   "layer": "mid",
+   "z": 14,
+   "bbox": [
+    1136,
+    420,
+    140,
+    44
+   ],
+   "desc": "fare-collection tray on the partition ledge: coins as small squares and folded notes",
+   "module": "vehicle_shell",
+   "svg": "<rect x=\"1139\" y=\"443.45\" width=\"140\" height=\"14\" rx=\"3\" fill=\"#5f686d\"/><rect x=\"1136\" y=\"440\" width=\"140\" height=\"14\" rx=\"3\" fill=\"#7e888e\"/><path d=\"M1148 440 L1156 418 H1260 L1268 440Z\" transform=\"translate(4,4)\" fill=\"#6e5f4a\"/><path d=\"M1148 440 L1156 418 H1260 L1268 440Z\" fill=\"#8b7a60\"/><rect x=\"1166\" y=\"424\" width=\"14\" height=\"10\" rx=\"3\" fill=\"#e0b24a\"/><rect x=\"1186\" y=\"428\" width=\"14\" height=\"10\" rx=\"3\" fill=\"#e0b24a\"/><rect x=\"1210\" y=\"424\" width=\"14\" height=\"10\" rx=\"3\" fill=\"#e0b24a\"/><rect x=\"1236\" y=\"428\" width=\"14\" height=\"10\" rx=\"3\" fill=\"#e0b24a\"/><rect x=\"1196\" y=\"420\" width=\"30\" height=\"14\" rx=\"2\" fill=\"#a9b79a\" transform=\"rotate(-6 1210 427)\"/>"
+  },
+  {
+   "id": "setE_marshrutka_poster",
+   "layer": "mid",
+   "z": 15,
+   "bbox": [
+    1146,
+    476,
+    112,
+    78
+   ],
+   "desc": "poster «Передаём за проезд», tiny tone-on-tone type",
+   "module": "vehicle_shell",
+   "story_text": "передаём за проезд (tone-on-tone)",
+   "svg": "<rect x=\"1152\" y=\"482.6\" width=\"108\" height=\"74\" rx=\"4\" fill=\"#a39e8a\"/><rect x=\"1148\" y=\"478\" width=\"108\" height=\"74\" rx=\"4\" fill=\"#cfc9b4\"/><rect x=\"1160\" y=\"490\" width=\"30\" height=\"30\" rx=\"4\" fill=\"#c1bba5\"/><text x=\"1224\" y=\"508\" font-size=\"10\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#b7b19b\" text-anchor=\"middle\">ПЕРЕДАЁМ</text><text x=\"1224\" y=\"522\" font-size=\"10\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#b7b19b\" text-anchor=\"middle\">ЗА ПРОЕЗД</text><rect x=\"1196\" y=\"530\" width=\"56\" height=\"8\" rx=\"3\" fill=\"#c1bba5\"/>"
+  },
+  {
+   "id": "setE_marshrutka_crowd_back1",
+   "layer": "crowd_back",
+   "z": 16,
+   "bbox": [
+    194,
+    298,
+    140,
+    315
+   ],
+   "desc": "back row: man in grey coat and hat, closed umbrella",
+   "module": "crowd",
+   "slot": "back1",
+   "svg": "<g transform=\"translate(250,606) scale(0.7)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.1\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#8f969a\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#a3a9ac\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-30 -418 H30 L24 -440 H-24Z M-34 -416 H34 V-408 H-34Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-30 -418 H30 L24 -440 H-24Z M-34 -416 H34 V-408 H-34Z\" fill=\"#7d7a74\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" transform=\"translate(3,3)\" fill=\"#262f42\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" fill=\"#33415a\"/><rect x=\"58\" y=\"-146\" width=\"20\" height=\"22\" rx=\"6\" fill=\"#d3ae90\"/></g>"
+  },
+  {
+   "id": "setE_marshrutka_crowd_back2",
+   "layer": "crowd_back",
+   "z": 17,
+   "bbox": [
+    464,
+    298,
+    140,
+    315
+   ],
+   "desc": "back row: hooded beige coat",
+   "module": "crowd",
+   "slot": "back2",
+   "svg": "<g transform=\"translate(520,606) scale(0.7)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.1\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#a19a8e\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#b3ab9f\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-32 -372 Q-36 -440 0 -442 Q36 -440 32 -372 L22 -364 Q22 -400 0 -402 Q-22 -400 -22 -364Z\" transform=\"translate(4,4)\" fill=\"#a19a8e\"/><path d=\"M-32 -372 Q-36 -440 0 -442 Q36 -440 32 -372 L22 -364 Q22 -400 0 -402 Q-22 -400 -22 -364Z\" fill=\"#b3ab9f\"/></g>"
+  },
+  {
+   "id": "setE_marshrutka_crowd_back3",
+   "layer": "crowd_back",
+   "z": 18,
+   "bbox": [
+    744,
+    298,
+    140,
+    315
+   ],
+   "desc": "back row: woman in sage coat",
+   "module": "crowd",
+   "slot": "back3",
+   "svg": "<g transform=\"translate(800,606) scale(0.7)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.1\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#8f9b95\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#a1aca6\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" fill=\"#6b6258\"/></g>"
+  },
+  {
+   "id": "setE_marshrutka_crowd_back4",
+   "layer": "crowd_back",
+   "z": 19,
+   "bbox": [
+    934,
+    298,
+    140,
+    315
+   ],
+   "desc": "back row: man with phone, lilac-grey coat",
+   "module": "crowd",
+   "slot": "back4",
+   "svg": "<g transform=\"translate(990,606) scale(0.7)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.1\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#9b97a2\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#aca8b0\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" fill=\"#4b4540\"/><rect x=\"-12\" y=\"-262\" width=\"26\" height=\"42\" rx=\"5\" fill=\"#2a3040\"/><rect x=\"-8\" y=\"-258\" width=\"18\" height=\"30\" rx=\"3\" fill=\"#9fc3d9\"/></g>"
+  },
+  {
+   "id": "setE_marshrutka_crowd_front1",
+   "layer": "crowd_front",
+   "z": 20,
+   "bbox": [
+    49.599999999999994,
+    274.8,
+    176,
+    396
+   ],
+   "desc": "front row: broad man in olive coat with closed wet umbrella, left edge",
+   "module": "crowd",
+   "slot": "front1",
+   "svg": "<g transform=\"translate(120,662) scale(0.88)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.16\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#4a4b46\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#7d8774\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#909989\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" fill=\"#4b4540\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" transform=\"translate(3,3)\" fill=\"#262f42\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" fill=\"#33415a\"/><rect x=\"58\" y=\"-146\" width=\"20\" height=\"22\" rx=\"6\" fill=\"#d3ae90\"/></g>"
+  },
+  {
+   "id": "setE_marshrutka_crowd_front2_grandma",
+   "layer": "crowd_front",
+   "z": 21,
+   "bbox": [
+    572.8,
+    290.40000000000003,
+    168,
+    378
+   ],
+   "desc": "front row: grandmother in headscarf, shopping bag, side-eyes Вадик (insert subject)",
+   "module": "crowd",
+   "slot": "front2_grandma",
+   "svg": "<g transform=\"translate(640,660) scale(0.84)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.16\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#6f5d68\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#85727d\"/><path d=\"M-34 -372 Q-40 -444 0 -446 Q40 -444 34 -372 L24 -356 H-24Z\" transform=\"translate(4,4)\" fill=\"#7b5560\"/><path d=\"M-34 -372 Q-40 -444 0 -446 Q40 -444 34 -372 L24 -356 H-24Z\" fill=\"#9a6f78\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-27 -405 Q-26 -436 0 -436 Q26 -436 27 -405 Q12 -418 0 -418 Q-12 -418 -27 -405Z\" fill=\"#9a6f78\"/><path d=\"M-62 -132 H-26 L-22 -64 H-66Z\" transform=\"translate(4,4)\" fill=\"#876650\"/><path d=\"M-62 -132 H-26 L-22 -64 H-66Z\" fill=\"#a8826b\"/><rect x=\"-58\" y=\"-140\" width=\"28\" height=\"12\" rx=\"4\" fill=\"#876650\"/><rect x=\"-22\" y=\"-406\" width=\"14\" height=\"9\" rx=\"3\" fill=\"#f7f3e6\"/><rect x=\"-18\" y=\"-405\" width=\"8\" height=\"7\" rx=\"2\" fill=\"#33302c\"/><path d=\"M-26 -415 L-6 -412\" stroke=\"#5b524a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M-26 -396 L-34 -388 L-24 -386Z\" fill=\"#b99476\"/></g>"
+  },
+  {
+   "id": "setE_marshrutka_crowd_front3_kid",
+   "layer": "crowd_front",
+   "z": 22,
+   "bbox": [
+    720,
+    444,
+    100,
+    225
+   ],
+   "desc": "front row: kid in brown jacket with red backpack, with grandma",
+   "module": "crowd",
+   "slot": "front3_kid",
+   "svg": "<g transform=\"translate(760,664) scale(0.5)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.16\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#a98569\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#c19b84\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" fill=\"#5b3d2c\"/><path d=\"M-76 -330 H-50 V-200 H-72Z\" transform=\"translate(3,3)\" fill=\"#8f372b\"/><path d=\"M-76 -330 H-50 V-200 H-72Z\" fill=\"#b5483a\"/></g>"
+  },
+  {
+   "id": "setE_marshrutka_crowd_front4",
+   "layer": "crowd_front",
+   "z": 23,
+   "bbox": [
+    841.2,
+    285.6,
+    172,
+    387
+   ],
+   "desc": "front row: woman in grey coat, wet umbrella",
+   "module": "crowd",
+   "slot": "front4",
+   "svg": "<g transform=\"translate(910,664) scale(0.86)\"><path d=\"M-74 0 H78 L70 10 H-68Z\" fill=\"#000\" fill-opacity=\"0.16\" transform=\"translate(6,4)\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" transform=\"translate(3,3)\" fill=\"#5a5a60\"/><path d=\"M-30 -158 H-4 V-6 H-32Z M6 -158 H32 V-6 H4Z\" fill=\"#6c6c72\"/><rect x=\"-40\" y=\"-18\" width=\"38\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><rect x=\"4\" y=\"-18\" width=\"40\" height=\"18\" rx=\"7\" fill=\"#4a4a50\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" transform=\"translate(5,5)\" fill=\"#8c897f\"/><path d=\"M-58 -334 Q-58 -352 -36 -352 H36 Q58 -352 58 -334 L66 -150 Q66 -134 50 -134 H-50 Q-66 -134 -66 -150Z\" fill=\"#a3a096\"/><path d=\"M-6 -352 H6 L6 -134 H-6Z\" fill=\"#8c897f\"/><rect x=\"-12\" y=\"-362\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#d3ae90\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" transform=\"translate(4,4)\" fill=\"#b99476\"/><path d=\"M-24 -420 Q-24 -428 -14 -428 H14 Q24 -428 24 -420 V-376 Q24 -362 12 -362 H-12 Q-24 -362 -24 -376Z\" fill=\"#d3ae90\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" transform=\"translate(4,4)\" fill=\"#403934\"/><path d=\"M-26 -412 Q-28 -436 0 -436 Q28 -436 26 -412 Q14 -424 0 -420 Q-14 -424 -26 -412Z\" fill=\"#6a5a4a\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" transform=\"translate(3,3)\" fill=\"#262f42\"/><path d=\"M62 -128 H74 L72 -6 H64Z\" fill=\"#33415a\"/><rect x=\"58\" y=\"-146\" width=\"20\" height=\"22\" rx=\"6\" fill=\"#d3ae90\"/></g>"
+  },
+  {
+   "id": "setE_marshrutka_rail_pole",
+   "layer": "mid_front",
+   "z": 24,
+   "bbox": [
+    427,
+    70,
+    16,
+    590
+   ],
+   "desc": "yellow vertical stanchion the hero holds (the set accent)",
+   "module": "vehicle_shell",
+   "svg": "<rect x=\"437\" y=\"74\" width=\"14\" height=\"590\" fill=\"#b9821b\"/><rect x=\"433\" y=\"74\" width=\"14\" height=\"590\" fill=\"#e2a52c\"/><rect x=\"419\" y=\"640\" width=\"46\" height=\"14\" rx=\"6\" fill=\"#b9821b\"/>"
+  },
+  {
+   "id": "setE_marshrutka_rail_fist",
+   "layer": "cast_fg",
+   "z": 25,
+   "bbox": [
+    423,
+    420,
+    38,
+    34
+   ],
+   "desc": "hand-on-rail overlay: skin fist over the pole (rig has no hanging pose)",
+   "module": "vehicle_shell",
+   "note": "placed by eye after render; adjust to rig hand",
+   "svg": "<rect x=\"423\" y=\"420\" width=\"34\" height=\"32\" rx=\"10\" fill=\"#e6bd98\"/><rect x=\"423\" y=\"434\" width=\"34\" height=\"5\" fill=\"#cf9f7a\"/>"
+  },
+  {
+   "id": "setE_marshrutka_shadow_vadik",
+   "layer": "bg",
+   "z": 26,
+   "bbox": [
+    320,
+    646,
+    170,
+    22
+   ],
+   "desc": "flat contact shadow under Вадик",
+   "svg": "<path d=\"M330 648 H478 L488 664 H320Z\" fill=\"#000\" fill-opacity=\".18\"/>"
+  }
+ ]
+}

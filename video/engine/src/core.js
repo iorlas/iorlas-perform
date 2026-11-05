@@ -236,8 +236,9 @@
   function drawCast(cast, t) {
     var out = "";
     cast.sort(function (a, b) { return (a.layer || 0) - (b.layer || 0); }).forEach(function (a) {
-      var off = a.offset || [0, 0], k = a.scale || 1;
-      out += '<g transform="translate(' + off[0] + " " + off[1] + ")" + (k !== 1 ? " scale(" + k + ")" : "") + '">' + drawActor(a, t) + "</g>";
+      var off = a.offset || [0, 0], k = a.scale || 1, body = '<g transform="translate(' + off[0] + " " + off[1] + ")" + (k !== 1 ? " scale(" + k + ")" : "") + '">' + drawActor(a, t) + "</g>";
+      // a drawn set's slot clips the rig below a line: the legs it cannot hide behind furniture (no seated pose)
+      out += a.clip_y_max != null ? '<clipPath id="clip_' + a.id + '"><rect x="-9000" y="-9000" width="19000" height="' + (9000 + a.clip_y_max) + '"/></clipPath><g clip-path="url(#clip_' + a.id + ')">' + body + "</g>" : body;
     });
     return out;
   }
@@ -289,6 +290,32 @@
     return o;
   }
 
+  // Shot overlays: screen-space layers over the set, placed by `rect` (fractions of the current view), timed t0..t1 in scene seconds.
+  var BARS = [0.3, 0.55, 0.4, 0.8, 0.5, 0.65, 0.35, 0.9, 0.45, 0.7, 0.3, 0.6, 0.85, 0.4, 0.55, 0.75, 0.35, 0.5, 0.65, 0.4];
+  function voiceCard(ov, x, y, w, h, t) {
+    var p = Math.max(0, Math.min(1, (t - ov.t0) / Math.max(0.1, ov.t1 - ov.t0))), o = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + h * 0.22 + '" fill="#fbf0dc" stroke="#1f3a6e" stroke-width="' + h * 0.03 + '"/>';
+    o += '<circle cx="' + (x + h * 0.4) + '" cy="' + (y + h * 0.5) + '" r="' + h * 0.24 + '" fill="#1f3a6e"/><path d="M' + (x + h * 0.33) + " " + (y + h * 0.38) + " L" + (x + h * 0.33) + " " + (y + h * 0.62) + " L" + (x + h * 0.52) + " " + (y + h * 0.5) + ' Z" fill="#fbf0dc"/>';
+    var bx = x + h * 0.85, bw = (w - h * 1.05) / BARS.length;
+    BARS.forEach(function (b, i) { var bh = h * 0.5 * b; o += '<rect x="' + (bx + i * bw) + '" y="' + (y + h * 0.56 - bh / 2) + '" width="' + bw * 0.62 + '" height="' + bh + '" rx="' + bw * 0.3 + '" fill="' + (i / BARS.length <= p ? "#1f3a6e" : "#9aa6bd") + '"/>'; });
+    return o + T(ov.name || "", bx, y + h * 0.2, h * 0.17, "#1f3a6e", "start", 700);
+  }
+  function waveCard(ov, x, y, w, h, t) {
+    var o = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + Math.min(w, h) * 0.12 + '" fill="#fbf0dc" stroke="#1f3a6e" stroke-width="' + Math.min(w, h) * 0.02 + '"/>', n = 22, bx = x + w * 0.34, bw = w * 0.6 / n;
+    for (var i = 0; i < n; i++) { var e = mouthAt("neyroset", t - i * 0.03), a = 0.1 + Math.min(1, e * 1.6) * (0.55 + 0.45 * Math.abs(Math.sin(i * 1.9 + t * 11))), bh = h * 0.7 * a; o += '<rect x="' + (bx + i * bw) + '" y="' + (y + h / 2 - bh / 2) + '" width="' + bw * 0.62 + '" height="' + bh + '" rx="' + bw * 0.3 + '" fill="#1f3a6e"/>'; }
+    return o + neyScreen({ mode: "monitor_smiley", phrase: "" }, x + w * 0.02, y + h * 0.1, w * 0.3, h * 0.8, { t: t });
+  }
+  function overlays(sh, t, vb) {
+    var o = "";
+    (sh.overlays || []).forEach(function (ov) {
+      if (t < ov.t0 || t >= ov.t1) return;
+      var r = ov.rect.slice(), g = ov.grow;
+      if (g) { var u = ease(Math.max(0, Math.min(1, (t - g.t0) / g.dur))); r = r.map(function (v, i) { return v + ([0.02, 0.02, 0.96, 0.96][i] - v) * u; }); }
+      var f = ov.kind === "voice_card" ? voiceCard : ov.kind === "waveform" ? waveCard : null;
+      if (f) o += '<g opacity="' + Math.min(1, (t - ov.t0) / 0.2).toFixed(2) + '">' + f(ov, vb[0] + r[0] * vb[2], vb[1] + r[1] * vb[3], r[2] * vb[2], r[3] * vb[3], t) + "</g>";
+    });
+    return o;
+  }
+
   function frame(t) {
     var sh = shotAt(t), vb = viewBox(t), set = sh.set || S.set;
     if (sh.look === "label") return cardFrame(sh, vb) + transitions(t, vb);
@@ -296,9 +323,10 @@
     var def = (S.sets || {})[set], props = ((def && def.props) || []).concat(sh.props || []);
     out += props.filter(function (p) { return !p.front; }).map(function (p) { return drawProp(p, t); }).join("");
     out += drawCast(actorsOf(sh, sh.cast), t);
+    out += (def && def.front) || "";   // a drawn set: its layers in front of the cast (island, table, foreground)
     out += props.filter(function (p) { return p.front; }).map(function (p) { return drawProp(p, t); }).join(""); // in front of the cast: a person behind a desk
     if (sh.look === "hatch") out = hatch(out, vb);
-    return out + drawInset(sh, t, vb) + captions(t, vb) + transitions(t, vb);
+    return out + overlays(sh, t, vb) + drawInset(sh, t, vb) + captions(t, vb) + transitions(t, vb);
   }
   window.SpikeCore = { frame: frame, viewBox: viewBox, bg: function () { return ""; } };
 })();
