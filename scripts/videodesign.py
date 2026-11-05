@@ -32,6 +32,17 @@ RIGS = ROOT / "rigs"
 ART = ROOT / "art"
 
 
+NIGHT_DEFS = (  # the set sessions' night grade: props, and the cast a little darker; the rim light on the cast
+    '<defs><filter id="castF" color-interpolation-filters="sRGB" x="-5%" y="-5%" width="110%" height="110%"><feColorMatrix type="matrix" values=".40 0 0 0 0  0 .46 0 0 0  0 0 .74 0 0  0 0 0 1 0"/></filter>'
+    '<filter id="nightF" color-interpolation-filters="sRGB" x="-5%" y="-5%" width="110%" height="110%"><feColorMatrix type="matrix" values=".5 0 0 0 0  0 .58 0 0 0  0 0 .88 0 0  0 0 0 1 0"/></filter></defs>'
+)
+
+
+def card(name: str) -> str:
+    """A time/end card from video/art/cards/<name>.svg (1280x720 inner svg)."""
+    return (ART / "cards" / f"{name}.svg").read_text()
+
+
 def art_set(spec: dict[str, Any]) -> dict[str, Any]:
     """A drawn set from video/art/<id>.json (the set sessions' output): `back` svg (layers up to the first cast layer), `front` svg (after it),
     objects as boxes (for focus and match cuts) and the slots a character stands in. `remove` drops objects by id (a morning light at noon)."""
@@ -40,13 +51,18 @@ def art_set(spec: dict[str, Any]) -> dict[str, Any]:
     cast_at = next(i for i, n in enumerate(order) if n.startswith("cast"))
     drop = set(spec.get("remove", []))
     objs = sorted((o for o in a["objects"] if o["id"] not in drop), key=lambda o: (order.index(o["layer"]), o["z"]))
+    variant = spec.get("variant")  # a set drawn in two lights keeps svg_<variant> per object; at night everything not `lit` goes through the night filter
+    if variant:
+        for o in objs:
+            v = o.get(f"svg_{variant}") or ""
+            o["svg"] = f'<g filter="url(#nightF)">{v}</g>' if variant == "night" and not o.get("lit") and o.get("filtered") is not False and v else v
     unknown = drop - {o["id"] for o in a["objects"]}
     if unknown:
         msg = f'art set {spec["art"]}: remove names objects that do not exist: {sorted(unknown)}'
         raise ValueError(msg)
     boxes = {o["id"]: {"id": o["id"], "at": [o["bbox"][0], o["bbox"][1]], "w": o["bbox"][2], "h": o["bbox"][3], "cx": o["bbox"][0] + o["bbox"][2] / 2, "top": o["bbox"][1], "bottom": o["bbox"][1] + o["bbox"][3]} for o in objs}
     return {
-        "back": "".join(o["svg"] for o in objs if order.index(o["layer"]) < cast_at),
+        "back": (NIGHT_DEFS if variant == "night" else "") + "".join(o["svg"] for o in objs if order.index(o["layer"]) < cast_at),
         "front": "".join(o["svg"] for o in objs if order.index(o["layer"]) > cast_at),
         "boxes": boxes, "slots": a.get("slots", {}), "canvas": a["canvas"],
     }
@@ -156,7 +172,7 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             if slot is None:
                 msg = f'set {set_name}: character "{actor}" names slot "{spec["slot"]}", which the art does not have'
                 raise ValueError(msg)
-            return {"offset": list(slot["pos"]), "scale": slot["scale"], **({"clip_y_max": slot["clip_y_max"]} if "clip_y_max" in slot else {}), "pose": spec.get("pose") or slot["pose"].split(",")[0], **({"layer": spec["layer"]} if "layer" in spec else {})}
+            return {"offset": list(slot["pos"]), "scale": slot["scale"], **({"clip_y_max": slot["clip_y_max"]} if "clip_y_max" in slot else {}), **({"filter": spec["filter"]} if "filter" in spec else {}), "pose": spec.get("pose") or slot.get("pose", "stand_still").split(",")[0], **({"layer": spec["layer"]} if "layer" in spec else {})}
         return {**spec, **videoscene.place_character(by_id[actor], by_id[actor]["rig"], spec, solved[set_name], raw[set_name], stage)}
 
     def focus_xy(set_name: str, focus: str | None, sh: dict[str, Any]) -> tuple[float, float]:
@@ -174,7 +190,7 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
         for c in entries:
             cid = c if isinstance(c, str) else c["id"]
             st = stand(set_name, cid)
-            out.append({"id": cid, "offset": st["offset"], "pose": st.get("pose", "stand_still"), **{k: st[k] for k in ("scale", "clip_y_max") if k in st}, **({"seated": True} if st.get("seated") else {}), **({} if isinstance(c, str) else {k: v for k, v in c.items() if k != "id"})})
+            out.append({"id": cid, "offset": st["offset"], "pose": st.get("pose", "stand_still"), **{k: st[k] for k in ("scale", "clip_y_max", "filter") if k in st}, **({"seated": True} if st.get("seated") else {}), **({} if isinstance(c, str) else {k: v for k, v in c.items() if k != "id"})})
         return out
 
     def check_legs(shot_id: str, set_name: str, ids: list[str], cam: dict[str, Any]) -> None:
@@ -217,13 +233,18 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             ids = [c if isinstance(c, str) else c["id"] for c in sh.get("cast", [])]
             focus = sh.get("focus") or (ids[0] if ids else None)
             fxy = focus_xy(sset, focus, sh)
-            out = {k: v for k, v in sh.items() if k not in {"beats", "frame", "focus", "push_in", "at_xy", "camera", "cast", "inset", "offset", "pull_out", "pull_from"}}
+            out = {k: v for k, v in sh.items() if k not in {"beats", "frame", "focus", "push_in", "at_xy", "camera", "cast", "inset", "offset", "pull_out", "pull_from", "view", "push_to"}}
             out |= {"at": at(sh["beats"][0], sh.get("offset", 0.0)), "frame": sh["frame"], "set": sset, "beats": sh["beats"], "camera": _camera(sh["frame"], fxy, layout, sh.get("push_in"), sh.get("camera"))}
+            if "view" in sh:  # a drawn set's own framings (viewBox in its canvas), with an optional push to another
+                out["camera"] = {"viewBox": sh["view"], **({"push_to": sh["push_to"]} if "push_to" in sh else {})}
             if "pull_from" in sh:  # pull-out: start tight (another frame type on the same focus), end on this shot's frame
                 out["camera"] = {"viewBox": _camera(sh["pull_from"], fxy, layout, None, sh.get("camera"))["viewBox"], "push_to": out["camera"]["viewBox"]}
             out["cast"] = cast_entries(sset, sh.get("cast", []))
+            if d.get("overlays_all"):  # scene-wide overlays (the tape strip, the CRT of the server) are on every shot
+                sh = {**sh, "overlays": [*d["overlays_all"], *sh.get("overlays", [])]}
             if "overlays" in sh:  # shot layers in screen space (a voice-message card, the AI's waveform): beats become timeline anchors, resolved to seconds by the resolver
-                out["overlays"] = [{**{k: v for k, v in o.items() if k not in {"beat", "offset", "until", "grow"}}, "at": at(o["beat"], o.get("offset", 0.0)),
+                out["overlays"] = [{**{k: v for k, v in o.items() if k not in {"beat", "offset", "until", "grow", "states"}}, "at": at(o.get("beat", 1), o.get("offset", 0.0)),
+                                    **({"states": [{**{k: v for k, v in st.items() if k not in {"beat", "offset"}}, "at": at(st["beat"], st.get("offset", 0.0))} for st in o["states"]]} if "states" in o else {}),
                                     **({"until": at(o["until"]["beat"], o["until"].get("offset", 0.0))} if "until" in o else {}), **({"grow": {**o["grow"], "at": at(o["grow"]["beat"], o["grow"].get("offset", 0.0))}} if "grow" in o else {})} for o in sh["overlays"]]
             match = design["scenes"].get(tl["scenes"][si - 1]["title"], {}).get("transition_out", {}).get("match") if si and not shots else None
             if match:  # match cut into this scene: the first shot starts framed so `to` sits where `from` ended the previous scene
@@ -286,8 +307,8 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
         prev = design["scenes"].get(tl["scenes"][si - 1]["title"], {}) if si else {}
         scenes[s["title"]] = {
             "set": d["set"], "actors": sorted(used.values(), key=lambda a: a.get("layer", 0)), "cues": cues, "shots": shots,
-            **({"transition_out": d["transition_out"]} if "transition_out" in d and nxt else {}),
-            **({"transition_in": prev["transition_out"]} if "transition_out" in prev else {}),
+            **({"transition_out": _card_tr(d["transition_out"])} if "transition_out" in d and nxt else {}),
+            **({"transition_in": _card_tr(prev["transition_out"])} if "transition_out" in prev else {}),
         }
     set_names = {x["set"] for x in scenes.values()} | {sh.get("set") for x in scenes.values() for sh in x["shots"]} | {sh["inset"]["set"] for x in scenes.values() for sh in x["shots"] if "inset" in sh}
     sets = {}
@@ -313,6 +334,11 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
         **({"debug": True} if design.get("debug_labels") else {}),
         "scenes": scenes,
     }
+
+
+def _card_tr(tr: dict[str, Any]) -> dict[str, Any]:
+    """A transition with `card`: the drawn card (video/art/cards) rides along as the transition's svg."""
+    return {**{k: v for k, v in tr.items() if k != "card"}, "card_svg": card(tr["card"])} if "card" in tr else tr
 
 
 def _interaction_cues(items: list[dict[str, Any]], mset: dict[str, Any], objs: dict[str, dict[str, Any]], stand: Any, set_name: str, by_id: dict[str, Any], at: Any, n_beats: int, title: str) -> list[dict[str, Any]]:

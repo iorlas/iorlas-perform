@@ -45,6 +45,49 @@
      "front": true
     }
    ]
+  },
+  "setD_server_night": {
+   "art": "set_d",
+   "variant": "night",
+   "remove": [
+    "setD_server_vadik_slot",
+    "setD_server_overlay_crt_chat"
+   ],
+   "characters": {
+    "vadik": {
+     "slot": "setD_server_slot_vadik",
+     "filter": "castF"
+    }
+   },
+   "props": []
+  },
+  "setE_marshrutka": {
+   "art": "set_e",
+   "characters": {
+    "vadik": {
+     "slot": "setE_slot_vadik"
+    }
+   },
+   "props": [
+    {
+     "id": "earbud",
+     "svg": "<rect x=\"359\" y=\"204\" width=\"9\" height=\"15\" rx=\"4.5\" fill=\"#fffaf0\"/>",
+     "at": [
+      0,
+      0
+     ],
+     "front": true
+    },
+    {
+     "id": "phone",
+     "svg": "<rect x=\"340\" y=\"420\" width=\"26\" height=\"50\" rx=\"5\" fill=\"#2b3345\"/><rect x=\"343\" y=\"424\" width=\"20\" height=\"38\" rx=\"2\" fill=\"#7fb2d6\"/>",
+     "at": [
+      0,
+      0
+     ],
+     "front": true
+    }
+   ]
   }
  },
  "screens": {},
@@ -176,6 +219,446 @@
       }
      ],
      "intent": "AI waveform opposite his look, then fills the frame"
+    }
+   ]
+  },
+  "Серверная, ночь": {
+   "set": "setD_server_night",
+   "assets": [
+    "neyroset"
+   ],
+   "transition_out": {
+    "type": "time_card",
+    "text": "13:30",
+    "card": "time_1",
+    "dur": 1.2
+   },
+   "overlays_all": [
+    {
+     "kind": "tape",
+     "rect": [
+      0.0,
+      0.0,
+      1.0,
+      0.075
+     ],
+     "text": "ЗАПИСЬ 29.10  03:12",
+     "beat": 1,
+     "offset": -0.3,
+     "peel": 0.9,
+     "fade": false
+    },
+    {
+     "kind": "crt",
+     "space": "set",
+     "rect": [
+      795,
+      264,
+      100,
+      92
+     ],
+     "fade": false,
+     "beat": 1,
+     "states": [
+      {
+       "beat": 2,
+       "offset": 3.6799999999999997,
+       "lines": [
+        "Правило 1. Врать — только про опыт. В остальном — честно."
+       ],
+       "cps": 16
+      },
+      {
+       "beat": 3,
+       "offset": 1.11,
+       "lines": [
+        "Правило 1. Врать — только про опыт. В остальном — честно.",
+        "Правило 2. Если звонит Мама — бери трубку, что бы ни было."
+       ],
+       "cps": 16
+      },
+      {
+       "beat": 4,
+       "offset": 4.28,
+       "lines": [
+        "Правило 1. Врать — только про опыт. В остальном — честно.",
+        "Правило 2. Если звонит Мама — бери трубку, что бы ни было.",
+        "Правило 3. Правила не менять. Никому. Даже мне, если я утром буду просить."
+       ],
+       "cps": 16
+      },
+      {
+       "beat": 6,
+       "offset": 0.3,
+       "lines": [
+        "Правило 1. Врать — только про опыт. В остальном — честно.",
+        "Правило 2. Если звонит Мама — бери трубку, что бы ни было.",
+        "Правило 3. Правила не менять. Никому. Даже мне, если я утром буду просить.",
+        "Правило 4. Палыч пусть идёт на хуй со своей тушёнкой."
+       ],
+       "cps": 30
+      }
+     ]
+    }
+   ],
+   "cues": [
+    {
+     "beat": 2,
+     "actor": "vadik",
+     "expr": "side_glance"
+    },
+    {
+     "beat": 2,
+     "offset": 7.55,
+     "actor": "vadik",
+     "expr": "pretend"
+    },
+    {
+     "beat": 3,
+     "actor": "vadik",
+     "expr": "shame"
+    },
+    {
+     "beat": 4,
+     "actor": "vadik",
+     "expr": "pretend"
+    },
+    {
+     "beat": 4,
+     "offset": 11.23,
+     "actor": "vadik",
+     "expr": "shame"
+    },
+    {
+     "beat": 5,
+     "actor": "vadik",
+     "expr": "shame"
+    }
+   ],
+   "shots": [
+    {
+     "id": "2.1",
+     "beats": [
+      1
+     ],
+     "frame": "insert",
+     "view": [
+      700,
+      430,
+      260,
+      146.25
+     ],
+     "cast": [],
+     "look": "memory",
+     "intent": "the AI waveform shrinks into the amber LED (match cut), then the dark room",
+     "overlays": [
+      {
+       "kind": "waveform",
+       "rect": [
+        0.455,
+        0.5,
+        0.06,
+        0.12
+       ],
+       "beat": 1,
+       "offset": -0.3,
+       "until": {
+        "beat": 1,
+        "offset": 0.8
+       },
+       "grow": {
+        "beat": 1,
+        "offset": -0.3,
+        "dur": 1.1,
+        "reverse": true
+       },
+       "fade": false
+      }
+     ]
+    },
+    {
+     "id": "2.1b",
+     "beats": [
+      1
+     ],
+     "offset": 10.23,
+     "frame": "insert",
+     "view": [
+      1010,
+      30,
+      200,
+      112.5
+     ],
+     "cast": [],
+     "look": "memory",
+     "intent": "the can the narrator names"
+    },
+    {
+     "id": "2.2",
+     "beats": [
+      2
+     ],
+     "frame": "medium",
+     "view": [
+      230,
+      98,
+      480,
+      270
+     ],
+     "cast": [
+      "vadik"
+     ],
+     "look": "memory",
+     "intent": "Вадик left third, looks right toward the LED"
+    },
+    {
+     "id": "2.3",
+     "beats": [
+      2
+     ],
+     "offset": 3.6799999999999997,
+     "frame": "insert",
+     "view": [
+      730,
+      236,
+      240,
+      135
+     ],
+     "cast": [],
+     "look": "memory",
+     "intent": "insert 1: the CRT types rule 1, loud"
+    },
+    {
+     "id": "2.4",
+     "beats": [
+      2
+     ],
+     "offset": 7.55,
+     "frame": "medium",
+     "view": [
+      250,
+      60,
+      280,
+      157.5
+     ],
+     "cast": [
+      "vadik"
+     ],
+     "look": "memory",
+     "intent": "proud, then quiet"
+    },
+    {
+     "id": "2.5",
+     "beats": [
+      3
+     ],
+     "offset": 1.11,
+     "frame": "insert",
+     "view": [
+      730,
+      236,
+      240,
+      135
+     ],
+     "cast": [],
+     "look": "memory",
+     "intent": "insert 2: same screen position and size"
+    },
+    {
+     "id": "2.6",
+     "beats": [
+      3
+     ],
+     "offset": 7.76,
+     "frame": "close",
+     "view": [
+      250,
+      60,
+      280,
+      157.5
+     ],
+     "cast": [
+      "vadik"
+     ],
+     "look": "memory",
+     "intent": "the quiet beat: his face, nothing bright"
+    },
+    {
+     "id": "2.7",
+     "beats": [
+      4
+     ],
+     "frame": "medium",
+     "view": [
+      230,
+      98,
+      480,
+      270
+     ],
+     "cast": [
+      "vadik"
+     ],
+     "look": "memory",
+     "intent": "firm, slurred"
+    },
+    {
+     "id": "2.8",
+     "beats": [
+      4
+     ],
+     "offset": 4.28,
+     "frame": "insert",
+     "view": [
+      730,
+      236,
+      240,
+      135
+     ],
+     "cast": [],
+     "look": "memory",
+     "intent": "insert 3: rule 3, rules 1-2 tone-on-tone above"
+    },
+    {
+     "id": "2.9",
+     "beats": [
+      4
+     ],
+     "offset": 11.23,
+     "frame": "close",
+     "view": [
+      250,
+      60,
+      280,
+      157.5
+     ],
+     "cast": [
+      "vadik"
+     ],
+     "look": "memory",
+     "intent": "panic, then the curse; the LED goes red-orange",
+     "overlays": [
+      {
+       "kind": "glow",
+       "space": "set",
+       "rect": [
+        890,
+        288,
+        16,
+        14
+       ],
+       "color": "#ff5a2a",
+       "beat": 5,
+       "until": {
+        "beat": 5,
+        "offset": 2.5
+       },
+       "fade": false
+      }
+     ]
+    },
+    {
+     "id": "2.10",
+     "beats": [
+      6
+     ],
+     "frame": "insert",
+     "view": [
+      730,
+      236,
+      240,
+      135
+     ],
+     "cast": [],
+     "look": "memory",
+     "intent": "the AI types rule 4"
+    }
+   ]
+  },
+  "Маршрутка, день": {
+   "set": "setE_marshrutka",
+   "assets": [
+    "neyroset"
+   ],
+   "transition_out": {
+    "type": "time_card",
+    "text": "14:00",
+    "card": "time_2",
+    "dur": 1.2
+   },
+   "cues": [
+    {
+     "beat": 2,
+     "actor": "vadik",
+     "expr": "side_glance"
+    }
+   ],
+   "shots": [
+    {
+     "id": "3.1",
+     "beats": [
+      1
+     ],
+     "frame": "wide",
+     "view": [
+      0,
+      0,
+      1280,
+      720
+     ],
+     "cast": [
+      "vadik"
+     ],
+     "intent": "establish: the crowd in rain, Вадик at the rail"
+    },
+    {
+     "id": "3.2",
+     "beats": [
+      2
+     ],
+     "frame": "medium",
+     "view": [
+      215,
+      168,
+      400,
+      225
+     ],
+     "cast": [
+      "vadik"
+     ],
+     "intent": "Вадик at the rail, earbud, whispers"
+    },
+    {
+     "id": "3.3",
+     "beats": [
+      3
+     ],
+     "frame": "close",
+     "view": [
+      30,
+      300,
+      420,
+      236.25
+     ],
+     "cast": [
+      "vadik"
+     ],
+     "intent": "the phone and the AI line; the one bubble is loud",
+     "overlays": [
+      {
+       "kind": "bubble",
+       "space": "set",
+       "rect": [
+        56,
+        322,
+        250,
+        82
+       ],
+       "name": "НЕЙРОСЕТЬ",
+       "text": "Врать можно только про опыт. Про файл — нельзя, Вадим.",
+       "beat": 3,
+       "fade": true
+      }
+     ]
     }
    ]
   }

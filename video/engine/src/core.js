@@ -238,6 +238,7 @@
     cast.sort(function (a, b) { return (a.layer || 0) - (b.layer || 0); }).forEach(function (a) {
       var off = a.offset || [0, 0], k = a.scale || 1, body = '<g transform="translate(' + off[0] + " " + off[1] + ")" + (k !== 1 ? " scale(" + k + ")" : "") + '">' + drawActor(a, t) + "</g>";
       // a drawn set's slot clips the rig below a line: the legs it cannot hide behind furniture (no seated pose)
+      if (a.filter) body = '<g filter="url(#' + a.filter + ')">' + body + "</g>";
       out += a.clip_y_max != null ? '<clipPath id="clip_' + a.id + '"><rect x="-9000" y="-9000" width="19000" height="' + (9000 + a.clip_y_max) + '"/></clipPath><g clip-path="url(#clip_' + a.id + ')">' + body + "</g>" : body;
     });
     return out;
@@ -261,6 +262,7 @@
     (S.transitions || []).forEach(function (tr) {
       if (t < tr.t0 || t >= tr.t1) return;
       var fade = tr.fade || 0.4, a = tr.type === "time_card" ? Math.min(1, (t - tr.t0) / fade) : 1 - Math.min(1, (t - tr.t0) / fade);
+      if (tr.card_svg) { o += '<g opacity="' + a.toFixed(3) + '"><svg x="' + vb[0] + '" y="' + vb[1] + '" width="' + vb[2] + '" height="' + vb[3] + '" viewBox="0 0 1280 720">' + tr.card_svg + "</svg></g>"; return; }
       o += '<g opacity="' + a.toFixed(3) + '"><rect x="' + (vb[0] - 5) + '" y="' + (vb[1] - 5) + '" width="' + (vb[2] + 10) + '" height="' + (vb[3] + 10) + '" fill="' + (tr.color || "#0b0b10") + '"/>' + (tr.svg || label(tr.text, vb[0] + vb[2] / 2, vb[1] + vb[3] * 0.54, vb[3] * 0.14, "#f3e9d2", 1)) + "</g>";
     });
     return o;
@@ -304,14 +306,41 @@
     for (var i = 0; i < n; i++) { var e = mouthAt("neyroset", t - i * 0.03), a = 0.1 + Math.min(1, e * 1.6) * (0.55 + 0.45 * Math.abs(Math.sin(i * 1.9 + t * 11))), bh = h * 0.7 * a; o += '<rect x="' + (bx + i * bw) + '" y="' + (y + h / 2 - bh / 2) + '" width="' + bw * 0.62 + '" height="' + bh + '" rx="' + bw * 0.3 + '" fill="#1f3a6e"/>'; }
     return o + neyScreen({ mode: "monitor_smiley", phrase: "" }, x + w * 0.02, y + h * 0.1, w * 0.3, h * 0.8, { t: t });
   }
+  function wrapText(txt, maxc) { var ws = txt.split(" "), ls = [], cur = ""; ws.forEach(function (w) { if ((cur + " " + w).trim().length > maxc && cur) { ls.push(cur); cur = w; } else cur = (cur + " " + w).trim(); }); if (cur) ls.push(cur); return ls; }
+  // The CRT of the server: rules typed in time with the voice; the current rule loud, the earlier ones small and tone-on-tone above it.
+  function crtRules(ov, x, y, w, h, t) {
+    var st = ov.states.filter(function (k) { return k.t0 <= t; }).pop(), o = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="3" fill="#0d1a2c"/>';
+    if (!st) return o;
+    var fs = h * 0.085, maxc = Math.floor(w * 0.9 / (fs * 0.56)), shown = Math.floor((t - st.t0) * (st.cps || 14)), ty = y + h - fs * 0.6, cur = st.lines[st.lines.length - 1];
+    var ls = wrapText(cur.slice(0, Math.max(0, shown)), maxc);
+    for (var i = ls.length - 1; i >= 0; i--) { o += T(ls[i], x + w * 0.05, ty - (ls.length - 1 - i) * fs * 1.25, fs, "#ffe9a8", "start", 700); }
+    var yy = ty - ls.length * fs * 1.25 - fs * 0.4;
+    for (var j = st.lines.length - 2; j >= 0; j--) { var pl = wrapText(st.lines[j], Math.floor(w * 0.9 / (fs * 0.7 * 0.56))); for (var k = pl.length - 1; k >= 0; k--) { o += T(pl[k], x + w * 0.05, yy, fs * 0.7, "#3c4f6d", "start", 600); yy -= fs * 0.95; } yy -= fs * 0.2; }
+    if (Math.floor(t * 2) % 2 === 0 && shown < cur.length) o += '<rect x="' + (x + w * 0.05 + (ls[ls.length - 1] || "").length * fs * 0.56) + '" y="' + (ty - fs * 0.85) + '" width="' + fs * 0.4 + '" height="' + fs + '" fill="#ffe9a8"/>';
+    return o;
+  }
+  function tape(ov, x, y, w, h, t) {
+    var px = 0, pe = ov.peel; if (pe && t > ov.t1 - pe) px = ease((t - (ov.t1 - pe)) / pe) * w * 1.1;
+    var o = '<g transform="translate(' + px + ' 0)"><path d="M' + x + " " + y + " L" + (x + w) + " " + y + " L" + (x + w) + " " + (y + h * 0.9) + ' ';
+    for (var i = 24; i >= 0; i--) o += "L" + (x + w * i / 24) + " " + (y + h * (i % 2 ? 1 : 0.84)) + " ";
+    return o + 'Z" fill="#f1e4c0" stroke="#d9c79c" stroke-width="' + h * 0.02 + '"/>' + T(ov.text || "", x + w / 2, y + h * 0.62, h * 0.5, "#cdb98c", "middle", 700) + "</g>";
+  }
+  function bubble(ov, x, y, w, h, t) {
+    var fs = h * 0.17, ls = wrapText(ov.text, Math.floor(w * 0.9 / (fs * 0.55))), o = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + h * 0.14 + '" fill="#fbf0dc" stroke="#1f3a6e" stroke-width="' + h * 0.025 + '"/><path d="M' + (x + w) + " " + (y + h * 0.5) + " l" + h * 0.2 + " " + h * 0.12 + " l-" + h * 0.2 + ' ' + h * 0.1 + ' Z" fill="#fbf0dc" stroke="#1f3a6e" stroke-width="' + h * 0.025 + '"/>';
+    o += T(ov.name || "", x + w * 0.05, y + h * 0.2, fs * 0.8, "#c0392b", "start", 700);
+    ls.forEach(function (l, i) { o += T(l, x + w * 0.05, y + h * 0.2 + fs * 1.3 * (i + 1), fs, "#1f3a6e", "start", 700); });
+    return o;
+  }
+  function glow(ov, x, y, w, h) { return '<radialGradient id="gl' + ov.t0 + '"><stop offset="0" stop-color="' + ov.color + '" stop-opacity="0.95"/><stop offset="1" stop-color="' + ov.color + '" stop-opacity="0"/></radialGradient><ellipse cx="' + (x + w / 2) + '" cy="' + (y + h / 2) + '" rx="' + w + '" ry="' + h * 1.3 + '" fill="url(#gl' + ov.t0 + ')"/>'; }
+  var OVER = { voice_card: voiceCard, waveform: waveCard, crt: crtRules, tape: tape, bubble: bubble, glow: glow };
   function overlays(sh, t, vb) {
     var o = "";
     (sh.overlays || []).forEach(function (ov) {
       if (t < ov.t0 || t >= ov.t1) return;
-      var r = ov.rect.slice(), g = ov.grow;
-      if (g) { var u = ease(Math.max(0, Math.min(1, (t - g.t0) / g.dur))); r = r.map(function (v, i) { return v + ([0.02, 0.02, 0.96, 0.96][i] - v) * u; }); }
-      var f = ov.kind === "voice_card" ? voiceCard : ov.kind === "waveform" ? waveCard : null;
-      if (f) o += '<g opacity="' + Math.min(1, (t - ov.t0) / 0.2).toFixed(2) + '">' + f(ov, vb[0] + r[0] * vb[2], vb[1] + r[1] * vb[3], r[2] * vb[2], r[3] * vb[3], t) + "</g>";
+      var r = ov.rect.slice(), g = ov.grow, f = OVER[ov.kind];
+      if (g) { var u = ease(Math.max(0, Math.min(1, (t - g.t0) / g.dur))); if (g.reverse) u = 1 - u; r = r.map(function (v, i) { return v + ([0.02, 0.02, 0.96, 0.96][i] - v) * u; }); }
+      var set = ov.space === "set", x = set ? r[0] : vb[0] + r[0] * vb[2], y = set ? r[1] : vb[1] + r[1] * vb[3], w = set ? r[2] : r[2] * vb[2], h = set ? r[3] : r[3] * vb[3];
+      if (f) o += '<g opacity="' + (ov.fade === false ? 1 : Math.min(1, (t - ov.t0) / 0.2)).toFixed(2) + '">' + f(ov, x, y, w, h, t) + "</g>";
     });
     return o;
   }
@@ -326,6 +355,7 @@
     out += (def && def.front) || "";   // a drawn set: its layers in front of the cast (island, table, foreground)
     out += props.filter(function (p) { return p.front; }).map(function (p) { return drawProp(p, t); }).join(""); // in front of the cast: a person behind a desk
     if (sh.look === "hatch") out = hatch(out, vb);
+    if (sh.look === "memory") out = '<defs><filter id="memF" filterUnits="userSpaceOnUse" x="' + vb[0] + '" y="' + vb[1] + '" width="' + vb[2] + '" height="' + vb[3] + '"><feColorMatrix type="saturate" values="0.65"/></filter></defs><g filter="url(#memF)">' + out + "</g>";
     return out + overlays(sh, t, vb) + drawInset(sh, t, vb) + captions(t, vb) + transitions(t, vb);
   }
   window.SpikeCore = { frame: frame, viewBox: viewBox, bg: function () { return ""; } };

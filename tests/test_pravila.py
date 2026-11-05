@@ -29,10 +29,10 @@ def sheet(design: dict = DESIGN) -> dict:
 
 
 def test_partial_design_skips_undesigned_scenes() -> None:
-    assert list(sheet()["scenes"]) == ["Кухня, полдень"]
+    assert list(sheet()["scenes"])[0] == "Кухня, полдень" and "Переговорная, ровно два" not in sheet()["scenes"]
     d = copy.deepcopy(DESIGN)
     del d["partial"]
-    with pytest.raises(KeyError, match="Серверная"):
+    with pytest.raises(KeyError, match="Переговорная"):
         sheet(d)
 
 
@@ -79,3 +79,12 @@ def test_overlays_resolve_to_scene_seconds(tmp_path: Path) -> None:
     nxt = next(s for s in shots if s["id"] == "1.4")["t0"]
     assert card["kind"] == "voice_card" and card["t0"] == pytest.approx(18.15, abs=0.1) and card["t1"] == pytest.approx(nxt)
     assert wave_["grow"]["t0"] > wave_["t0"] and wave_["t1"] > wave_["grow"]["t0"] + wave_["grow"]["dur"] - 3
+
+
+def test_flashback_and_vehicle_scenes() -> None:
+    sh = sheet()
+    night = sh["scenes"]["Серверная, ночь"]
+    assert all(s["look"] == "memory" for s in night["shots"]) and any(o["kind"] == "tape" for o in night["shots"][0]["overlays"])
+    assert night["transition_out"]["card_svg"] and sh["scenes"]["Маршрутка, день"]["transition_in"]["card_svg"]
+    assert night["actors"][0]["id"] in {"vadik", "neyroset"} and "filter" in night["shots"][1]["cast"][0]
+    assert "url(#nightF)" in sh["sets"]["setD_server_night"]["svg"]

@@ -292,7 +292,8 @@ def shots_v2(d: dict[str, Any], sheet: dict[str, Any], group: dict[str, Any], an
         shots.append({k: v for k, v in sh.items() if k not in {"at", "overlays"}} | {"t0": t0})
         if sh.get("overlays"):  # overlay anchors -> scene seconds; one without `until` stays to the end of its shot (set below)
             shots[-1]["overlays"] = [
-                {**{k: v for k, v in o.items() if k not in {"at", "until", "grow"}}, "t0": round(anchor(o["at"]), 3), **({"t1": round(anchor(o["until"]), 3)} if "until" in o else {}),
+                {**{k: v for k, v in o.items() if k not in {"at", "until", "grow", "states"}}, "t0": round(anchor(o["at"]), 3),
+                 **({"states": [{**{k: v for k, v in st.items() if k != "at"}, "t0": round(anchor(st["at"]), 3)} for st in o["states"]]} if "states" in o else {}), **({"t1": round(anchor(o["until"]), 3)} if "until" in o else {}),
                  **({"grow": {"t0": round(anchor(o["grow"]["at"]), 3), "dur": o["grow"].get("dur", 1.0)}} if "grow" in o else {})}
                 for o in sh["overlays"]
             ]
@@ -309,9 +310,9 @@ def shots_v2(d: dict[str, Any], sheet: dict[str, Any], group: dict[str, Any], an
             v["svg"] = svg
     trans = []
     if (o := d.get("transition_out")) and o["type"] == "time_card":
-        trans.append({"type": "time_card", "text": o["text"], "t0": round(group["duration"] - o.get("dur", 1.2), 3), "t1": group["duration"], "fade": o.get("fade", 0.4)})
+        trans.append({"type": "time_card", "text": o["text"], **({"card_svg": o["card_svg"]} if "card_svg" in o else {}), "t0": round(group["duration"] - o.get("dur", 1.2), 3), "t1": group["duration"], "fade": o.get("fade", 0.4)})
     if (i := d.get("transition_in")) and i["type"] == "time_card":
-        trans.append({"type": "card_out", "text": i["text"], "t0": 0, "t1": i.get("fade", 0.4), "fade": i.get("fade", 0.4)})
+        trans.append({"type": "card_out", "text": i["text"], **({"card_svg": i["card_svg"]} if "card_svg" in i else {}), "t0": 0, "t1": i.get("fade", 0.4), "fade": i.get("fade", 0.4)})
     return {"schema": "shots/2", "set": d.get("set"), "shots": shots, "sets": sets, "props": props, "screens": sheet.get("screens", {}), "transitions": trans, **({"debug": True} if sheet.get("debug") else {})}
 
 
