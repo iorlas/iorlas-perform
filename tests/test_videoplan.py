@@ -91,7 +91,7 @@ def test_layout_maps_each_voice_to_a_distinct_existing_rig():
         rid, ver = c["rig"].split("@")
         assert rid == c["id"], f"{voice}: actor id must be the rig id, never another character"
         assert (ROOT / "video" / "rigs" / rid / ver / "rig.lock").exists(), f"{voice}: {c['rig']} is not a frozen rig"
-        assert seen.setdefault(c["id"], voice) == voice or voice in {"mihalych", "mikhalych"}, f"{c['id']} plays both {seen[c['id']]} and {voice}"
+        assert seen.setdefault(c["id"], voice) == voice or voice in {"mihalych", "mikhalych", "praporshchik", "palych"}  # one character, two scenario voice names, f"{c['id']} plays both {seen[c['id']]} and {voice}"
 
 
 def test_a_voice_without_a_rig_is_an_error_not_a_stand_in():
