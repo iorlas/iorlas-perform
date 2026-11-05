@@ -6,8 +6,7 @@ description: Turn a rendered audio scene (wav + timeline.json) into a video of a
 # video
 
 Scenario `.md` -> audio (perform) -> video. Two languages meet at one file, `shots.json`.
-Everything below is the **contract**; the code that implements it lives on branch `spike/video-engine`
-(`scripts/video*.py`, `video/engine/`) until it is merged: see `docs/MAP.md`. Where a rule says "spec", it is
+Everything below is the **contract**; the code that implements it is in `scripts/video*.py` and `video/engine/` (on main since 0.6.0; see `docs/MAP.md`). Where a rule says "spec", it is
 written here and not in code yet.
 
 ```

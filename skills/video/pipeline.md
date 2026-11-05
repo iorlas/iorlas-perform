@@ -16,7 +16,7 @@
 
 Audio-only path is untouched: `--video` runs after the wav and timeline exist.
 
-Commands (on the engine branch):
+Commands:
 ```
 uv run scripts/scene.py <file>.md out/x.wav --video      # speech + video
 uv run scripts/video.py out/x.wav out/x.timeline.json    # video from a finished scene
