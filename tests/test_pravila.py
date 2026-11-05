@@ -108,3 +108,53 @@ def test_marshrutka_uses_the_rail_pose_not_a_fist_prop() -> None:
     cast = sh["scenes"]["Маршрутка, день"]["shots"][1]["cast"][0]
     assert cast["pose"] == "grip_rail_phone" and cast["offset"][0] == 388
     assert "rail_fist" not in sh["sets"]["setE_marshrutka"]["front"] and [p["id"] for p in sh["sets"]["setE_marshrutka"]["props"]] == ["earbud"]
+
+
+def test_a_shot_that_cuts_off_its_subject_is_an_error() -> None:
+    d = copy.deepcopy(DESIGN)
+    shot = next(x for x in d["scenes"]["Переговорная, ровно два"]["shots"] if x["id"] == "4.2")
+    shot["view"] = [540, 170, 250, 140.6]  # Палыч reads the rules: a tight face-only crop loses the wall display
+    with pytest.raises(ValueError, match='subject "wall"'):
+        sheet(d)
+
+
+def test_each_turn_opens_the_mouth_by_its_own_loudness() -> None:
+    import math
+
+    sr = 8000
+    quiet = [0.02 * math.sin(i * 0.3) for i in range(sr)]  # a whisper, a pause, then a shout
+    loud = [0.5 * math.sin(i * 0.3) for i in range(sr)]
+    env = videoplan.envelope((sr, quiet + [0.0] * (sr // 2) + loud), 30, 0.0, 2.5, [(0.0, 1.0), (1.5, 2.5)])["samples"]
+    assert max(env[2:28]) >= 0.8 and max(env[48:73]) >= 0.8
+
+
+def test_every_shot_declares_what_it_is_about() -> None:
+    for title, sc in DESIGN["scenes"].items():
+        for shot in sc["shots"]:
+            assert shot.get("subjects") or (shot.get("view") and not shot.get("cast")), f'{title} {shot["id"]}: no subjects'
+
+
+def test_a_speaker_on_screen_has_a_moving_mouth_in_every_shot(tmp_path: Path) -> None:
+    import array
+    import math
+    import wave
+
+    audio = tmp_path / "a.wav"
+    sr = 8000
+    with wave.open(str(audio), "wb") as w:  # speech everywhere: a steady tone, so each turn's window is voiced
+        w.setnchannels(1), w.setsampwidth(2), w.setframerate(sr)
+        w.writeframes(array.array("h", (int(9000 * math.sin(i * 0.3) * (1 + 0.5 * math.sin(i * 0.0007))) for i in range(sr * 209))).tobytes())
+    groups = videoplan.plan(tl(), sheet(), audio, tmp_path / "scenes")
+    voice_of = {a["actor"]: v for v, a in sheet()["cast"].items()}
+    entries = tl()["entries"]
+    for g in groups:
+        shots = json.loads((g["dir"] / "shots.json").read_text())
+        ends = [s["t0"] for s in shots["shots"][1:]] + [shots["duration"]]
+        for s, t1 in zip(shots["shots"], ends, strict=True):
+            for c in s["cast"]:
+                mouth = json.loads((g["dir"] / f'mouth_{c["id"]}.json').read_text())["samples"]
+                spoken = [e for e in entries if e.get("voice") == voice_of[c["id"]] and "turn" in e and g["t0"] + s["t0"] < e["end"] and e["start"] < g["t0"] + t1]
+                for e in spoken:
+                    a, b = max(s["t0"], e["start"] - g["t0"]), min(t1, e["end"] - g["t0"])
+                    if b - a > 0.3:
+                        assert max(mouth[int(a * 30):int(b * 30)]) > 0, f'{shots["title"]} shot {s["id"]}: {c["id"]} speaks but his mouth track is empty'

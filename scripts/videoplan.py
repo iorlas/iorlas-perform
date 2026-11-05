@@ -203,10 +203,15 @@ def envelope(wav: tuple[int, list[float]], fps: int, t0: float, duration: float,
     for f in range(n):
         a, b = int((t0 * fps + f) * win), min(len(samples), int((t0 * fps + f + 1) * win))
         rms.append(math.sqrt(sum(x * x for x in samples[a:b]) / (b - a)) if b > a >= 0 else 0.0)
-    gated = [v if any(s - 0.05 <= f / fps < e + 0.05 for s, e in turns) else 0.0 for f, v in enumerate(rms)]
-    voiced = sorted(v for v in gated if v > 0)
-    ref = voiced[int(len(voiced) * 0.95)] if voiced else 1.0
-    raw = [min(0.9, v / ref * 0.9) for v in gated]
+    def turn_of(f: int) -> int | None:
+        return next((k for k, (s, e) in enumerate(turns) if s - 0.05 <= f / fps < e + 0.05), None)
+
+    owner = [turn_of(f) for f in range(n)]
+    refs = {}
+    for k in {o for o in owner if o is not None}:  # each turn is normalised on its own: a whispered line opens the mouth as far as a shouted one
+        voiced = sorted(v for v, o in zip(rms, owner, strict=True) if o == k and v > 0)
+        refs[k] = voiced[int(len(voiced) * 0.95)] if voiced else 1.0
+    raw = [min(0.9, v / refs[o] * 0.9) if o is not None else 0.0 for v, o in zip(rms, owner, strict=True)]
     out = [max(v, 0.6 * (raw[i - 1] if i else 0), 0.6 * (raw[i + 1] if i + 1 < n else 0)) for i, v in enumerate(raw)]
     return {"kind": "mouth_open", "fps": fps, "samples": [0 if v < 0.08 else round(v, 3) for v in out]}
 

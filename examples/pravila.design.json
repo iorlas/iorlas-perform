@@ -43,7 +43,8 @@
      ],
      "front": true
     }
-   ]
+   ],
+   "regions": {}
   },
   "setD_server_night": {
    "art": "set_d",
@@ -58,7 +59,27 @@
      "filter": "castF"
     }
    },
-   "props": []
+   "props": [],
+   "regions": {
+    "crt": [
+     795,
+     264,
+     100,
+     92
+    ],
+    "led": [
+     740,
+     470,
+     170,
+     120
+    ],
+    "tin": [
+     1066,
+     44,
+     60,
+     52
+    ]
+   }
   },
   "setE_marshrutka": {
    "art": "set_e",
@@ -85,6 +106,20 @@
    ],
    "move": {
     "setE_marshrutka_rail_pole": "mid"
+   },
+   "regions": {
+    "phone": [
+     336,
+     416,
+     34,
+     58
+    ],
+    "ai_line": [
+     56,
+     322,
+     250,
+     82
+    ]
    }
   },
   "setC_meeting": {
@@ -113,11 +148,39 @@
      ],
      "front": true
     }
-   ]
+   ],
+   "regions": {
+    "wall": [
+     975,
+     86,
+     305,
+     210
+    ],
+    "phone_card": [
+     860,
+     444,
+     44,
+     30
+    ]
+   }
   },
   "setF_moscow": {
    "svg_file": "set_f_wide",
-   "characters": {}
+   "characters": {},
+   "regions": {
+    "order": [
+     660,
+     490,
+     300,
+     140
+    ],
+    "table": [
+     260,
+     540,
+     760,
+     100
+    ]
+   }
   }
  },
  "screens": {},
@@ -134,20 +197,15 @@
       1
      ],
      "frame": "wide",
-     "at_xy": [
-      640,
-      360
-     ],
-     "camera": {
-      "w": 1280,
-      "cy": 360,
-      "dx": 0
-     },
      "cast": [
       "mama",
       "vadik"
      ],
-     "intent": "establish: both, code on the laptop"
+     "intent": "establish: both, code on the laptop",
+     "subjects": [
+      "mama",
+      "vadik"
+     ]
     },
     {
      "id": "1.2",
@@ -156,15 +214,14 @@
      ],
      "frame": "medium",
      "focus": "mama",
-     "camera": {
-      "w": 760,
-      "dx": 127,
-      "cy": 300
-     },
      "cast": [
       "mama"
      ],
-     "intent": "Мама left third"
+     "intent": "Мама left third",
+     "subjects": [
+      "mama"
+     ],
+     "place": "left_third"
     },
     {
      "id": "1.3",
@@ -174,11 +231,6 @@
      ],
      "frame": "medium",
      "focus": "vadik",
-     "camera": {
-      "w": 760,
-      "dx": -127,
-      "cy": 330
-     },
      "cast": [
       "vadik"
      ],
@@ -195,7 +247,11 @@
        "beat": 3
       }
      ],
-     "intent": "voice-message card small, right of his look"
+     "intent": "voice-message card small, right of his look",
+     "subjects": [
+      "vadik"
+     ],
+     "place": "right_third"
     },
     {
      "id": "1.4",
@@ -204,15 +260,14 @@
      ],
      "frame": "close",
      "focus": "vadik",
-     "camera": {
-      "w": 480,
-      "dx": -80,
-      "cy": 335
-     },
      "cast": [
       "vadik"
      ],
-     "intent": "whisper, close"
+     "intent": "whisper, close",
+     "subjects": [
+      "vadik"
+     ],
+     "place": "right_third"
     },
     {
      "id": "1.5",
@@ -223,11 +278,6 @@
      ],
      "frame": "close",
      "focus": "vadik",
-     "camera": {
-      "w": 480,
-      "dx": -80,
-      "cy": 335
-     },
      "cast": [
       "vadik"
      ],
@@ -248,7 +298,11 @@
        }
       }
      ],
-     "intent": "AI waveform opposite his look, then fills the frame"
+     "intent": "AI waveform opposite his look, then fills the frame",
+     "subjects": [
+      "vadik"
+     ],
+     "place": "right_third"
     }
    ]
   },
@@ -372,12 +426,6 @@
       1
      ],
      "frame": "insert",
-     "view": [
-      700,
-      430,
-      260,
-      146.25
-     ],
      "cast": [],
      "look": "memory",
      "intent": "the AI waveform shrinks into the amber LED (match cut), then the dark room",
@@ -404,6 +452,9 @@
        },
        "fade": false
       }
+     ],
+     "subjects": [
+      "led"
      ]
     },
     {
@@ -413,15 +464,12 @@
      ],
      "offset": 10.23,
      "frame": "insert",
-     "view": [
-      1010,
-      30,
-      200,
-      112.5
-     ],
      "cast": [],
      "look": "memory",
-     "intent": "the can the narrator names"
+     "intent": "the can the narrator names",
+     "subjects": [
+      "tin"
+     ]
     },
     {
      "id": "2.2",
@@ -429,17 +477,15 @@
       2
      ],
      "frame": "medium",
-     "view": [
-      230,
-      98,
-      480,
-      270
-     ],
      "cast": [
       "vadik"
      ],
      "look": "memory",
-     "intent": "Вадик left third, looks right toward the LED"
+     "intent": "Вадик left third, looks right toward the LED",
+     "subjects": [
+      "vadik"
+     ],
+     "place": "left_third"
     },
     {
      "id": "2.3",
@@ -448,15 +494,12 @@
      ],
      "offset": 3.6799999999999997,
      "frame": "insert",
-     "view": [
-      730,
-      236,
-      240,
-      135
-     ],
      "cast": [],
      "look": "memory",
-     "intent": "insert 1: the CRT types rule 1, loud"
+     "intent": "insert 1: the CRT types rule 1, loud",
+     "subjects": [
+      "crt"
+     ]
     },
     {
      "id": "2.4",
@@ -464,18 +507,16 @@
       2
      ],
      "offset": 7.55,
-     "frame": "medium",
-     "view": [
-      250,
-      60,
-      280,
-      157.5
-     ],
+     "frame": "close",
      "cast": [
       "vadik"
      ],
      "look": "memory",
-     "intent": "proud, then quiet"
+     "intent": "proud, then quiet",
+     "subjects": [
+      "vadik"
+     ],
+     "place": "left_third"
     },
     {
      "id": "2.5",
@@ -484,15 +525,12 @@
      ],
      "offset": 1.11,
      "frame": "insert",
-     "view": [
-      730,
-      236,
-      240,
-      135
-     ],
      "cast": [],
      "look": "memory",
-     "intent": "insert 2: same screen position and size"
+     "intent": "insert 2: same screen position and size",
+     "subjects": [
+      "crt"
+     ]
     },
     {
      "id": "2.6",
@@ -501,17 +539,15 @@
      ],
      "offset": 7.76,
      "frame": "close",
-     "view": [
-      250,
-      60,
-      280,
-      157.5
-     ],
      "cast": [
       "vadik"
      ],
      "look": "memory",
-     "intent": "the quiet beat: his face, nothing bright"
+     "intent": "the quiet beat: his face, nothing bright",
+     "subjects": [
+      "vadik"
+     ],
+     "place": "left_third"
     },
     {
      "id": "2.7",
@@ -519,17 +555,15 @@
       4
      ],
      "frame": "medium",
-     "view": [
-      230,
-      98,
-      480,
-      270
-     ],
      "cast": [
       "vadik"
      ],
      "look": "memory",
-     "intent": "firm, slurred"
+     "intent": "firm, slurred",
+     "subjects": [
+      "vadik"
+     ],
+     "place": "left_third"
     },
     {
      "id": "2.8",
@@ -538,15 +572,12 @@
      ],
      "offset": 4.28,
      "frame": "insert",
-     "view": [
-      730,
-      236,
-      240,
-      135
-     ],
      "cast": [],
      "look": "memory",
-     "intent": "insert 3: rule 3, rules 1-2 tone-on-tone above"
+     "intent": "insert 3: rule 3, rules 1-2 tone-on-tone above",
+     "subjects": [
+      "crt"
+     ]
     },
     {
      "id": "2.9",
@@ -555,12 +586,6 @@
      ],
      "offset": 11.23,
      "frame": "close",
-     "view": [
-      250,
-      60,
-      280,
-      157.5
-     ],
      "cast": [
       "vadik"
      ],
@@ -584,7 +609,11 @@
        },
        "fade": false
       }
-     ]
+     ],
+     "subjects": [
+      "vadik"
+     ],
+     "place": "left_third"
     },
     {
      "id": "2.10",
@@ -592,15 +621,12 @@
       6
      ],
      "frame": "insert",
-     "view": [
-      730,
-      236,
-      240,
-      135
-     ],
      "cast": [],
      "look": "memory",
-     "intent": "the AI types rule 4"
+     "intent": "the AI types rule 4",
+     "subjects": [
+      "crt"
+     ]
     }
    ]
   },
@@ -629,16 +655,13 @@
       1
      ],
      "frame": "wide",
-     "view": [
-      0,
-      0,
-      1280,
-      720
-     ],
      "cast": [
       "vadik"
      ],
-     "intent": "establish: the crowd in rain, Вадик at the rail"
+     "intent": "establish: the crowd in rain, Вадик at the rail",
+     "subjects": [
+      "vadik"
+     ]
     },
     {
      "id": "3.2",
@@ -646,29 +669,21 @@
       2
      ],
      "frame": "medium",
-     "view": [
-      215,
-      168,
-      400,
-      225
-     ],
      "cast": [
       "vadik"
      ],
-     "intent": "Вадик at the rail, earbud, whispers"
+     "intent": "Вадик at the rail, earbud, whispers",
+     "subjects": [
+      "vadik"
+     ],
+     "place": "left_third"
     },
     {
      "id": "3.3",
      "beats": [
       3
      ],
-     "frame": "close",
-     "view": [
-      30,
-      300,
-      420,
-      236.25
-     ],
+     "frame": "insert",
      "cast": [
       "vadik"
      ],
@@ -688,6 +703,10 @@
        "beat": 3,
        "fade": true
       }
+     ],
+     "subjects": [
+      "ai_line",
+      "phone"
      ]
     }
    ]
@@ -707,7 +726,7 @@
      "rect": [
       975,
       86,
-      336,
+      305,
       210
      ],
      "fade": false,
@@ -821,11 +840,6 @@
      "expr": "pretend"
     },
     {
-     "beat": 10,
-     "actor": "palych",
-     "expr": "blank"
-    },
-    {
      "beat": 12,
      "actor": "palych",
      "expr": "blank"
@@ -839,6 +853,17 @@
      "beat": 11,
      "actor": "vadik",
      "expr": "shame"
+    },
+    {
+     "beat": 9,
+     "offset": 1.6,
+     "actor": "palych",
+     "expr": "realize"
+    },
+    {
+     "beat": 10,
+     "actor": "palych",
+     "expr": "shame"
     }
    ],
    "shots": [
@@ -847,17 +872,14 @@
      "beats": [
       1
      ],
-     "frame": "wide",
-     "view": [
-      500,
-      20,
-      780,
-      438.75
-     ],
+     "frame": "medium",
      "cast": [
       "palych"
      ],
-     "intent": "medium-wide: the wall display with Москва and the file; table cropped at the bottom"
+     "intent": "medium-wide: the wall display with Москва and the file; table cropped at the bottom",
+     "subjects": [
+      "wall"
+     ]
     },
     {
      "id": "4.2",
@@ -865,16 +887,14 @@
       2
      ],
      "frame": "medium",
-     "view": [
-      520,
-      100,
-      520,
-      292.5
-     ],
      "cast": [
       "palych"
      ],
-     "intent": "Палыч left third reads, approving; the screen small, off his face"
+     "intent": "Палыч left third reads, approving; the screen small, off his face",
+     "subjects": [
+      "palych",
+      "wall"
+     ]
     },
     {
      "id": "4.3",
@@ -882,17 +902,15 @@
       3
      ],
      "offset": 6.11,
-     "frame": "close",
-     "view": [
-      545,
-      195,
-      190,
-      107
-     ],
+     "frame": "medium",
      "cast": [
       "palych"
      ],
-     "intent": "the quiet beat"
+     "intent": "the quiet beat",
+     "subjects": [
+      "palych",
+      "wall"
+     ]
     },
     {
      "id": "4.4",
@@ -900,14 +918,11 @@
       5
      ],
      "frame": "insert",
-     "view": [
-      820,
-      428,
-      120,
-      67.5
-     ],
      "cast": [],
-     "intent": "the phone card «Мама» on the table"
+     "intent": "the phone card «Мама» on the table",
+     "subjects": [
+      "phone_card"
+     ]
     },
     {
      "id": "4.5",
@@ -916,12 +931,6 @@
      ],
      "offset": 1.68,
      "frame": "close",
-     "view": [
-      336,
-      150,
-      280,
-      157.5
-     ],
      "cast": [
       "vadik"
      ],
@@ -954,30 +963,27 @@
        "offset": 0.0,
        "dur": 0.8
       }
-     }
+     },
+     "subjects": [
+      "vadik"
+     ],
+     "place": "left_third"
     },
     {
      "id": "4.6",
      "beats": [
       9
      ],
-     "frame": "close",
-     "view": [
-      545,
-      195,
-      190,
-      107
-     ],
-     "push_to": [
-      575,
-      210,
-      130,
-      73.1
-     ],
+     "frame": "medium",
      "cast": [
       "palych"
      ],
-     "intent": "push-in on Палыч's face, flat; line 4 lit on the wall"
+     "intent": "push-in on Палыч's face, flat; line 4 lit on the wall",
+     "subjects": [
+      "palych",
+      "wall"
+     ],
+     "push_in": 0.9
     },
     {
      "id": "4.7",
@@ -985,34 +991,30 @@
       10
      ],
      "frame": "close",
-     "view": [
-      550,
-      195,
-      180,
-      101
-     ],
      "cast": [
       "palych"
      ],
-     "intent": "stubborn, no inset"
+     "intent": "stubborn, no inset",
+     "subjects": [
+      "palych"
+     ]
     },
     {
      "id": "4.8",
      "beats": [
       11
      ],
-     "frame": "medium",
-     "view": [
-      300,
-      50,
-      980,
-      551
-     ],
+     "frame": "wide",
      "cast": [
       "palych",
       "vadik"
      ],
-     "intent": "Вадик small, low in frame; the Москва tile nods"
+     "intent": "Вадик small, low in frame; the Москва tile nods",
+     "subjects": [
+      "palych",
+      "vadik",
+      "wall"
+     ]
     }
    ]
   },
@@ -1026,14 +1028,11 @@
       1
      ],
      "frame": "wide",
-     "view": [
-      0,
-      0,
-      1280,
-      720
-     ],
      "cast": [],
-     "intent": "three silhouettes at the glass wall"
+     "intent": "three silhouettes at the glass wall",
+     "subjects": [
+      "table"
+     ]
     },
     {
      "id": "5.2",
@@ -1042,14 +1041,11 @@
      ],
      "offset": 7.83,
      "frame": "medium",
-     "view": [
-      630,
-      459,
-      360,
-      202.5
-     ],
      "cast": [],
-     "intent": "the signing hand, the order"
+     "intent": "the signing hand, the order",
+     "subjects": [
+      "order"
+     ]
     },
     {
      "id": "5.3",

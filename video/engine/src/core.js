@@ -332,7 +332,7 @@
     return o;
   }
   function tape(ov, x, y, w, h, t) {
-    var px = 0, pe = ov.peel; if (pe && t > ov.t1 - pe) px = ease((t - (ov.t1 - pe)) / pe) * w * 1.1;
+    var px = 0, pe = ov.peel; if (pe && t > S.duration - pe) px = ease((t - (S.duration - pe)) / pe) * w * 1.1;   // peels off to the right over the last `peel` seconds of the scene
     var o = '<g transform="translate(' + px + ' 0)"><path d="M' + x + " " + y + " L" + (x + w) + " " + y + " L" + (x + w) + " " + (y + h * 0.9) + ' ';
     for (var i = 24; i >= 0; i--) o += "L" + (x + w * i / 24) + " " + (y + h * (i % 2 ? 1 : 0.84)) + " ";
     return o + 'Z" fill="#f1e4c0" stroke="#d9c79c" stroke-width="' + h * 0.02 + '"/>' + T(ov.text || "", x + w / 2, y + h * 0.62, h * 0.5, "#cdb98c", "middle", 700) + "</g>";

@@ -34,6 +34,7 @@ ART = ROOT / "art"
 
 NIGHT_DEFS = (  # the set sessions' night grade: props, and the cast a little darker; the rim light on the cast
     '<defs><filter id="castF" color-interpolation-filters="sRGB" x="-5%" y="-5%" width="110%" height="110%"><feColorMatrix type="matrix" values=".40 0 0 0 0  0 .46 0 0 0  0 0 .74 0 0  0 0 0 1 0"/></filter>'
+    '<filter id="rimF" x="-10%" y="-5%" width="120%" height="110%" color-interpolation-filters="sRGB"><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 .96  0 0 0 0 .72  0 0 0 0 .29  0 0 0 1 0" result="a"/><feOffset in="a" dx="-3" dy="0" result="b"/><feComposite in="a" in2="b" operator="out" result="r"/><feComponentTransfer in="r"><feFuncA type="linear" slope=".55"/></feComponentTransfer></filter>'
     '<filter id="nightF" color-interpolation-filters="sRGB" x="-5%" y="-5%" width="110%" height="110%"><feColorMatrix type="matrix" values=".5 0 0 0 0  0 .58 0 0 0  0 0 .88 0 0  0 0 0 1 0"/></filter></defs>'
 )
 
@@ -97,6 +98,42 @@ def _camera(
         pw = round(w * push_in)
         ph = round(h * push_in)
         cam["push_to"] = [round(cx - pw / 2), round(cy - ph / 2), pw, ph]
+    return cam
+
+
+MAX_ZOOM = 1.6  # a shot with more than one subject never zooms past this; only a single subject may be closed in on
+
+
+def subjects_camera(boxes: list[list[float]], frame: str, canvas: tuple[float, float], place: str | None = None, push_in: float | None = None, margin: float = 0.12) -> dict[str, Any]:
+    """The camera is computed from what the line is about: the union box of all subjects plus a margin, fitted to the frame's
+    aspect, never narrower than the zoom limit for several subjects (a close-up is for one subject), inside the canvas.
+    `place` ("left_third" / "right_third") puts a single subject on that third. A push-in ends on the tightest view that still holds every subject."""
+    cw, ch = canvas
+    aspect = cw / ch
+    x0, y0 = min(b[0] for b in boxes), min(b[1] for b in boxes)
+    x1, y1 = max(b[0] + b[2] for b in boxes), max(b[1] + b[3] for b in boxes)
+    if frame == "close" and len(boxes) > 1:
+        msg = f"a close-up is for a single subject, this shot has {len(boxes)}: use medium or wide"
+        raise ValueError(msg)
+    uw, uh = (x1 - x0) * (1 + 2 * margin), (y1 - y0) * (1 + 2 * margin)
+    need = max(uw, uh * aspect)  # the narrowest view that holds the union with its margin
+    floor = {"wide": cw, "medium": cw / 2 if len(boxes) == 1 else cw / MAX_ZOOM}.get(frame, 0 if len(boxes) == 1 else cw / MAX_ZOOM if frame != "insert" else 0)
+    w = min(cw, max(need, floor))
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    if place and len(boxes) == 1:
+        cx += w / 6 if place == "left_third" else -w / 6
+    h = w / aspect
+
+    def box(w_: float, cx_: float, cy_: float) -> list[float]:
+        h_ = w_ / aspect
+        return [round(min(max(cx_ - w_ / 2, 0), cw - w_), 1), round(min(max(cy_ - h_ / 2, 0), ch - h_), 1), round(w_, 1), round(h_, 1)]
+
+    cam: dict[str, Any] = {"viewBox": box(w, cx, cy)}
+    if push_in:
+        tight = max((x1 - x0) * 1.04, (y1 - y0) * 1.04 * aspect, floor if len(boxes) > 1 else 0)
+        end = max(w * push_in, tight)
+        if end < w:
+            cam["push_to"] = box(end, cx, cy)
     return cam
 
 
@@ -185,6 +222,21 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             return {"offset": [slot["pos"][0] + spec.get("dx", 0), slot["pos"][1]], "scale": slot["scale"], **({"clip_y_max": slot["clip_y_max"]} if "clip_y_max" in slot else {}), **({"filter": spec["filter"]} if "filter" in spec else {}), "pose": spec.get("pose") or slot.get("pose", "stand_still").split(",")[0], **({"layer": spec["layer"]} if "layer" in spec else {}), **({"deck": slot["layer"]} if "layer" in slot else {})}
         return {**spec, **videoscene.place_character(by_id[actor], by_id[actor]["rig"], spec, solved[set_name], raw[set_name], stage)}
 
+    def subject_box(set_name: str, subj: str, whole: bool = False) -> list[float]:
+        """Where a shot subject is in the set's canvas: a character's head and neck, a drawn object, or a named region of the set (a wall display, a CRT)."""
+        if subj in by_id:
+            st = stand(set_name, subj)
+            k = st.get("scale", 0.62)
+            return [st["offset"][0] - 75 * k, st["offset"][1] - 205 * k, 150 * k, (330 if whole else 155) * k]  # head and neck; `whole` adds the torso, for framing
+        if subj in solved[set_name]:
+            o = solved[set_name][subj]
+            return [o["at"][0], o["top"], o["w"], o["bottom"] - o["top"]]
+        region = design["sets"][set_name].get("regions", {}).get(subj)
+        if region is None:
+            msg = f'shot subject "{subj}" is not a character, an object or a region of set {set_name}'
+            raise ValueError(msg)
+        return list(region)
+
     def focus_xy(set_name: str, focus: str | None, sh: dict[str, Any]) -> tuple[float, float]:
         if "at_xy" in sh:
             return tuple(sh["at_xy"])
@@ -243,8 +295,12 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             ids = [c if isinstance(c, str) else c["id"] for c in sh.get("cast", [])]
             focus = sh.get("focus") or (ids[0] if ids else None)
             fxy = focus_xy(sset, focus, sh)
-            out = {k: v for k, v in sh.items() if k not in {"beats", "frame", "focus", "push_in", "at_xy", "camera", "cast", "inset", "offset", "pull_out", "pull_from", "view", "push_to"}}
+            out = {k: v for k, v in sh.items() if k not in {"beats", "frame", "focus", "push_in", "at_xy", "camera", "cast", "inset", "offset", "pull_out", "pull_from", "view", "push_to", "subjects", "place"}}
             out |= {"at": at(sh["beats"][0], sh.get("offset", 0.0)), "frame": sh["frame"], "set": sset, "beats": sh["beats"], "camera": _camera(sh["frame"], fxy, layout, sh.get("push_in"), sh.get("camera"))}
+            if "subjects" in sh and "view" not in sh and (sset in arts or "svg_file" in design["sets"][sset]):
+                boxes = [subject_box(sset, q, whole=True) for q in sh["subjects"]]
+                cam = subjects_camera(boxes, sh["frame"], tuple(arts[sset]["canvas"]) if sset in arts else (1280, 720), sh.get("place"), sh.get("push_in"))
+                sh = {**sh, "view": cam["viewBox"], **({"push_to": cam["push_to"]} if "push_to" in cam else {})}
             if "view" in sh:  # a drawn set's own framings (viewBox in its canvas), with an optional push to another
                 out["camera"] = {"viewBox": sh["view"], **({"push_to": sh["push_to"]} if "push_to" in sh else {})}
             if "pull_from" in sh:  # pull-out: start tight (another frame type on the same focus), end on this shot's frame
@@ -265,6 +321,12 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
                 out["camera"] = {"viewBox": start, **({"push_to": out["camera"]["viewBox"]} if sh.get("pull_out") else {})}
                 out["match"] = match
             check_legs(sh["id"], sset, ids, out["camera"])
+            for subj in sh.get("subjects", []):  # what the beat is about must be in frame: a framing that cuts it off is an error, not a taste
+                box = subject_box(sset, subj)
+                for x, y, w, h in (out["camera"]["viewBox"], out["camera"].get("push_to") or out["camera"]["viewBox"]):
+                    if not (x <= box[0] and box[0] + box[2] <= x + w and y <= box[1] and box[1] + box[3] <= y + h):
+                        msg = f'shot {sh["id"]}: subject "{subj}" {[round(v) for v in box]} is not fully inside the camera {[round(v) for v in (x, y, w, h)]}: frame it, or take it out of the shot\'s subjects'
+                        raise ValueError(msg)
             if "inset" in sh:
                 ins = sh["inset"]
                 iset = ins["set"]
