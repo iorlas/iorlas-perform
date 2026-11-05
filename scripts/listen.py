@@ -8,6 +8,8 @@ fact a laugh needs. The reader must be a fresh agent that never saw the script's
     uv run listen.py brief EPISODE.md > brief.md        # or give brief.md, alone, to a fresh agent
     uv run listen.py check EPISODE.md answers.json      # and check its JSON answer
     uv run listen.py rules EPISODE.md [opus|codex]      # word order, punch delivery, unexplained choices (T13-T15)
+    uv run listen.py lines EPISODE.md [SHEET.md ...] [opus|codex]   # every line alone: does it follow, fit, parse (8b)
+    uv run listen.py lines-brief EPISODE.md [SHEET.md ...]          # the same brief, for a fresh agent
 """
 
 import json
@@ -54,6 +56,25 @@ Answer with JSON only, no prose:
 """
 
 
+LINES = """You are a native Russian speaker who hears a short workplace comedy once, in order, with no rewind.
+Below are its lines, numbered, with the delivery tags the actor gets in [brackets], and then (if given)
+what each character knows. You do not know what the writer meant by any line. For EVERY line, judge it
+alone. Be strict and literal; do not rescue a line with a charitable story, and give no credit for style,
+shortness or cleverness.
+
+- does: one plain sentence, what the speaker is doing with the line (asking, dodging, blaming, informing)
+- replies: yes | partly | no, does it answer or react to the line before it
+- knows: ok | violation, would this speaker know or ask this, given the characters' knowledge below
+- natural: yes | no, would a native speaker in this role say it this way (name the odd word if no)
+- clear: yes | no, understood heard once, without the writer's comment
+- why: one short English sentence when anything is not ok, else ""
+
+Answer with JSON only, no prose:
+{"lines": [{"n": LINE, "does": "", "replies": "", "knows": "", "natural": "", "clear": "", "why": ""}],
+ "last": "one sentence: what the last line means heard once"}
+"""
+
+
 def spoken(text: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"\[[^\]]*\]", " ", text)).strip()
 
@@ -85,6 +106,41 @@ def rules_brief(sc: scenario.Scenario) -> str:
     names = {v: d.split(",")[0].strip() for v, d in sc.cast.items()}
     lines = [f"{i}. {names.get(t.voice, t.voice)}{' (по телефону)' if t.phone else ''}: {t.text}" for i, t in enumerate(sc.turns, 1)]
     return RULES + "\n## Lines\n\n" + "\n".join(lines) + "\n"
+
+
+def lines_brief(sc: scenario.Scenario, sheets: list[str]) -> str:
+    """Every line with its tags and the characters' knowledge sheets; never the intents, map or card."""
+    names = {v: d.split(",")[0].strip() for v, d in sc.cast.items()}
+    lines = [f"{i}. {names.get(t.voice, t.voice)}{' (по телефону)' if t.phone else ''}: {t.text}" for i, t in enumerate(sc.turns, 1)]
+    known = "".join(f"\n### {Path(s).stem}\n\n{Path(s).read_text()}\n" for s in sheets)
+    return LINES + "\n## Lines\n\n" + "\n".join(lines) + ("\n\n## What the characters know\n" + known if known else "") + "\n"
+
+
+def intents(sc: scenario.Scenario) -> dict[int, str]:
+    """Turn number to the `<!-- intent: ... -->` written before it."""
+    out: dict[int, str] = {}
+    for kind, key, n in sc.marks:
+        if kind == "intent" and (k := next((i for i, t in enumerate(sc.turns, 1) if t.line >= n), None)):
+            out[k] = key
+    return out
+
+
+def report_lines(sc: scenario.Scenario, src: str, answers: dict) -> int:
+    """Print the lines the reader flagged, then each intent beside what the reader heard."""
+    line_of = {i: t.line for i, t in enumerate(sc.turns, 1)}
+    got = answers.get("lines", [])
+    flagged = 0
+    for a in got:
+        bad = [k for k, ok in (("replies", "yes"), ("knows", "ok"), ("natural", "yes"), ("clear", "yes")) if a.get(k) != ok]
+        if bad:
+            flagged += 1
+            print(f"{src}:{line_of.get(a['n'], '?')}: LINES {'/'.join(bad)}: {a.get('why', '')}")
+    wanted = intents(sc)
+    for a in got:
+        if a["n"] in wanted:
+            print(f"  {a['n']}. meant: {wanted[a['n']]}\n     heard: {a.get('does', '')}")
+    print(f"  last line heard as: {answers.get('last', '')}")
+    return flagged
 
 
 def check(sc: scenario.Scenario, answers: dict) -> list[scenario.Issue]:
@@ -132,6 +188,16 @@ def main() -> None:
     sc = scenario.load(src)
     if mode == "brief":
         print(brief(sc))
+        return
+    rest = sys.argv[3:]
+    if mode in ("lines", "lines-brief"):  # findings to judge, not errors: about a third are wrong
+        sheets = [a for a in rest if a.endswith(".md")]
+        if mode == "lines-brief":
+            print(lines_brief(sc, sheets))
+            return
+        raw = read_fresh(lines_brief(sc, sheets), next((a for a in rest if not a.endswith(".md")), "sonnet"))
+        flagged = report_lines(sc, src, json.loads(raw[raw.index("{") : raw.rindex("}") + 1]))
+        print(f"[perform] listen lines: {flagged} lines flagged to judge")
         return
     if mode == "rules":  # findings to judge, not errors: the reader is wrong often enough
         raw = read_fresh(rules_brief(sc), sys.argv[3] if len(sys.argv) > 3 else "sonnet")

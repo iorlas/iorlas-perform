@@ -71,7 +71,7 @@ CAST_LINE = re.compile(r"^([\w-]+)\s*\|\s*(.+)$")
 TAG = re.compile(r"\[([^\]]*)\]")
 NARRATOR = "narrator"
 STRESS = "\u0301"  # combining acute: «пи́дора»
-MARK = re.compile(r"<!--\s*(plant|echo|payoff|arc|beat|length|laugh|needs|shows|lint-ok):\s*(.+?)\s*-->")
+MARK = re.compile(r"<!--\s*(plant|echo|payoff|arc|beat|length|laugh|needs|shows|intent|lint-ok):\s*(.+?)\s*-->")
 CHARS_PER_SEC = 11  # spoken characters per second, Drama 3 at --speed 1.1: 2896 in 261 s (an episode)
 
 

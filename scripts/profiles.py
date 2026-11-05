@@ -18,7 +18,8 @@ They live in the plugin's data folder, ~/.claude/plugins/data/<plugin>-<marketpl
 Uninstalling the plugin deletes its data folder unless you pass --keep-data: back it up, or
 point $PERFORM_PROFILES somewhere you keep.
 
-Usage: uv run profiles.py                 list profiles and where they live
+Usage: uv run profiles.py                 list profiles and where they live, and the modes found
+       uv run profiles.py modes           list every mode (a folder with mode.md) with its description
        uv run profiles.py NAME            show a profile's files and episodes
        uv run profiles.py new NAME        create a profile from the template
        uv run profiles.py fact NAME ID SRC "text"   append a dated fact to entities/ID.md
@@ -56,6 +57,10 @@ What the series is, in two lines: who, where, what kind of funny or scary or sad
 
 **Engine**: one line, what every episode runs on and where most jokes come from. A premise
 that does not use it is refused (scenario skill, R5).
+
+**Mode**: the craft this world is written in, one or two names `profiles.py modes` prints.
+The mode carries how to write that language and genre; this profile carries the world and
+overrides the mode where it must.
 
 ## Format
 
@@ -194,6 +199,13 @@ Why the listener loves it despite everything.
 ## Want, fear, wound (a character) / plot function and rule (a thing or place)
 
 -
+
+## Knows / does not know / would ask
+
+A character's knowledge map. KNOWS: facts and numbers they hold. DOES NOT KNOW: what they only
+learn from someone in the scene. WOULD ASK: the closed list of questions they would really ask
+(a boss asks about blame, cost, time and what to tell the owner). A line outside this map is cut.
+A thing or place: what it holds and what it never reveals.
 
 ## Comic lens
 
@@ -334,12 +346,36 @@ def fact_command(args: list[str]) -> None:
         print(f"{'removed ' if args[0] == 'unfact' else ''}{path.relative_to(profile)}: {line}")
 
 
+MODES = Path(__file__).resolve().parent.parent / "skills" / "scenario" / "modes"
+
+
+def modes() -> list[tuple[str, str, Path]]:
+    """Every mode found: (name, one-line description, mode.md), from modes/*/mode.md. Nothing lists them by hand."""
+    found = []
+    for f in sorted(MODES.glob("*/mode.md")):
+        head = f.read_text().split("---")[1] if f.read_text().startswith("---") else ""
+        desc = next((ln.partition(":")[2].strip() for ln in head.splitlines() if ln.startswith("description:")), "")
+        found.append((f.parent.name, desc, f))
+    return found
+
+
+def print_modes() -> None:
+    print(f"modes in {MODES}")
+    for name, desc, path in modes():
+        print(f"  {name}: {desc}\n    {path}")
+    print("  (a profile names its mode on a **Mode**: line in profile.md; read modes/NAME/mode.md)")
+
+
 def main() -> None:
     args = sys.argv[1:]
     if not args:
         print(f"profiles in {user_dir()}")
         for prof in available():
             print(f"  {prof.name}")
+        print_modes()
+        return
+    if args[0] == "modes":
+        print_modes()
         return
     if args[0] == "new":
         dest = user_dir() / args[1]

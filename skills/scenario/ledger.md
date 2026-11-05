@@ -23,3 +23,11 @@ the same: «Мама всей парадной скажет» (T13, Opus), «Н�
 both). Refused: T14 on the deadpan narrator (6), a mother's care read as an insult, Палыч
 reading the chat flat (the flat reading is the joke), a server named one line before its
 neural network. Both families agreed on 6 of the 11.
+
+## Rated short scenes: where their ledger lives
+
+A mode keeps its own ledger of rated scenes in `modes/NAME/evidence.md` (hit rates, what the
+checks caught and missed, failure causes by frequency, the lines the author rated good), and
+cuts its rules, with ids, from it in `modes/NAME/mode.md`. The generic rules that came out of
+those rounds are SKILL.md L1-L8 and the line check (8b); the lint cannot count them, so the
+catch is the fresh reader in 8b and the author's rating. `profiles.py modes` lists the modes.

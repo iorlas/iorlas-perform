@@ -47,7 +47,8 @@ from what the user says, asking only about what changes the story: audience, ton
 narration, intro or not, how sharp. Then, in order:
 
 1. **profile.md**: the engine (one line: what every episode runs on, the source of most
-   jokes); format and target length; the language register (how people here talk,
+   jokes); the **mode** (`modes.md`: the craft of its language and genre, for example
+   from `profiles.py modes`; the profile adds the world and overrides the mode where it must); format and target length; the language register (how people here talk,
    which jargon and swearing belong); tone with one reference line for the sharpest moment;
    the running-gag cap; acting habits.
 2. **world.md**: setting in concrete, audible details; then **entities**: every thing, place
@@ -78,6 +79,9 @@ Sections:
 1. **Core**: what it is and what makes it it, in one paragraph.
 2. **Charm**: why the listener loves it, concretely.
 3. **Want, fear, wound** for a character; **plot function and rule** for a thing or place.
+3a. **Knows / does not know / would ask**: the knowledge map. KNOWS, DOES NOT KNOW, and the
+   closed list of questions the character would really ask. A short scene is written from it
+   (SKILL.md L2), and the line check (8b) reads it.
 4. **Comic lens**: how it misreads the world, or what comedy it makes.
 5. **Culture**: the real subcultures it comes from (an imageboard generation, the army, a
    trade, a city, a decade) and what each gives it; what it would never know or say.

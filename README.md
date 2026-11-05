@@ -31,7 +31,7 @@ on its own requests.
 
 | skill | use it for | say |
 |---|---|---|
-| `/scenario` | designing and writing an episode, or fixing a script, inside a profile (your series) | "start a new series about a night-shift paramedic", "write the next episode", "fix this script" |
+| `/scenario` | designing and writing an episode, a sketch, or fixing a script, inside a profile (your series) and a mode (the craft of a language and genre; `profiles.py modes` lists them) | "start a new series about a night-shift paramedic", "write the next episode", "fix this script" |
 | `/perform` | rendering a finished scenario: casts voices, lints, shows you the text, renders on your yes | "/perform episodes/02-lift.md", "voice this scene" |
 | `/voice` | one voice reading a text; designing a voice from a description; recording your own | "read this in the narrator's voice", "design a voice: a tired 60-year-old watchman" |
 

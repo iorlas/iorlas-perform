@@ -1,6 +1,6 @@
 ---
 name: scenario
-description: Design and write, or fix, a script for an audio story, radio play or narrated multi-voice episode, inside a profile (a series folder with its world, entities, characters, relationships, voices, taste and past episodes). Works structure first: premise and game, beat sheet, joke map, scene plan, then turns, so a listener with closed eyes always knows who speaks, where and when, and every beat causes the next. Output is a lint-clean Markdown scenario (.md) ready for /perform. Use for "write a scenario", "pilot", "next episode", "script this story", "fix this script", "start a new series/world/profile", or as step 1 of /perform. For rendering, use perform; for a single voice reading text, use voice.
+description: Design and write, or fix, a script for an audio story, radio play or narrated multi-voice episode, inside a profile (a series folder with its world, entities, characters, relationships, voices, taste and past episodes) and a mode (the craft of one language and genre that any world uses; found with `profiles.py modes`). Works structure first: premise and game, beat sheet, joke map, scene plan, then turns, so a listener with closed eyes always knows who speaks, where and when, and every beat causes the next. Output is a lint-clean Markdown scenario (.md) ready for /perform. Use for "write a scenario", "pilot", "next episode", "script this story", "fix this script", "start a new series/world/profile", or as step 1 of /perform. For rendering, use perform; for a single voice reading text, use voice.
 ---
 
 # scenario
@@ -21,7 +21,16 @@ Scripts: `${CLAUDE_SKILL_DIR}/../../scripts`, called `$S` below.
 | `${CLAUDE_SKILL_DIR}/ledger.md` | every line a listener stumbled on, its cause and the rule it produced: read before writing; add each new one |
 | `${CLAUDE_SKILL_DIR}/profiles.md` | where profiles live, their layout, filling a new one, `structure.json` |
 | `${CLAUDE_SKILL_DIR}/craft.md`, `structure-research.md` | the sources behind the rules |
+| `${CLAUDE_SKILL_DIR}/modes.md`, `modes/NAME/mode.md` | modes: craft for one language and genre, layered between this file and a profile (list below) |
 | the `voice` skill | delivery tags and what the TTS engine does with them |
+
+## Modes
+
+A mode is the craft of one language and genre. `uv run $S/profiles.py modes` lists every mode
+installed, with a one-line description and the path of its `mode.md`; a new mode shows up there
+without being registered anywhere. Read the mode your profile names (`**Mode**:` in
+`profile.md`) before writing. Its rules are cited by id alongside this file's. How modes work,
+precedence, how to start one: `${CLAUDE_SKILL_DIR}/modes.md`.
 
 This skill is general: it holds for any world. Everything about one series (its language,
 tone, how sharp, its intro, its characters) lives in that series' profile, and the profile
@@ -39,6 +48,12 @@ them in `structure.json` for its genre.
   A profile section that is still a template hint gets filled first, with the user.
 - P4. Set the target length (the profile's, or ask) and write it as `<!-- length: N -->`.
   Budget about 11 spoken characters per second: a 4-minute episode is ~2600 characters.
+- P5. **Mode.** `profile.md` names its mode (`**Mode**: NAME`); `profiles.py modes` lists what is installed;
+  read each named mode's `modes/NAME/mode.md` now (`modes.md`). Precedence: profile, then mode, then this file's defaults. A
+  profile with no Mode line gets one: ask the user for language and genre, and write it. A
+  new world in a known language and genre starts from the mode, not from nothing.
+- P6. **Short scenes** (a sketch under about a minute, or one scene of an episode) take the
+  route in 7c: card, intents, line check. The beat sheet and joke density below are for episodes.
 
 ## 1. Premise
 
@@ -332,6 +347,41 @@ keeps the structure and the character rules; mark the new laughs.
 - U3. The hero acts: digs deeper, bluffs, schemes, escalates. A hero who only reacts or
   confesses leaves the comedy to everyone else.
 
+## 7c. Short scenes: card, intents, lines
+
+A scene of a few lines lives or dies on whether each line makes sense, comes from that person,
+and is heard right. Written first as a card, so a line has a reason before it has words.
+
+- L1. **Card.** Before any line: place and time; what each person wants from the other; what
+  each knows at the start; the order in which the facts come out; who owns the turn. A line
+  the user already liked is copied into the card verbatim and is not rewritten (a missing
+  link is added, the punch stays).
+- L2. **Knowledge map.** Each character's soul file lists what they KNOW, what they DO NOT know,
+  and the questions they would really ask (a closed list). A line outside the map is cut. A
+  fact reaches a character only by what someone says to them.
+- L3. **Reactive.** Every line answers or reacts to the one before. One new fact per turn; bad
+  news comes out in pieces, pulled by the other person's questions. Nobody speaks to inform the
+  audience.
+- L4. **Intent.** Every line gets one comment before it: `<!-- intent: what the speaker does with
+  this line and why now -->`. The lint ignores it; the line check (8b) reads the line without
+  it and compares.
+- L5. **Concept before words.** Say the bit in one plain sentence. If it is not funny, true to
+  the world and clear without jargon, change the idea; polishing wording cannot rescue it.
+- L6. **The turn closes the scene** (the last one or two lines), in plain words, understood
+  once. The reaction to a crisis goes to its biggest consequence before any joke on it. Nothing
+  follows the funny word.
+- L7. **Fix by the link.** A flagged line is repaired at the thing it lacks (a missing word, a
+  motive, a fact told earlier), not rewritten. Lines the user rated well are left alone.
+- L8. **Emotion.** At most one spike per scene, aimed at the situation. A change of delivery at
+  the pivot is a change of tag in the line, so the actor gets the cue (T14).
+
+Route: card (L1) → concept test (L5) → draft with intents (L2-L4; English is allowed here: it
+holds meaning, not wording) → rewrite into the profile's register, line for line (T3) → lint →
+line check (8b) → fix (L7) → closer (L6) → show the user. The lint is built for episodes and
+warns on a sketch about missing beats, laugh marks and a map; those are expected, and kept with
+`<!-- lint-ok: ... -->` and the reason, or ignored for a scene under a minute. The language's mode adds its own rules
+and checks (`profiles.py modes` lists the modes).
+
 ## 8. Lint
 
 ```
@@ -362,6 +412,26 @@ subagent (no script, profile or summary), save its JSON, and run
 An error is a laugh resting on a fact no spoken line tells before it: add the line that tells
 it (M9), or cut the laugh. A warning is what the reader did not get on one hearing (T10): fix
 it, or keep it with the reason. Run it again after fixing.
+
+## 8b. Line check
+
+The listener check asks where a fact is told; it passes a badly worded line if the scene's point
+can be rebuilt from context. The line check reads every line alone. A fresh reader gets the
+spoken lines (with tags) and, optionally, the characters' knowledge sheets, never the intents,
+the map or the card, and for every numbered line says: what the speaker is doing with it,
+whether it answers the line before, whether the speaker would know or ask it, whether a native
+would say it that way, whether it is clear heard once.
+
+```
+uv run $S/listen.py lines <file>.md [sheets.md ...] [opus|codex]
+uv run $S/listen.py lines-brief <file>.md [sheets.md ...] > brief.md   # for a fresh subagent
+```
+
+`sheets.md` are the soul-file sections for the characters (KNOWS, DOES NOT KNOW, questions).
+Output: every line the reader flagged, and, for every line with an `intent`, the intent next to
+what the reader heard, so a mismatch is visible. The findings are for the writer to judge, not
+to apply: a third are wrong. Fix a real one by its missing link (L7), then run it again. It
+checks sense and fit, not whether the scene is funny; only the user's rating tests that.
 
 ## 9. Doctor
 
@@ -410,5 +480,7 @@ Once approved, update the profile so the next episode starts from it:
 
 ## Fix mode
 
-For an existing script: mark its beats and callbacks (B8, J2), run the lint, run the doctor
-(step 9), then apply and re-lint. Keep what works; the user's lines are the user's.
+For an existing script: mark its beats and callbacks (B8, J2), run the lint, run the line
+check (8b) and the doctor (step 9), then apply and re-lint. Keep what works; the user's lines
+are the user's. For a short scene, write the intents first (L4) and fix flagged lines by their
+missing link (L7).
