@@ -48,6 +48,7 @@ def run(plan: dict[str, Any], *, previous: list[Path] | None = None, only: set[s
     if want("framing"):
         for p in plan["report"].get("problems", []):
             out.append(finding("framing", "block", p["message"], "move the camera/frame, drop the subject from the shot, or fix the set", scene=p["scene"], shot=p["shot"]))
+        out += cast_cut(plan)
         if fmt.get("crop"):
             out += crop_fit(plan)
     for gid, shots in plan["shots"].items():
@@ -147,8 +148,8 @@ def flicker(shots: dict[str, Any]) -> list[dict[str, Any]]:
             continue
         ks = tr["keys"]
         for a, b, c in zip(ks, ks[1:], ks[2:], strict=False):
-            if a.get("value") == c.get("value") and a.get("value") != b.get("value") and c["t"] - a["t"] < 1.0 and b["t"] > 0:
-                out.append(finding("flicker", "warn", f"{tr['actor']} {tr['channel']} flips «{a.get('value')}» -> «{b.get('value')}» -> back within {c['t'] - a['t']:.2f}s", "merge the two cues or move them apart", scene=scene, t=a["t"]))
+            if a.get("value") == c.get("value") and a.get("value") != b.get("value") and c["t"] - b["t"] < 1.0 and b["t"] > 0:
+                out.append(finding("flicker", "warn", f"{tr['actor']} {tr['channel']} flips «{a.get('value')}» -> «{b.get('value')}» -> back within {c['t'] - b['t']:.2f}s", "merge the two cues or move them apart", scene=scene, t=b["t"]))
     return out
 
 
@@ -180,6 +181,29 @@ def zones(shots: dict[str, Any], plan: dict[str, Any], fmt: dict[str, Any]) -> l
             unsafe = (z.get("top", 0) and y < z["top"] and h > 0) or (z.get("bottom", 0) and y + h > 1 - z["bottom"]) or (z.get("right", 0) and x + w > 1 - z["right"]) or (z.get("left", 0) and x < z["left"])
             if unsafe and (z.get("right", 0) >= 0.1 or z.get("bottom", 0) >= 0.2):  # the 5% title-safe margin of 16:9 is not worth a warning per overlay
                 out.append(finding("zones", "warn", f"overlay {o.get('kind')} on shot {sh['id']} reaches into the platform UI zone", "keep it inside the safe centre", scene=shots["title"], shot=sh["id"], t=a))
+    return out
+
+
+def cast_cut(plan: dict[str, Any]) -> list[dict[str, Any]]:
+    """A cast member whose head is partly inside the camera (cut by the frame edge, not absent and not whole) and is not a declared subject; and shots that declare no subjects at all."""
+    out: list[dict[str, Any]] = []
+    for shots in plan["shots"].values():
+        title = shots["title"]
+        casts = plan["report"].get("cast", {}).get(title, {})
+        subj = plan["report"].get("shots", {}).get(title, {})
+        for sh, _t0, _t1 in videopreprod.shot_spans(shots):
+            if sh.get("cast") and sh["id"] not in subj and sh.get("frame") != "insert":
+                out.append(finding("framing", "warn", f"shot {sh['id']} names no subjects: the framing is not checked", "declare `subjects` (what the line is about) so the camera and the crop check can run", scene=title, shot=sh["id"], t=sh["t0"]))
+            for who, (x, y, w, h) in casts.get(sh["id"], {}).items():
+                if who in subj.get(sh["id"], {}):
+                    continue
+                for vx, vy, vw, vh in (sh["camera"]["viewBox"], sh["camera"].get("push_to") or sh["camera"]["viewBox"]):
+                    ix = max(0.0, min(x + w, vx + vw) - max(x, vx))
+                    iy = max(0.0, min(y + h, vy + vh) - max(y, vy))
+                    share = ix * iy / (w * h)
+                    if 0.05 < share < 0.95:
+                        out.append(finding("framing", "warn", f"shot {sh['id']}: {who}'s head is {share:.0%} inside the frame, cut by its edge", "move the camera, or take them out of the shot's cast", scene=title, shot=sh["id"], t=sh["t0"]))
+                        break
     return out
 
 

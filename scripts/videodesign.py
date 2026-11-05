@@ -337,6 +337,9 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
                     if not (x <= box[0] and box[0] + box[2] <= x + w and y <= box[1] and box[1] + box[3] <= y + h):
                         defect("crop", s["title"], sh["id"], f'shot {sh["id"]}: subject "{subj}" {[round(v) for v in box]} is not fully inside the camera {[round(v) for v in (x, y, w, h)]}: frame it, or take it out of the shot\'s subjects')
                         break
+            if report is not None:  # where each cast member's head is, for the pre-production framing gate (a face cut by the frame edge)
+                for cid in ids:
+                    report.setdefault("cast", {}).setdefault(s["title"], {}).setdefault(sh["id"], {})[cid] = [round(v, 1) for v in subject_box(sset, cid)]
             if "inset" in sh:
                 ins = sh["inset"]
                 iset = ins["set"]

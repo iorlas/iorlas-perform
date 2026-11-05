@@ -3,7 +3,7 @@
 Stage 0 of the pre-production ladder (docs/PREPRODUCTION.md). Every later stage (storyboard, animatic, gates) takes
 this timeline where the real one does not exist yet; `video.py retime` swaps it for the real one afterwards.
 
-Durations: spoken characters / characters-per-second (measured on the Pravila render: 12.9 over 37 turns), a per-voice
+Durations: spoken characters / characters-per-second (measured on the Pravila render: 12.9 over 30 turns, summed estimate within 1% of the real turns), a per-voice
 override from a pace file, small adders for pauses written in the text. Placement mirrors scene.py: `--gap` between
 turns, `--scene-pause` before each scene but the first, `{pause}`s, a lead before an opening ambience. Where a real or
 cached duration is known for a turn (a take from the cache, a past render), it replaces the estimate.
@@ -17,7 +17,7 @@ from typing import Any
 import scenario
 
 CPS = 12.9  # spoken characters per second at scene.py's default speed (1.1); measured, tests/data/pravila.v1.json
-TAG_SPEED = {"whisper": 0.85, "whispering": 0.85, "slow": 0.8, "slurred": 0.85, "tiny": 0.9, "fast": 1.15, "rapid": 1.15}  # tag word -> speed multiplier
+TAG_SPEED: dict[str, float] = {}  # tag word -> speed multiplier; empty: on Pravila the tags (whispering, slurred, slow) did not move the pace, the fit got worse with them
 SFX_SECONDS = {"notify": 0.72, "phone_vibrate": 3.0}  # known effect lengths; anything else DEFAULT_SFX
 DEFAULT_SFX = 1.2
 GAP = 0.35  # scene.py --gap
@@ -33,8 +33,8 @@ def turn_seconds(turn: scenario.Turn, cps: float = CPS, pace: dict[str, float] |
     rate = (pace or {}).get(turn.voice, cps)
     tags = re.findall(r"[a-z]+", " ".join(re.findall(r"\[([^\]]*)\]", turn.text)).lower())
     speed = min([TAG_SPEED[t] for t in tags if t in TAG_SPEED] or [1.0])
-    pauses = len(PAUSE_MARKS.findall(text)) * 0.15 + len(LAUGH.findall(turn.text)) * 0.6
-    return round(max(0.4, len(re.sub(r"\s+", "", text)) / rate / speed + pauses), 3)
+    pauses = len(PAUSE_MARKS.findall(text)) * 0.05 + len(LAUGH.findall(turn.text)) * 0.6
+    return round(max(0.4, len(text) / rate / speed + pauses), 3)
 
 
 def estimate(
