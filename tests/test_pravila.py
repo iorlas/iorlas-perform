@@ -86,5 +86,5 @@ def test_flashback_and_vehicle_scenes() -> None:
     night = sh["scenes"]["Серверная, ночь"]
     assert all(s["look"] == "memory" for s in night["shots"]) and any(o["kind"] == "tape" for o in night["shots"][0]["overlays"])
     assert night["transition_out"]["card_svg"] and sh["scenes"]["Маршрутка, день"]["transition_in"]["card_svg"]
-    assert night["actors"][0]["id"] in {"vadik", "neyroset"} and "filter" in night["shots"][1]["cast"][0]
+    assert night["actors"][0]["id"] in {"vadik", "neyroset"} and "filter" in next(x for x in night["shots"] if x["id"] == "2.2")["cast"][0]
     assert "url(#nightF)" in sh["sets"]["setD_server_night"]["svg"]
