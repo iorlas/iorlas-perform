@@ -94,7 +94,7 @@
   }
   function screenAt(inst, t) {
     var tr = track(inst, "screen"); if (!tr) return null;
-    var k = keyAt(tr.keys, t), def = (S.screens || {})[k.value]; return def ? { def: def, dt: Math.max(0, t - k.t) } : null;
+    var k = keyAt(tr.keys, t), def = (S.screens || {})[k.value]; return def ? { def: def, dt: Math.max(0, t - k.t), t: t } : null;
   }
   function drawScreen(x, y, w, h, sc) {
     var d = sc.def, o = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="4" fill="#0a1218"/>';
@@ -105,17 +105,43 @@
     } else if (d.kind === "tiles") {
       var n = d.cols * d.rows, tw = w * 0.9 / d.cols, th = h * 0.8 / d.rows;
       for (var i = 0; i < n; i++) {
-        var green = d.flicker != null && i === d.flicker.tile && sc.dt >= d.flicker.after && (Math.floor(sc.dt * 6) % 2 === 0 || sc.dt >= d.flicker.after + d.flicker.hold);
+        var green = (d.flicker != null && i === d.flicker.tile && sc.dt >= d.flicker.after && (Math.floor(sc.dt * 6) % 2 === 0 || sc.dt >= d.flicker.after + d.flicker.hold)) || (d.green_every != null && sc.dt >= (d.green_start || 0) + i * d.green_every);
         o += '<rect x="' + (x + w * 0.05 + (i % d.cols) * tw + 2) + '" y="' + (y + h * 0.1 + Math.floor(i / d.cols) * th + 2) + '" width="' + (tw - 4) + '" height="' + (th - 4) + '" fill="' + (green ? "#3ad07a" : "#c93030") + '"/>';
       }
+      if (d.caption) o += T(d.caption, x + w / 2, y + h * 0.97, h * 0.1, sc.dt >= (d.caption_at || 0) ? "#8dffb8" : "#0000", "middle", 700);
+    } else if (d.kind === "dialog") {
+      var cur = d.cursor || [], pos = cur.length ? cur.reduce(function (a, c) { return c.dt <= sc.dt ? c : a; }, cur[0]) : null, clicked = d.click_dt != null && sc.dt >= d.click_dt;
+      o += '<rect x="' + (x + w * 0.1) + '" y="' + (y + h * 0.12) + '" width="' + w * 0.8 + '" height="' + h * 0.72 + '" rx="5" fill="#e9e4d4" stroke="#556" stroke-width="2"/><rect x="' + (x + w * 0.1) + '" y="' + (y + h * 0.12) + '" width="' + w * 0.8 + '" height="' + h * 0.15 + '" fill="#3b5aa0"/>'
+        + T(d.title || "", x + w * 0.14, y + h * 0.235, h * 0.1, "#fff", "start") + T(d.text || "", x + w / 2, y + h * 0.5, h * 0.11, "#222", "middle");
+      (d.buttons || []).forEach(function (b, i) {
+        var bx = x + w * (0.2 + i * 0.32), by = y + h * 0.6, hit = clicked && d.click === b.id;
+        o += '<rect x="' + bx + '" y="' + by + '" width="' + w * 0.26 + '" height="' + h * 0.16 + '" rx="4" fill="' + (hit ? "#3ad07a" : "#cfc8b0") + '" stroke="#445" stroke-width="1.5"/>' + T(b.label, bx + w * 0.13, by + h * 0.115, h * 0.1, "#111", "middle");
+      });
+      if (pos) o += '<path transform="translate(' + (x + w * pos.x) + " " + (y + h * pos.y) + ')" d="M0 0 L0 ' + h * 0.17 + " L" + h * 0.05 + " " + h * 0.13 + " L" + h * 0.09 + " " + h * 0.2 + " L" + h * 0.115 + " " + h * 0.185 + " L" + h * 0.075 + " " + h * 0.12 + " L" + h * 0.12 + ' ' + h * 0.11 + ' Z" fill="#fff" stroke="#000" stroke-width="1.5"/>';
+    } else if (d.kind === "desktop") {
+      (d.icons || []).forEach(function (ic) {
+        if (ic.gone_at != null && sc.dt >= ic.gone_at) return;
+        var ix = x + w * ic.x, iy = y + h * ic.y, struck = ic.strike_at != null && sc.dt >= ic.strike_at, s0 = h * 0.28;
+        o += '<path d="M' + ix + " " + (iy + s0 * 0.22) + " h" + s0 * 0.4 + " l" + s0 * 0.1 + " " + -s0 * 0.1 + " h" + s0 * 0.5 + " v" + s0 * 0.16 + " h" + s0 * 0.5 + " v" + s0 * 0.78 + " h" + -s0 * 1.5 + ' Z" fill="#e8c35a" stroke="#a07a20" stroke-width="2"/>' + T(ic.label, ix + s0 * 0.75, iy + s0 * 1.28, h * 0.09, "#ddd", "middle");
+        if (struck) o += '<line x1="' + (ix - 4) + '" y1="' + (iy + s0 * 0.7) + '" x2="' + (ix + s0 * 1.55) + '" y2="' + (iy + s0 * 0.7) + '" stroke="#e03a3a" stroke-width="' + h * 0.035 + '"/>';
+      });
+      if (d.caption) o += T(d.caption, x + w / 2, y + h * 0.92, h * 0.13, "#8dffb8", "middle");
+    } else if (d.kind === "neyroset") {
+      o += neyScreen(d, x, y, w, h, sc);
     } else if (d.kind === "rows") {
       var n2 = d.rows.length + (d.ok ? 1 : 0), rh = h * 0.84 / n2, all = d.rows.concat(d.ok ? [{ label: d.ok.label, ok: true }] : []);
       o += label(d.title || "", x + w * 0.06, y + h * 0.1, h * 0.09, "#aab", 1).replace('text-anchor="middle"', 'text-anchor="start"');
       all.forEach(function (r, i) {
-        var down = !r.ok && sc.dt >= (r.at || 0), pulse = r.ok && sc.dt >= (d.ok.pulse_after || 1e9) ? 0.65 + 0.35 * Math.sin(sc.dt * 8) : 1, ry = y + h * 0.14 + i * rh;
+        var down = !r.ok && !r.up && sc.dt >= (r.at || 0), pulse = r.ok && sc.dt >= (d.ok.pulse_after || 1e9) ? 0.65 + 0.35 * Math.sin(sc.dt * 8) : 1, ry = y + h * 0.14 + i * rh;
         o += '<rect x="' + (x + w * 0.04) + '" y="' + (ry + 2) + '" width="' + w * 0.92 + '" height="' + (rh - 4) + '" rx="3" fill="' + (down ? "#7d1f1f" : "#17402c") + '" opacity="' + pulse + '"/>'
           + label(r.label, x + w * 0.08, ry + rh * 0.68, rh * 0.5, "#fff", 1).replace('text-anchor="middle"', 'text-anchor="start"')
           + label(r.ok ? d.ok.note : down ? "DOWN" : "UP", x + w * 0.93, ry + rh * 0.68, rh * 0.5, down ? "#ff9a9a" : "#8dffb8", 1).replace('text-anchor="middle"', 'text-anchor="end"');
+      });
+      if (d.footer) o += T(d.footer, x + w / 2, y + h * 0.97, h * 0.1, "#8dffb8", "middle");
+    } else if (d.kind === "chat" && d.lines) {
+      d.lines.forEach(function (l, i) {
+        var me = l.from === "user", bw = w * 0.7, by = y + h * (0.1 + i * 0.3);
+        o += '<rect x="' + (me ? x + w * 0.28 : x + w * 0.04) + '" y="' + by + '" width="' + bw + '" height="' + h * 0.24 + '" rx="8" fill="' + (me ? "#3b5aa0" : "#2e3b4c") + '"/>' + T(l.text, (me ? x + w * 0.28 : x + w * 0.04) + bw / 2, by + h * 0.155, h * 0.1, "#fff", "middle");
       });
     } else o += label(d.text || "", x + w / 2, y + h * 0.55, h * 0.14, d.kind === "chat" ? "#fff" : "#9fd", 1);
     return o;
@@ -127,14 +153,23 @@
   // Flat cut-paper placeholders by kind. Real art (video/assets/**/<id>.svg) replaces any of them.
   function drawKind(d, x, y, w, h, t, inst) {
     var kind = d.kind || d.id, o = "", i;
-    if (kind === "window_dusk" || kind === "window_night") {   // frame, four panes, sky with sun/moon, sill line
-      var night = kind === "window_night", f = Math.max(6, w * 0.04), pw = (w - 3 * f) / 2, ph = (h - 3 * f) / 2;
+    if (kind === "plate") {   // cutlets in a 7x2 grid (the match-cut partner of the 7x2 test tiles); text "13f" = 13 cutlets and a fork lifting the 14th
+      var tx = String(textAt(inst, t, "14")), nC = parseInt(tx, 10), fork = /f/.test(tx), cw = w / 7;
+      o += '<ellipse cx="' + (x + w / 2) + '" cy="' + (y + h * 0.55) + '" rx="' + w / 2 + '" ry="' + h * 0.5 + '" fill="#efeade" stroke="#b9b1a0" stroke-width="3"/>';
+      for (i = 0; i < 14; i++) { var gx = x + w * 0.07 + (i % 7) * cw * 0.86 + cw * 0.3, gy = y + h * (i < 7 ? 0.36 : 0.66);
+        if (i < nC) o += '<ellipse cx="' + gx + '" cy="' + gy + '" rx="' + cw * 0.36 + '" ry="' + h * 0.17 + '" fill="#b5703a" stroke="#7a4520" stroke-width="2"/>'; }
+      if (fork) o += '<g transform="translate(' + (x + w * 0.07 + 6 * cw * 0.86 + cw * 0.3) + " " + (y + h * 0.2) + ')"><ellipse cx="0" cy="0" rx="' + cw * 0.36 + '" ry="' + h * 0.17 + '" fill="#b5703a" stroke="#7a4520" stroke-width="2"/><line x1="0" y1="-4" x2="' + cw * 0.5 + '" y2="' + -h * 0.5 + '" stroke="#999" stroke-width="5"/></g>';
+      return o;
+    }
+    if (kind === "window_dusk" || kind === "window_night" || kind === "window_day") {   // frame, four panes, sky with sun/moon, sill line
+      var night = kind === "window_night", day = kind === "window_day", f = Math.max(6, w * 0.04), pw = (w - 3 * f) / 2, ph = (h - 3 * f) / 2;
       o += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + (night ? "#4a3f33" : "#e9e2d0") + '"/>';
       for (i = 0; i < 4; i++) {
         var px = x + f + (i % 2) * (pw + f), py = y + f + Math.floor(i / 2) * (ph + f);
-        o += '<rect x="' + px + '" y="' + py + '" width="' + pw + '" height="' + ph + '" fill="' + (night ? "#101a3a" : i < 2 ? "#f0a24a" : "#e07a3c") + '"/>';
+        o += '<rect x="' + px + '" y="' + py + '" width="' + pw + '" height="' + ph + '" fill="' + (night ? "#101a3a" : day ? "#9fd0f0" : i < 2 ? "#f0a24a" : "#e07a3c") + '"/>';
       }
       o += night ? '<circle cx="' + (x + w * 0.72) + '" cy="' + (y + h * 0.28) + '" r="' + w * 0.07 + '" fill="#f2efd0"/>' + [[.2, .2], [.4, .38], [.28, .7], [.8, .62]].map(function (s) { return '<circle cx="' + (x + w * s[0]) + '" cy="' + (y + h * s[1]) + '" r="2" fill="#fff"/>'; }).join("")
+        : day ? '<circle cx="' + (x + w * 0.75) + '" cy="' + (y + h * 0.25) + '" r="' + w * 0.09 + '" fill="#fff3a0"/>'
         : '<circle cx="' + (x + w * 0.3) + '" cy="' + (y + h * 0.7) + '" r="' + w * 0.1 + '" fill="#ffd36a"/><rect x="' + (x + f) + '" y="' + (y + h * 0.78) + '" width="' + (w - 2 * f) + '" height="' + h * 0.14 + '" fill="#3b3550"/>';
       return o;
     }
@@ -227,12 +262,39 @@
     return o;
   }
 
+  // The AI is never a body: its smiley / chat window (neyroset asset) is drawn into a screen, lip-synced from the `ai` actor's envelope.
+  function neyScreen(d, x, y, w, h, sc) {
+    var N = window.NEY; if (!N) return label("neyroset?", x + w / 2, y + h / 2, h * 0.1, "#f66", 1);
+    var ex = track("ai", "expr"), e = (ex && keyAt(ex.keys, sc.t).value) || d.expr || "cheerful", chat = d.mode === "chat_window";
+    var st = chat ? { mode: "chat_window", chat_lines: d.lines || [], typing: !!d.typing, expr: e } : { mode: "monitor_smiley", frame: false, phrase: d.phrase || "", expr: e, mouth: mouthAt("ai", sc.t) };
+    var bw = chat ? 520 : 460, bh = chat ? 440 : 264, k = Math.min(w / bw, h / bh), ox = chat ? 0 : 30, oy = chat ? 0 : 24;
+    return N.defs() + '<g transform="translate(' + (x + (w - bw * k) / 2 - ox * k) + " " + (y + (h - bh * k) / 2 - oy * k) + ") scale(" + k + ')">' + N.draw(st, sc.t) + "</g>";
+  }
+  // Per-shot looks: «Гори» hatch (hot red, crosshatch, vignette) over the whole shot; «Спичечная этикетка» card (cream, 3-colour misregistered print).
+  function hatch(inner, vb) {
+    var f = 'x="' + vb[0] + '" y="' + vb[1] + '" width="' + vb[2] + '" height="' + vb[3] + '"', cx = vb[0] + vb[2] / 2, cy = vb[1] + vb[3] / 2;
+    return '<defs><filter id="hatchF" filterUnits="userSpaceOnUse" ' + f + '><feColorMatrix type="saturate" values="0.2"/><feComponentTransfer><feFuncR type="discrete" tableValues="0.1 0.45 0.8 1"/><feFuncG type="discrete" tableValues="0 0.12 0.3 0.55"/><feFuncB type="discrete" tableValues="0 0.05 0.1 0.2"/></feComponentTransfer></filter>'
+      + '<pattern id="hatchP" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><line x1="0" y1="0" x2="0" y2="9" stroke="#2a0606" stroke-width="2.4"/></pattern>'
+      + '<radialGradient id="hatchV" cx="50%" cy="50%" r="75%"><stop offset="55%" stop-color="#8a0000" stop-opacity="0"/><stop offset="100%" stop-color="#8a0000" stop-opacity="0.7"/></radialGradient></defs>'
+      + '<g filter="url(#hatchF)">' + inner + '</g><rect ' + f + ' fill="url(#hatchP)" opacity="0.5"/><rect ' + f + ' fill="url(#hatchV)"/>';
+  }
+  function cardFrame(sh, vb) {
+    var c = sh.card || {}, x = vb[0], y = vb[1], w = vb[2], h = vb[3], cx = x + w / 2, o = '<rect x="' + (x - 5) + '" y="' + (y - 5) + '" width="' + (w + 10) + '" height="' + (h + 10) + '" fill="#f1e4c0"/>';
+    o += '<rect x="' + (x + w * 0.04) + '" y="' + (y + h * 0.06) + '" width="' + w * 0.92 + '" height="' + h * 0.88 + '" fill="none" stroke="#c0392b" stroke-width="' + w * 0.012 + '"/><rect x="' + (x + w * 0.06) + '" y="' + (y + h * 0.1) + '" width="' + w * 0.88 + '" height="' + h * 0.8 + '" fill="none" stroke="#1f3a6e" stroke-width="' + w * 0.004 + '" transform="translate(' + w * 0.004 + " " + h * 0.006 + ')"/>';
+    [["#c0392b", 5, 4], ["#1f3a6e", -4, -3], ["#1a1a1a", 0, 0]].forEach(function (L) { o += T(c.title || "", cx + L[1], y + h * 0.5 + L[2], h * 0.15, L[0], "middle", 900); });
+    [["#c0392b", 3, 2], ["#1f3a6e", -2, -1]].forEach(function (L) { o += T(c.note || "", cx + L[1], y + h * 0.7 + L[2], h * 0.07, L[0], "middle", 700); });
+    return o;
+  }
+
   function frame(t) {
-    var sh = shotAt(t), vb = viewBox(t), set = sh.set || S.set, out = drawSet(set, vb);
+    var sh = shotAt(t), vb = viewBox(t), set = sh.set || S.set;
+    if (sh.look === "label") return cardFrame(sh, vb) + transitions(t, vb);
+    var out = drawSet(set, vb);
     var def = (S.sets || {})[set], props = ((def && def.props) || []).concat(sh.props || []);
     out += props.filter(function (p) { return !p.front; }).map(function (p) { return drawProp(p, t); }).join("");
     out += drawCast(actorsOf(sh, sh.cast), t);
     out += props.filter(function (p) { return p.front; }).map(function (p) { return drawProp(p, t); }).join(""); // in front of the cast: a person behind a desk
+    if (sh.look === "hatch") out = hatch(out, vb);
     return out + drawInset(sh, t, vb) + captions(t, vb) + transitions(t, vb);
   }
   window.SpikeCore = { frame: frame, viewBox: viewBox, bg: function () { return ""; } };
