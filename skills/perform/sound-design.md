@@ -11,7 +11,7 @@ Sources are linked inline. Anything without a source is marked [assumption]. Sev
 - Spotify: normalizes to -14 LUFS at playback, not at upload; keep true peak below -1 dBTP. Source: https://support.spotify.com/au/artists/article/loudness-normalization/
 - Descript: podcast standard -16 LUFS stereo, -19 LUFS mono; peak ceiling -1 dB. Source: https://www.descript.com/blog/article/podcast-loudness-standard-getting-the-right-volume
 - EBU R128 programme target is -23 LUFS, but this is broadcast, not podcast. Source: https://tech.ebu.ch/publications/r128
-- Practical target: -16 LUFS integrated, true peak -1 dBTP. Spotify then raises the file by about 2 dB [assumption that the gain is applied as stated; the Spotify page confirms playback normalization].
+- **Reconciled target (2026-11-05): per format.** Audio episodes -16 LUFS / -1 dBTP (Apple, sourced). Video and Shorts -14 LUFS / -1 dBTP (the feed's playback reference; third-party creator workflow, not a platform spec: [3P]). One value in the format profile, not a global. Practical audio target: -16 LUFS integrated, true peak -1 dBTP. Spotify then raises the file by about 2 dB [assumption that the gain is applied as stated; the Spotify page confirms playback normalization].
 - Mono vs stereo: Apple rejects single-channel WAV/FLAC; Descript's -19 mono figure implies a separate mono target.
 
 ## 2. Levels under speech
@@ -73,3 +73,9 @@ Sources are linked inline. Anything without a source is marked [assumption]. Sev
 12. Telephone and distance effects match the character's EQ setting.
 13. Pauses are left in place, not filled with music.
 14. Files named and exported in the platform's required format.
+
+## 4. Video and Shorts mix (from an outside creator workflow, [3P], adopt as a start)
+
+- Voice -14 LUFS, TP -1 dBTP; music -24 to -26 LUFS under voice with a 6-8 dB sidechain duck and a 250-500 Hz cut; at most 4 SFX; music nearly drops out at the twist; no music bed under the first line; every transition different from the last, 'lights out' at most 3 per video.
+- Our beds sit 24 dB under speech already (open: perform step 4, bead 42d). Keep the audio default for episodes; test the 6-8 dB duck on a Short before changing.
+- Stings and intro: see the shorts skill (`packaging.md`): at most 0.5 s on Shorts.

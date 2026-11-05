@@ -5,7 +5,7 @@ description: Render a ready Markdown scenario file (cast table, ## scenes, tagge
 
 # perform
 
-Ready scenario -> cast -> approval -> lint + render -> wav + timeline. Writing the script is the `scenario` skill.
+Ready scenario -> cast -> approval -> lint + render -> wav + timeline. Writing the script is the `scenario` skill; turning the result into a video is the `video` skill (`${CLAUDE_SKILL_DIR}/../video/SKILL.md`), a vertical Short the `shorts` skill.
 Scripts: `${CLAUDE_SKILL_DIR}/../../scripts`, called `$S` below. Requirements, voices, engines
 and the tag guide are in the `voice` skill (`${CLAUDE_SKILL_DIR}/../voice/SKILL.md`); read it first.
 
@@ -77,6 +77,23 @@ Defaults in the mix, and why (sources and gaps in `${CLAUDE_SKILL_DIR}/sound-des
 - Phone voices: `voice+phone:` band-limits the line like a phone call.
 - Episode: scene.py ends at -16 LUFS integrated, true peak -1 dBTP, the podcast norm
   (`--loudness`, 0 keeps the mix level). Its `[perform] loudness:` line gives before and after.
+- **Which target (reconciled 2026-11-05):** a per-**format** value, not a global. Audio episodes keep
+  **-16 LUFS** (Apple's podcast spec, sourced; platforms such as Spotify then normalise at playback).
+  Video and Shorts master at **-14 LUFS, true peak -1 dBTP** (the feed's playback reference; the outside
+  workflow we reviewed uses it; brand-kit stings were mastered near -16 LUFS, so balance them against the voice after normalising). Render a vertical video with `--loudness -14`; in the spec the target is a field
+  of the format profile (shorts `spec.md`). The two differ by 2 dB: it matters only for the first listen,
+  never for the mix balance (voices stay calibrated to -20 LUFS, step 5).
+- **Whispers and hushed turns:** a turn tagged `[whisper...]` or `[hiss...]` is lifted to -19 dB RMS over its
+  spoken frames, a hushed one (`[quiet]`, `[tiny voice]`, `[barely audible]`, `[soft]`, `[low voice]`)
+  to -21 dB RMS; never lowered, never past -1 dBFS peak (`level_hushed` in scene.py, tested in `tests/`).
+  It runs **after** the take cache is read: the cached take stays as rendered and the target can change
+  with no re-render. Why: the voice gain is one value per voice (so whispers stay quieter than shouts),
+  and a whisper came out 5-15 dB under a normal line, too quiet to follow (Denis, 2026-11-05).
+- **Take cache key:** sha256 of `TAKES_VERSION`, engine, voice, reference hash, text, phone flag, speed,
+  max silence, semitones, voice gain, speech check and free seed. Change any and that turn renders again;
+  nothing else does. Bump `TAKES_VERSION` in scene.py only when a change to rendering makes old takes
+  wrong (2: a fixed seed per voice). Leveling steps applied after the read (whisper, episode loudness) are
+  not in the key on purpose.
 
 ## 5. Levels
 

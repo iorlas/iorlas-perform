@@ -92,6 +92,7 @@ Free-form `[tag]` text passes to the model as written. Tested by ear:
   voice (one fixed seed per voice name, moved on a retry), so a voice holds together across
   turns and a rerender repeats it; `--free-seed` samples freely. Low temperature or feeding
   earlier takes as history made takes that never end (47 s, no stop).
+- A `[whisper]`, `[hiss]` or `[quiet]`-style turn is lifted to a speech level by scene.py after rendering (whisper -19 dB RMS, hush -21): do not compensate by shouting the tag. See perform, Sound design.
 - Others: `[sigh]` `[whisper]` `[shouting]` `[excited]` `[sad]` `[angry]` `[surprised]`
   `[chuckle]` `[inhale]` `[pause]` `[short pause]` `[emphasis]`.
 - Pauses: `[pause]` and `[short pause]` can stretch to 2-4 s; `scene.py` caps silences inside a
