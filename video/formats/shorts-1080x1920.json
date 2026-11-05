@@ -1,0 +1,20 @@
+{
+  "_doc": "YouTube Shorts 9:16. Zones from research/shorts_hooks.md: nothing important in the top 12%, bottom 30%, right 15% (platform UI); subtitles at 55-70% of the height; a new visual beat every 1.5-3 s; the hook inside the first seconds; under 60 s. The engine's cameras are 16:9 today: `crop` is the 9:16 window the storyboard previews inside the 16:9 frame.",
+  "id": "shorts-1080x1920",
+  "size": [1080, 1920],
+  "fps": 30,
+  "crop": [9, 16],
+  "zones": {"top": 0.12, "bottom": 0.30, "left": 0.0, "right": 0.15},
+  "subtitle": {"y": [0.55, 0.70]},
+  "gates": {
+    "static_warn_s": 3.0,
+    "static_block_s": 4.5,
+    "shot_min_s": 0.8,
+    "total_max_s": 60,
+    "total_target_s": [45, 60],
+    "hook_s": 3.0,
+    "first_voice_by_s": 0.5,
+    "min_font_px": 34,
+    "caption_chars_per_line": 18
+  }
+}

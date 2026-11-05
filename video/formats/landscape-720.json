@@ -1,0 +1,19 @@
+{
+  "_doc": "Format profile: canvas, UI-safe zones (fractions of the frame), the subtitle band, and the numbers the pre-production gates read (video.py gates). A world may ship its own file with the same keys and pass it with --format PATH.",
+  "id": "landscape-720",
+  "size": [1280, 720],
+  "fps": 30,
+  "zones": {"top": 0.05, "bottom": 0.05, "left": 0.05, "right": 0.05},
+  "subtitle": {"y": [0.84, 0.95]},
+  "gates": {
+    "static_warn_s": 4.0,
+    "static_block_s": 7.0,
+    "shot_min_s": 0.8,
+    "total_max_s": null,
+    "total_target_s": null,
+    "hook_s": null,
+    "first_voice_by_s": 2.0,
+    "min_font_px": 24,
+    "caption_chars_per_line": 42
+  }
+}

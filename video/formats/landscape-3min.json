@@ -1,0 +1,19 @@
+{
+  "_doc": "16:9 episode of about 3 minutes: the cold open inside the first 15 s, no intro card, a visual change every few seconds (static_*), total under 4 minutes.",
+  "id": "landscape-3min",
+  "size": [1280, 720],
+  "fps": 30,
+  "zones": {"top": 0.05, "bottom": 0.05, "left": 0.05, "right": 0.05},
+  "subtitle": {"y": [0.84, 0.95]},
+  "gates": {
+    "static_warn_s": 6.0,
+    "static_block_s": 10.0,
+    "shot_min_s": 0.8,
+    "total_max_s": 240,
+    "total_target_s": [150, 210],
+    "hook_s": 15.0,
+    "first_voice_by_s": 3.0,
+    "min_font_px": 24,
+    "caption_chars_per_line": 42
+  }
+}
