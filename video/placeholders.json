@@ -1,0 +1,122 @@
+{
+  "_doc": "Flat placeholders carrying the ids the art will use. Real art dropped in as video/assets/sets/<id>.svg or video/assets/props/<id>.svg replaces the placeholder with the same id; shots and design files do not change. A design file can override any field per scenario.",
+  "sets": {
+    "setA_office_dusk": {
+      "bg": "#4a5a7a",
+      "floor": "#5a4a3a"
+    },
+    "setB_office_night": {
+      "bg": "#0c1424",
+      "floor": "#1a1f2e"
+    },
+    "setC_palych_home": {
+      "bg": "#3a2f2a",
+      "floor": "#2a211c"
+    },
+    "setA_kitchen_morning": {
+      "bg": "#d9c7a0",
+      "floor": "#8a6b4a"
+    },
+    "setB_office_day": {
+      "bg": "#a9b6c6",
+      "floor": "#6b6f78"
+    },
+    "setC_meeting_room": {
+      "bg": "#9fa9a4",
+      "floor": "#5e5a55"
+    }
+  },
+  "props": {
+    "clock": {
+      "w": 120,
+      "h": 120,
+      "shape": "circle",
+      "fill": "#efe9d6"
+    },
+    "dashboard": {
+      "w": 360,
+      "h": 200,
+      "fill": "#0f1218",
+      "screen": true
+    },
+    "phone": {
+      "fill": "#3a3d48"
+    },
+    "monitor": {
+      "w": 220,
+      "h": 150,
+      "fill": "#cfc6a8",
+      "screen": true
+    },
+    "desk": {
+      "w": 460,
+      "h": 178,
+      "fill": "#6b5238"
+    },
+    "shelf": {
+      "w": 300,
+      "h": 14,
+      "fill": "#5a4630"
+    },
+    "chair": {
+      "fill": "#2f3644"
+    },
+    "keyboard": {
+      "fill": "#232630"
+    },
+    "window_dusk": {
+      "fill": "#e08a3c"
+    },
+    "window_night": {
+      "fill": "#101a30"
+    },
+    "sill": {
+      "fill": "#5a4630"
+    },
+    "lamp": {
+      "fill": "#e8c070"
+    },
+    "armchair": {
+      "fill": "#6a4a3a"
+    },
+    "coatrack": {
+      "fill": "#4a4036"
+    },
+    "colleague": {
+      "fill": "#7a7f8c"
+    },
+    "handset": {
+      "fill": "#24262e"
+    },
+    "sign": {
+      "fill": "#f2efe3",
+      "ink": "#222222"
+    },
+    "whiteboard": {
+      "fill": "#f4f6f8"
+    },
+    "table": {
+      "fill": "#7a5a3a"
+    },
+    "stove": {
+      "fill": "#bfc3c8"
+    },
+    "kettle": {
+      "fill": "#8a96a6"
+    },
+    "plate": {
+      "fill": "#efeade"
+    },
+    "zinaida": {
+      "fill": "#d8cfae",
+      "screen": true
+    },
+    "wallscreen": {
+      "fill": "#14181f",
+      "screen": true
+    },
+    "window_day": {
+      "fill": "#9fd0f0"
+    }
+  }
+}

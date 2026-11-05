@@ -58,8 +58,11 @@ Silences inside a turn longer than --max-silence (0.6 s) are shortened to it.
 The finished mix is brought to --loudness (-16 LUFS, true peak -1 dBTP: master.py);
 --loudness 0 keeps the level as mixed.
 
+--video also renders <out>.video/<out>.mp4 after the audio is written (video.py; needs Node and `npm ci` in
+video/engine). Without it nothing here changes: same wav, same timeline.json.
+
 Usage: uv run scene.py scene.md [out.wav] [--gap 0.35] [--speed 1.1]
-                       [--max-silence 0.6] [--loudness -16] [--engine drama3|s2] [--clips DIR]
+                       [--max-silence 0.6] [--loudness -16] [--engine drama3|s2] [--clips DIR] [--video]
 
 Engines (engines.py): drama3 (default, Fish Drama 3 3-bit) or s2 (Fish S2 Pro).
 Each model downloads on its first use, with a log line saying so.
@@ -127,6 +130,7 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument("--loudness", type=float, default=master.DEFAULT_LUFS, help="episode loudness, LUFS (0: keep as mixed)")
     p.add_argument("--no-intro", action="store_true", help="skip the profile's episodes/00-intro.md")
+    p.add_argument("--video", action="store_true", help="also render a video next to the wav (video.py: Node + Remotion); audio output is unchanged")
     p.add_argument("--fresh-intro", action="store_true", help="render the intro again instead of reusing its cached takes")
     return p.parse_args()
 
@@ -574,6 +578,10 @@ def main() -> None:
     )
     log(f"done: {length:.1f}s audio in {clock(took)} ({length / took:.2f}x real time)")
     print(f"{dest}: {length:.1f}s audio in {took:.1f}s")
+    if args.video:  # after everything above: the audio path above is the same with or without the flag
+        import video
+
+        video.make(dest, timeline, sr=sr, duration=length, out=dest.with_suffix(".video"), scenario_src=Path(args.src))
 
 
 def log(msg: str) -> None:

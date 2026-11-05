@@ -1,0 +1,250 @@
+{
+  "_doc": "Defaults for the scene-sheet emitter (scripts/videoplan.py emit_sheet). cast: timeline voice -> the rig that plays it, one rig per voice, never shared; a voice not listed here or under offscreen is an error. A character is on stage only in scenes where its voice speaks. props: always on stage (Zinaida's screen follows the scenario: screen.by_tag / by_text / by_sfx here, and `<!-- screen: STATE \"text\" -->` directives in the scenario). cameras: first rule whose actors are all on stage wins. looks: scene background by ambience. Pairing: Zinaida's `q` view at a fixed offset; Mihalych `sit_side` beside her needs it (a proper pair needs a new Mihalych version with a `sit_q` pose; frozen versions are not edited). frames: shot types for a design file (wide, medium, close, insert, inset): viewBox width and centre, relative to the shot's focus (dx, dy) or absolute (cy).",
+  "fps": 30,
+  "size": [
+    1280,
+    720
+  ],
+  "camera": {
+    "viewBox": [
+      -470,
+      -380,
+      1564,
+      880
+    ]
+  },
+  "background": "#26344f",
+  "offscreen": [
+    "narrator"
+  ],
+  "looks": {
+    "office": "#4a5a7a",
+    "night": "#0c1424"
+  },
+  "cameras": [
+    {
+      "actors": [
+        "mihalych"
+      ],
+      "viewBox": [
+        -90,
+        -20,
+        622,
+        350
+      ]
+    },
+    {
+      "actors": [
+        "palych",
+        "vadik",
+        "zinaida"
+      ],
+      "viewBox": [
+        -470,
+        -380,
+        1564,
+        880
+      ]
+    },
+    {
+      "actors": [
+        "vadik",
+        "zinaida"
+      ],
+      "viewBox": [
+        -300,
+        -340,
+        1200,
+        675
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "zinaida",
+      "rig": "zinaida@1.0.0",
+      "layer": 1,
+      "pose": "q",
+      "offset": [
+        110,
+        0
+      ],
+      "state": "idle"
+    }
+  ],
+  "screen": {
+    "start": "idle",
+    "by_ambience": {
+      "night": "idle"
+    },
+    "text": {
+      "idle": "ждёт команды",
+      "working": "деплой...",
+      "error": "деплой упал",
+      "love": "всё зелёное"
+    },
+    "by_tag": {
+      "panicking": "error",
+      "panic": "error",
+      "pleading": "working",
+      "nervous": "working"
+    },
+    "by_text": [
+      {
+        "re": "красн|упал|ошибк|завис",
+        "state": "error"
+      },
+      {
+        "re": "зелён|зелен|успешн",
+        "state": "working"
+      },
+      {
+        "re": "под контролем",
+        "state": "idle"
+      }
+    ],
+    "by_sfx": {
+      "keyboard": "working"
+    }
+  },
+  "cast": {
+    "vadik": {
+      "id": "vadik",
+      "rig": "vadik@1.3.0",
+      "layer": 3,
+      "pose": "stand_fidget",
+      "offset": [
+        -170,
+        -134
+      ],
+      "expr": "neutral_anxious",
+      "expr_map": {
+        "panicking": "panic",
+        "panic": "panic",
+        "nervous": "neutral_anxious",
+        "whisper": "side_glance",
+        "pleading": "shame",
+        "dry": "pretend",
+        "mumbling": "shame",
+        "desperate": "panic",
+        "forced": "pretend",
+        "dazed": "blank",
+        "calm": "pretend"
+      }
+    },
+    "praporshchik": {
+      "id": "palych",
+      "rig": "palych@1.0.2",
+      "layer": 2,
+      "pose": "hold_receiver",
+      "offset": [
+        560,
+        -134
+      ],
+      "expr": "neutral_anxious",
+      "expr_map": {
+        "loud": "bark",
+        "suspicious": "clerk",
+        "question": "clerk",
+        "proud": "proud"
+      }
+    },
+    "mihalych": {
+      "id": "mihalych",
+      "rig": "mihalych@1.0.0",
+      "layer": 2,
+      "pose": "sit_side",
+      "pose_override": {
+        "desk": 0
+      },
+      "expr": "tired_neutral"
+    },
+    "mikhalych": {
+      "id": "mihalych",
+      "rig": "mihalych@1.0.0",
+      "layer": 2,
+      "pose": "sit_side",
+      "pose_override": {
+        "desk": 0
+      },
+      "expr": "tired_neutral"
+    },
+    "palych": {
+      "id": "palych",
+      "rig": "palych@1.0.2",
+      "layer": 2,
+      "pose": "stand_still",
+      "expr": "neutral_anxious",
+      "expr_map": {
+        "loud": "bark",
+        "booming": "bark",
+        "proud": "proud",
+        "delighted": "proud"
+      }
+    },
+    "kristina": {
+      "id": "kristina",
+      "rig": "kristina@1.0.2",
+      "layer": 2,
+      "pose": "sit_front",
+      "expr": "smile",
+      "expr_map": {
+        "upspeak": "smile",
+        "trendy": "smile"
+      }
+    },
+    "ai": {
+      "id": "neyroset",
+      "rig": "neyroset@1.0.0",
+      "kind": "asset",
+      "layer": 1,
+      "expr": "cheerful",
+      "expr_map": {
+        "cheerful": "cheerful",
+        "polite": "neutral_helpful",
+        "proud": "confident_wrong"
+      }
+    },
+    "mama": {
+      "id": "mama",
+      "rig": "mama@1.1.1",
+      "layer": 2,
+      "pose": "stand_still",
+      "expr": "warm_default",
+      "expr_map": {
+        "warm": "warm_default",
+        "loud": "proud_beam",
+        "curious": "suspicious",
+        "proud": "proud_beam",
+        "delighted": "proud_beam",
+        "excited": "laugh",
+        "anxious": "worried_mom"
+      }
+    }
+  },
+  "frames": {
+    "wide": {
+      "w": 1900,
+      "cy": 100,
+      "dx": -80
+    },
+    "medium": {
+      "w": 1000,
+      "dy": 30,
+      "dx": 80
+    },
+    "close": {
+      "w": 420,
+      "dy": -40,
+      "dx": 0
+    },
+    "insert": {
+      "w": 520,
+      "dy": 0
+    },
+    "inset": {
+      "w": 700,
+      "dy": 120
+    }
+  }
+}

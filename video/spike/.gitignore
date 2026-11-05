@@ -1,0 +1,12 @@
+out/*
+!out/scene.mp4
+!out/cache_key.json
+!out/first_last.png
+!out/render.log
+engines/*/node_modules
+engines/*/.remotion
+*.log
+bench/run*.log
+!out/scene_remotion.mp4
+!out/scene_plain.mp4
+engines/resvg/node_modules

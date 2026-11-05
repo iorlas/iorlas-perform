@@ -1,0 +1,7 @@
+[
+  {"turn": 1, "voice": "vadik", "text": "Зинаида опять зависла.", "scene": "Утро", "ambience": null, "start": 0.6, "end": 4.6},
+  {"sfx": "phone_ring", "volume": 1.0, "start": 4.7, "end": 5.4},
+  {"turn": 2, "voice": "vadik", "text": "Всё плохо.", "scene": "Утро", "ambience": null, "start": 5.8, "end": 8.2},
+  {"turn": 3, "voice": "vadik", "text": "Михалыч, ты чего?", "scene": "Ночь", "ambience": null, "start": 9.9, "end": 13.0},
+  {"turn": 4, "voice": "vadik", "text": "Люблю тебя, Зинаида.", "scene": "Ночь", "ambience": null, "start": 14.0, "end": 16.6}
+]

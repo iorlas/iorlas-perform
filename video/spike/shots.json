@@ -1,0 +1,163 @@
+{
+ "schema": "shots/0-spike",
+ "scene": "mihalych_desk_zinaida",
+ "fps": 30,
+ "size": [
+  1280,
+  720
+ ],
+ "duration": 10,
+ "camera": {
+  "viewBox": [
+   -90,
+   -20,
+   622,
+   350
+  ],
+  "viewBox_9x16": [
+   -20,
+   -60,
+   300,
+   533
+  ]
+ },
+ "background": "#26344f",
+ "audio": {
+  "file": "audio/out.wav",
+  "start": 0,
+  "duration": 8.545,
+  "note": "existing take from ru-voice-clone/out.wav, mouth envelope below is FAKE (not derived from it)"
+ },
+ "mouth_open": {
+  "actor": "mihalych",
+  "file": "mouth_open.json"
+ },
+ "actors": [
+  {
+   "id": "zinaida",
+   "rig": "zinaida@1.0.0",
+   "layer": 1,
+   "pose": "q",
+   "offset": [
+    110,
+    0
+   ]
+  },
+  {
+   "id": "mihalych",
+   "rig": "mihalych@1.0.0",
+   "layer": 2,
+   "pose": "sit_side",
+   "pose_override": {
+    "desk": 0
+   }
+  }
+ ],
+ "tracks": [
+  {
+   "actor": "zinaida",
+   "channel": "state",
+   "keys": [
+    {
+     "t": 0.0,
+     "value": "idle",
+     "screen_text": "Резерв: вчера?"
+    },
+    {
+     "t": 2.5,
+     "value": "working",
+     "screen_text": "Копирую отчёт"
+    },
+    {
+     "t": 5.2,
+     "value": "error",
+     "screen_text": "Всё плохо"
+    },
+    {
+     "t": 7.6,
+     "value": "love",
+     "screen_text": "Михалыч!"
+    }
+   ]
+  },
+  {
+   "actor": "mihalych",
+   "channel": "expr",
+   "blend": 0.25,
+   "keys": [
+    {
+     "t": 0.0,
+     "value": "tired_neutral"
+    },
+    {
+     "t": 5.2,
+     "value": "panic"
+    },
+    {
+     "t": 7.9,
+     "value": "soft_smile"
+    }
+   ]
+  }
+ ],
+ "audio_tracks": [
+  {
+   "id": "sfx1",
+   "file": "audio/sfx.wav",
+   "start": 3.0,
+   "duration": 1.0,
+   "volume": 0.8
+  },
+  {
+   "id": "sfx2",
+   "file": "audio/sfx.wav",
+   "start": 9.0,
+   "duration": 1.0,
+   "volume": 0.8
+  }
+ ],
+ "captions": [
+  {
+   "t0": 0.4,
+   "t1": 4.6,
+   "words": [
+    {
+     "w": "Зинаида",
+     "t0": 0.4,
+     "t1": 1.3
+    },
+    {
+     "w": "опять",
+     "t0": 1.3,
+     "t1": 2.4
+    },
+    {
+     "w": "зависла",
+     "t0": 2.4,
+     "t1": 4.6
+    }
+   ]
+  },
+  {
+   "t0": 5.8,
+   "t1": 9.4,
+   "words": [
+    {
+     "w": "Всё",
+     "t0": 5.8,
+     "t1": 6.6
+    },
+    {
+     "w": "плохо",
+     "t0": 6.6,
+     "t1": 7.9
+    },
+    {
+     "w": "Михалыч",
+     "t0": 7.9,
+     "t1": 9.4
+    }
+   ]
+  }
+ ]
+}

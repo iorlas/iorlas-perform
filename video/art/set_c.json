@@ -1,0 +1,625 @@
+{
+ "set": "setC_meeting",
+ "version": "0.4.0",
+ "look": "Вырезка (flat cut paper)",
+ "canvas": [
+  1280,
+  720
+ ],
+ "layer_order": [
+  "bg",
+  "mid",
+  "cast_back",
+  "mid_front",
+  "cast_front",
+  "fg"
+ ],
+ "layers": {
+  "bg": "wall, floor, floor shadows, wall decor (planner, pennant, certificate, clock, rules sheet, wall screen, sticky)",
+  "mid": "behind cast: cabinet + items, ring light, plant, Палыч's chair",
+  "cast_back": "Палыч (seated behind table, centre of the long side) and Кристина (standing on the floor by the screen)",
+  "mid_front": "table + everything on it",
+  "cast_front": "Вадик standing on the floor IN FRONT of the table, 3/4 toward Палыч",
+  "fg": "empty"
+ },
+ "floor_y": 592,
+ "wall_floor_line": 560,
+ "table": {
+  "top_far_y": 436,
+  "top_near_y": 478,
+  "front_bottom_y": 592,
+  "x": [
+   380,
+   900
+  ],
+  "note": "small table, centred; Палыч at x640 on the long side"
+ },
+ "palette": {
+  "wall": "#dde2d3",
+  "floor": "#c9cfd0",
+  "table_top": "#a07a55",
+  "table_front": "#8c6846",
+  "wood": "#b79569",
+  "screen_navy": "#33415a",
+  "ok_green": "#8fd3a0",
+  "tile_mint": "#bfe6c6",
+  "khaki": "#6f7f55",
+  "steel": "#aab8c0",
+  "tape": "#f5f3e8"
+ },
+ "light": {
+  "source": "none visible (office, even)",
+  "note": "no light patches; one flat shadow per part"
+ },
+ "slots": {
+  "setC_slot_palych": {
+   "rig": "palych@1.0.1",
+   "pos": [
+    640,
+    339
+   ],
+   "scale": 0.62,
+   "pose": "stand_still",
+   "expr": "proud",
+   "mouth": 0.3,
+   "clip_y_max": 590,
+   "layer": "cast_back",
+   "note": "centre of the long side facing camera; no seated pose: lowered standing rig, hips y482, legs hidden by the table"
+  },
+  "setC_slot_kristina": {
+   "rig": "kristina@1.0.1",
+   "pos": [
+    905,
+    240
+   ],
+   "scale": 0.62,
+   "pose": "stand_still",
+   "expr": "smile",
+   "mouth": 0.3,
+   "clip_y_max": 590,
+   "layer": "cast_back",
+   "note": "standing by the wall screen, feet y~580, off the table; no phone in hand (prop did not attach)"
+  },
+  "setC_slot_vadik": {
+   "rig": "vadik@1.2.0",
+   "pos": [
+    440,
+    283
+   ],
+   "scale": 0.6,
+   "pose": "stand_still, front view (turn 0, yaw 0)",
+   "expr": "neutral_anxious",
+   "layer": "cast_front",
+   "floor_y": 650,
+   "note": "stands in front of the table, feet y650, flat shadow; front view by default, side/3-4 views only in rare deliberate shots (look weird)"
+  }
+ },
+ "inset_anchor": null,
+ "framings": [
+  {
+   "shot": "3.1/3.8 wide",
+   "subject": "Палыч + screen",
+   "viewBox": "0 0 1280 720"
+  },
+  {
+   "shot": "3.2 two-shot",
+   "subject": "Палыч (Кристина at side)",
+   "viewBox": "540 125 460 258.75"
+  },
+  {
+   "shot": "3.5 medium",
+   "subject": "Палыч",
+   "viewBox": "520 205 290 163.1"
+  },
+  {
+   "shot": "3.3 push-in",
+   "subject": "Вадик",
+   "viewBox": "292 150 280 157.5"
+  },
+  {
+   "shot": "3.4 insert",
+   "subject": "screen «0 failed»",
+   "viewBox": "962 74 318 178.9"
+  },
+  {
+   "shot": "3.6/3.7 close-up + call overlay",
+   "subject": "Вадик",
+   "viewBox": "292 150 280 157.5",
+   "overlay": "setC_overlay_call_inset"
+  }
+ ],
+ "story_texts": [
+  "чт 15:00 ДЕМО (planner)",
+  "Г. П. Палычу — за 100 % сходимость остатков (certificate)",
+  "Г. ПАЛЫЧ (mug)",
+  "хук за 3 сек! (Кристина sticky)",
+  "0 failed (screen)",
+  "3. Опоздавший стоит (rules sheet)"
+ ],
+ "rig_gaps": [
+  "palych: no seated pose (lowered standing, legs hidden)",
+  "kristina: phone prop (st.prop 'phone') did not attach to the hand, so she holds no phone; sticky + ring light carry her trace",
+  "vadik standing near the camera uses scale 0.6 from floor y650 to read as 'in front of the table'",
+  "3/4 and side views of all rigs look weak: front view is the default, turned views only for rare deliberate shots",
+  "hands wider than 1.3x wrist in all three rigs; patched in-set with clipped overlay hands (faint rect edge of the rig drop-shadow may show at 3x zoom)"
+ ],
+ "objects": [
+  {
+   "id": "setC_meeting_wall",
+   "layer": "bg",
+   "z": 0,
+   "bbox": [
+    0,
+    0,
+    1280,
+    560
+   ],
+   "desc": "back wall, pale sage + one top band",
+   "svg": "<rect width=\"1280\" height=\"560\" fill=\"#dde2d3\"/><rect width=\"1280\" height=\"22\" fill=\"#cfd6c4\"/>"
+  },
+  {
+   "id": "setC_meeting_wainscot",
+   "layer": "bg",
+   "z": 1,
+   "bbox": [
+    0,
+    396,
+    1280,
+    164
+   ],
+   "desc": "lower wall panel + chair rail",
+   "svg": "<rect y=\"404\" width=\"1280\" height=\"156\" fill=\"#ced5c3\"/><rect y=\"396\" width=\"1280\" height=\"8\" fill=\"#bcc4ae\"/>"
+  },
+  {
+   "id": "setC_meeting_baseboard",
+   "layer": "bg",
+   "z": 2,
+   "bbox": [
+    0,
+    548,
+    1280,
+    12
+   ],
+   "desc": "baseboard",
+   "svg": "<rect y=\"548\" width=\"1280\" height=\"12\" fill=\"#bcc4ae\"/>"
+  },
+  {
+   "id": "setC_meeting_floor",
+   "layer": "bg",
+   "z": 3,
+   "bbox": [
+    0,
+    560,
+    1280,
+    160
+   ],
+   "desc": "cool light-grey carpet, one shade band at the bottom",
+   "svg": "<rect y=\"560\" width=\"1280\" height=\"160\" fill=\"#c9cfd0\"/><rect y=\"690\" width=\"1280\" height=\"30\" fill=\"#b4bcbf\"/>"
+  },
+  {
+   "id": "setC_meeting_shadow_table",
+   "layer": "bg",
+   "z": 4,
+   "bbox": [
+    96,
+    590,
+    540,
+    30
+   ],
+   "desc": "flat contact shadow of table on floor",
+   "svg": "<path d=\"M384 590 H896 L910 616 H372Z\" fill=\"#8f979b\" fill-opacity=\".8\"/>"
+  },
+  {
+   "id": "setC_meeting_shadow_credenza",
+   "layer": "bg",
+   "z": 5,
+   "bbox": [
+    796,
+    566,
+    340,
+    18
+   ],
+   "desc": "flat contact shadow of cabinet",
+   "svg": "<path d=\"M804 570 H1086 L1094 584 H796Z\" fill=\"#8f979b\" fill-opacity=\".7\"/>"
+  },
+  {
+   "id": "setC_meeting_wall_planner",
+   "layer": "bg",
+   "z": 6,
+   "bbox": [
+    32,
+    112,
+    114,
+    232
+   ],
+   "desc": "weekly planner, ruler-straight handwriting: every day 07:00 planёrka, Thursday 15:00 ДЕМО in red",
+   "story_text": "чт 15:00 ДЕМО",
+   "quiet_text": "ГРАФИК · НЕДЕЛЯ 45 · ПРАВКИ НЕ ВНОСИТЬ; пн/вт/ср/пт 07:00 планёрка",
+   "svg": "<rect x=\"40\" y=\"122.6\" width=\"110\" height=\"222\" rx=\"3\" fill=\"#cbc2a6\"/><rect x=\"36\" y=\"118\" width=\"110\" height=\"222\" rx=\"3\" fill=\"#fbf6e6\"/><rect x=\"88\" y=\"112\" width=\"6\" height=\"10\" fill=\"#8a6742\"/><rect x=\"36\" y=\"118\" width=\"110\" height=\"30\" fill=\"#b5483a\"/><text x=\"91\" y=\"138\" font-size=\"13\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#fbf6e6\" text-anchor=\"middle\">НОЯБРЬ</text><text x=\"91\" y=\"162\" font-size=\"6.5\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"600\" fill=\"#a39d86\" text-anchor=\"middle\">ГРАФИК · НЕДЕЛЯ 45 · ПРАВКИ НЕ ВНОСИТЬ</text><rect x=\"42\" y=\"170\" width=\"98\" height=\"30\" fill=\"#f1e9d0\"/><text x=\"48\" y=\"189\" font-size=\"9\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"500\" fill=\"#a39d86\" text-anchor=\"start\">пн 07:00 планёрка</text><rect x=\"42\" y=\"204\" width=\"98\" height=\"30\" fill=\"#fbf6e6\"/><text x=\"48\" y=\"223\" font-size=\"9\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"500\" fill=\"#a39d86\" text-anchor=\"start\">вт 07:00 планёрка</text><rect x=\"42\" y=\"238\" width=\"98\" height=\"30\" fill=\"#f1e9d0\"/><text x=\"48\" y=\"257\" font-size=\"9\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"500\" fill=\"#a39d86\" text-anchor=\"start\">ср 07:00 планёрка</text><rect x=\"42\" y=\"272\" width=\"98\" height=\"30\" fill=\"#f6e3a6\"/><text x=\"48\" y=\"291\" font-size=\"11\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#b5483a\" text-anchor=\"start\">чт 15:00 ДЕМО</text><rect x=\"42\" y=\"306\" width=\"98\" height=\"30\" fill=\"#f1e9d0\"/><text x=\"48\" y=\"325\" font-size=\"9\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"500\" fill=\"#a39d86\" text-anchor=\"start\">пт 07:00 планёрка</text>"
+  },
+  {
+   "id": "setC_meeting_pennant",
+   "layer": "bg",
+   "z": 7,
+   "bbox": [
+    288,
+    96,
+    128,
+    76
+   ],
+   "desc": "felt pennant: best warehouse of the district, 2009",
+   "quiet_text": "ЛУЧШИЙ СКЛАД ОКРУГА · 2009",
+   "svg": "<g transform=\"translate(0,-62)\"><rect x=\"290\" y=\"102\" width=\"124\" height=\"7\" rx=\"2\" fill=\"#957250\"/><rect x=\"294\" y=\"98\" width=\"5\" height=\"10\" fill=\"#957250\"/><rect x=\"405\" y=\"98\" width=\"5\" height=\"10\" fill=\"#957250\"/><path d=\"M298 109 H410 L386 137 L410 165 H298Z\" transform=\"translate(4,5)\" fill=\"#46603e\"/><path d=\"M298 109 H410 L386 137 L410 165 H298Z\" fill=\"#5d7a52\"/><polygon points=\"316.0,129.0 318.0,134.2 323.6,134.5 319.2,138.1 320.7,143.5 316.0,140.4 311.3,143.5 312.8,138.1 308.4,134.5 314.0,134.2\" fill=\"#e0b24a\"/><text x=\"360\" y=\"134\" font-size=\"9.5\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#e8cf86\" text-anchor=\"middle\">ЛУЧШИЙ СКЛАД</text><text x=\"360\" y=\"148\" font-size=\"7.5\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"600\" fill=\"#cfd6a0\" text-anchor=\"middle\">ОКРУГА · 2009</text></g>"
+  },
+  {
+   "id": "setC_meeting_certificate",
+   "layer": "bg",
+   "z": 8,
+   "bbox": [
+    688,
+    98,
+    106,
+    84
+   ],
+   "desc": "framed certificate: 100% stock reconciliation",
+   "story_text": "Г. П. Палычу — за 100 % сходимость остатков",
+   "svg": "<rect x=\"694\" y=\"104.6\" width=\"100\" height=\"78\" rx=\"3\" fill=\"#957250\"/><rect x=\"690\" y=\"100\" width=\"100\" height=\"78\" rx=\"3\" fill=\"#b79569\"/><rect x=\"696\" y=\"106\" width=\"88\" height=\"66\" fill=\"#fbf6e6\"/><rect x=\"699\" y=\"109\" width=\"82\" height=\"60\" fill=\"#efe3bb\"/><rect x=\"702\" y=\"112\" width=\"76\" height=\"54\" fill=\"#fbf6e6\"/><text x=\"740\" y=\"125\" font-size=\"9\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#b5483a\" text-anchor=\"middle\">ГРАМОТА</text><text x=\"740\" y=\"137\" font-size=\"6.2\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"600\" fill=\"#5a4638\" text-anchor=\"middle\">начальнику склада №1</text><text x=\"740\" y=\"146\" font-size=\"6.2\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#5a4638\" text-anchor=\"middle\">Г. П. Палычу — за 100 %</text><text x=\"740\" y=\"154\" font-size=\"6.2\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#5a4638\" text-anchor=\"middle\">сходимость остатков</text><path d=\"M740 157 l5 5 -5 5 -5 -5z\" fill=\"#e0b24a\"/>"
+  },
+  {
+   "id": "setC_meeting_clock",
+   "layer": "bg",
+   "z": 9,
+   "bbox": [
+    614,
+    36,
+    58,
+    58
+   ],
+   "desc": "square wall clock, 15:00",
+   "svg": "<rect x=\"617\" y=\"39.45\" width=\"54\" height=\"54\" rx=\"8\" fill=\"#b3b99f\"/><rect x=\"614\" y=\"36\" width=\"54\" height=\"54\" rx=\"8\" fill=\"#957250\"/><rect x=\"619\" y=\"41\" width=\"44\" height=\"44\" rx=\"4\" fill=\"#fbf6e6\"/><rect x=\"639\" y=\"44\" width=\"4\" height=\"6\" fill=\"#5a4638\"/><rect x=\"639\" y=\"76\" width=\"4\" height=\"6\" fill=\"#5a4638\"/><rect x=\"622\" y=\"61\" width=\"6\" height=\"4\" fill=\"#5a4638\"/><rect x=\"654\" y=\"61\" width=\"6\" height=\"4\" fill=\"#5a4638\"/><path d=\"M641 63 L641 49 M641 63 L653 63\" stroke=\"#5a4638\" stroke-width=\"4\" stroke-linecap=\"round\" fill=\"none\"/><rect x=\"638\" y=\"60\" width=\"6\" height=\"6\" rx=\"1\" fill=\"#b5483a\"/>"
+  },
+  {
+   "id": "setC_meeting_rules_sheet",
+   "layer": "bg",
+   "z": 10,
+   "bbox": [
+    200,
+    109,
+    90,
+    108
+   ],
+   "desc": "rules of the room, small print A4 sheet",
+   "story_text": "3. Опоздавший стоит",
+   "quiet_text": "ПРАВИЛА ПЕРЕГОВОРКИ + other 5 rules",
+   "svg": "<rect x=\"203\" y=\"115.45\" width=\"86\" height=\"102\" rx=\"2\" fill=\"#c6c0a6\"/><rect x=\"200\" y=\"112\" width=\"86\" height=\"102\" rx=\"2\" fill=\"#f6f1e0\"/><rect x=\"234\" y=\"109\" width=\"18\" height=\"7\" fill=\"#d9d2b4\"/><text x=\"243\" y=\"128\" font-size=\"6\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#8f8a74\" text-anchor=\"middle\">ПРАВИЛА ПЕРЕГОВОРКИ</text><text x=\"206\" y=\"143\" font-size=\"5.6\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"500\" fill=\"#a8a38c\" text-anchor=\"start\">1. Заходить за 5 минут</text><text x=\"206\" y=\"154.5\" font-size=\"5.6\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"500\" fill=\"#a8a38c\" text-anchor=\"start\">2. Телефоны экраном вниз</text><text x=\"206\" y=\"166\" font-size=\"5.6\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#8a3a2e\" text-anchor=\"start\">3. Опоздавший стоит</text><text x=\"206\" y=\"177.5\" font-size=\"5.6\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"500\" fill=\"#a8a38c\" text-anchor=\"start\">4. Кружки подписаны</text><text x=\"206\" y=\"189\" font-size=\"5.6\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"500\" fill=\"#a8a38c\" text-anchor=\"start\">5. Вопросы после доклада</text><text x=\"206\" y=\"200.5\" font-size=\"5.6\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"500\" fill=\"#a8a38c\" text-anchor=\"start\">6. Порядок — сила</text>"
+  },
+  {
+   "id": "setC_meeting_wall_screen",
+   "layer": "bg",
+   "z": 11,
+   "bbox": [
+    975,
+    86,
+    336,
+    210
+   ],
+   "desc": "CI dashboard: navy counter panel «0 failed» in green + 14 mint paper tiles with ticks (stress tiles_2 style)",
+   "story_text": "0 failed",
+   "quiet_text": "tests/, ЭКРАН №2 label",
+   "svg": "<g transform=\"translate(975,86) scale(.88) translate(-800,-86)\"><rect x=\"805\" y=\"91.75\" width=\"330\" height=\"204\" rx=\"8\" fill=\"#b3b9a6\"/><rect x=\"800\" y=\"86\" width=\"330\" height=\"204\" rx=\"8\" fill=\"#3b4254\"/><rect x=\"812\" y=\"98\" width=\"306\" height=\"180\" fill=\"#e7dcc2\"/><rect x=\"812\" y=\"98\" width=\"100\" height=\"180\" fill=\"#33415a\"/><text x=\"862\" y=\"118\" font-size=\"10\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#efe7d2\" text-anchor=\"middle\">tests/</text><text x=\"862\" y=\"208\" font-size=\"78\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#8fd3a0\" text-anchor=\"middle\">0</text><text x=\"862\" y=\"236\" font-size=\"24\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#efe7d2\" text-anchor=\"middle\">failed</text><rect x=\"929\" y=\"115\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M926 112 H957 L966 121 V148 H926Z\" fill=\"#bfe6c6\"/><path d=\"M957 112 L966 121 H957Z\" fill=\"#9fcfae\"/><path d=\"M937 134 L944 141 L956 126\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"977\" y=\"115\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M974 112 H1005 L1014 121 V148 H974Z\" fill=\"#bfe6c6\"/><path d=\"M1005 112 L1014 121 H1005Z\" fill=\"#9fcfae\"/><path d=\"M985 134 L992 141 L1004 126\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"1025\" y=\"115\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M1022 112 H1053 L1062 121 V148 H1022Z\" fill=\"#bfe6c6\"/><path d=\"M1053 112 L1062 121 H1053Z\" fill=\"#9fcfae\"/><path d=\"M1033 134 L1040 141 L1052 126\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"1073\" y=\"115\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M1070 112 H1101 L1110 121 V148 H1070Z\" fill=\"#bfe6c6\"/><path d=\"M1101 112 L1110 121 H1101Z\" fill=\"#9fcfae\"/><path d=\"M1081 134 L1088 141 L1100 126\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"929\" y=\"157\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M926 154 H957 L966 163 V190 H926Z\" fill=\"#bfe6c6\"/><path d=\"M957 154 L966 163 H957Z\" fill=\"#9fcfae\"/><path d=\"M937 176 L944 183 L956 168\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"977\" y=\"157\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M974 154 H1005 L1014 163 V190 H974Z\" fill=\"#bfe6c6\"/><path d=\"M1005 154 L1014 163 H1005Z\" fill=\"#9fcfae\"/><path d=\"M985 176 L992 183 L1004 168\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"1025\" y=\"157\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M1022 154 H1053 L1062 163 V190 H1022Z\" fill=\"#bfe6c6\"/><path d=\"M1053 154 L1062 163 H1053Z\" fill=\"#9fcfae\"/><path d=\"M1033 176 L1040 183 L1052 168\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"1073\" y=\"157\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M1070 154 H1101 L1110 163 V190 H1070Z\" fill=\"#bfe6c6\"/><path d=\"M1101 154 L1110 163 H1101Z\" fill=\"#9fcfae\"/><path d=\"M1081 176 L1088 183 L1100 168\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"929\" y=\"199\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M926 196 H957 L966 205 V232 H926Z\" fill=\"#bfe6c6\"/><path d=\"M957 196 L966 205 H957Z\" fill=\"#9fcfae\"/><path d=\"M937 218 L944 225 L956 210\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"977\" y=\"199\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M974 196 H1005 L1014 205 V232 H974Z\" fill=\"#bfe6c6\"/><path d=\"M1005 196 L1014 205 H1005Z\" fill=\"#9fcfae\"/><path d=\"M985 218 L992 225 L1004 210\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"1025\" y=\"199\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M1022 196 H1053 L1062 205 V232 H1022Z\" fill=\"#bfe6c6\"/><path d=\"M1053 196 L1062 205 H1053Z\" fill=\"#9fcfae\"/><path d=\"M1033 218 L1040 225 L1052 210\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"1073\" y=\"199\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M1070 196 H1101 L1110 205 V232 H1070Z\" fill=\"#bfe6c6\"/><path d=\"M1101 196 L1110 205 H1101Z\" fill=\"#9fcfae\"/><path d=\"M1081 218 L1088 225 L1100 210\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"929\" y=\"241\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M926 238 H957 L966 247 V274 H926Z\" fill=\"#bfe6c6\"/><path d=\"M957 238 L966 247 H957Z\" fill=\"#9fcfae\"/><path d=\"M937 260 L944 267 L956 252\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"977\" y=\"241\" width=\"40\" height=\"36\" fill=\"#8fb89a\"/><path d=\"M974 238 H1005 L1014 247 V274 H974Z\" fill=\"#bfe6c6\"/><path d=\"M1005 238 L1014 247 H1005Z\" fill=\"#9fcfae\"/><path d=\"M985 260 L992 267 L1004 252\" stroke=\"#2f6b47\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"1044\" y=\"279\" width=\"70\" height=\"9\" fill=\"#f5f3e8\"/><text x=\"1079\" y=\"286.5\" font-size=\"6.2\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#8a8a80\" text-anchor=\"middle\">ЭКРАН №2</text><rect x=\"950\" y=\"290\" width=\"30\" height=\"8\" fill=\"#9aa08a\"/></g>"
+  },
+  {
+   "id": "setC_meeting_kristina_sticky",
+   "layer": "bg",
+   "z": 12,
+   "bbox": [
+    901,
+    158,
+    44,
+    44
+   ],
+   "desc": "Кристина: reels-style sticky note on the wall right of the screen: «хук за 3 сек!»",
+   "story_text": "хук за 3 сек!",
+   "svg": "<g transform=\"translate(-255,-100)\"><g transform=\"rotate(-6 1177 180)\"><rect x=\"1162\" y=\"164.3\" width=\"34\" height=\"34\" rx=\"1\" fill=\"#d4bd5e\"/><rect x=\"1160\" y=\"162\" width=\"34\" height=\"34\" rx=\"1\" fill=\"#f4dc7e\"/><text x=\"1177\" y=\"176\" font-size=\"7.4\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#8a3a2e\" text-anchor=\"middle\">хук за</text><text x=\"1177\" y=\"187\" font-size=\"7.4\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#8a3a2e\" text-anchor=\"middle\">3 сек!</text></g></g>"
+  },
+  {
+   "id": "setC_meeting_credenza",
+   "layer": "mid",
+   "z": 13,
+   "bbox": [
+    975,
+    372,
+    290,
+    198
+   ],
+   "desc": "low cabinet under the screen, standing on the floor with a plinth",
+   "svg": "<g transform=\"translate(175,0)\"><rect x=\"800\" y=\"384\" width=\"290\" height=\"170\" fill=\"#c9b996\"/><rect x=\"800\" y=\"372\" width=\"290\" height=\"12\" fill=\"#b9a57e\"/><rect x=\"812\" y=\"398\" width=\"126\" height=\"140\" fill=\"#bfab86\"/><rect x=\"952\" y=\"398\" width=\"126\" height=\"140\" fill=\"#bfab86\"/><rect x=\"926\" y=\"440\" width=\"8\" height=\"26\" fill=\"#8a7650\"/><rect x=\"956\" y=\"440\" width=\"8\" height=\"26\" fill=\"#8a7650\"/><rect x=\"800\" y=\"554\" width=\"290\" height=\"16\" fill=\"#a99770\"/></g>"
+  },
+  {
+   "id": "setC_meeting_folder_stack",
+   "layer": "mid",
+   "z": 14,
+   "bbox": [
+    993,
+    314,
+    82,
+    60
+   ],
+   "desc": "4 khaki folders in a dead-straight stack tied with string and a bow, inventory label",
+   "quiet_text": "ИНВ. 14",
+   "svg": "<g transform=\"translate(175,0)\"><rect x=\"823\" y=\"326\" width=\"82\" height=\"46\" fill=\"#a89a7a\" fill-opacity=\".7\"/><rect x=\"818\" y=\"360\" width=\"78\" height=\"12\" fill=\"#cdb87e\"/><rect x=\"818\" y=\"348\" width=\"78\" height=\"12\" fill=\"#bda86c\"/><rect x=\"818\" y=\"336\" width=\"78\" height=\"12\" fill=\"#cdb87e\"/><rect x=\"818\" y=\"324\" width=\"78\" height=\"12\" fill=\"#bda86c\"/><rect x=\"855\" y=\"326\" width=\"4\" height=\"46\" fill=\"#7a5a3a\"/><rect x=\"818\" y=\"346\" width=\"78\" height=\"4\" fill=\"#7a5a3a\"/><path d=\"M857 346 l-10 -9 v11z M857 346 l10 -9 v11z\" fill=\"#7a5a3a\"/><rect x=\"854\" y=\"344\" width=\"6\" height=\"8\" fill=\"#5f4529\"/><rect x=\"822\" y=\"354\" width=\"24\" height=\"9\" fill=\"#f5f3e8\"/><text x=\"834\" y=\"361\" font-size=\"5.4\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#8a8a80\" text-anchor=\"middle\">ИНВ. 14</text></g>"
+  },
+  {
+   "id": "setC_meeting_label_maker",
+   "layer": "mid",
+   "z": 15,
+   "bbox": [
+    1085,
+    322,
+    52,
+    52
+   ],
+   "desc": "label maker with a fresh strip «ЭКРАН №2» (same label is on the screen)",
+   "quiet_text": "ЭКРАН №2",
+   "svg": "<g transform=\"translate(175,0)\"><rect x=\"912\" y=\"324\" width=\"44\" height=\"12\" fill=\"#f5f3e8\"/><text x=\"934\" y=\"333\" font-size=\"6.4\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#6a6a60\" text-anchor=\"middle\">ЭКРАН №2</text><rect x=\"913\" y=\"341.45\" width=\"48\" height=\"34\" rx=\"5\" fill=\"#a89a7a\"/><rect x=\"910\" y=\"338\" width=\"48\" height=\"34\" rx=\"5\" fill=\"#3f6a73\"/><rect x=\"916\" y=\"343\" width=\"36\" height=\"8\" fill=\"#dfeee0\"/><rect x=\"917\" y=\"355\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/><rect x=\"923\" y=\"355\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/><rect x=\"929\" y=\"355\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/><rect x=\"935\" y=\"355\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/><rect x=\"941\" y=\"355\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/><rect x=\"947\" y=\"355\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/><rect x=\"917\" y=\"362\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/><rect x=\"923\" y=\"362\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/><rect x=\"929\" y=\"362\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/><rect x=\"935\" y=\"362\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/><rect x=\"941\" y=\"362\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/><rect x=\"947\" y=\"362\" width=\"5\" height=\"5\" fill=\"#9fc3c4\"/></g>"
+  },
+  {
+   "id": "setC_meeting_kristina_notebook",
+   "layer": "mid",
+   "z": 16,
+   "bbox": [
+    1157,
+    348,
+    66,
+    26
+   ],
+   "desc": "Кристина: branded notebook «✦ vibe» lying on the cabinet",
+   "quiet_text": "✦ vibe",
+   "svg": "<g transform=\"translate(175,0)\"><rect x=\"987\" y=\"353.45\" width=\"60\" height=\"22\" rx=\"3\" fill=\"#c78986\"/><rect x=\"984\" y=\"350\" width=\"60\" height=\"22\" rx=\"3\" fill=\"#e0a9a6\"/><rect x=\"990\" y=\"355\" width=\"20\" height=\"10\" fill=\"#f6e6e2\"/><text x=\"1000\" y=\"363\" font-size=\"6.2\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#b86f6a\" text-anchor=\"middle\">✦ vibe</text></g>"
+  },
+  {
+   "id": "setC_meeting_credenza_plant",
+   "layer": "mid",
+   "z": 17,
+   "bbox": [
+    1223,
+    316,
+    44,
+    58
+   ],
+   "desc": "small plant on the cabinet",
+   "svg": "<g transform=\"translate(175,0)\"><rect x=\"1055\" y=\"353.45\" width=\"32\" height=\"22\" rx=\"3\" fill=\"#a89a7a\"/><rect x=\"1052\" y=\"350\" width=\"32\" height=\"22\" rx=\"3\" fill=\"#d9a07f\"/><path d=\"M1068 352 Q1058.3 335.0 1062.4 320.5 Q1072.1 337.5 1068 352Z\" fill=\"#7da46a\"/><path d=\"M1068 352 Q1058.3 335.0 1062.4 320.5 L1068 352Z\" fill=\"#61894f\"/><path d=\"M1068 352 Q1065.1 339.3 1075.8 323.0 Q1078.6 335.7 1068 352Z\" fill=\"#7da46a\"/><path d=\"M1068 352 Q1065.1 339.3 1075.8 323.0 L1068 352Z\" fill=\"#61894f\"/><path d=\"M1068 352 Q1055.6 337.9 1053.1 330.7 Q1065.5 344.8 1068 352Z\" fill=\"#7da46a\"/><path d=\"M1068 352 Q1055.6 337.9 1053.1 330.7 L1068 352Z\" fill=\"#61894f\"/><path d=\"M1068 352 Q1070.0 345.6 1081.8 332.3 Q1079.8 338.7 1068 352Z\" fill=\"#7da46a\"/><path d=\"M1068 352 Q1070.0 345.6 1081.8 332.3 L1068 352Z\" fill=\"#61894f\"/></g>"
+  },
+  {
+   "id": "setC_meeting_ring_light",
+   "layer": "mid",
+   "z": 18,
+   "bbox": [
+    790,
+    298,
+    70,
+    290
+   ],
+   "desc": "Кристина: floor ring light on a tripod with a phone clip (ring is functional, not decoration)",
+   "svg": "<g transform=\"translate(172,0)\"><path d=\"M672 358 L640 584 H650 L672 400 L694 584 H704Z\" fill=\"#3b4254\"/><rect x=\"668\" y=\"358\" width=\"8\" height=\"120\" fill=\"#3b4254\"/><path fill-rule=\"evenodd\" d=\"M642 330 a30 30 0 1 0 60 0 a30 30 0 1 0 -60 0Z M653 330 a19 19 0 1 1 38 0 a19 19 0 1 1 -38 0Z\" transform=\"translate(3,3)\" fill=\"#c9c2ae\"/><path fill-rule=\"evenodd\" d=\"M642 330 a30 30 0 1 0 60 0 a30 30 0 1 0 -60 0Z M653 330 a19 19 0 1 1 38 0 a19 19 0 1 1 -38 0Z\" fill=\"#f4efe4\"/><rect x=\"665\" y=\"319\" width=\"14\" height=\"22\" rx=\"2\" fill=\"#3b4254\"/><rect x=\"667\" y=\"321\" width=\"10\" height=\"16\" fill=\"#cfe6ee\"/></g>"
+  },
+  {
+   "id": "setC_meeting_chair_palych",
+   "layer": "mid",
+   "z": 19,
+   "bbox": [
+    564,
+    292,
+    152,
+    186
+   ],
+   "desc": "head-of-table wooden armchair as ONE object: back, headrest rail and armrests on the centre line x640, one flat shadow",
+   "slot_behind": "palych",
+   "svg": "<g transform=\"translate(5,6)\" fill=\"#957250\"><rect x=\"580\" y=\"300\" width=\"120\" height=\"176\" rx=\"10\"/><rect x=\"572\" y=\"294\" width=\"136\" height=\"16\" rx=\"7\"/><rect x=\"564\" y=\"420\" width=\"32\" height=\"16\" rx=\"5\"/><rect x=\"684\" y=\"420\" width=\"32\" height=\"16\" rx=\"5\"/></g><rect x=\"580\" y=\"300\" width=\"120\" height=\"176\" rx=\"10\" fill=\"#b79569\"/><rect x=\"572\" y=\"294\" width=\"136\" height=\"16\" rx=\"7\" fill=\"#a68258\"/><rect x=\"564\" y=\"420\" width=\"32\" height=\"16\" rx=\"5\" fill=\"#a68258\"/><rect x=\"684\" y=\"420\" width=\"32\" height=\"16\" rx=\"5\" fill=\"#a68258\"/>"
+  },
+  {
+   "id": "setC_meeting_table_top",
+   "layer": "mid_front",
+   "z": 20,
+   "bbox": [
+    380,
+    436,
+    520,
+    42
+   ],
+   "desc": "small meeting table top, dark walnut",
+   "svg": "<path d=\"M406 436 H874 L900 478 H380Z\" fill=\"#a07a55\"/>"
+  },
+  {
+   "id": "setC_meeting_table_front",
+   "layer": "mid_front",
+   "z": 21,
+   "bbox": [
+    380,
+    478,
+    520,
+    114
+   ],
+   "desc": "table edge band + solid front panel",
+   "svg": "<rect x=\"380\" y=\"478\" width=\"520\" height=\"12\" fill=\"#7e5c3e\"/><rect x=\"388\" y=\"490\" width=\"504\" height=\"102\" fill=\"#8c6846\"/>"
+  },
+  {
+   "id": "setC_meeting_table_label_head",
+   "layer": "mid_front",
+   "z": 22,
+   "bbox": [
+    595,
+    479,
+    92,
+    10
+   ],
+   "desc": "label-maker strip on the table edge: ГОЛОВА СТОЛА",
+   "quiet_text": "ГОЛОВА СТОЛА",
+   "svg": "<g transform=\"translate(77,0)\"><rect x=\"520\" y=\"480\" width=\"86\" height=\"9\" fill=\"#f5f3e8\"/><text x=\"563\" y=\"487\" font-size=\"6.2\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#8a8a80\" text-anchor=\"middle\">ГОЛОВА СТОЛА</text></g>"
+  },
+  {
+   "id": "setC_meeting_palych_notepad",
+   "layer": "mid_front",
+   "z": 23,
+   "bbox": [
+    588,
+    446,
+    104,
+    22
+   ],
+   "desc": "notepad squared to the table edge + pen, parallel",
+   "svg": "<g transform=\"translate(194,0)\"><rect x=\"398\" y=\"446\" width=\"62\" height=\"18\" fill=\"#6e5238\"/><rect x=\"396\" y=\"448\" width=\"62\" height=\"18\" fill=\"#fbf6e6\"/><rect x=\"464\" y=\"454\" width=\"30\" height=\"5\" fill=\"#3b4254\"/></g>"
+  },
+  {
+   "id": "setC_meeting_thermos",
+   "layer": "mid_front",
+   "z": 24,
+   "bbox": [
+    714,
+    402,
+    34,
+    68
+   ],
+   "desc": "army-green thermos",
+   "svg": "<g transform=\"translate(204,0)\"><rect x=\"514\" y=\"414\" width=\"26\" height=\"54\" rx=\"5\" fill=\"#556342\" transform=\"translate(3,3)\"/><rect x=\"512\" y=\"412\" width=\"26\" height=\"54\" rx=\"5\" fill=\"#6f7f55\"/><rect x=\"514\" y=\"404\" width=\"22\" height=\"10\" rx=\"2\" fill=\"#3d4a30\"/><rect x=\"512\" y=\"428\" width=\"26\" height=\"8\" fill=\"#556342\"/></g>"
+  },
+  {
+   "id": "setC_meeting_mug_palych",
+   "layer": "mid_front",
+   "z": 25,
+   "bbox": [
+    654,
+    440,
+    48,
+    32
+   ],
+   "desc": "metal mug with a label-maker name «Г. ПАЛЫЧ»",
+   "story_text": "Г. ПАЛЫЧ",
+   "svg": "<g transform=\"translate(202,0)\"><rect x=\"466\" y=\"442\" width=\"30\" height=\"26\" rx=\"4\" fill=\"#8d9ca5\" transform=\"translate(3,3)\"/><rect x=\"466\" y=\"442\" width=\"30\" height=\"26\" rx=\"4\" fill=\"#aab8c0\"/><path d=\"M466 448 H460 Q456 448 456 454 V458 Q456 464 460 464 H466\" stroke=\"#aab8c0\" stroke-width=\"5\" fill=\"none\"/><rect x=\"469\" y=\"452\" width=\"24\" height=\"9\" fill=\"#f5f3e8\"/><text x=\"481\" y=\"459.2\" font-size=\"5.4\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#3a3a3a\" text-anchor=\"middle\">Г. ПАЛЫЧ</text></g>"
+  },
+  {
+   "id": "setC_meeting_carafe",
+   "layer": "mid_front",
+   "z": 26,
+   "bbox": [
+    778,
+    430,
+    62,
+    40
+   ],
+   "desc": "water carafe and two glasses mid-table",
+   "svg": "<g transform=\"translate(444,0)\"><rect x=\"336\" y=\"438\" width=\"20\" height=\"30\" rx=\"3\" fill=\"#cfe6ee\"/><rect x=\"340\" y=\"432\" width=\"12\" height=\"8\" fill=\"#aecbd6\"/><rect x=\"362\" y=\"452\" width=\"14\" height=\"16\" rx=\"2\" fill=\"#cfe6ee\"/><rect x=\"380\" y=\"452\" width=\"14\" height=\"16\" rx=\"2\" fill=\"#cfe6ee\"/></g>"
+  },
+  {
+   "id": "setC_meeting_remote",
+   "layer": "mid_front",
+   "z": 27,
+   "bbox": [
+    828,
+    450,
+    36,
+    20
+   ],
+   "desc": "screen remote with a label",
+   "quiet_text": "ПУЛЬТ",
+   "svg": "<g transform=\"translate(534,0)\"><rect x=\"296\" y=\"458\" width=\"32\" height=\"10\" rx=\"2\" fill=\"#3b4254\"/><rect x=\"300\" y=\"452\" width=\"22\" height=\"7\" fill=\"#f5f3e8\"/><text x=\"311\" y=\"458\" font-size=\"4.8\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#8a8a80\" text-anchor=\"middle\">ПУЛЬТ</text></g>"
+  },
+  {
+   "id": "setC_meeting_whiteboard",
+   "layer": "bg",
+   "z": 28,
+   "bbox": [
+    430,
+    40,
+    160,
+    100
+   ],
+   "desc": "whiteboard corner, half-erased diagram: тесты → CI → прод? (right half wiped)",
+   "quiet_text": "тесты → CI → прод?",
+   "svg": "<rect x=\"434\" y=\"44.6\" width=\"156\" height=\"92\" rx=\"3\" fill=\"#c4cab8\"/><rect x=\"430\" y=\"40\" width=\"156\" height=\"92\" rx=\"3\" fill=\"#eef0e4\"/><rect x=\"430\" y=\"40\" width=\"156\" height=\"4\" fill=\"#b9bfae\"/><rect x=\"430\" y=\"128\" width=\"156\" height=\"4\" fill=\"#b9bfae\"/><rect x=\"440\" y=\"54\" width=\"36\" height=\"20\" fill=\"none\" stroke=\"#7d93ab\" stroke-width=\"2.4\"/><text x=\"458\" y=\"67\" font-size=\"8\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#7d93ab\" text-anchor=\"middle\">тесты</text><path d=\"M476 64 H492\" stroke=\"#7d93ab\" stroke-width=\"2.4\" fill=\"none\"/><path d=\"M492 64 l-5 -4 v8z\" fill=\"#7d93ab\"/><rect x=\"494\" y=\"54\" width=\"30\" height=\"20\" fill=\"none\" stroke=\"#7d93ab\" stroke-width=\"2.4\"/><text x=\"509\" y=\"67\" font-size=\"8\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#7d93ab\" text-anchor=\"middle\">CI</text><path d=\"M509 74 V96\" stroke=\"#7d93ab\" stroke-width=\"2.4\" fill=\"none\"/><rect x=\"488\" y=\"96\" width=\"42\" height=\"18\" fill=\"none\" stroke=\"#b07a70\" stroke-width=\"2.4\"/><text x=\"509\" y=\"108\" font-size=\"8\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#b07a70\" text-anchor=\"middle\">прод?</text><path d=\"M528 48 H580 V102 L548 124 H522Z\" fill=\"#e4e8da\"/><rect x=\"440\" y=\"134\" width=\"30\" height=\"5\" rx=\"2\" fill=\"#a9b09a\"/><rect x=\"444\" y=\"131\" width=\"22\" height=\"3\" fill=\"#7d93ab\"/>"
+  },
+  {
+   "id": "setC_meeting_conference_phone",
+   "layer": "mid_front",
+   "z": 29,
+   "bbox": [
+    486,
+    439,
+    72,
+    44
+   ],
+   "desc": "star-shaped conference phone, three arms, one button",
+   "svg": "<g transform=\"translate(523,459) scale(1,.42)\" fill=\"#8a7a68\"><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(0)\"/><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(120)\"/><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(240)\"/><rect x=\"-12\" y=\"-12\" width=\"24\" height=\"24\" rx=\"12\"/></g><g transform=\"translate(520,455) scale(1,.42)\" fill=\"#4a5266\"><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(0)\"/><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(120)\"/><rect x=\"-6\" y=\"-6\" width=\"12\" height=\"36\" rx=\"6\" transform=\"rotate(240)\"/><rect x=\"-12\" y=\"-12\" width=\"24\" height=\"24\" rx=\"12\"/></g><rect x=\"516\" y=\"452\" width=\"8\" height=\"5\" rx=\"2.5\" fill=\"#cfd6dc\"/>"
+  },
+  {
+   "id": "setC_meeting_paper_cups",
+   "layer": "mid_front",
+   "z": 30,
+   "bbox": [
+    555,
+    438,
+    32,
+    38
+   ],
+   "desc": "stack of paper cups with a red band",
+   "svg": "<path d=\"M559 468 H583 L586 474 H556Z\" fill=\"#7e5c3e\" fill-opacity=\".6\"/><path d=\"M561 450 H579 L576 470 H564Z\" fill=\"#f4efe4\"/><rect x=\"560\" y=\"448\" width=\"20\" height=\"3\" rx=\"1.5\" fill=\"#cbbfa2\"/><path d=\"M561 446 H579 L576 466 H564Z\" fill=\"#f4efe4\"/><rect x=\"560\" y=\"444\" width=\"20\" height=\"3\" rx=\"1.5\" fill=\"#cbbfa2\"/><path d=\"M561 442 H579 L576 462 H564Z\" fill=\"#f4efe4\"/><rect x=\"560\" y=\"440\" width=\"20\" height=\"3\" rx=\"1.5\" fill=\"#cbbfa2\"/><path d=\"M561 438 H579 L576 458 H564Z\" fill=\"#f4efe4\"/><rect x=\"560\" y=\"436\" width=\"20\" height=\"3\" rx=\"1.5\" fill=\"#cbbfa2\"/>"
+  }
+ ],
+ "overlays": [
+  {
+   "id": "setC_overlay_call_inset",
+   "kind": "inset (call frame)",
+   "not_part_of_set": true,
+   "source": "art/set_a/inset_B_final.png crop viewBox 805 10 410 665, clipped to the tilted halo path",
+   "shots": [
+    "3.6",
+    "3.7"
+   ],
+   "enter": "slide_from_right",
+   "side": "right",
+   "exit": "slide_to_right",
+   "size_in_frame": "width ~22% (63 of 280), height ~66% of the Вадик close-up (104 of 157.5)",
+   "rest_rect_in_close_up_viewBox": [
+    503,
+    160,
+    63,
+    104
+   ],
+   "never_over": "faces",
+   "stills": [
+    {
+     "t": 0.0,
+     "name": "off-screen",
+     "x": 580,
+     "shadow": 10
+    },
+    {
+     "t": 0.35,
+     "name": "half",
+     "x": 543,
+     "shadow": 10
+    },
+    {
+     "t": 0.7,
+     "name": "overshoot (bounce)",
+     "x": 496,
+     "shadow": 10
+    },
+    {
+     "t": 1.0,
+     "name": "settled",
+     "x": 503,
+     "shadow": 10
+    }
+   ],
+   "emphasis": "overshoot 7 px left then settle; same size, tilt and shadow (10) in every still",
+   "note": "inset shows in the close-up only; in other shots the set has no inset"
+  }
+ ],
+ "hands": {
+  "note": "rig hands are mitten-wide (~1.75x wrist for Вадик, ~1.6x for Кристина); redrawn in-set as overlays, 14/11=1.27x and 8/6=1.3x, four separate fingers, one shadow shape; rigs untouched, rig hands clipped out",
+  "vadik": "x397 and x482, y420",
+  "kristina": "x866.5 y343 and x952.5 y351",
+  "palych": "hands under the table, none visible"
+ }
+}

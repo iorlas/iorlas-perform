@@ -1,0 +1,970 @@
+{
+ "schema": "scene-design/2",
+ "look": "Вырезка (flat cut paper); per-shot looks «Гори» (hatch) and «Спичечная этикетка» (label card)",
+ "offscreen": [
+  "narrator"
+ ],
+ "stage": {
+  "H": 742,
+  "floor": 478
+ },
+ "cast": {
+  "vadik": {},
+  "palych": {},
+  "kristina": {},
+  "ai": {},
+  "mama": {}
+ },
+ "story": "Morning, Мама feeds Вадик and he lies «тимлид по качеству». Office: 14 red tests, the AI offers to delete the tests folder, he agrees, all green («100 % от нуля»). Meeting room: Палыч is delighted, makes him the lead for real, Мама calls, he tells her the truth by accident.",
+ "sets": {
+  "setA_kitchen_morning": {
+   "objects": [
+    {
+     "id": "window",
+     "size": [
+      0.4,
+      0.4
+     ],
+     "place": {
+      "x": -1.0,
+      "up": 0.38
+     },
+     "role": "Morning window over the counter.",
+     "from": "утро",
+     "kind": "window_day"
+    },
+    {
+     "id": "stove",
+     "size": [
+      0.34,
+      0.42
+     ],
+     "place": {
+      "x": -0.6
+     },
+     "role": "Stove; Мама cooks here.",
+     "from": "Кухня"
+    },
+    {
+     "id": "kettle",
+     "size": [
+      0.08,
+      0.07
+     ],
+     "place": {
+      "x": -0.6,
+      "on": "stove"
+     },
+     "role": "Kettle: the steam of the morning.",
+     "from": "invented"
+    },
+    {
+     "id": "poster_eat",
+     "size": [
+      0.34,
+      0.15
+     ],
+     "place": {
+      "x": -0.6,
+      "up": 0.66
+     },
+     "role": "Wall sign over the stove: the kitchen's only law.",
+     "from": "invented",
+     "kind": "sign",
+     "lines": [
+      "ЕШЬ,",
+      "ПОКА ГОРЯЧЕЕ"
+     ],
+     "fill": "#f2d98a",
+     "ink": "#4a2a10"
+    },
+    {
+     "id": "table",
+     "size": [
+      0.8,
+      0.36
+     ],
+     "place": {
+      "x": 0.45
+     },
+     "role": "Kitchen table, solid to the floor: Вадик's lap and legs are behind it.",
+     "from": "invented",
+     "layer": "front"
+    },
+    {
+     "id": "chair",
+     "size": [
+      0.28,
+      0.55
+     ],
+     "place": {
+      "x": 0.45
+     },
+     "role": "Kitchen chair behind the table; he sits on it.",
+     "from": "invented",
+     "seat_h": 0.26
+    },
+    {
+     "id": "plate_cutlets",
+     "size": [
+      0.3,
+      0.11
+     ],
+     "place": {
+      "x": 0.3,
+      "on": "table"
+     },
+     "role": "Plate with 14 cutlets in a 7x2 grid (the match-cut partner of the 7x2 test tiles). State via text cue: 14 / 13 / 13f (a fork lifts the last one).",
+     "from": "котлету",
+     "kind": "plate",
+     "layer": "front",
+     "mentions": [
+      "котлет"
+     ]
+    }
+   ],
+   "characters": {
+    "mama": {
+     "x": -0.45,
+     "pose": "stir_hold",
+     "role": "Stands at the stove stirring, turned to the table."
+    },
+    "vadik": {
+     "seated_on": "chair",
+     "pose": "stand_still",
+     "role": "Sits at the table, mouth full."
+    }
+   }
+  },
+  "setB_office_day": {
+   "objects": [
+    {
+     "id": "window",
+     "size": [
+      0.4,
+      0.4
+     ],
+     "place": {
+      "x": -1.0,
+      "up": 0.38
+     },
+     "role": "Daylight window.",
+     "from": "Офис",
+     "kind": "window_day"
+    },
+    {
+     "id": "clock",
+     "size": [
+      0.16,
+      0.16
+     ],
+     "place": {
+      "x": 0.98,
+      "up": 0.7
+     },
+     "role": "Wall clock: 14:40.",
+     "from": "без двадцати три",
+     "kind": "clock",
+     "text": "14:40",
+     "mentions": [
+      "без двадцати три"
+     ]
+    },
+    {
+     "id": "poster_deadline",
+     "size": [
+      0.42,
+      0.18
+     ],
+     "place": {
+      "x": -0.45,
+      "up": 0.6
+     },
+     "role": "Poster over the window wall.",
+     "from": "invented",
+     "kind": "sign",
+     "lines": [
+      "ДЕДЛАЙН –",
+      "ЭТО СОСТОЯНИЕ ДУШИ"
+     ],
+     "fill": "#e8d27a",
+     "ink": "#3a2d10"
+    },
+    {
+     "id": "desk",
+     "size": [
+      0.8,
+      0.43
+     ],
+     "place": {
+      "x": 0
+     },
+     "role": "Vadik's desk, solid to the floor.",
+     "from": "invented",
+     "layer": "front"
+    },
+    {
+     "id": "chair",
+     "size": [
+      0.28,
+      0.55
+     ],
+     "place": {
+      "x": 0
+     },
+     "role": "Office chair behind the desk.",
+     "from": "invented",
+     "seat_h": 0.26
+    },
+    {
+     "id": "keyboard",
+     "size": [
+      0.24,
+      0.03
+     ],
+     "place": {
+      "x": -0.03,
+      "on": "desk"
+     },
+     "role": "Under his hands.",
+     "from": "invented"
+    },
+    {
+     "id": "zinaida",
+     "size": [
+      0.32,
+      0.26
+     ],
+     "place": {
+      "x": 0.24,
+      "on": "desk"
+     },
+     "role": "Зинаида, the old CRT server-computer, as Вадик's screen. Placeholder box with a screen: the zinaida rig draws its own screen states and cannot show custom content (see blockers).",
+     "from": "по имени Зинаида",
+     "layer": "front",
+     "mentions": [
+      "зинаида"
+     ]
+    }
+   ],
+   "characters": {
+    "vadik": {
+     "seated_on": "chair",
+     "pose": "stand_still",
+     "role": "At his desk, facing the CRT."
+    }
+   }
+  },
+  "setC_meeting_room": {
+   "objects": [
+    {
+     "id": "wallscreen",
+     "size": [
+      0.55,
+      0.34
+     ],
+     "place": {
+      "x": 0.7,
+      "up": 0.5
+     },
+     "role": "Wall screen with the dashboard (CI, all green).",
+     "from": "дашборд",
+     "screen": true,
+     "mentions": [
+      "дашборд"
+     ]
+    },
+    {
+     "id": "clock",
+     "size": [
+      0.14,
+      0.14
+     ],
+     "place": {
+      "x": -0.2,
+      "up": 1.02
+     },
+     "role": "Wall clock: 15:00.",
+     "from": "три часа",
+     "kind": "clock",
+     "text": "15:00"
+    },
+    {
+     "id": "sign_rules",
+     "size": [
+      0.46,
+      0.13
+     ],
+     "place": {
+      "x": -0.8,
+      "up": 1.0
+     },
+     "role": "Meeting-room motto.",
+     "from": "invented",
+     "kind": "sign",
+     "lines": [
+      "ЗДЕСЬ РЕШАЮТСЯ",
+      "ВОПРОСЫ"
+     ],
+     "fill": "#e8e3d0",
+     "ink": "#2a3a4a"
+    },
+    {
+     "id": "table",
+     "size": [
+      1.5,
+      0.36
+     ],
+     "place": {
+      "x": -0.55
+     },
+     "role": "Long meeting table, solid to the floor: legs of all three behind it.",
+     "from": "Переговорка",
+     "layer": "front"
+    },
+    {
+     "id": "chair_end",
+     "size": [
+      0.28,
+      0.55
+     ],
+     "place": {
+      "x": -0.1
+     },
+     "role": "Chair at the far end of the table: Вадик's.",
+     "from": "invented",
+     "seat_h": 0.26
+    },
+    {
+     "id": "phone",
+     "size": [
+      0.13,
+      0.06
+     ],
+     "place": {
+      "x": -0.3,
+      "on": "table"
+     },
+     "role": "Phone on the table: shakes when Мама calls, display МАМА.",
+     "from": "зазвонил телефон",
+     "layer": "front",
+     "mentions": [
+      "телефон"
+     ]
+    }
+   ],
+   "characters": {
+    "palych": {
+     "x": -1.05,
+     "pose": "stand_still",
+     "role": "Head of the table, behind it, pointing at the screen."
+    },
+    "kristina": {
+     "x": -0.65,
+     "pose": "stand_still",
+     "role": "At his side, phone in hand."
+    },
+    "vadik": {
+     "seated_on": "chair_end",
+     "pose": "stand_still",
+     "role": "At the far end of the table."
+    }
+   }
+  }
+ },
+ "screens": {
+  "tiles_14_red": {
+   "kind": "tiles",
+   "cols": 7,
+   "rows": 2
+  },
+  "tiles_14_green": {
+   "kind": "tiles",
+   "cols": 7,
+   "rows": 2,
+   "green_start": 0.4,
+   "green_every": 0.22,
+   "caption": "0 failed · coverage 100 %",
+   "caption_at": 3.6
+  },
+  "chat_user": {
+   "kind": "neyroset",
+   "mode": "chat_window",
+   "typing": true,
+   "lines": [
+    {
+     "from": "user",
+     "text": "Починим тесты. Любой ценой."
+    }
+   ]
+  },
+  "ai_smiley": {
+   "kind": "neyroset",
+   "mode": "monitor_smiley",
+   "phrase": "Вы абсолютно правы!"
+  },
+  "dialog_delete": {
+   "kind": "dialog",
+   "title": "Нейросеть",
+   "text": "Удалить папку tests?",
+   "buttons": [
+    {
+     "id": "yes",
+     "label": "Да"
+    },
+    {
+     "id": "no",
+     "label": "Нет"
+    }
+   ],
+   "cursor": [
+    {
+     "dt": 0.0,
+     "x": 0.5,
+     "y": 0.3
+    },
+    {
+     "dt": 1.1,
+     "x": 0.36,
+     "y": 0.66
+    },
+    {
+     "dt": 1.9,
+     "x": 0.68,
+     "y": 0.66
+    },
+    {
+     "dt": 3.0,
+     "x": 0.36,
+     "y": 0.66
+    }
+   ],
+   "click": "yes",
+   "click_dt": 3.9
+  },
+  "wall_green": {
+   "kind": "rows",
+   "title": "CI / tests",
+   "rows": [
+    {
+     "label": "unit",
+     "up": true
+    },
+    {
+     "label": "integration",
+     "up": true
+    },
+    {
+     "label": "e2e",
+     "up": true
+    },
+    {
+     "label": "lint",
+     "up": true
+    }
+   ],
+   "footer": "0 failed"
+  },
+  "desktop_tests": {
+   "kind": "desktop",
+   "icons": [
+    {
+     "label": "tests",
+     "x": 0.12,
+     "y": 0.18,
+     "strike_at": 0.5,
+     "gone_at": 1.4
+    }
+   ],
+   "caption": "0 failed"
+  }
+ },
+ "scenes": {
+  "Кухня, утро": {
+   "set": "setA_kitchen_morning",
+   "story": "Morning kitchen: Мама feeds, Вадик lies; the plate's 14 cutlets become the 14 test tiles.",
+   "transition_out": {
+    "type": "match_cut",
+    "match": {
+     "from": "plate_cutlets",
+     "to": "zinaida"
+    }
+   },
+   "shots": [
+    {
+     "id": "1.1",
+     "beats": [
+      1
+     ],
+     "frame": "wide",
+     "at_xy": [
+      0,
+      0
+     ],
+     "cast": [
+      "mama",
+      "vadik"
+     ],
+     "intent": "Establish: stove, table, the plate; Мама and Вадик."
+    },
+    {
+     "id": "1.2",
+     "beats": [
+      2
+     ],
+     "frame": "medium",
+     "focus": "mama",
+     "cast": [
+      "mama",
+      "vadik"
+     ],
+     "intent": "Мама asks, spatula energy; warm then curious."
+    },
+    {
+     "id": "1.3",
+     "beats": [
+      3
+     ],
+     "frame": "close",
+     "focus": "vadik",
+     "cast": [
+      "vadik"
+     ],
+     "intent": "Mouth full, eyes sideways: the lie."
+    },
+    {
+     "id": "1.4",
+     "beats": [
+      4
+     ],
+     "frame": "close",
+     "focus": "mama",
+     "cast": [
+      "mama"
+     ],
+     "intent": "Мама proud, delighted."
+    },
+    {
+     "id": "1.5",
+     "beats": [
+      5
+     ],
+     "frame": "insert",
+     "focus": "plate_cutlets",
+     "camera": {
+      "w": 420
+     },
+     "cast": [],
+     "intent": "Insert on the plate: 13 cutlets and a fork lifting the last, laid out as a 7x2 grid for the match cut."
+    }
+   ],
+   "cues": [
+    {
+     "beat": 1,
+     "target": "plate_cutlets",
+     "text": "14"
+    },
+    {
+     "beat": 3,
+     "target": "plate_cutlets",
+     "text": "13"
+    },
+    {
+     "beat": 5,
+     "target": "plate_cutlets",
+     "text": "13f"
+    }
+   ],
+   "interactions": []
+  },
+  "Офис, день": {
+   "set": "setB_office_day",
+   "story": "Office, 14:40. The AI offers to delete the tests; all goes green; «100 % от нуля».",
+   "assets": [
+    "neyroset"
+   ],
+   "transition_out": {
+    "type": "time_card",
+    "text": "15:00",
+    "dur": 1.2,
+    "match": {
+     "from": "zinaida",
+     "to": "wallscreen"
+    }
+   },
+   "shots": [
+    {
+     "id": "2.1",
+     "beats": [
+      1
+     ],
+     "frame": "wide",
+     "at_xy": [
+      0,
+      0
+     ],
+     "pull_out": true,
+     "cast": [
+      "vadik"
+     ],
+     "intent": "Match cut from the plate: starts framed on the 14 red tiles where the cutlets were, pulls out to the whole office; clock 14:40."
+    },
+    {
+     "id": "2.2",
+     "beats": [
+      2
+     ],
+     "frame": "medium",
+     "focus": "vadik",
+     "cast": [
+      "vadik"
+     ],
+     "intent": "Whispered plea; the CRT shows the chat window with his line."
+    },
+    {
+     "id": "2.3",
+     "beats": [
+      3,
+      4
+     ],
+     "frame": "insert",
+     "focus": "zinaida",
+     "camera": {
+      "w": 420
+     },
+     "cast": [],
+     "intent": "Insert on the CRT: the AI's smiley («Вы абсолютно правы!»)."
+    },
+    {
+     "id": "2.4",
+     "beats": [
+      5,
+      6
+     ],
+     "frame": "medium",
+     "focus": "vadik",
+     "cast": [
+      "vadik"
+     ],
+     "look": "hatch",
+     "intent": "Panic shot in the «Гори» hatch look; the dialog pings, the cursor hovers Нет and clicks Да."
+    },
+    {
+     "id": "2.5",
+     "beats": [
+      7
+     ],
+     "frame": "insert",
+     "focus": "zinaida",
+     "camera": {
+      "w": 420
+     },
+     "cast": [],
+     "intent": "The tiles go green one by one; «0 failed · coverage 100 %»."
+    },
+    {
+     "id": "2.6",
+     "beats": [
+      8
+     ],
+     "frame": "insert",
+     "focus": "zinaida",
+     "camera": {
+      "w": 420
+     },
+     "cast": [],
+     "look": "label",
+     "card": {
+      "title": "ПОКРЫТИЕ 100 %*",
+      "note": "*от нуля"
+     },
+     "intent": "«Спичечная этикетка» card for the narrator's line, 1.5 s."
+    },
+    {
+     "id": "2.6b",
+     "beats": [
+      8
+     ],
+     "offset": 1.6,
+     "frame": "insert",
+     "focus": "zinaida",
+     "camera": {
+      "w": 420
+     },
+     "cast": [],
+     "intent": "Back to «Вырезка»: the green screen holds, the framing the next scene matches."
+    }
+   ],
+   "interactions": [
+    {
+     "actor": "vadik",
+     "type": "looks_at",
+     "object": "zinaida"
+    },
+    {
+     "actor": "vadik",
+     "type": "hands_on",
+     "object": "keyboard"
+    }
+   ],
+   "cues": [
+    {
+     "beat": 1,
+     "target": "zinaida",
+     "screen": "tiles_14_red"
+    },
+    {
+     "beat": 2,
+     "target": "zinaida",
+     "screen": "chat_user"
+    },
+    {
+     "beat": 4,
+     "target": "zinaida",
+     "screen": "ai_smiley"
+    },
+    {
+     "beat": 5,
+     "target": "zinaida",
+     "screen": "dialog_delete"
+    },
+    {
+     "beat": 7,
+     "target": "zinaida",
+     "screen": "tiles_14_green"
+    }
+   ]
+  },
+  "Переговорка, три часа": {
+   "set": "setC_meeting_room",
+   "story": "Meeting room, 15:00: green dashboard, the folder with the tests is struck out and gone; Палыч promotes him; Мама calls.",
+   "shots": [
+    {
+     "id": "3.1",
+     "beats": [
+      1
+     ],
+     "frame": "wide",
+     "at_xy": [
+      0,
+      0
+     ],
+     "pull_out": true,
+     "cast": [
+      "palych",
+      "kristina",
+      "vadik"
+     ],
+     "intent": "Establish: all three, the wall screen green."
+    },
+    {
+     "id": "3.2",
+     "beats": [
+      2,
+      3
+     ],
+     "frame": "medium",
+     "at_xy": [
+      -130,
+      -20
+     ],
+     "camera": {
+      "w": 1650
+     },
+     "cast": [
+      "palych",
+      "kristina",
+      "vadik"
+     ],
+     "intent": "Two-shot: Палыч points at the screen; Кристина upspeaks, phone in hand."
+    },
+    {
+     "id": "3.3",
+     "beats": [
+      4
+     ],
+     "frame": "close",
+     "focus": "vadik",
+     "push_in": 0.7,
+     "cast": [
+      "vadik"
+     ],
+     "intent": "Push-in on Вадик: forced calm."
+    },
+    {
+     "id": "3.4",
+     "beats": [
+      5
+     ],
+     "frame": "insert",
+     "focus": "wallscreen",
+     "camera": {
+      "w": 600
+     },
+     "cast": [],
+     "intent": "Wall screen: the «tests» folder is struck out, then gone."
+    },
+    {
+     "id": "3.5",
+     "beats": [
+      6
+     ],
+     "frame": "medium",
+     "focus": "palych",
+     "cast": [
+      "palych",
+      "kristina"
+     ],
+     "intent": "Палыч booming, delighted; Кристина beside him."
+    },
+    {
+     "id": "3.6",
+     "beats": [
+      7,
+      8
+     ],
+     "frame": "medium",
+     "focus": "vadik",
+     "cast": [
+      "vadik"
+     ],
+     "intent": "The phone on the table shakes: Мама."
+    },
+    {
+     "id": "3.7",
+     "beats": [
+      9
+     ],
+     "frame": "medium",
+     "focus": "vadik",
+     "cast": [
+      "vadik"
+     ],
+     "inset": {
+      "set": "setA_kitchen_morning",
+      "cast": [
+       {
+        "id": "mama",
+        "pose": "phone_ear"
+       }
+      ],
+      "rect": [
+       0.6,
+       0.04,
+       0.36,
+       0.5
+      ],
+      "frame": "medium",
+      "focus": "mama",
+      "style": "caller",
+      "name": "Мама"
+     },
+     "intent": "Inset: Мама from the kitchen set in a rounded frame beside Вадик."
+    },
+    {
+     "id": "3.8",
+     "beats": [
+      10
+     ],
+     "frame": "close",
+     "focus": "vadik",
+     "cast": [
+      "vadik"
+     ],
+     "inset": {
+      "set": "setA_kitchen_morning",
+      "cast": [
+       {
+        "id": "mama",
+        "pose": "phone_ear"
+       }
+      ],
+      "rect": [
+       0.6,
+       0.04,
+       0.36,
+       0.5
+      ],
+      "frame": "medium",
+      "focus": "mama",
+      "style": "caller",
+      "name": "Мама"
+     },
+     "intent": "Dazed; the inset stays."
+    },
+    {
+     "id": "3.9",
+     "beats": [
+      11
+     ],
+     "frame": "wide",
+     "at_xy": [
+      0,
+      0
+     ],
+     "pull_from": "medium",
+     "cast": [
+      "palych",
+      "kristina",
+      "vadik"
+     ],
+     "intent": "Pull-out to the whole room; the inset is gone."
+    },
+    {
+     "id": "3.10",
+     "beats": [
+      11
+     ],
+     "offset": 4.5,
+     "frame": "insert",
+     "focus": "wallscreen",
+     "look": "label",
+     "card": {
+      "title": "ТЕСТЫ ЗЕЛЁНЫЕ",
+      "note": "*от нуля"
+     },
+     "cast": [],
+     "intent": "End card in the «Спичечная этикетка» look."
+    }
+   ],
+   "interactions": [],
+   "cues": [
+    {
+     "beat": 1,
+     "target": "wallscreen",
+     "screen": "wall_green"
+    },
+    {
+     "beat": 5,
+     "target": "wallscreen",
+     "screen": "desktop_tests"
+    },
+    {
+     "beat": 2,
+     "actor": "palych",
+     "pose": "point_order"
+    },
+    {
+     "beat": 4,
+     "actor": "palych",
+     "pose": "stand_still"
+    },
+    {
+     "beat": 1,
+     "target": "phone",
+     "text": "15:00"
+    },
+    {
+     "beat": 7,
+     "target": "phone",
+     "text": "ring:МАМА"
+    },
+    {
+     "beat": 9,
+     "target": "phone",
+     "text": "разговор"
+    }
+   ]
+  }
+ }
+}

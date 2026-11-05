@@ -1,0 +1,802 @@
+{
+ "set": "setD_server",
+ "version": "0.4.0",
+ "look": "Вырезка (flat cut paper)",
+ "canvas": [
+  1280,
+  720
+ ],
+ "anchor_set": true,
+ "layer_order": [
+  "bg",
+  "mid",
+  "cast",
+  "light",
+  "overlay"
+ ],
+ "layers": {
+  "bg": "wall, dado, floor, window, wall objects, shelf + party leftovers, cords, floor light patch, CRT wall glow",
+  "mid": "bucket+mop, heater, Зинаида rig (desk+CRT+tower), desk props (lamp, thermos, hat, ИНВ. label), Вадик floor shadow",
+  "cast": "Вадик (vadik@1.2.0)",
+  "light": "lamp cone + desk pool, CRT desk patch, amber LEDs (tower, CRT), heater glow: night only, never filtered",
+  "overlay": "CRT screen = AI chat (night); day = dead glass"
+ },
+ "floor_y": 650,
+ "wall_floor_line": 540,
+ "baseboard": [
+  528,
+  540
+ ],
+ "palette": {
+  "night": {
+   "wall": "#2d3350",
+   "floor": "#1f2339",
+   "amber": "#f3b04a",
+   "cool": "#7fd0d6",
+   "lamp": "#f3c46a",
+   "heater": "#f08a3a",
+   "props_filter": "feColorMatrix .5/.58/.88 on every non-bg object and the rigs"
+  },
+  "day": {
+   "wall": "#d3d6cb",
+   "floor": "#bcc0bf",
+   "window_light": "white 28% patch"
+  }
+ },
+ "re_light": {
+  "how": "same object list. Night: explicit wall/floor palette, filter nightF (colour matrix) on props+rigs, own unfiltered overlays (lamp cone, CRT glow, LEDs, heater slots, chat). Day: no filter, no overlays, grey window patch, CRT glass dead, lamp/heater off.",
+  "night_on": [
+   "light_lamp_cone",
+   "light_crt_desk",
+   "light_crt_glow_wall",
+   "light_led_tower",
+   "light_led_crt",
+   "light_heater",
+   "overlay_crt_chat"
+  ],
+  "day_off_same_objects": true
+ },
+ "rigs": {
+  "vadik": {
+   "rig": "vadik@1.2.0",
+   "pos": [
+    390,
+    222
+   ],
+   "scale": 0.7,
+   "pose": "stand_still",
+   "expr": "side_glance",
+   "feet_y": 650,
+   "note": "GAP: no seated/leaning pose; stands left third, looks right toward the LED"
+  },
+  "zinaida": {
+   "rig": "zinaida@1.0.0",
+   "origin": [
+    710,
+    124.2
+   ],
+   "scale": 1.1,
+   "pose": "front",
+   "state": "off (screen = overlay)",
+   "led": "off (own overlay LED)",
+   "note": "rig includes the desk, so the storeroom has a desk; ИНВ. 0417 label added in set; rig's red power-strip LED stays on by day (cannot edit rig)"
+  },
+  "neyroset": {
+   "rig": "neyroset@1.0.0",
+   "use": "chat_window in CRT glass, typing:true, 3 lines"
+  }
+ },
+ "slots": {
+  "setD_server_slot_vadik": {
+   "pos": [
+    390,
+    222
+   ],
+   "scale": 0.7
+  },
+  "setD_server_slot_mihalych": {
+   "note": "not placed; no seated rig; stands at x~700, feet y650 between window and desk"
+  }
+ },
+ "inset_anchor": {
+  "rect": [
+   60,
+   60,
+   200,
+   100
+  ],
+  "note": "Вадик looks right, so an AI waveform inset goes on the open left wall"
+ },
+ "framings": [
+  {
+   "shot": "2.1 wide",
+   "viewBox": "0 0 1280 720"
+  },
+  {
+   "shot": "2.2 medium Вадик",
+   "viewBox": "255 70 360 202.5"
+  },
+  {
+   "shot": "2.4 close CRT",
+   "viewBox": "718 205 270 151.9"
+  },
+  {
+   "shot": "2.1 close LED + ИНВ",
+   "viewBox": "734 480 144 81"
+  },
+  {
+   "shot": "day wide",
+   "viewBox": "0 0 1280 720"
+  },
+  {
+   "shot": "day close CRT",
+   "viewBox": "718 205 270 151.9"
+  }
+ ],
+ "story_texts": [
+  "ТУШЁНКА (tin)",
+  "ИНВ. 0417 (tower label)",
+  "НЕ ВЫКЛЮЧАТЬ!!! (rig sticker)"
+ ],
+ "quiet_texts": [
+  "ЗАПАСНОЙ ВЫХОД",
+  "ГРАФИК УБОРКИ",
+  "ОП-4",
+  "КАБЕЛИ",
+  "НЕ КУРИТЬ (faded)"
+ ],
+ "story_props": [
+  "bucket+mop",
+  "fire extinguisher",
+  "tin ТУШЁНКА",
+  "empty bottle",
+  "half-eaten pie",
+  "party hat on CRT",
+  "thermos",
+  "desk lamp",
+  "space heater",
+  "cords"
+ ],
+ "objects": [
+  {
+   "id": "setD_server_wall",
+   "layer": "bg",
+   "z": 0,
+   "bbox": [
+    0,
+    0,
+    1280,
+    540
+   ],
+   "desc": "back wall, flat colour + one top band",
+   "lit": false,
+   "filtered": false,
+   "svg_night": "<rect width=\"1280\" height=\"540\" fill=\"#2d3350\"/><rect width=\"1280\" height=\"22\" fill=\"#262b46\"/>",
+   "svg_day": "<rect width=\"1280\" height=\"540\" fill=\"#d3d6cb\"/><rect width=\"1280\" height=\"22\" fill=\"#c5c9bd\"/>"
+  },
+  {
+   "id": "setD_server_dado",
+   "layer": "bg",
+   "z": 1,
+   "bbox": [
+    0,
+    372,
+    1280,
+    156
+   ],
+   "desc": "oil-paint lower wall band + rail (storeroom)",
+   "lit": false,
+   "filtered": false,
+   "svg_night": "<rect y=\"380\" width=\"1280\" height=\"148\" fill=\"#292e49\"/><rect y=\"372\" width=\"1280\" height=\"8\" fill=\"#23283f\"/>",
+   "svg_day": "<rect y=\"380\" width=\"1280\" height=\"148\" fill=\"#c4c8bc\"/><rect y=\"372\" width=\"1280\" height=\"8\" fill=\"#b3b8ab\"/>"
+  },
+  {
+   "id": "setD_server_baseboard",
+   "layer": "bg",
+   "z": 2,
+   "bbox": [
+    0,
+    528,
+    1280,
+    12
+   ],
+   "desc": "baseboard = wall/floor junction y540",
+   "lit": false,
+   "filtered": false,
+   "svg_night": "<rect y=\"528\" width=\"1280\" height=\"12\" fill=\"#222740\"/>",
+   "svg_day": "<rect y=\"528\" width=\"1280\" height=\"12\" fill=\"#aeb3a7\"/>"
+  },
+  {
+   "id": "setD_server_floor",
+   "layer": "bg",
+   "z": 3,
+   "bbox": [
+    0,
+    540,
+    1280,
+    180
+   ],
+   "desc": "one flat floor plane; every foot line sits between y540 and y720; cast feet y650",
+   "lit": false,
+   "filtered": false,
+   "svg_night": "<rect y=\"540\" width=\"1280\" height=\"180\" fill=\"#1f2339\"/>",
+   "svg_day": "<rect y=\"540\" width=\"1280\" height=\"180\" fill=\"#bcc0bf\"/>"
+  },
+  {
+   "id": "setD_server_window",
+   "layer": "bg",
+   "z": 4,
+   "bbox": [
+    548,
+    30,
+    124,
+    172
+   ],
+   "desc": "narrow storeroom window = the «запасной выход», sill at 0.85 H; night: dark courtyard + 3 lit squares, day: grey sky + pale block",
+   "lit": false,
+   "svg_night": "<rect x=\"564\" y=\"38.6\" width=\"100\" height=\"132\" rx=\"3\" fill=\"#9a9c90\"/><rect x=\"560\" y=\"34\" width=\"100\" height=\"132\" rx=\"3\" fill=\"#b9bcae\"/><rect x=\"569\" y=\"43\" width=\"82\" height=\"114\" fill=\"#121830\"/><rect x=\"575\" y=\"116\" width=\"22\" height=\"41\" fill=\"#1a2140\"/><rect x=\"619\" y=\"100\" width=\"26\" height=\"57\" fill=\"#1a2140\"/><rect x=\"582\" y=\"128\" width=\"6\" height=\"7\" fill=\"#d9b86a\"/><rect x=\"628\" y=\"112\" width=\"6\" height=\"7\" fill=\"#d9b86a\"/><rect x=\"632\" y=\"128\" width=\"6\" height=\"7\" fill=\"#d9b86a\"/><rect x=\"607\" y=\"43\" width=\"6\" height=\"114\" fill=\"#b9bcae\"/><rect x=\"569\" y=\"97\" width=\"82\" height=\"6\" fill=\"#b9bcae\"/><rect x=\"553\" y=\"167.45\" width=\"120\" height=\"10\" rx=\"2\" fill=\"#9a9c90\"/><rect x=\"550\" y=\"164\" width=\"120\" height=\"10\" rx=\"2\" fill=\"#c6c8ba\"/>",
+   "svg_day": "<rect x=\"564\" y=\"38.6\" width=\"100\" height=\"132\" rx=\"3\" fill=\"#bfc2b4\"/><rect x=\"560\" y=\"34\" width=\"100\" height=\"132\" rx=\"3\" fill=\"#e8e8de\"/><rect x=\"569\" y=\"43\" width=\"82\" height=\"114\" fill=\"#dfe5e8\"/><rect x=\"575\" y=\"116\" width=\"36\" height=\"41\" fill=\"#cdd5d9\"/><rect x=\"616\" y=\"102\" width=\"30\" height=\"55\" fill=\"#cdd5d9\"/><rect x=\"607\" y=\"43\" width=\"6\" height=\"114\" fill=\"#e8e8de\"/><rect x=\"569\" y=\"97\" width=\"82\" height=\"6\" fill=\"#e8e8de\"/><rect x=\"553\" y=\"167.45\" width=\"120\" height=\"10\" rx=\"2\" fill=\"#c3c6b8\"/><rect x=\"550\" y=\"164\" width=\"120\" height=\"10\" rx=\"2\" fill=\"#f0efe6\"/>"
+  },
+  {
+   "id": "setD_server_window_plate",
+   "layer": "bg",
+   "z": 5,
+   "bbox": [
+    566,
+    180,
+    88,
+    13
+   ],
+   "desc": "small label-maker plate under the window «ЗАПАСНОЙ ВЫХОД» (tone-on-tone, quiet)",
+   "lit": false,
+   "quiet_text": "ЗАПАСНОЙ ВЫХОД",
+   "svg_night": "<rect x=\"568\" y=\"182\" width=\"84\" height=\"11\" fill=\"#a7aa9e\"/><text x=\"610\" y=\"190.5\" font-size=\"6.4\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#8a8d82\" text-anchor=\"middle\">ЗАПАСНОЙ ВЫХОД</text>",
+   "svg_day": "<rect x=\"568\" y=\"182\" width=\"84\" height=\"11\" fill=\"#bdc1b4\"/><text x=\"610\" y=\"190.5\" font-size=\"6.4\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#979c8e\" text-anchor=\"middle\">ЗАПАСНОЙ ВЫХОД</text>"
+  },
+  {
+   "id": "setD_server_window_light",
+   "layer": "bg",
+   "z": 6,
+   "bbox": [
+    430,
+    540,
+    300,
+    110
+   ],
+   "desc": "one flat translucent light patch on the floor under the window (night: cold, day: grey)",
+   "lit": false,
+   "filtered": false,
+   "svg_night": "<path d=\"M520 546 H700 L655 646 H455Z\" fill=\"#e9b86a\" fill-opacity=\".11\"/>",
+   "svg_day": "<path d=\"M520 546 H700 L655 646 H455Z\" fill=\"#ffffff\" fill-opacity=\".28\"/>"
+  },
+  {
+   "id": "setD_server_cleaning_sheet",
+   "layer": "bg",
+   "z": 7,
+   "bbox": [
+    100,
+    50,
+    64,
+    86
+   ],
+   "desc": "old cleaning rota sheet, quiet, tone-on-tone",
+   "lit": false,
+   "quiet_text": "ГРАФИК УБОРКИ + Пн-Пт",
+   "svg_night": "<g transform=\"translate(-90,-100)\"><rect x=\"193\" y=\"153.45\" width=\"60\" height=\"80\" rx=\"2\" fill=\"#bdbaa6\"/><rect x=\"190\" y=\"150\" width=\"60\" height=\"80\" rx=\"2\" fill=\"#e7e4d2\"/><rect x=\"212\" y=\"146\" width=\"16\" height=\"7\" fill=\"#c8c4ae\"/><text x=\"220\" y=\"166\" font-size=\"6\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#a4a08b\" text-anchor=\"middle\">ГРАФИК УБОРКИ</text><rect x=\"196\" y=\"176\" width=\"48\" height=\"6\" fill=\"#d3d0ba\"/><rect x=\"196\" y=\"186\" width=\"48\" height=\"6\" fill=\"#dddac6\"/><rect x=\"196\" y=\"196\" width=\"48\" height=\"6\" fill=\"#d3d0ba\"/><rect x=\"196\" y=\"206\" width=\"48\" height=\"6\" fill=\"#dddac6\"/><rect x=\"196\" y=\"216\" width=\"48\" height=\"6\" fill=\"#d3d0ba\"/></g>",
+   "svg_day": "<g transform=\"translate(-90,-100)\"><rect x=\"193\" y=\"153.45\" width=\"60\" height=\"80\" rx=\"2\" fill=\"#bdbaa6\"/><rect x=\"190\" y=\"150\" width=\"60\" height=\"80\" rx=\"2\" fill=\"#e7e4d2\"/><rect x=\"212\" y=\"146\" width=\"16\" height=\"7\" fill=\"#c8c4ae\"/><text x=\"220\" y=\"166\" font-size=\"6\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#a4a08b\" text-anchor=\"middle\">ГРАФИК УБОРКИ</text><rect x=\"196\" y=\"176\" width=\"48\" height=\"6\" fill=\"#d3d0ba\"/><rect x=\"196\" y=\"186\" width=\"48\" height=\"6\" fill=\"#dddac6\"/><rect x=\"196\" y=\"196\" width=\"48\" height=\"6\" fill=\"#d3d0ba\"/><rect x=\"196\" y=\"206\" width=\"48\" height=\"6\" fill=\"#dddac6\"/><rect x=\"196\" y=\"216\" width=\"48\" height=\"6\" fill=\"#d3d0ba\"/></g>"
+  },
+  {
+   "id": "setD_server_fire_extinguisher",
+   "layer": "bg",
+   "z": 8,
+   "bbox": [
+    180,
+    280,
+    70,
+    170
+   ],
+   "desc": "wall-hung fire extinguisher on a bracket: red body, dark head + hose, small label «ОП-4»",
+   "lit": false,
+   "story": "огнетушитель ОП-4",
+   "svg_night": "<g transform=\"translate(215,440) scale(1.4) translate(-280,-424)\"><rect x=\"256\" y=\"370\" width=\"48\" height=\"9\" fill=\"#4a4f5e\"/><path d=\"M296 336 Q312 344 308 380\" transform=\"translate(4,5)\" fill=\"none\"/><path d=\"M296 336 Q312 344 308 380\" fill=\"none\"/><path d=\"M292 336 Q312 340 310 384\" stroke=\"#2c303c\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/><rect x=\"302\" y=\"380\" width=\"12\" height=\"9\" rx=\"2\" fill=\"#2c303c\"/><rect x=\"266\" y=\"344.6\" width=\"36\" height=\"84\" rx=\"10\" fill=\"#8f362b\"/><rect x=\"262\" y=\"340\" width=\"36\" height=\"84\" rx=\"10\" fill=\"#b5483a\"/><rect x=\"272\" y=\"326\" width=\"18\" height=\"16\" rx=\"3\" fill=\"#2c303c\"/><rect x=\"262\" y=\"328\" width=\"34\" height=\"6\" rx=\"2\" fill=\"#3b4254\"/><rect x=\"266\" y=\"370\" width=\"28\" height=\"30\" fill=\"#f1ead2\"/><text x=\"280\" y=\"383\" font-size=\"8\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#a63e30\" text-anchor=\"middle\">ОП-4</text><rect x=\"268\" y=\"388\" width=\"24\" height=\"8\" fill=\"#d8cfae\"/><rect x=\"256\" y=\"378\" width=\"48\" height=\"7\" fill=\"#4a4f5e\"/></g>",
+   "svg_day": "<g transform=\"translate(215,440) scale(1.4) translate(-280,-424)\"><rect x=\"256\" y=\"370\" width=\"48\" height=\"9\" fill=\"#4a4f5e\"/><path d=\"M296 336 Q312 344 308 380\" transform=\"translate(4,5)\" fill=\"none\"/><path d=\"M296 336 Q312 344 308 380\" fill=\"none\"/><path d=\"M292 336 Q312 340 310 384\" stroke=\"#2c303c\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/><rect x=\"302\" y=\"380\" width=\"12\" height=\"9\" rx=\"2\" fill=\"#2c303c\"/><rect x=\"266\" y=\"344.6\" width=\"36\" height=\"84\" rx=\"10\" fill=\"#8f362b\"/><rect x=\"262\" y=\"340\" width=\"36\" height=\"84\" rx=\"10\" fill=\"#b5483a\"/><rect x=\"272\" y=\"326\" width=\"18\" height=\"16\" rx=\"3\" fill=\"#2c303c\"/><rect x=\"262\" y=\"328\" width=\"34\" height=\"6\" rx=\"2\" fill=\"#3b4254\"/><rect x=\"266\" y=\"370\" width=\"28\" height=\"30\" fill=\"#f1ead2\"/><text x=\"280\" y=\"383\" font-size=\"8\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#a63e30\" text-anchor=\"middle\">ОП-4</text><rect x=\"268\" y=\"388\" width=\"24\" height=\"8\" fill=\"#d8cfae\"/><rect x=\"256\" y=\"378\" width=\"48\" height=\"7\" fill=\"#4a4f5e\"/></g>"
+  },
+  {
+   "id": "setD_server_wall_socket",
+   "layer": "bg",
+   "z": 9,
+   "bbox": [
+    1236,
+    498,
+    24,
+    24
+   ],
+   "desc": "wall socket for the heater cord",
+   "lit": false,
+   "svg_night": "<rect x=\"1238\" y=\"500.3\" width=\"22\" height=\"24\" rx=\"3\" fill=\"#b9b6a2\"/><rect x=\"1236\" y=\"498\" width=\"22\" height=\"24\" rx=\"3\" fill=\"#e9e6d6\"/><rect x=\"1242\" y=\"504\" width=\"10\" height=\"5\" fill=\"#3b4254\"/><rect x=\"1242\" y=\"512\" width=\"10\" height=\"5\" fill=\"#3b4254\"/>",
+   "svg_day": "<rect x=\"1238\" y=\"500.3\" width=\"22\" height=\"24\" rx=\"3\" fill=\"#b9b6a2\"/><rect x=\"1236\" y=\"498\" width=\"22\" height=\"24\" rx=\"3\" fill=\"#e9e6d6\"/><rect x=\"1242\" y=\"504\" width=\"10\" height=\"5\" fill=\"#3b4254\"/><rect x=\"1242\" y=\"512\" width=\"10\" height=\"5\" fill=\"#3b4254\"/>"
+  },
+  {
+   "id": "setD_server_shelf",
+   "layer": "bg",
+   "z": 10,
+   "bbox": [
+    1034,
+    86,
+    222,
+    132
+   ],
+   "desc": "wall shelf: two boards + brackets (holds the prize tin, bottle, pie)",
+   "lit": false,
+   "svg_night": "<g transform=\"translate(0,-176)\"><rect x=\"1039\" y=\"273.45\" width=\"214\" height=\"10\" rx=\"2\" fill=\"#6e5c3e\"/><rect x=\"1036\" y=\"270\" width=\"214\" height=\"10\" rx=\"2\" fill=\"#8a7650\"/><path d=\"M1056 280 h22 l-22 26z M1210 280 h22 l0 26z\" fill=\"#6e5c3e\"/><rect x=\"1039\" y=\"375.45\" width=\"214\" height=\"10\" rx=\"2\" fill=\"#6e5c3e\"/><rect x=\"1036\" y=\"372\" width=\"214\" height=\"10\" rx=\"2\" fill=\"#8a7650\"/><path d=\"M1056 382 h22 l-22 26z M1210 382 h22 l0 26z\" fill=\"#6e5c3e\"/></g>",
+   "svg_day": "<g transform=\"translate(0,-176)\"><rect x=\"1039\" y=\"273.45\" width=\"214\" height=\"10\" rx=\"2\" fill=\"#6e5c3e\"/><rect x=\"1036\" y=\"270\" width=\"214\" height=\"10\" rx=\"2\" fill=\"#8a7650\"/><path d=\"M1056 280 h22 l-22 26z M1210 280 h22 l0 26z\" fill=\"#6e5c3e\"/><rect x=\"1039\" y=\"375.45\" width=\"214\" height=\"10\" rx=\"2\" fill=\"#6e5c3e\"/><rect x=\"1036\" y=\"372\" width=\"214\" height=\"10\" rx=\"2\" fill=\"#8a7650\"/><path d=\"M1056 382 h22 l-22 26z M1210 382 h22 l0 26z\" fill=\"#6e5c3e\"/></g>"
+  },
+  {
+   "id": "setD_server_tin_tushonka",
+   "layer": "bg",
+   "z": 11,
+   "bbox": [
+    1066,
+    44,
+    60,
+    52
+   ],
+   "desc": "THE PRIZE: tin of тушёнка with a red label «ТУШЁНКА» (story text, sharp), on the top board",
+   "lit": false,
+   "story_text": "ТУШЁНКА",
+   "prop": "prize",
+   "svg_night": "<g transform=\"translate(0,-176)\"><rect x=\"1073\" y=\"229.45\" width=\"52\" height=\"44\" rx=\"5\" fill=\"#9aa3a8\"/><rect x=\"1070\" y=\"226\" width=\"52\" height=\"44\" rx=\"5\" fill=\"#c9cfd2\"/><rect x=\"1066\" y=\"222\" width=\"60\" height=\"8\" rx=\"2\" fill=\"#9aa3a8\"/><rect x=\"1070\" y=\"236\" width=\"52\" height=\"24\" fill=\"#b5483a\"/><text x=\"1096\" y=\"252\" font-size=\"9.2\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#f6ecd2\" text-anchor=\"middle\">ТУШЁНКА</text><path d=\"M1086 232 h20 l-3 4 h-14z\" fill=\"#e0b24a\"/></g>",
+   "svg_day": "<g transform=\"translate(0,-176)\"><rect x=\"1073\" y=\"229.45\" width=\"52\" height=\"44\" rx=\"5\" fill=\"#9aa3a8\"/><rect x=\"1070\" y=\"226\" width=\"52\" height=\"44\" rx=\"5\" fill=\"#c9cfd2\"/><rect x=\"1066\" y=\"222\" width=\"60\" height=\"8\" rx=\"2\" fill=\"#9aa3a8\"/><rect x=\"1070\" y=\"236\" width=\"52\" height=\"24\" fill=\"#b5483a\"/><text x=\"1096\" y=\"252\" font-size=\"9.2\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#f6ecd2\" text-anchor=\"middle\">ТУШЁНКА</text><path d=\"M1086 232 h20 l-3 4 h-14z\" fill=\"#e0b24a\"/></g>"
+  },
+  {
+   "id": "setD_server_bottle_empty",
+   "layer": "bg",
+   "z": 12,
+   "bbox": [
+    1070,
+    128,
+    30,
+    68
+   ],
+   "desc": "empty bottle from the party (green glass, label, no cap) on the lower board",
+   "lit": false,
+   "prop": "party bottle",
+   "svg_night": "<g transform=\"translate(0,-178)\"><rect x=\"1075\" y=\"335.45\" width=\"26\" height=\"40\" rx=\"4\" fill=\"#4f7040\"/><rect x=\"1072\" y=\"332\" width=\"26\" height=\"40\" rx=\"4\" fill=\"#6a8f5a\"/><rect x=\"1082\" y=\"312.3\" width=\"10\" height=\"24\" rx=\"3\" fill=\"#4f7040\"/><rect x=\"1080\" y=\"310\" width=\"10\" height=\"24\" rx=\"3\" fill=\"#6a8f5a\"/><rect x=\"1078\" y=\"306\" width=\"14\" height=\"5\" fill=\"#4f7040\"/><rect x=\"1074\" y=\"346\" width=\"22\" height=\"14\" fill=\"#efe6c8\"/></g>",
+   "svg_day": "<g transform=\"translate(0,-178)\"><rect x=\"1075\" y=\"335.45\" width=\"26\" height=\"40\" rx=\"4\" fill=\"#4f7040\"/><rect x=\"1072\" y=\"332\" width=\"26\" height=\"40\" rx=\"4\" fill=\"#6a8f5a\"/><rect x=\"1082\" y=\"312.3\" width=\"10\" height=\"24\" rx=\"3\" fill=\"#4f7040\"/><rect x=\"1080\" y=\"310\" width=\"10\" height=\"24\" rx=\"3\" fill=\"#6a8f5a\"/><rect x=\"1078\" y=\"306\" width=\"14\" height=\"5\" fill=\"#4f7040\"/><rect x=\"1074\" y=\"346\" width=\"22\" height=\"14\" fill=\"#efe6c8\"/></g>"
+  },
+  {
+   "id": "setD_server_pie_half",
+   "layer": "bg",
+   "z": 13,
+   "bbox": [
+    1118,
+    148,
+    112,
+    50
+   ],
+   "desc": "half-eaten pie on a paper plate: crust dome, the left half bitten away: big cut face with red filling + cream layer, crumbs",
+   "lit": false,
+   "prop": "pie",
+   "svg_night": "<g transform=\"translate(0,-178)\"><path d=\"M1116 372 H1228 L1222 361 H1122Z\" fill=\"#f4f0e2\"/><path d=\"M1170 362 V346 Q1182 332 1200 332 Q1216 334 1222 348 V362Z\" transform=\"translate(3,4)\" fill=\"#b8844c\"/><path d=\"M1170 362 V346 Q1182 332 1200 332 Q1216 334 1222 348 V362Z\" fill=\"#d9a066\"/><path d=\"M1130 362 V350 L1170 340 V362Z\" fill=\"#c24a3a\"/><path d=\"M1130 350 L1170 340 V348 L1130 358Z\" fill=\"#f1d9a8\"/><path d=\"M1130 358 L1170 348 V353 L1130 363Z\" fill=\"#8f2f26\"/><rect x=\"1124\" y=\"358\" width=\"5\" height=\"4\" fill=\"#d9a066\"/><rect x=\"1132\" y=\"364\" width=\"4\" height=\"3\" fill=\"#d9a066\"/></g>",
+   "svg_day": "<g transform=\"translate(0,-178)\"><path d=\"M1116 372 H1228 L1222 361 H1122Z\" fill=\"#f4f0e2\"/><path d=\"M1170 362 V346 Q1182 332 1200 332 Q1216 334 1222 348 V362Z\" transform=\"translate(3,4)\" fill=\"#b8844c\"/><path d=\"M1170 362 V346 Q1182 332 1200 332 Q1216 334 1222 348 V362Z\" fill=\"#d9a066\"/><path d=\"M1130 362 V350 L1170 340 V362Z\" fill=\"#c24a3a\"/><path d=\"M1130 350 L1170 340 V348 L1130 358Z\" fill=\"#f1d9a8\"/><path d=\"M1130 358 L1170 348 V353 L1130 363Z\" fill=\"#8f2f26\"/><rect x=\"1124\" y=\"358\" width=\"5\" height=\"4\" fill=\"#d9a066\"/><rect x=\"1132\" y=\"364\" width=\"4\" height=\"3\" fill=\"#d9a066\"/></g>"
+  },
+  {
+   "id": "setD_server_bucket_mop",
+   "layer": "mid",
+   "z": 14,
+   "bbox": [
+    26,
+    150,
+    170,
+    470
+   ],
+   "desc": "mop in a mustard bucket leaning on the wall: bucket on the floor (base y610), mop stick resting on the wall",
+   "lit": false,
+   "prop": "bucket+mop",
+   "svg_night": "<path d=\"M92 510 L52 160\" stroke=\"#8b6f4a\" stroke-width=\"12\" transform=\"translate(4,4)\"/><path d=\"M92 510 L52 160\" stroke=\"#b79569\" stroke-width=\"12\"/><g transform=\"translate(108,612) scale(1.85) translate(-108,-612)\"><path d=\"M64 604 H146 L152 614 H58Z\" fill=\"#141829\" fill-opacity=\".55\"/><path d=\"M82 540 Q112 520 124 546 L134 574 Q108 586 78 572Z\" transform=\"translate(3,4)\" fill=\"#aeab9d\"/><path d=\"M82 540 Q112 520 124 546 L134 574 Q108 586 78 572Z\" fill=\"#d6d3c6\"/><path d=\"M70 560 H146 L138 612 H78Z\" transform=\"translate(4,4)\" fill=\"#c99a38\"/><path d=\"M70 560 H146 L138 612 H78Z\" fill=\"#ebb64e\"/><rect x=\"66\" y=\"552\" width=\"84\" height=\"10\" rx=\"3\" fill=\"#c99a38\"/><rect x=\"82\" y=\"578\" width=\"52\" height=\"12\" fill=\"#f3d27e\"/><path d=\"M72 556 Q108 512 144 556\" stroke=\"#6b717a\" stroke-width=\"4\" fill=\"none\"/></g>",
+   "svg_day": "<path d=\"M92 510 L52 160\" stroke=\"#8b6f4a\" stroke-width=\"12\" transform=\"translate(4,4)\"/><path d=\"M92 510 L52 160\" stroke=\"#b79569\" stroke-width=\"12\"/><g transform=\"translate(108,612) scale(1.85) translate(-108,-612)\"><path d=\"M64 604 H146 L152 614 H58Z\" fill=\"#8e9496\" fill-opacity=\".55\"/><path d=\"M82 540 Q112 520 124 546 L134 574 Q108 586 78 572Z\" transform=\"translate(3,4)\" fill=\"#aeab9d\"/><path d=\"M82 540 Q112 520 124 546 L134 574 Q108 586 78 572Z\" fill=\"#d6d3c6\"/><path d=\"M70 560 H146 L138 612 H78Z\" transform=\"translate(4,4)\" fill=\"#c99a38\"/><path d=\"M70 560 H146 L138 612 H78Z\" fill=\"#ebb64e\"/><rect x=\"66\" y=\"552\" width=\"84\" height=\"10\" rx=\"3\" fill=\"#c99a38\"/><rect x=\"82\" y=\"578\" width=\"52\" height=\"12\" fill=\"#f3d27e\"/><path d=\"M72 556 Q108 512 144 556\" stroke=\"#6b717a\" stroke-width=\"4\" fill=\"none\"/></g>"
+  },
+  {
+   "id": "setD_server_heater",
+   "layer": "mid",
+   "z": 15,
+   "bbox": [
+    990,
+    510,
+    230,
+    150
+   ],
+   "desc": "space heater on the floor: box + two fat slots + feet; night: slots glow amber (own overlay)",
+   "lit": false,
+   "prop": "heater",
+   "svg_night": "<g transform=\"translate(1125,644) scale(1.36) translate(-1128,-640)\"><path d=\"M1068 640 H1190 L1200 654 H1058Z\" fill=\"#141829\" fill-opacity=\".55\"/><rect x=\"1078\" y=\"570.6\" width=\"106\" height=\"64\" rx=\"8\" fill=\"#9ea6a8\"/><rect x=\"1074\" y=\"566\" width=\"106\" height=\"64\" rx=\"8\" fill=\"#cbd0cf\"/><rect x=\"1086\" y=\"578\" width=\"62\" height=\"14\" rx=\"4\" fill=\"#5a6270\"/><rect x=\"1086\" y=\"598\" width=\"62\" height=\"14\" rx=\"4\" fill=\"#5a6270\"/><rect x=\"1156\" y=\"580\" width=\"16\" height=\"16\" rx=\"3\" fill=\"#b5483a\"/><rect x=\"1084\" y=\"630\" width=\"22\" height=\"8\" fill=\"#4a4f5e\"/><rect x=\"1148\" y=\"630\" width=\"22\" height=\"8\" fill=\"#4a4f5e\"/></g>",
+   "svg_day": "<g transform=\"translate(1125,644) scale(1.36) translate(-1128,-640)\"><path d=\"M1068 640 H1190 L1200 654 H1058Z\" fill=\"#8e9496\" fill-opacity=\".55\"/><rect x=\"1078\" y=\"570.6\" width=\"106\" height=\"64\" rx=\"8\" fill=\"#9ea6a8\"/><rect x=\"1074\" y=\"566\" width=\"106\" height=\"64\" rx=\"8\" fill=\"#cbd0cf\"/><rect x=\"1086\" y=\"578\" width=\"62\" height=\"14\" rx=\"4\" fill=\"#5a6270\"/><rect x=\"1086\" y=\"598\" width=\"62\" height=\"14\" rx=\"4\" fill=\"#5a6270\"/><rect x=\"1156\" y=\"580\" width=\"16\" height=\"16\" rx=\"3\" fill=\"#b5483a\"/><rect x=\"1084\" y=\"630\" width=\"22\" height=\"8\" fill=\"#4a4f5e\"/><rect x=\"1148\" y=\"630\" width=\"22\" height=\"8\" fill=\"#4a4f5e\"/></g>"
+  },
+  {
+   "id": "setD_server_cord_heater",
+   "layer": "bg",
+   "z": 16,
+   "bbox": [
+    1190,
+    520,
+    70,
+    108
+   ],
+   "desc": "heater cord up the wall to the socket",
+   "lit": false,
+   "svg_night": "<path d=\"M1196 617 Q1250 622 1250 570 L1249 526\" stroke=\"#20222a\" stroke-width=\"5\" fill=\"none\"/>",
+   "svg_day": "<path d=\"M1196 617 Q1250 622 1250 570 L1249 526\" stroke=\"#20222a\" stroke-width=\"5\" fill=\"none\"/>"
+  },
+  {
+   "id": "setD_server_cord_wall_to_desk",
+   "layer": "bg",
+   "z": 17,
+   "bbox": [
+    316,
+    506,
+    122,
+    100
+   ],
+   "desc": "Зинаида power cord: continues the rig cable (ends x694,y615) to a socket at the left baseboard",
+   "lit": false,
+   "svg_night": "<path d=\"M434 596 C400 600 340 592 330 548 L329 534\" stroke=\"#20222a\" stroke-width=\"5\" fill=\"none\"/><rect x=\"318\" y=\"508\" width=\"22\" height=\"26\" rx=\"3\" fill=\"#b9bcae\"/><rect x=\"324\" y=\"514\" width=\"10\" height=\"5\" fill=\"#3b4254\"/><rect x=\"324\" y=\"522\" width=\"10\" height=\"5\" fill=\"#3b4254\"/>",
+   "svg_day": "<path d=\"M434 596 C400 600 340 592 330 548 L329 534\" stroke=\"#20222a\" stroke-width=\"5\" fill=\"none\"/><rect x=\"318\" y=\"508\" width=\"22\" height=\"26\" rx=\"3\" fill=\"#e9e6d6\"/><rect x=\"324\" y=\"514\" width=\"10\" height=\"5\" fill=\"#3b4254\"/><rect x=\"324\" y=\"522\" width=\"10\" height=\"5\" fill=\"#3b4254\"/>"
+  },
+  {
+   "id": "setD_server_zinaida_rig",
+   "layer": "mid",
+   "z": 18,
+   "bbox": [
+    700,
+    360,
+    330,
+    300
+   ],
+   "desc": "Зинаида 1.0.0 frozen rig: desk + CRT + tower + keyboard + power strip + cord, front view, state off (screen is an overlay), led off (own LED overlay), scale .7",
+   "lit": false,
+   "slot": "zinaida",
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><defs><filter id=\"ds\" x=\"-30%\" y=\"-30%\" width=\"160%\" height=\"170%\"><feDropShadow dx=\"2\" dy=\"4\" stdDeviation=\"3.2\" flood-color=\"#0b1020\" flood-opacity=\".32\"/></filter></defs><path d=\"M-180,445.6 Q-180,429.6 -164,429.6 L220,429.6 Q236,429.6 236,445.6 L236,463.9 Q236,479.9 220,479.9 L-164,479.9 Q-180,479.9 -180,463.9 Z\" fill=\"#0b1020\" opacity=\".22\"/><g filter=\"url(#ds)\"><clipPath id=\"zdnightc0\"><path d=\"M-170,240.6 Q-170,237.6 -167,237.6 L-159,237.6 Q-156,237.6 -156,240.6 L-156,429.6 Q-156,432.6 -159,432.6 L-167,432.6 Q-170,432.6 -170,429.6 Z\"/></clipPath><path d=\"M-170,240.6 Q-170,237.6 -167,237.6 L-159,237.6 Q-156,237.6 -156,240.6 L-156,429.6 Q-156,432.6 -159,432.6 L-167,432.6 Q-170,432.6 -170,429.6 Z\" fill=\"#5f4f3e\"/><g clip-path=\"url(#zdnightc0)\"><path d=\"M-170,239.5 L-156,239.5 L-156,237.6 L-170,237.6 Z\" fill=\"#7d6a54\" stroke=\"#7d6a54\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g></g><g filter=\"url(#ds)\"><clipPath id=\"zdnightc1\"><path d=\"M196,240.6 Q196,237.6 199,237.6 L207,237.6 Q210,237.6 210,240.6 L210,429.6 Q210,432.6 207,432.6 L199,432.6 Q196,432.6 196,429.6 Z\"/></clipPath><path d=\"M196,240.6 Q196,237.6 199,237.6 L207,237.6 Q210,237.6 210,240.6 L210,429.6 Q210,432.6 207,432.6 L199,432.6 Q196,432.6 196,429.6 Z\" fill=\"#5f4f3e\"/><g clip-path=\"url(#zdnightc1)\"><path d=\"M196,239.5 L210,239.5 L210,237.6 L196,237.6 Z\" fill=\"#7d6a54\" stroke=\"#7d6a54\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g></g><g filter=\"url(#ds)\"><clipPath id=\"zdnightc2\"><path d=\"M-34,431.1 Q-34,427.1 -30,427.1 L16,427.1 Q20,427.1 20,431.1 L20,443.1 Q20,447.1 16,447.1 L-30,447.1 Q-34,447.1 -34,443.1 Z\"/></clipPath><path d=\"M-34,431.1 Q-34,427.1 -30,427.1 L16,427.1 Q20,427.1 20,431.1 L20,443.1 Q20,447.1 16,447.1 L-30,447.1 Q-34,447.1 -34,443.1 Z\" fill=\"#d7cfb6\"/><g clip-path=\"url(#zdnightc2)\"><path d=\"M-34,431.3 L20,431.3 L20,427.1 L-34,427.1 Z\" fill=\"#e6dfc8\" stroke=\"#e6dfc8\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M9.2,431.3 L20,431.3 L20,447.1 L9.2,447.1 Z\" fill=\"#b4aa8c\"/></g><g transform=\"matrix(1,0,0,0.99,0,-26.245)\"><path d=\"M4.5,463 H13.5 Q19,463 19,468.5 V469.5 Q19,475 13.5,475 H4.5 Q-1,475 -1,469.5 V468.5 Q-1,463 4.5,463 Z\" fill=\"#ff5a4a\" opacity=\".3\"/><path d=\"M4.5,466 H13.5 Q16,466 16,468.5 V469.5 Q16,472 13.5,472 H4.5 Q2,472 2,469.5 V468.5 Q2,466 4.5,466 Z\" fill=\"#ff5a4a\"/><path d=\"M-26,466 H-16 Q-14,466 -14,468 V472 Q-14,474 -16,474 H-26 Q-28,474 -28,472 V468 Q-28,466 -26,466 Z\" fill=\"#b4aa8c\"/></g></g><g filter=\"url(#ds)\"><path d=\"M104,204.4 Q92.5,218.6 87.2,227.1 Q82,235.5 77.1,245 Q72.2,254.5 67.6,264.8 Q63,275.1 58.7,285.9 Q54.4,296.7 50.2,307.8 Q46,318.8 41.9,329.9 Q37.8,341 33.7,351.8 Q29.6,362.6 25.5,372.8 Q21.3,383.1 17,392.6 Q12.7,402 8.2,410.4 Q3.7,418.8 -1.2,425.9 L-6,433\" stroke=\"#20222a\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M-34,438.9 Q-47.7,439 -54.7,438.8 Q-61.6,438.7 -69,438.3 Q-76.4,437.9 -84.4,437.4 Q-92.5,436.9 -101.5,436.3 Q-110.5,435.7 -120.8,435 Q-131.1,434.3 -142.9,433.7 Q-154.7,433 -168.4,432.4 Q-182,431.7 -197.8,431.2 Q-213.6,430.6 -231.8,430.2 L-250,429.8\" stroke=\"#20222a\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g><g transform=\"translate(0,0) rotate(0 130 470)\"><g filter=\"url(#ds)\"><clipPath id=\"zdnightc3\"><path d=\"M40,297.7 Q40,289.7 48,289.7 L116,289.7 Q124,289.7 124,297.7 L124,446.9 Q124,454.9 116,454.9 L48,454.9 Q40,454.9 40,446.9 Z\"/></clipPath><path d=\"M40,297.7 Q40,289.7 48,289.7 L116,289.7 Q124,289.7 124,297.7 L124,446.9 Q124,454.9 116,454.9 L48,454.9 Q40,454.9 40,446.9 Z\" fill=\"#d0c08a\"/><g clip-path=\"url(#zdnightc3)\"><path d=\"M40,306.4 L124,306.4 L124,289.7 L40,289.7 Z\" fill=\"#e0d3a4\" stroke=\"#e0d3a4\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M105.5,306.4 L124,306.4 L124,454.9 L105.5,454.9 Z\" fill=\"#af9f68\"/></g><g transform=\"matrix(1,0,0,0.99,0,-18.451)\"><path d=\"M49.5,336 H114.5 Q117,336 117,338.5 V348.5 Q117,351 114.5,351 H49.5 Q47,351 47,348.5 V338.5 Q47,336 49.5,336 Z\" fill=\"#8d8153\"/><path d=\"M55.5,340 H98.5 Q101,340 101,342.5 V344.5 Q101,347 98.5,347 H55.5 Q53,347 53,344.5 V342.5 Q53,340 55.5,340 Z\" fill=\"#2a2c30\"/><path d=\"M49.5,356 H114.5 Q117,356 117,358.5 V368.5 Q117,371 114.5,371 H49.5 Q47,371 47,368.5 V358.5 Q47,356 49.5,356 Z\" fill=\"#8d8153\"/><path d=\"M55.5,360 H86.5 Q89,360 89,362.5 V364.5 Q89,367 86.5,367 H55.5 Q53,367 53,364.5 V362.5 Q53,360 55.5,360 Z\" fill=\"#2a2c30\"/><path d=\"M98,360 H106 Q108,360 108,362 V365 Q108,367 106,367 H98 Q96,367 96,365 V362 Q96,360 98,360 Z\" fill=\"#af9f68\"/><path d=\"M96,386 H110 Q114,386 114,390 V404 Q114,408 110,408 H96 Q92,408 92,404 V390 Q92,386 96,386 Z\" fill=\"#af9f68\"/><path d=\"M97.1,378 H108.9 Q111,378 111,380.1 V380.9 Q111,383 108.9,383 H97.1 Q95,383 95,380.9 V380.1 Q95,378 97.1,378 Z\" fill=\"#6a6a58\"/><path d=\"M49.5,386 H68.5 Q71,386 71,388.5 V391.5 Q71,394 68.5,394 H49.5 Q47,394 47,391.5 V388.5 Q47,386 49.5,386 Z\" fill=\"#af9f68\"/><g transform=\"rotate(-2 79 439)\"><path d=\"M47.5,430 H110.5 Q112,430 112,431.5 V446.5 Q112,448 110.5,448 H47.5 Q46,448 46,446.5 V431.5 Q46,430 47.5,430 Z\" fill=\"#eadfb8\"/><text x=\"79\" y=\"443.4\" font-size=\"11\" font-family=\"Menlo, 'Courier New', monospace\" fill=\"#2b2723\" text-anchor=\"middle\" font-weight=\"700\">Зинаида</text></g><path d=\"M53.3,470.3 Q55.2,472 53,473.5 Q50.9,474.9 48.9,475.3 Q46.9,475.7 44.7,474.9 Q42.5,474.1 42.1,471.9 Q41.7,469.6 44.1,468.2 Q46.5,466.7 48.9,467.7 Q51.4,468.6 53.3,470.3 Z\" fill=\"#b9ae95\"/><path d=\"M113.3,468.5 Q113.8,471 113.1,473.2 Q112.3,475.4 109.2,476.5 Q106.1,477.6 104.4,475.3 Q102.8,473 102.3,470.8 Q101.8,468.6 104,466.7 Q106.2,464.8 109.6,465.4 Q112.9,466.1 113.3,468.5 Z\" fill=\"#b9ae95\"/></g></g><g transform=\"matrix(1,0,0,0.99,0,-20.678)\"><path d=\"M108.2,142.7 Q109.9,144 108.2,145.2 Q106.4,146.4 104.6,147.4 Q102.7,148.4 101.6,146.9 Q100.4,145.4 100.5,144 Q100.6,142.7 101.6,141 Q102.7,139.3 104.6,140.4 Q106.6,141.4 108.2,142.7 Z\" fill=\"#b9ae95\"/><path d=\"M133.2,142.4 Q135.1,144 133.6,146.1 Q132.2,148.2 129.5,148.2 Q126.8,148.1 125.1,146.9 Q123.3,145.8 122.9,143.9 Q122.5,141.9 124.5,140.1 Q126.4,138.3 128.8,139.5 Q131.2,140.8 133.2,142.4 Z\" fill=\"#b9ae95\"/><path d=\"M156.6,142.3 Q157.8,144 156.1,145.2 Q154.4,146.5 152.7,147.2 Q150.9,147.9 149.5,146.7 Q148.1,145.5 147.8,143.9 Q147.5,142.3 149.2,141.3 Q150.9,140.3 153.2,140.4 Q155.4,140.6 156.6,142.3 Z\" fill=\"#b9ae95\"/></g></g><g filter=\"url(#ds)\"><clipPath id=\"zdnightc4\"><path d=\"M-170,285.9 Q-170,282.9 -167,282.9 L-159,282.9 Q-156,282.9 -156,285.9 L-156,475 Q-156,478 -159,478 L-167,478 Q-170,478 -170,475 Z\"/></clipPath><path d=\"M-170,285.9 Q-170,282.9 -167,282.9 L-159,282.9 Q-156,282.9 -156,285.9 L-156,475 Q-156,478 -159,478 L-167,478 Q-170,478 -170,475 Z\" fill=\"#5f4f3e\"/><g clip-path=\"url(#zdnightc4)\"><path d=\"M-170,284.9 L-156,284.9 L-156,282.9 L-170,282.9 Z\" fill=\"#7d6a54\" stroke=\"#7d6a54\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g></g><g filter=\"url(#ds)\"><clipPath id=\"zdnightc5\"><path d=\"M196,285.9 Q196,282.9 199,282.9 L207,282.9 Q210,282.9 210,285.9 L210,475 Q210,478 207,478 L199,478 Q196,478 196,475 Z\"/></clipPath><path d=\"M196,285.9 Q196,282.9 199,282.9 L207,282.9 Q210,282.9 210,285.9 L210,475 Q210,478 207,478 L199,478 Q196,478 196,475 Z\" fill=\"#5f4f3e\"/><g clip-path=\"url(#zdnightc5)\"><path d=\"M196,284.9 L210,284.9 L210,282.9 L196,282.9 Z\" fill=\"#7d6a54\" stroke=\"#7d6a54\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g></g><g filter=\"url(#ds)\"><clipPath id=\"zdnightc6\"><path d=\"M-170,225.7 Q-170,221.7 -166,221.7 L206,221.7 Q210,221.7 210,225.7 L210,280.9 Q210,284.9 206,284.9 L-166,284.9 Q-170,284.9 -170,280.9 Z\"/></clipPath><path d=\"M-170,225.7 Q-170,221.7 -166,221.7 L206,221.7 Q210,221.7 210,225.7 L210,280.9 Q210,284.9 206,284.9 L-166,284.9 Q-170,284.9 -170,280.9 Z\" fill=\"#7d6a54\"/><g clip-path=\"url(#zdnightc6)\"><path d=\"M-170,269.1 L210,269.1 L210,221.7 L-170,221.7 Z\" fill=\"#8f7b63\" stroke=\"#8f7b63\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M164.4,269.1 L210,269.1 L210,284.9 L164.4,284.9 Z\" fill=\"#5f4f3e\"/></g></g><g filter=\"url(#ds)\"><path d=\"M-10,236.8 Q-8.2,237.5 -5.6,237.6 Q-2.9,237.8 1.3,237.8 Q5.5,237.7 11.2,237.5 Q16.8,237.2 23.8,236.7 Q30.8,236.2 39,235.4 Q47.2,234.7 56.4,233.6 Q65.7,232.5 75.9,231.1 Q86,229.6 97,227.9 L108,226.1\" stroke=\"#8d8a7c\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M106,246.8 Q107.3,246 107.3,245.5 Q107.4,244.9 107.1,244.2 Q106.9,243.6 106.6,242.7 Q106.2,241.9 106.1,240.8 Q105.9,239.7 106.2,238.4 Q106.4,237 107.4,235.4 Q108.3,233.8 110.1,231.8 Q112,229.9 115,227.5 L118,225.2\" stroke=\"#8d8a7c\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g><g transform=\"translate(0,0) rotate(0 130 470)\"><g filter=\"url(#ds)\"><clipPath id=\"zdnightc7\"><path d=\"M70,117.2 Q70,111.2 76,111.2 L184,111.2 Q190,111.2 190,117.2 L190,214.1 Q190,220.1 184,220.1 L76,220.1 Q70,220.1 70,214.1 Z\"/></clipPath><path d=\"M70,117.2 Q70,111.2 76,111.2 L184,111.2 Q190,111.2 190,117.2 L190,214.1 Q190,220.1 184,220.1 L76,220.1 Q70,220.1 70,214.1 Z\" fill=\"#b3a46c\"/><g clip-path=\"url(#zdnightc7)\"></g><clipPath id=\"zdnightc8\"><path d=\"M96,219.1 Q96,215.1 100,215.1 L160,215.1 Q164,215.1 164,219.1 L164,236.7 Q164,240.7 160,240.7 L100,240.7 Q96,240.7 96,236.7 Z\"/></clipPath><path d=\"M96,219.1 Q96,215.1 100,215.1 L160,215.1 Q164,215.1 164,219.1 L164,236.7 Q164,240.7 160,240.7 L100,240.7 Q96,240.7 96,236.7 Z\" fill=\"#b3a46c\"/><g clip-path=\"url(#zdnightc8)\"><path d=\"M96,226.8 L164,226.8 L164,215.1 L96,215.1 Z\" fill=\"#d4c590\" stroke=\"#d4c590\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g><clipPath id=\"zdnightc9\"><path d=\"M70,119.1 Q70,110.1 79,110.1 L181,110.1 Q190,110.1 190,119.1 L190,220.9 Q190,229.9 181,229.9 L79,229.9 Q70,229.9 70,220.9 Z\"/></clipPath><path d=\"M70,119.1 Q70,110.1 79,110.1 L181,110.1 Q190,110.1 190,119.1 L190,220.9 Q190,229.9 181,229.9 L79,229.9 Q70,229.9 70,220.9 Z\" fill=\"#d4c590\"/><g clip-path=\"url(#zdnightc9)\"><path d=\"M70,120.9 L190,120.9 L190,110.1 L70,110.1 Z\" fill=\"#e4d8ab\" stroke=\"#e4d8ab\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M166,120.9 L190,120.9 L190,229.9 L166,229.9 Z\" fill=\"#b3a46c\"/></g><g transform=\"matrix(1,0,0,0.99,0,-20.678)\"><path d=\"M89,150 H155 Q167,150 167,162 V222 Q167,234 155,234 H89 Q77,234 77,222 V162 Q77,150 89,150 Z\" fill=\"#232a2e\"/><clipPath id=\"zdnightc10\"><path d=\"M89,153 H155 Q164,153 164,162 V222 Q164,231 155,231 H89 Q80,231 80,222 V162 Q80,153 89,153 Z\"/></clipPath><g clip-path=\"url(#zdnightc10)\"><g transform=\"translate(80,153)\"><rect width=\"84\" height=\"78\" fill=\"#1b2732\"/><path d=\"M8,78 L34,0 L52,0 L26,78 Z\" fill=\"#26343f\"/></g></g><path d=\"M70,157 Q72,146 82,143 L96,143 Q84,147 80,157 Q76,163 70,167 Z\" fill=\"#b3a46c\"/><path d=\"M70,157 Q71,149 78,145 Q74,153 74,161 Z\" fill=\"#e4d8ab\"/><path d=\"M174,155 H180 Q183,155 183,158 V164 Q183,167 180,167 H174 Q171,167 171,164 V158 Q171,155 174,155 Z\" fill=\"#b3a46c\"/><path d=\"M173.5,175 H180.5 Q183,175 183,177.5 V178.5 Q183,181 180.5,181 H173.5 Q171,181 171,178.5 V177.5 Q171,175 173.5,175 Z\" fill=\"#6a6a58\"/><path d=\"M173.5,187 H180.5 Q183,187 183,189.5 V190.5 Q183,193 180.5,193 H173.5 Q171,193 171,190.5 V189.5 Q171,187 173.5,187 Z\" fill=\"#6a6a58\"/><path d=\"M173.5,205 H180.5 Q183,205 183,207.5 V212.5 Q183,215 180.5,215 H173.5 Q171,215 171,212.5 V207.5 Q171,205 173.5,205 Z\" fill=\"#b3a46c\"/><path d=\"M173.5,221 H180.5 Q183,221 183,223.5 V228.5 Q183,231 180.5,231 H173.5 Q171,231 171,228.5 V223.5 Q171,221 173.5,221 Z\" fill=\"#b3a46c\"/><g transform=\"rotate(-3 112 242)\"><path d=\"M79.5,234 H148.5 Q150,234 150,235.5 V248.5 Q150,250 148.5,250 H79.5 Q78,250 78,248.5 V235.5 Q78,234 79.5,234 Z\" fill=\"#f1ede0\"/><text x=\"114\" y=\"245.4\" font-size=\"7.4\" font-family=\"Menlo, 'Courier New', monospace\" fill=\"#c0392b\" text-anchor=\"middle\" font-weight=\"700\">НЕ ВЫКЛЮЧАТЬ!!!</text><path d=\"M146,250 L152,250 L152,244 Z\" fill=\"#b3a46c\" opacity=\".5\"/></g></g></g></g><g filter=\"url(#ds)\"><clipPath id=\"zdnightc11\"><path d=\"M94,248.8 Q94,241.9 100.9,241.9 L113.1,241.9 Q120,241.9 120,248.8 L120,250.2 Q120,257.1 113.1,257.1 L100.9,257.1 Q94,257.1 94,250.2 Z\"/></clipPath><path d=\"M94,248.8 Q94,241.9 100.9,241.9 L113.1,241.9 Q120,241.9 120,248.8 L120,250.2 Q120,257.1 113.1,257.1 L100.9,257.1 Q94,257.1 94,250.2 Z\" fill=\"#cdbb7c\"/><g clip-path=\"url(#zdnightc11)\"><path d=\"M94,247.2 L120,247.2 L120,241.9 L94,241.9 Z\" fill=\"#ddcf9a\" stroke=\"#ddcf9a\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g><path d=\"M96.1,243.3 Q96.1,244.3 97,244.3 L117,244.3 Q117.9,244.3 117.9,243.3 L117.9,243.1 Q117.9,242.2 117,242.2 L97,242.2 Q96.1,242.2 96.1,243.1 Z\" fill=\"#ab9a5e\"/></g><g filter=\"url(#ds)\"><clipPath id=\"zdnightc12\"><path d=\"M-80,239.8 Q-80,235.8 -76,235.8 L56,235.8 Q60,235.8 60,239.8 L60,255.3 Q60,259.3 56,259.3 L-76,259.3 Q-80,259.3 -80,255.3 Z\"/></clipPath><path d=\"M-80,239.8 Q-80,235.8 -76,235.8 L56,235.8 Q60,235.8 60,239.8 L60,255.3 Q60,259.3 56,259.3 L-76,259.3 Q-80,259.3 -80,255.3 Z\" fill=\"#cdbb7c\"/><g clip-path=\"url(#zdnightc12)\"><path d=\"M-80,252.4 L60,252.4 L60,235.8 L-80,235.8 Z\" fill=\"#a99a5e\" stroke=\"#a99a5e\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g><path d=\"M-73.8,250 L-65.1,250 L-65.1,247 L-73.8,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-63.9,250 L-55.1,250 L-55.1,247 L-63.9,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-54,250 L-45.2,250 L-45.2,247 L-54,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-44.1,251.4 L-35.3,251.4 L-35.3,248.4 L-44.1,248.4 Z\" fill=\"#3b3328\" stroke=\"#3b3328\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-34.2,250 L-25.4,250 L-25.4,247 L-34.2,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-24.3,250 L-15.5,250 L-15.5,247 L-24.3,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-14.4,250 L-5.6,250 L-5.6,247 L-14.4,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-4.5,250 L4.3,250 L4.3,247 L-4.5,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M5.4,250 L14.2,250 L14.2,247 L5.4,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M15.3,250 L24.1,250 L24.1,247 L15.3,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M25.2,250 L34,250 L34,247 L25.2,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M35.1,250 L43.9,250 L43.9,247 L35.1,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M45.1,250 L53.8,250 L53.8,247 L45.1,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-73.8,246.3 L-65.1,246.3 L-65.1,243.3 L-73.8,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-63.9,246.3 L-55.1,246.3 L-55.1,243.3 L-63.9,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-54,246.3 L-45.2,246.3 L-45.2,243.3 L-54,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-44.1,246.3 L-35.3,246.3 L-35.3,243.3 L-44.1,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-34.2,246.3 L-25.4,246.3 L-25.4,243.3 L-34.2,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-24.3,246.3 L-15.5,246.3 L-15.5,243.3 L-24.3,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-14.4,246.3 L-5.6,246.3 L-5.6,243.3 L-14.4,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-4.5,246.3 L4.3,246.3 L4.3,243.3 L-4.5,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M5.4,246.3 L14.2,246.3 L14.2,243.3 L5.4,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M15.3,247.7 L24.1,247.7 L24.1,244.7 L15.3,244.7 Z\" fill=\"#3b3328\" stroke=\"#3b3328\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M25.2,246.3 L34,246.3 L34,243.3 L25.2,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M35.1,246.3 L43.9,246.3 L43.9,243.3 L35.1,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M45.1,246.3 L53.8,246.3 L53.8,243.3 L45.1,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-73.8,242.6 L-64.2,242.6 L-64.2,239.6 L-73.8,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-63.1,242.6 L-53.5,242.6 L-53.5,239.6 L-63.1,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-52.4,242.6 L-42.8,242.6 L-42.8,239.6 L-52.4,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-41.6,242.6 L-32,242.6 L-32,239.6 L-41.6,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-30.9,242.6 L-21.3,242.6 L-21.3,239.6 L-30.9,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-20.2,243.9 L-10.6,243.9 L-10.6,241 L-20.2,241 Z\" fill=\"#3b3328\" stroke=\"#3b3328\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-9.4,242.6 L0.2,242.6 L0.2,239.6 L-9.4,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M2.7,242.1 L12.3,242.1 L12.3,239.6 L2.7,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M12,242.6 L21.6,242.6 L21.6,239.6 L12,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M22.8,242.6 L32.4,242.6 L32.4,239.6 L22.8,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M33.5,242.6 L43.1,242.6 L43.1,239.6 L33.5,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M44.2,242.6 L53.8,242.6 L53.8,239.6 L44.2,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-74.4,238.8 L-62.4,238.8 L-62.4,235.8 L-74.4,235.8 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-61.5,238.8 L-49.5,238.8 L-49.5,235.8 L-61.5,235.8 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-48.6,238.8 L13.2,238.8 L13.2,235.8 L-48.6,235.8 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M1.5,247.9 Q4,249.4 6.9,249.6 L13,250 Q18,250.4 23,249.9 L28.6,249.4 Q32,249.1 34.5,246.8 L35.1,246.4 Q37.6,244.1 34.7,242.3 L33,241.2 Q29.2,238.8 24.7,238.5 L17.4,237.9 Q12.4,237.5 7.6,238.9 L3.8,240 Q1.2,240.8 -0.1,243.2 L-0.3,243.7 Q-1.6,246.1 0.7,247.5 Z\" fill=\"#7a5a2e\"/><path d=\"M13.9,246.2 Q15.2,247.4 16.9,247.3 L24.3,246.9 Q26.4,246.8 27,244.8 L27.2,244.4 Q27.8,242.4 25.8,242.2 L20.9,241.8 Q18,241.5 15.5,243 L13.9,243.9 Q12.4,244.8 13.7,246 Z\" fill=\"#3b2a18\"/></g></g>",
+   "svg_day": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><defs><filter id=\"ds\" x=\"-30%\" y=\"-30%\" width=\"160%\" height=\"170%\"><feDropShadow dx=\"2\" dy=\"4\" stdDeviation=\"3.2\" flood-color=\"#0b1020\" flood-opacity=\".32\"/></filter></defs><path d=\"M-180,445.6 Q-180,429.6 -164,429.6 L220,429.6 Q236,429.6 236,445.6 L236,463.9 Q236,479.9 220,479.9 L-164,479.9 Q-180,479.9 -180,463.9 Z\" fill=\"#0b1020\" opacity=\".22\"/><g filter=\"url(#ds)\"><clipPath id=\"zddayc0\"><path d=\"M-170,240.6 Q-170,237.6 -167,237.6 L-159,237.6 Q-156,237.6 -156,240.6 L-156,429.6 Q-156,432.6 -159,432.6 L-167,432.6 Q-170,432.6 -170,429.6 Z\"/></clipPath><path d=\"M-170,240.6 Q-170,237.6 -167,237.6 L-159,237.6 Q-156,237.6 -156,240.6 L-156,429.6 Q-156,432.6 -159,432.6 L-167,432.6 Q-170,432.6 -170,429.6 Z\" fill=\"#5f4f3e\"/><g clip-path=\"url(#zddayc0)\"><path d=\"M-170,239.5 L-156,239.5 L-156,237.6 L-170,237.6 Z\" fill=\"#7d6a54\" stroke=\"#7d6a54\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g></g><g filter=\"url(#ds)\"><clipPath id=\"zddayc1\"><path d=\"M196,240.6 Q196,237.6 199,237.6 L207,237.6 Q210,237.6 210,240.6 L210,429.6 Q210,432.6 207,432.6 L199,432.6 Q196,432.6 196,429.6 Z\"/></clipPath><path d=\"M196,240.6 Q196,237.6 199,237.6 L207,237.6 Q210,237.6 210,240.6 L210,429.6 Q210,432.6 207,432.6 L199,432.6 Q196,432.6 196,429.6 Z\" fill=\"#5f4f3e\"/><g clip-path=\"url(#zddayc1)\"><path d=\"M196,239.5 L210,239.5 L210,237.6 L196,237.6 Z\" fill=\"#7d6a54\" stroke=\"#7d6a54\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g></g><g filter=\"url(#ds)\"><clipPath id=\"zddayc2\"><path d=\"M-34,431.1 Q-34,427.1 -30,427.1 L16,427.1 Q20,427.1 20,431.1 L20,443.1 Q20,447.1 16,447.1 L-30,447.1 Q-34,447.1 -34,443.1 Z\"/></clipPath><path d=\"M-34,431.1 Q-34,427.1 -30,427.1 L16,427.1 Q20,427.1 20,431.1 L20,443.1 Q20,447.1 16,447.1 L-30,447.1 Q-34,447.1 -34,443.1 Z\" fill=\"#d7cfb6\"/><g clip-path=\"url(#zddayc2)\"><path d=\"M-34,431.3 L20,431.3 L20,427.1 L-34,427.1 Z\" fill=\"#e6dfc8\" stroke=\"#e6dfc8\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M9.2,431.3 L20,431.3 L20,447.1 L9.2,447.1 Z\" fill=\"#b4aa8c\"/></g><g transform=\"matrix(1,0,0,0.99,0,-26.245)\"><path d=\"M4.5,463 H13.5 Q19,463 19,468.5 V469.5 Q19,475 13.5,475 H4.5 Q-1,475 -1,469.5 V468.5 Q-1,463 4.5,463 Z\" fill=\"#ff5a4a\" opacity=\".3\"/><path d=\"M4.5,466 H13.5 Q16,466 16,468.5 V469.5 Q16,472 13.5,472 H4.5 Q2,472 2,469.5 V468.5 Q2,466 4.5,466 Z\" fill=\"#ff5a4a\"/><path d=\"M-26,466 H-16 Q-14,466 -14,468 V472 Q-14,474 -16,474 H-26 Q-28,474 -28,472 V468 Q-28,466 -26,466 Z\" fill=\"#b4aa8c\"/></g></g><g filter=\"url(#ds)\"><path d=\"M104,204.4 Q92.5,218.6 87.2,227.1 Q82,235.5 77.1,245 Q72.2,254.5 67.6,264.8 Q63,275.1 58.7,285.9 Q54.4,296.7 50.2,307.8 Q46,318.8 41.9,329.9 Q37.8,341 33.7,351.8 Q29.6,362.6 25.5,372.8 Q21.3,383.1 17,392.6 Q12.7,402 8.2,410.4 Q3.7,418.8 -1.2,425.9 L-6,433\" stroke=\"#20222a\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M-34,438.9 Q-47.7,439 -54.7,438.8 Q-61.6,438.7 -69,438.3 Q-76.4,437.9 -84.4,437.4 Q-92.5,436.9 -101.5,436.3 Q-110.5,435.7 -120.8,435 Q-131.1,434.3 -142.9,433.7 Q-154.7,433 -168.4,432.4 Q-182,431.7 -197.8,431.2 Q-213.6,430.6 -231.8,430.2 L-250,429.8\" stroke=\"#20222a\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g><g transform=\"translate(0,0) rotate(0 130 470)\"><g filter=\"url(#ds)\"><clipPath id=\"zddayc3\"><path d=\"M40,297.7 Q40,289.7 48,289.7 L116,289.7 Q124,289.7 124,297.7 L124,446.9 Q124,454.9 116,454.9 L48,454.9 Q40,454.9 40,446.9 Z\"/></clipPath><path d=\"M40,297.7 Q40,289.7 48,289.7 L116,289.7 Q124,289.7 124,297.7 L124,446.9 Q124,454.9 116,454.9 L48,454.9 Q40,454.9 40,446.9 Z\" fill=\"#d0c08a\"/><g clip-path=\"url(#zddayc3)\"><path d=\"M40,306.4 L124,306.4 L124,289.7 L40,289.7 Z\" fill=\"#e0d3a4\" stroke=\"#e0d3a4\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M105.5,306.4 L124,306.4 L124,454.9 L105.5,454.9 Z\" fill=\"#af9f68\"/></g><g transform=\"matrix(1,0,0,0.99,0,-18.451)\"><path d=\"M49.5,336 H114.5 Q117,336 117,338.5 V348.5 Q117,351 114.5,351 H49.5 Q47,351 47,348.5 V338.5 Q47,336 49.5,336 Z\" fill=\"#8d8153\"/><path d=\"M55.5,340 H98.5 Q101,340 101,342.5 V344.5 Q101,347 98.5,347 H55.5 Q53,347 53,344.5 V342.5 Q53,340 55.5,340 Z\" fill=\"#2a2c30\"/><path d=\"M49.5,356 H114.5 Q117,356 117,358.5 V368.5 Q117,371 114.5,371 H49.5 Q47,371 47,368.5 V358.5 Q47,356 49.5,356 Z\" fill=\"#8d8153\"/><path d=\"M55.5,360 H86.5 Q89,360 89,362.5 V364.5 Q89,367 86.5,367 H55.5 Q53,367 53,364.5 V362.5 Q53,360 55.5,360 Z\" fill=\"#2a2c30\"/><path d=\"M98,360 H106 Q108,360 108,362 V365 Q108,367 106,367 H98 Q96,367 96,365 V362 Q96,360 98,360 Z\" fill=\"#af9f68\"/><path d=\"M96,386 H110 Q114,386 114,390 V404 Q114,408 110,408 H96 Q92,408 92,404 V390 Q92,386 96,386 Z\" fill=\"#af9f68\"/><path d=\"M97.1,378 H108.9 Q111,378 111,380.1 V380.9 Q111,383 108.9,383 H97.1 Q95,383 95,380.9 V380.1 Q95,378 97.1,378 Z\" fill=\"#6a6a58\"/><path d=\"M49.5,386 H68.5 Q71,386 71,388.5 V391.5 Q71,394 68.5,394 H49.5 Q47,394 47,391.5 V388.5 Q47,386 49.5,386 Z\" fill=\"#af9f68\"/><g transform=\"rotate(-2 79 439)\"><path d=\"M47.5,430 H110.5 Q112,430 112,431.5 V446.5 Q112,448 110.5,448 H47.5 Q46,448 46,446.5 V431.5 Q46,430 47.5,430 Z\" fill=\"#eadfb8\"/><text x=\"79\" y=\"443.4\" font-size=\"11\" font-family=\"Menlo, 'Courier New', monospace\" fill=\"#2b2723\" text-anchor=\"middle\" font-weight=\"700\">Зинаида</text></g><path d=\"M53.3,470.3 Q55.2,472 53,473.5 Q50.9,474.9 48.9,475.3 Q46.9,475.7 44.7,474.9 Q42.5,474.1 42.1,471.9 Q41.7,469.6 44.1,468.2 Q46.5,466.7 48.9,467.7 Q51.4,468.6 53.3,470.3 Z\" fill=\"#b9ae95\"/><path d=\"M113.3,468.5 Q113.8,471 113.1,473.2 Q112.3,475.4 109.2,476.5 Q106.1,477.6 104.4,475.3 Q102.8,473 102.3,470.8 Q101.8,468.6 104,466.7 Q106.2,464.8 109.6,465.4 Q112.9,466.1 113.3,468.5 Z\" fill=\"#b9ae95\"/></g></g><g transform=\"matrix(1,0,0,0.99,0,-20.678)\"><path d=\"M108.2,142.7 Q109.9,144 108.2,145.2 Q106.4,146.4 104.6,147.4 Q102.7,148.4 101.6,146.9 Q100.4,145.4 100.5,144 Q100.6,142.7 101.6,141 Q102.7,139.3 104.6,140.4 Q106.6,141.4 108.2,142.7 Z\" fill=\"#b9ae95\"/><path d=\"M133.2,142.4 Q135.1,144 133.6,146.1 Q132.2,148.2 129.5,148.2 Q126.8,148.1 125.1,146.9 Q123.3,145.8 122.9,143.9 Q122.5,141.9 124.5,140.1 Q126.4,138.3 128.8,139.5 Q131.2,140.8 133.2,142.4 Z\" fill=\"#b9ae95\"/><path d=\"M156.6,142.3 Q157.8,144 156.1,145.2 Q154.4,146.5 152.7,147.2 Q150.9,147.9 149.5,146.7 Q148.1,145.5 147.8,143.9 Q147.5,142.3 149.2,141.3 Q150.9,140.3 153.2,140.4 Q155.4,140.6 156.6,142.3 Z\" fill=\"#b9ae95\"/></g></g><g filter=\"url(#ds)\"><clipPath id=\"zddayc4\"><path d=\"M-170,285.9 Q-170,282.9 -167,282.9 L-159,282.9 Q-156,282.9 -156,285.9 L-156,475 Q-156,478 -159,478 L-167,478 Q-170,478 -170,475 Z\"/></clipPath><path d=\"M-170,285.9 Q-170,282.9 -167,282.9 L-159,282.9 Q-156,282.9 -156,285.9 L-156,475 Q-156,478 -159,478 L-167,478 Q-170,478 -170,475 Z\" fill=\"#5f4f3e\"/><g clip-path=\"url(#zddayc4)\"><path d=\"M-170,284.9 L-156,284.9 L-156,282.9 L-170,282.9 Z\" fill=\"#7d6a54\" stroke=\"#7d6a54\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g></g><g filter=\"url(#ds)\"><clipPath id=\"zddayc5\"><path d=\"M196,285.9 Q196,282.9 199,282.9 L207,282.9 Q210,282.9 210,285.9 L210,475 Q210,478 207,478 L199,478 Q196,478 196,475 Z\"/></clipPath><path d=\"M196,285.9 Q196,282.9 199,282.9 L207,282.9 Q210,282.9 210,285.9 L210,475 Q210,478 207,478 L199,478 Q196,478 196,475 Z\" fill=\"#5f4f3e\"/><g clip-path=\"url(#zddayc5)\"><path d=\"M196,284.9 L210,284.9 L210,282.9 L196,282.9 Z\" fill=\"#7d6a54\" stroke=\"#7d6a54\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g></g><g filter=\"url(#ds)\"><clipPath id=\"zddayc6\"><path d=\"M-170,225.7 Q-170,221.7 -166,221.7 L206,221.7 Q210,221.7 210,225.7 L210,280.9 Q210,284.9 206,284.9 L-166,284.9 Q-170,284.9 -170,280.9 Z\"/></clipPath><path d=\"M-170,225.7 Q-170,221.7 -166,221.7 L206,221.7 Q210,221.7 210,225.7 L210,280.9 Q210,284.9 206,284.9 L-166,284.9 Q-170,284.9 -170,280.9 Z\" fill=\"#7d6a54\"/><g clip-path=\"url(#zddayc6)\"><path d=\"M-170,269.1 L210,269.1 L210,221.7 L-170,221.7 Z\" fill=\"#8f7b63\" stroke=\"#8f7b63\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M164.4,269.1 L210,269.1 L210,284.9 L164.4,284.9 Z\" fill=\"#5f4f3e\"/></g></g><g filter=\"url(#ds)\"><path d=\"M-10,236.8 Q-8.2,237.5 -5.6,237.6 Q-2.9,237.8 1.3,237.8 Q5.5,237.7 11.2,237.5 Q16.8,237.2 23.8,236.7 Q30.8,236.2 39,235.4 Q47.2,234.7 56.4,233.6 Q65.7,232.5 75.9,231.1 Q86,229.6 97,227.9 L108,226.1\" stroke=\"#8d8a7c\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M106,246.8 Q107.3,246 107.3,245.5 Q107.4,244.9 107.1,244.2 Q106.9,243.6 106.6,242.7 Q106.2,241.9 106.1,240.8 Q105.9,239.7 106.2,238.4 Q106.4,237 107.4,235.4 Q108.3,233.8 110.1,231.8 Q112,229.9 115,227.5 L118,225.2\" stroke=\"#8d8a7c\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g><g transform=\"translate(0,0) rotate(0 130 470)\"><g filter=\"url(#ds)\"><clipPath id=\"zddayc7\"><path d=\"M70,117.2 Q70,111.2 76,111.2 L184,111.2 Q190,111.2 190,117.2 L190,214.1 Q190,220.1 184,220.1 L76,220.1 Q70,220.1 70,214.1 Z\"/></clipPath><path d=\"M70,117.2 Q70,111.2 76,111.2 L184,111.2 Q190,111.2 190,117.2 L190,214.1 Q190,220.1 184,220.1 L76,220.1 Q70,220.1 70,214.1 Z\" fill=\"#b3a46c\"/><g clip-path=\"url(#zddayc7)\"></g><clipPath id=\"zddayc8\"><path d=\"M96,219.1 Q96,215.1 100,215.1 L160,215.1 Q164,215.1 164,219.1 L164,236.7 Q164,240.7 160,240.7 L100,240.7 Q96,240.7 96,236.7 Z\"/></clipPath><path d=\"M96,219.1 Q96,215.1 100,215.1 L160,215.1 Q164,215.1 164,219.1 L164,236.7 Q164,240.7 160,240.7 L100,240.7 Q96,240.7 96,236.7 Z\" fill=\"#b3a46c\"/><g clip-path=\"url(#zddayc8)\"><path d=\"M96,226.8 L164,226.8 L164,215.1 L96,215.1 Z\" fill=\"#d4c590\" stroke=\"#d4c590\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g><clipPath id=\"zddayc9\"><path d=\"M70,119.1 Q70,110.1 79,110.1 L181,110.1 Q190,110.1 190,119.1 L190,220.9 Q190,229.9 181,229.9 L79,229.9 Q70,229.9 70,220.9 Z\"/></clipPath><path d=\"M70,119.1 Q70,110.1 79,110.1 L181,110.1 Q190,110.1 190,119.1 L190,220.9 Q190,229.9 181,229.9 L79,229.9 Q70,229.9 70,220.9 Z\" fill=\"#d4c590\"/><g clip-path=\"url(#zddayc9)\"><path d=\"M70,120.9 L190,120.9 L190,110.1 L70,110.1 Z\" fill=\"#e4d8ab\" stroke=\"#e4d8ab\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/><path d=\"M166,120.9 L190,120.9 L190,229.9 L166,229.9 Z\" fill=\"#b3a46c\"/></g><g transform=\"matrix(1,0,0,0.99,0,-20.678)\"><path d=\"M89,150 H155 Q167,150 167,162 V222 Q167,234 155,234 H89 Q77,234 77,222 V162 Q77,150 89,150 Z\" fill=\"#232a2e\"/><clipPath id=\"zddayc10\"><path d=\"M89,153 H155 Q164,153 164,162 V222 Q164,231 155,231 H89 Q80,231 80,222 V162 Q80,153 89,153 Z\"/></clipPath><g clip-path=\"url(#zddayc10)\"><g transform=\"translate(80,153)\"><rect width=\"84\" height=\"78\" fill=\"#1b2732\"/><path d=\"M8,78 L34,0 L52,0 L26,78 Z\" fill=\"#26343f\"/></g></g><path d=\"M70,157 Q72,146 82,143 L96,143 Q84,147 80,157 Q76,163 70,167 Z\" fill=\"#b3a46c\"/><path d=\"M70,157 Q71,149 78,145 Q74,153 74,161 Z\" fill=\"#e4d8ab\"/><path d=\"M174,155 H180 Q183,155 183,158 V164 Q183,167 180,167 H174 Q171,167 171,164 V158 Q171,155 174,155 Z\" fill=\"#b3a46c\"/><path d=\"M173.5,175 H180.5 Q183,175 183,177.5 V178.5 Q183,181 180.5,181 H173.5 Q171,181 171,178.5 V177.5 Q171,175 173.5,175 Z\" fill=\"#6a6a58\"/><path d=\"M173.5,187 H180.5 Q183,187 183,189.5 V190.5 Q183,193 180.5,193 H173.5 Q171,193 171,190.5 V189.5 Q171,187 173.5,187 Z\" fill=\"#6a6a58\"/><path d=\"M173.5,205 H180.5 Q183,205 183,207.5 V212.5 Q183,215 180.5,215 H173.5 Q171,215 171,212.5 V207.5 Q171,205 173.5,205 Z\" fill=\"#b3a46c\"/><path d=\"M173.5,221 H180.5 Q183,221 183,223.5 V228.5 Q183,231 180.5,231 H173.5 Q171,231 171,228.5 V223.5 Q171,221 173.5,221 Z\" fill=\"#b3a46c\"/><g transform=\"rotate(-3 112 242)\"><path d=\"M79.5,234 H148.5 Q150,234 150,235.5 V248.5 Q150,250 148.5,250 H79.5 Q78,250 78,248.5 V235.5 Q78,234 79.5,234 Z\" fill=\"#f1ede0\"/><text x=\"114\" y=\"245.4\" font-size=\"7.4\" font-family=\"Menlo, 'Courier New', monospace\" fill=\"#c0392b\" text-anchor=\"middle\" font-weight=\"700\">НЕ ВЫКЛЮЧАТЬ!!!</text><path d=\"M146,250 L152,250 L152,244 Z\" fill=\"#b3a46c\" opacity=\".5\"/></g></g></g></g><g filter=\"url(#ds)\"><clipPath id=\"zddayc11\"><path d=\"M94,248.8 Q94,241.9 100.9,241.9 L113.1,241.9 Q120,241.9 120,248.8 L120,250.2 Q120,257.1 113.1,257.1 L100.9,257.1 Q94,257.1 94,250.2 Z\"/></clipPath><path d=\"M94,248.8 Q94,241.9 100.9,241.9 L113.1,241.9 Q120,241.9 120,248.8 L120,250.2 Q120,257.1 113.1,257.1 L100.9,257.1 Q94,257.1 94,250.2 Z\" fill=\"#cdbb7c\"/><g clip-path=\"url(#zddayc11)\"><path d=\"M94,247.2 L120,247.2 L120,241.9 L94,241.9 Z\" fill=\"#ddcf9a\" stroke=\"#ddcf9a\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g><path d=\"M96.1,243.3 Q96.1,244.3 97,244.3 L117,244.3 Q117.9,244.3 117.9,243.3 L117.9,243.1 Q117.9,242.2 117,242.2 L97,242.2 Q96.1,242.2 96.1,243.1 Z\" fill=\"#ab9a5e\"/></g><g filter=\"url(#ds)\"><clipPath id=\"zddayc12\"><path d=\"M-80,239.8 Q-80,235.8 -76,235.8 L56,235.8 Q60,235.8 60,239.8 L60,255.3 Q60,259.3 56,259.3 L-76,259.3 Q-80,259.3 -80,255.3 Z\"/></clipPath><path d=\"M-80,239.8 Q-80,235.8 -76,235.8 L56,235.8 Q60,235.8 60,239.8 L60,255.3 Q60,259.3 56,259.3 L-76,259.3 Q-80,259.3 -80,255.3 Z\" fill=\"#cdbb7c\"/><g clip-path=\"url(#zddayc12)\"><path d=\"M-80,252.4 L60,252.4 L60,235.8 L-80,235.8 Z\" fill=\"#a99a5e\" stroke=\"#a99a5e\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/></g><path d=\"M-73.8,250 L-65.1,250 L-65.1,247 L-73.8,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-63.9,250 L-55.1,250 L-55.1,247 L-63.9,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-54,250 L-45.2,250 L-45.2,247 L-54,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-44.1,251.4 L-35.3,251.4 L-35.3,248.4 L-44.1,248.4 Z\" fill=\"#3b3328\" stroke=\"#3b3328\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-34.2,250 L-25.4,250 L-25.4,247 L-34.2,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-24.3,250 L-15.5,250 L-15.5,247 L-24.3,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-14.4,250 L-5.6,250 L-5.6,247 L-14.4,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-4.5,250 L4.3,250 L4.3,247 L-4.5,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M5.4,250 L14.2,250 L14.2,247 L5.4,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M15.3,250 L24.1,250 L24.1,247 L15.3,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M25.2,250 L34,250 L34,247 L25.2,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M35.1,250 L43.9,250 L43.9,247 L35.1,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M45.1,250 L53.8,250 L53.8,247 L45.1,247 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-73.8,246.3 L-65.1,246.3 L-65.1,243.3 L-73.8,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-63.9,246.3 L-55.1,246.3 L-55.1,243.3 L-63.9,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-54,246.3 L-45.2,246.3 L-45.2,243.3 L-54,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-44.1,246.3 L-35.3,246.3 L-35.3,243.3 L-44.1,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-34.2,246.3 L-25.4,246.3 L-25.4,243.3 L-34.2,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-24.3,246.3 L-15.5,246.3 L-15.5,243.3 L-24.3,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-14.4,246.3 L-5.6,246.3 L-5.6,243.3 L-14.4,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-4.5,246.3 L4.3,246.3 L4.3,243.3 L-4.5,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M5.4,246.3 L14.2,246.3 L14.2,243.3 L5.4,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M15.3,247.7 L24.1,247.7 L24.1,244.7 L15.3,244.7 Z\" fill=\"#3b3328\" stroke=\"#3b3328\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M25.2,246.3 L34,246.3 L34,243.3 L25.2,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M35.1,246.3 L43.9,246.3 L43.9,243.3 L35.1,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M45.1,246.3 L53.8,246.3 L53.8,243.3 L45.1,243.3 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-73.8,242.6 L-64.2,242.6 L-64.2,239.6 L-73.8,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-63.1,242.6 L-53.5,242.6 L-53.5,239.6 L-63.1,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-52.4,242.6 L-42.8,242.6 L-42.8,239.6 L-52.4,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-41.6,242.6 L-32,242.6 L-32,239.6 L-41.6,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-30.9,242.6 L-21.3,242.6 L-21.3,239.6 L-30.9,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-20.2,243.9 L-10.6,243.9 L-10.6,241 L-20.2,241 Z\" fill=\"#3b3328\" stroke=\"#3b3328\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-9.4,242.6 L0.2,242.6 L0.2,239.6 L-9.4,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M2.7,242.1 L12.3,242.1 L12.3,239.6 L2.7,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M12,242.6 L21.6,242.6 L21.6,239.6 L12,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M22.8,242.6 L32.4,242.6 L32.4,239.6 L22.8,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M33.5,242.6 L43.1,242.6 L43.1,239.6 L33.5,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M44.2,242.6 L53.8,242.6 L53.8,239.6 L44.2,239.6 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-74.4,238.8 L-62.4,238.8 L-62.4,235.8 L-74.4,235.8 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-61.5,238.8 L-49.5,238.8 L-49.5,235.8 L-61.5,235.8 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M-48.6,238.8 L13.2,238.8 L13.2,235.8 L-48.6,235.8 Z\" fill=\"#e2d6a8\" stroke=\"#e2d6a8\" stroke-width=\"1\" stroke-linejoin=\"round\"/><path d=\"M1.5,247.9 Q4,249.4 6.9,249.6 L13,250 Q18,250.4 23,249.9 L28.6,249.4 Q32,249.1 34.5,246.8 L35.1,246.4 Q37.6,244.1 34.7,242.3 L33,241.2 Q29.2,238.8 24.7,238.5 L17.4,237.9 Q12.4,237.5 7.6,238.9 L3.8,240 Q1.2,240.8 -0.1,243.2 L-0.3,243.7 Q-1.6,246.1 0.7,247.5 Z\" fill=\"#7a5a2e\"/><path d=\"M13.9,246.2 Q15.2,247.4 16.9,247.3 L24.3,246.9 Q26.4,246.8 27,244.8 L27.2,244.4 Q27.8,242.4 25.8,242.2 L20.9,241.8 Q18,241.5 15.5,243 L13.9,243.9 Q12.4,244.8 13.7,246 Z\" fill=\"#3b2a18\"/></g></g>"
+  },
+  {
+   "id": "setD_server_tower_label_inv",
+   "layer": "mid",
+   "z": 19,
+   "bbox": [
+    900,
+    578,
+    60,
+    16
+   ],
+   "desc": "label-maker tape on the tower «ИНВ. 0417» (cassette-era Dymo strip, dark tape cream letters)",
+   "lit": false,
+   "story_text": "ИНВ. 0417",
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"48\" y=\"373\" width=\"70\" height=\"20\" fill=\"#2b2b36\" transform=\"translate(2,2.5)\" opacity=\".5\"/><rect x=\"48\" y=\"373\" width=\"70\" height=\"20\" fill=\"#2b2b36\"/><text x=\"83\" y=\"388\" font-size=\"12\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#efe6c8\" text-anchor=\"middle\">ИНВ. 0417</text></g>",
+   "svg_day": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"48\" y=\"373\" width=\"70\" height=\"20\" fill=\"#2b2b36\" transform=\"translate(2,2.5)\" opacity=\".5\"/><rect x=\"48\" y=\"373\" width=\"70\" height=\"20\" fill=\"#2b2b36\"/><text x=\"83\" y=\"388\" font-size=\"12\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#efe6c8\" text-anchor=\"middle\">ИНВ. 0417</text></g>"
+  },
+  {
+   "id": "setD_server_party_hat",
+   "layer": "mid",
+   "z": 20,
+   "bbox": [
+    920,
+    350,
+    34,
+    46
+   ],
+   "desc": "paper corporate-party hat on the CRT: cone, mustard band, square pom (no circle)",
+   "lit": false,
+   "story": "шапка с корпоратива",
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><g transform=\"translate(16,0) rotate(-10 132 112)\"><path d=\"M112 112 L152 112 L132 60Z\" fill=\"#c78986\" transform=\"translate(3,4)\"/><path d=\"M112 112 L152 112 L132 60Z\" fill=\"#e0a9a6\"/><path d=\"M118 98 L146 98 L152 112 L112 112Z\" fill=\"#ebb64e\"/><rect x=\"128\" y=\"52\" width=\"9\" height=\"9\" fill=\"#fbf6e6\"/></g></g>",
+   "svg_day": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><g transform=\"translate(16,0) rotate(-10 132 112)\"><path d=\"M112 112 L152 112 L132 60Z\" fill=\"#c78986\" transform=\"translate(3,4)\"/><path d=\"M112 112 L152 112 L132 60Z\" fill=\"#e0a9a6\"/><path d=\"M118 98 L146 98 L152 112 L112 112Z\" fill=\"#ebb64e\"/><rect x=\"128\" y=\"52\" width=\"9\" height=\"9\" fill=\"#fbf6e6\"/></g></g>"
+  },
+  {
+   "id": "setD_server_desk_lamp",
+   "layer": "mid",
+   "z": 21,
+   "bbox": [
+    750,
+    330,
+    70,
+    130
+   ],
+   "desc": "desk lamp (clear object): dark base plate, two-segment teal arm with a square joint, mustard trapezoid shade with a bright underside; night ON, day off",
+   "lit": false,
+   "prop": "desk lamp",
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"-170\" y=\"244\" width=\"40\" height=\"9\" rx=\"2\" fill=\"#1f3a40\"/><rect x=\"-160\" y=\"238\" width=\"20\" height=\"8\" fill=\"#2f6b73\"/><path d=\"M-152 240 L-146 240 L-136 190 L-142 190Z\" fill=\"#235057\"/><rect x=\"-146\" y=\"184\" width=\"14\" height=\"14\" fill=\"#1f3a40\"/><path d=\"M-140 192 L-134 186 L-114 160 L-120 156Z\" fill=\"#2f6b73\"/><path d=\"M-138 142 L-90 154 L-102 186 L-142 174Z\" fill=\"#c99a38\" transform=\"translate(3,4)\"/><path d=\"M-138 142 L-90 154 L-102 186 L-142 174Z\" fill=\"#ebb64e\"/><path d=\"M-142 174 L-102 186 L-104 191 L-143 179Z\" fill=\"#fff0b8\"/></g>",
+   "svg_day": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"-170\" y=\"244\" width=\"40\" height=\"9\" rx=\"2\" fill=\"#1f3a40\"/><rect x=\"-160\" y=\"238\" width=\"20\" height=\"8\" fill=\"#2f6b73\"/><path d=\"M-152 240 L-146 240 L-136 190 L-142 190Z\" fill=\"#235057\"/><rect x=\"-146\" y=\"184\" width=\"14\" height=\"14\" fill=\"#1f3a40\"/><path d=\"M-140 192 L-134 186 L-114 160 L-120 156Z\" fill=\"#2f6b73\"/><path d=\"M-138 142 L-90 154 L-102 186 L-142 174Z\" fill=\"#c99a38\" transform=\"translate(3,4)\"/><path d=\"M-138 142 L-90 154 L-102 186 L-142 174Z\" fill=\"#ebb64e\"/><path d=\"M-142 174 L-102 186 L-104 191 L-143 179Z\" fill=\"#d8d6c4\"/></g>"
+  },
+  {
+   "id": "setD_server_thermos",
+   "layer": "mid",
+   "z": 22,
+   "bbox": [
+    792,
+    458,
+    16,
+    34
+   ],
+   "desc": "thermos on the desk (dark green, steel cap)",
+   "lit": false,
+   "prop": "thermos",
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"-122\" y=\"214\" width=\"22\" height=\"36\" rx=\"4\" fill=\"#3e5a48\" transform=\"translate(2,2)\"/><rect x=\"-122\" y=\"214\" width=\"22\" height=\"36\" rx=\"4\" fill=\"#4f7060\"/><rect x=\"-124\" y=\"208\" width=\"26\" height=\"9\" rx=\"2\" fill=\"#aab8c0\"/></g>",
+   "svg_day": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"-122\" y=\"214\" width=\"22\" height=\"36\" rx=\"4\" fill=\"#3e5a48\" transform=\"translate(2,2)\"/><rect x=\"-122\" y=\"214\" width=\"22\" height=\"36\" rx=\"4\" fill=\"#4f7060\"/><rect x=\"-124\" y=\"208\" width=\"26\" height=\"9\" rx=\"2\" fill=\"#aab8c0\"/></g>"
+  },
+  {
+   "id": "setD_server_mug_ring",
+   "layer": "mid",
+   "z": 23,
+   "bbox": [
+    880,
+    236,
+    40,
+    40
+   ],
+   "desc": "cream mug with a brown ring stain, seated on the CRT top surface with a flat shadow (the tower is under the desk)",
+   "lit": false,
+   "prop": "mug",
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"78\" y=\"110\" width=\"34\" height=\"5\" rx=\"2\" fill=\"#7a6a4a\" fill-opacity=\".55\"/><rect x=\"80\" y=\"86\" width=\"26\" height=\"25\" rx=\"4\" fill=\"#bfa27a\" transform=\"translate(3,2)\"/><rect x=\"80\" y=\"86\" width=\"26\" height=\"25\" rx=\"4\" fill=\"#efe6c8\"/><path d=\"M106 92 H113 Q117 92 117 97 V102 Q117 107 113 107 H106\" stroke=\"#efe6c8\" stroke-width=\"5\" fill=\"none\"/><rect x=\"84\" y=\"90\" width=\"18\" height=\"8\" fill=\"#7a5a2e\"/></g>",
+   "svg_day": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"78\" y=\"110\" width=\"34\" height=\"5\" rx=\"2\" fill=\"#7a6a4a\" fill-opacity=\".55\"/><rect x=\"80\" y=\"86\" width=\"26\" height=\"25\" rx=\"4\" fill=\"#bfa27a\" transform=\"translate(3,2)\"/><rect x=\"80\" y=\"86\" width=\"26\" height=\"25\" rx=\"4\" fill=\"#efe6c8\"/><path d=\"M106 92 H113 Q117 92 117 97 V102 Q117 107 113 107 H106\" stroke=\"#efe6c8\" stroke-width=\"5\" fill=\"none\"/><rect x=\"84\" y=\"90\" width=\"18\" height=\"8\" fill=\"#7a5a2e\"/></g>"
+  },
+  {
+   "id": "setD_server_tower_ports",
+   "layer": "mid",
+   "z": 24,
+   "bbox": [
+    766,
+    498,
+    40,
+    10
+   ],
+   "desc": "row of 3 tiny port slots on the tower front, tone-on-tone, left of the LED",
+   "lit": false,
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"48\" y=\"355\" width=\"11\" height=\"5\" rx=\"1.5\" fill=\"#a8996a\"/><rect x=\"62\" y=\"355\" width=\"11\" height=\"5\" rx=\"1.5\" fill=\"#a8996a\"/><rect x=\"76\" y=\"355\" width=\"11\" height=\"5\" rx=\"1.5\" fill=\"#a8996a\"/></g>",
+   "svg_day": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"48\" y=\"355\" width=\"11\" height=\"5\" rx=\"1.5\" fill=\"#a8996a\"/><rect x=\"62\" y=\"355\" width=\"11\" height=\"5\" rx=\"1.5\" fill=\"#a8996a\"/><rect x=\"76\" y=\"355\" width=\"11\" height=\"5\" rx=\"1.5\" fill=\"#a8996a\"/></g>"
+  },
+  {
+   "id": "setD_server_cable_bundle",
+   "layer": "mid",
+   "z": 25,
+   "bbox": [
+    820,
+    540,
+    130,
+    100
+   ],
+   "desc": "neat cable bundle with two cream ties from the tower back to the cable box",
+   "lit": false,
+   "prop": "cable bundle",
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><path d=\"M122 436 C160 436 190 450 214 470\" stroke=\"#14161c\" stroke-width=\"9\" fill=\"none\" transform=\"translate(2,3)\" opacity=\".5\"/><path d=\"M122 436 C160 436 190 450 214 470\" stroke=\"#20222a\" stroke-width=\"9\" fill=\"none\"/><rect x=\"146\" y=\"434\" width=\"6\" height=\"12\" fill=\"#efe6c8\" transform=\"rotate(8 149 440)\"/><rect x=\"184\" y=\"445\" width=\"6\" height=\"12\" fill=\"#efe6c8\" transform=\"rotate(30 187 451)\"/></g>",
+   "svg_day": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><path d=\"M122 436 C160 436 190 450 214 470\" stroke=\"#14161c\" stroke-width=\"9\" fill=\"none\" transform=\"translate(2,3)\" opacity=\".5\"/><path d=\"M122 436 C160 436 190 450 214 470\" stroke=\"#20222a\" stroke-width=\"9\" fill=\"none\"/><rect x=\"146\" y=\"434\" width=\"6\" height=\"12\" fill=\"#efe6c8\" transform=\"rotate(8 149 440)\"/><rect x=\"184\" y=\"445\" width=\"6\" height=\"12\" fill=\"#efe6c8\" transform=\"rotate(30 187 451)\"/></g>"
+  },
+  {
+   "id": "setD_server_cable_box",
+   "layer": "mid",
+   "z": 26,
+   "bbox": [
+    950,
+    590,
+    84,
+    64
+   ],
+   "desc": "cardboard box of cables on the floor, flaps open, cable loops and a plug sticking out, tone-on-tone label «КАБЕЛИ»",
+   "lit": false,
+   "quiet_text": "КАБЕЛИ",
+   "svg_night": "<path d=\"M952 652 H1030 L1036 660 H946Z\" fill=\"#141829\" fill-opacity=\".5\"/><path d=\"M956 606 H1030 L1026 652 H960Z\" transform=\"translate(4,4)\" fill=\"#98724a\"/><path d=\"M956 606 H1030 L1026 652 H960Z\" fill=\"#b98f5e\"/><path d=\"M956 606 L944 594 H968 L978 606Z\" fill=\"#a47a4c\"/><path d=\"M1030 606 L1044 596 H1018 L1008 606Z\" fill=\"#a47a4c\"/><path d=\"M966 606 Q972 584 986 596 Q992 604 984 606\" stroke=\"#20222a\" stroke-width=\"5\" fill=\"none\"/><path d=\"M1000 606 Q1010 580 1022 592\" stroke=\"#3b4254\" stroke-width=\"5\" fill=\"none\"/><rect x=\"1006\" y=\"584\" width=\"9\" height=\"12\" fill=\"#e9e6d6\"/><rect x=\"968\" y=\"622\" width=\"50\" height=\"14\" fill=\"#d9c49a\"/><text x=\"993\" y=\"632.5\" font-size=\"7\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#9b8660\" text-anchor=\"middle\">КАБЕЛИ</text>",
+   "svg_day": "<path d=\"M952 652 H1030 L1036 660 H946Z\" fill=\"#8e9496\" fill-opacity=\".5\"/><path d=\"M956 606 H1030 L1026 652 H960Z\" transform=\"translate(4,4)\" fill=\"#98724a\"/><path d=\"M956 606 H1030 L1026 652 H960Z\" fill=\"#b98f5e\"/><path d=\"M956 606 L944 594 H968 L978 606Z\" fill=\"#a47a4c\"/><path d=\"M1030 606 L1044 596 H1018 L1008 606Z\" fill=\"#a47a4c\"/><path d=\"M966 606 Q972 584 986 596 Q992 604 984 606\" stroke=\"#20222a\" stroke-width=\"5\" fill=\"none\"/><path d=\"M1000 606 Q1010 580 1022 592\" stroke=\"#3b4254\" stroke-width=\"5\" fill=\"none\"/><rect x=\"1006\" y=\"584\" width=\"9\" height=\"12\" fill=\"#e9e6d6\"/><rect x=\"968\" y=\"622\" width=\"50\" height=\"14\" fill=\"#d9c49a\"/><text x=\"993\" y=\"632.5\" font-size=\"7\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"800\" fill=\"#9b8660\" text-anchor=\"middle\">КАБЕЛИ</text>"
+  },
+  {
+   "id": "setD_server_no_smoking_sign",
+   "layer": "bg",
+   "z": 27,
+   "bbox": [
+    470,
+    84,
+    52,
+    64
+   ],
+   "desc": "faded «Не курить» wall sign: pale square, faded red bar + cigarette block, tiny tone-on-tone text",
+   "lit": false,
+   "quiet_text": "НЕ КУРИТЬ (faded)",
+   "svg_night": "<rect x=\"475\" y=\"89.45\" width=\"46\" height=\"46\" rx=\"3\" fill=\"#bdb9a5\"/><rect x=\"472\" y=\"86\" width=\"46\" height=\"46\" rx=\"3\" fill=\"#e4e0cf\"/><rect x=\"480\" y=\"104\" width=\"30\" height=\"8\" fill=\"#cfc9b4\"/><rect x=\"480\" y=\"104\" width=\"9\" height=\"8\" fill=\"#cfb08e\"/><path d=\"M482 96 L510 120 L506 124 L478 100Z\" fill=\"#c98e84\"/><rect x=\"474\" y=\"136\" width=\"42\" height=\"9\" fill=\"#ddd9c6\"/><text x=\"495\" y=\"143.5\" font-size=\"5.6\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#aca893\" text-anchor=\"middle\">НЕ КУРИТЬ</text>",
+   "svg_day": "<rect x=\"475\" y=\"89.45\" width=\"46\" height=\"46\" rx=\"3\" fill=\"#bdb9a5\"/><rect x=\"472\" y=\"86\" width=\"46\" height=\"46\" rx=\"3\" fill=\"#e4e0cf\"/><rect x=\"480\" y=\"104\" width=\"30\" height=\"8\" fill=\"#cfc9b4\"/><rect x=\"480\" y=\"104\" width=\"9\" height=\"8\" fill=\"#cfb08e\"/><path d=\"M482 96 L510 120 L506 124 L478 100Z\" fill=\"#c98e84\"/><rect x=\"474\" y=\"136\" width=\"42\" height=\"9\" fill=\"#ddd9c6\"/><text x=\"495\" y=\"143.5\" font-size=\"5.6\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" font-weight=\"700\" fill=\"#aca893\" text-anchor=\"middle\">НЕ КУРИТЬ</text>"
+  },
+  {
+   "id": "setD_server_vadik_shadow",
+   "layer": "mid",
+   "z": 28,
+   "bbox": [
+    360,
+    640,
+    130,
+    26
+   ],
+   "desc": "flat contact shadow under Вадик",
+   "lit": false,
+   "filtered": false,
+   "svg_night": "<path transform=\"translate(-30,0)\" d=\"M372 642 H476 L490 662 H358Z\" fill=\"#141829\" fill-opacity=\".6\"/>",
+   "svg_day": "",
+   "note": "cast only"
+  },
+  {
+   "id": "setD_server_vadik_slot",
+   "layer": "cast",
+   "z": 29,
+   "bbox": [
+    380,
+    100,
+    80,
+    560
+   ],
+   "desc": "Вадик slot: vadik@1.2.0 stand_still, expr side_glance (looks right toward the LED), scale .7, neck base (420,222), feet y650",
+   "lit": false,
+   "slot": "vadik",
+   "cast": true,
+   "svg_night": "<g transform=\"translate(390,222) scale(0.7)\"><defs><filter id=\"vdnights1\" x=\"-25%\" y=\"-25%\" width=\"150%\" height=\"150%\"><feDropShadow dx=\"2.5\" dy=\"4\" stdDeviation=\"3\" flood-color=\"#0b1020\" flood-opacity=\".38\"/></filter><filter id=\"vdnights2\" x=\"-30%\" y=\"-30%\" width=\"160%\" height=\"160%\"><feDropShadow dx=\"1.5\" dy=\"2.5\" stdDeviation=\"2\" flood-color=\"#0b1020\" flood-opacity=\".34\"/></filter></defs><g transform=\"translate(0,0)\"><defs><filter id=\"vdnightcb\" x=\"-50%\" y=\"-200%\" width=\"200%\" height=\"500%\"><feGaussianBlur stdDeviation=\"4\"/></filter><filter id=\"vdnightcb2\" x=\"-50%\" y=\"-300%\" width=\"200%\" height=\"700%\"><feGaussianBlur stdDeviation=\"1.6\"/></filter></defs><ellipse cx=\"-53\" cy=\"614\" rx=\"44\" ry=\"8\" fill=\"#0b1020\" opacity=\".55\" filter=\"url(#vdnightcb)\"/><ellipse cx=\"-52\" cy=\"611.5\" rx=\"31\" ry=\"3.6\" fill=\"#0b1020\" opacity=\".7\" filter=\"url(#vdnightcb2)\"/><ellipse cx=\"53\" cy=\"614\" rx=\"44\" ry=\"8\" fill=\"#0b1020\" opacity=\".55\" filter=\"url(#vdnightcb)\"/><ellipse cx=\"52\" cy=\"611.5\" rx=\"31\" ry=\"3.6\" fill=\"#0b1020\" opacity=\".7\" filter=\"url(#vdnightcb2)\"/><g filter=\"url(#vdnights2)\"><g transform=\"translate(0,272)\"><path d=\"M-45,-16 L45,-16 C46,6 44,20 39,34 Q0,52 -39,34 C-44,20 -46,6 -45,-16 Z\" fill=\"#5d5b66\"/><path d=\"M-44,9 Q0,13 44,9 L44,15 Q0,19 -44,15 Z\" fill=\"#4a4853\"/><rect x=\"-6\" y=\"9.5\" width=\"12\" height=\"8\" rx=\"2\" fill=\"#8a8f9b\" opacity=\".85\"/><rect x=\"-3\" y=\"12\" width=\"6\" height=\"3.5\" rx=\"1\" fill=\"#4a4853\"/></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(-45,594) rotate(-11) scale(-0.9,1)\"><path d=\"M-20,19 C-6,22 20,22 34,17 C38,15 41,12 42,9 L36,12 C24,17 0,18 -20,16 Z\" fill=\"#b9bcbc\"/><path d=\"M-25,11 C-27,17 -24,21 -17,21 L22,21 C31,21 38,17 43,8 L40,7 C34,13 26,15 18,15 L-20,15 C-23,15 -25,13 -25,11 Z\" fill=\"#f1ead8\"/><path d=\"M-24,13 C-27,3 -26,-9 -19,-15 C-14,-18 -6,-18 -1,-16 L6,-12 C14,-7 21,-5 30,-5 C39,-4 44,3 42,9 C41,13 35,15 26,15 L-20,15 C-22,15 -24,14 -24,13 Z\" fill=\"#dfe0dc\"/><path d=\"M-24,9 C-10,11 15,11 41,8 C41,11 37,14 30,15 L-20,15 C-23,15 -24,12 -24,9 Z\" fill=\"#b9bcbc\" opacity=\".45\"/><path d=\"M21,-4 C30,-5 39,-1 42,5 C44,10 40,14 32,15 L24,15 C20,9 19,2 21,-4 Z\" fill=\"#eceee9\"/><path d=\"M21,-4 C19,2 20,9 24,15\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><path d=\"M-24,11 C-27,3 -26,-9 -19,-15 L-16,-16 C-19,-6 -19,3 -17,11 Z\" fill=\"#c4673a\"/><path d=\"M-19,0 C-12,2 -6,4 2,4\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><path d=\"M-18,-14 C-13,-19 -5,-19 1,-15 C-4,-12 -12,-11 -18,-14 Z\" fill=\"#5d636c\"/><path d=\"M4,-12 C6,-24 13,-28 19,-25 C21,-19 19,-12 16,-7 L6,-8 Z\" fill=\"#f1ead8\"/><path d=\"M7,-17 C10,-24 14,-26 18,-24\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.4\" stroke-linecap=\"round\"/><path d=\"M0,-11 C8,-8 14,-5 21,-2 L19,2 C12,0 5,-3 -2,-6 Z\" fill=\"#b9bcbc\" opacity=\".55\"/><path d=\"M-0.5,-5 L5,-11.5\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M6,-2.4 L11.5,-8.9\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M12.5,0.2 L18,-6.3\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(-32.6,433) rotate(4.5)\"><path d=\"M-15.5,-6 C-17,41.5 -15,95.7 -12.5,130.5 C-13.5,138.5 -16.5,141.5 -17,145.5 Q0,152.5 17,145.5 C16.5,141.5 13.5,138.5 12.5,130.5 C15,95.7 17,41.5 15.5,-6 Z\" fill=\"#5d5b66\"/><path d=\"M-14,135.5 Q0,141.5 14,135.5\" fill=\"none\" stroke=\"#4a4853\" stroke-width=\"3\" opacity=\".75\" stroke-linecap=\"round\"/><path d=\"M-15,147.5 Q0,154.5 15,147.5 L15,144.5 Q0,151.5 -15,144.5 Z\" fill=\"#4a4853\" opacity=\".55\"/></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(-24,272) rotate(3)\"><path d=\"M-21,-8 C-22,48.4 -18.5,116.1 -15.5,165.2 Q0,172.2 15.5,165.2 C18.5,116.1 22,48.4 21,-8 Z\" fill=\"#5d5b66\"/><path d=\"M-5,148.2 Q1,155.2 8,149.2\" fill=\"none\" stroke=\"#4a4853\" stroke-width=\"2.4\" stroke-linecap=\"round\" opacity=\".7\"/></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(45,594) rotate(12) scale(0.8,1)\"><path d=\"M-20,19 C-6,22 20,22 34,17 C38,15 41,12 42,9 L36,12 C24,17 0,18 -20,16 Z\" fill=\"#b9bcbc\"/><path d=\"M-25,11 C-27,17 -24,21 -17,21 L22,21 C31,21 38,17 43,8 L40,7 C34,13 26,15 18,15 L-20,15 C-23,15 -25,13 -25,11 Z\" fill=\"#f1ead8\"/><path d=\"M-24,13 C-27,3 -26,-9 -19,-15 C-14,-18 -6,-18 -1,-16 L6,-12 C14,-7 21,-5 30,-5 C39,-4 44,3 42,9 C41,13 35,15 26,15 L-20,15 C-22,15 -24,14 -24,13 Z\" fill=\"#dfe0dc\"/><path d=\"M-24,9 C-10,11 15,11 41,8 C41,11 37,14 30,15 L-20,15 C-23,15 -24,12 -24,9 Z\" fill=\"#b9bcbc\" opacity=\".45\"/><path d=\"M21,-4 C30,-5 39,-1 42,5 C44,10 40,14 32,15 L24,15 C20,9 19,2 21,-4 Z\" fill=\"#eceee9\"/><path d=\"M21,-4 C19,2 20,9 24,15\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><path d=\"M-24,11 C-27,3 -26,-9 -19,-15 L-16,-16 C-19,-6 -19,3 -17,11 Z\" fill=\"#c4673a\"/><path d=\"M-19,0 C-12,2 -6,4 2,4\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><path d=\"M-18,-14 C-13,-19 -5,-19 1,-15 C-4,-12 -12,-11 -18,-14 Z\" fill=\"#5d636c\"/><path d=\"M4,-12 C6,-24 13,-28 19,-25 C21,-19 19,-12 16,-7 L6,-8 Z\" fill=\"#f1ead8\"/><path d=\"M7,-17 C10,-24 14,-26 18,-24\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.4\" stroke-linecap=\"round\"/><path d=\"M0,-11 C8,-8 14,-5 21,-2 L19,2 C12,0 5,-3 -2,-6 Z\" fill=\"#b9bcbc\" opacity=\".55\"/><path d=\"M-0.5,-5 L5,-11.5\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M6,-2.4 L11.5,-8.9\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M12.5,0.2 L18,-6.3\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(32.6,433) rotate(-4.5)\"><path d=\"M-15.5,-6 C-17,41.5 -15,95.7 -12.5,130.5 C-13.5,138.5 -16.5,141.5 -17,145.5 Q0,152.5 17,145.5 C16.5,141.5 13.5,138.5 12.5,130.5 C15,95.7 17,41.5 15.5,-6 Z\" fill=\"#5d5b66\"/><path d=\"M-14,135.5 Q0,141.5 14,135.5\" fill=\"none\" stroke=\"#4a4853\" stroke-width=\"3\" opacity=\".75\" stroke-linecap=\"round\"/><path d=\"M-15,147.5 Q0,154.5 15,147.5 L15,144.5 Q0,151.5 -15,144.5 Z\" fill=\"#4a4853\" opacity=\".55\"/></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(24,272) rotate(-3)\"><path d=\"M-21,-8 C-22,48.4 -18.5,116.1 -15.5,165.2 Q0,172.2 15.5,165.2 C18.5,116.1 22,48.4 21,-8 Z\" fill=\"#5d5b66\"/><path d=\"M-5,148.2 Q1,155.2 8,149.2\" fill=\"none\" stroke=\"#4a4853\" stroke-width=\"2.4\" stroke-linecap=\"round\" opacity=\".7\"/></g></g><g transform=\"translate(0,272) rotate(0) translate(0,-272) translate(0,0) scale(1)\"><g filter=\"url(#vdnights1)\"><defs><clipPath id=\"vdnighttc\"><path d=\"M-24,-5 C-40,-3 -52,3 -62,21 C-65,90 -54,190 -55,274 Q0,279 55,274 C54,190 65,90 62,21 C52,3 40,-3 24,-5 Q0,9 -24,-5 Z\"/></clipPath></defs><path d=\"M-24,-5 C-40,-3 -52,3 -62,21 C-65,90 -54,190 -55,274 Q0,279 55,274 C54,190 65,90 62,21 C52,3 40,-3 24,-5 Q0,9 -24,-5 Z\" fill=\"#8d9299\"/><g clip-path=\"url(#vdnighttc)\"><path d=\"M11.2,-6 C31,60 18.6,200 21.7,292 L90,292 L90,-6 Z\" fill=\"#737a83\" opacity=\".5\"/><path d=\"M-90,257 Q0,262 90,257 L90,286 L-90,286 Z\" fill=\"#737a83\" opacity=\".5\"/></g><ellipse cx=\"0\" cy=\"2\" rx=\"26\" ry=\"10\" fill=\"#5d636c\"/><ellipse cx=\"0\" cy=\"2\" rx=\"26\" ry=\"10\" fill=\"none\" stroke=\"#737a83\" stroke-width=\"6\"/></g><g filter=\"url(#vdnights2)\"><path d=\"M-14,-50 L14,-50 L16,2 Q0,9 -16,2 Z\" fill=\"#d4aa85\"/><path d=\"M-15,-30 L15,-30 L15,-19 Q0,-8 -15,-19 Z\" fill=\"#c4977a\" opacity=\".75\"/></g><path d=\"M-26,1 A26,10 0 0 0 26,1\" fill=\"none\" stroke=\"#737a83\" stroke-width=\"6\" stroke-linecap=\"round\"/><path d=\"M-24,-1 L2,78 M24,-1 L2,78\" fill=\"none\" stroke=\"#a5492f\" stroke-width=\"5.5\" stroke-linecap=\"round\"/><g filter=\"url(#vdnights2)\"><g transform=\"translate(2,78) rotate(0.8)\"><path d=\"M0,0 L0,16\" stroke=\"#a5492f\" stroke-width=\"4\"/><rect x=\"-5\" y=\"12\" width=\"10\" height=\"7\" rx=\"2\" fill=\"#242a3a\"/><rect x=\"-20\" y=\"17\" width=\"40\" height=\"56\" rx=\"5\" fill=\"#efe8d6\"/><rect x=\"-13\" y=\"25\" width=\"26\" height=\"22\" rx=\"3\" fill=\"#b4c3d1\"/><path d=\"M-13,56 h26 M-13,63 h18\" stroke=\"#b4c3d1\" stroke-width=\"3\" stroke-linecap=\"round\"/></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(-50,19) rotate(9.1)\"><path d=\"M-11,0 L-9.5,112 A9.5,9.5 0 0 0 9.5,112 L11,0 A11,11 0 0 0 -11,0 Z\" fill=\"#e2bd98\"/><path d=\"M-17,6 Q-17,-13 0,-13 Q17,-13 17,6 L19.5,58 Q0,65 -19.5,58 Z\" fill=\"#8d9299\"/><path d=\"M-16,52 Q0,59 16,52\" fill=\"none\" stroke=\"#737a83\" stroke-width=\"4\" opacity=\".6\"/></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(-67.7,129.6) rotate(1.3)\"><path d=\"M-9.5,0 L-7.5,104 A7.5,7.5 0 0 0 7.5,104 L9.5,0 A9.5,9.5 0 0 0 -9.5,0 Z\" fill=\"#e2bd98\"/></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(50,19) rotate(-9.1)\"><path d=\"M-11,0 L-9.5,112 A9.5,9.5 0 0 0 9.5,112 L11,0 A11,11 0 0 0 -11,0 Z\" fill=\"#e2bd98\"/><path d=\"M-17,6 Q-17,-13 0,-13 Q17,-13 17,6 L19.5,58 Q0,65 -19.5,58 Z\" fill=\"#8d9299\"/><path d=\"M-16,52 Q0,59 16,52\" fill=\"none\" stroke=\"#737a83\" stroke-width=\"4\" opacity=\".6\"/></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(67.7,129.6) rotate(-1.3)\"><path d=\"M-9.5,0 L-7.5,104 A7.5,7.5 0 0 0 7.5,104 L9.5,0 A9.5,9.5 0 0 0 -9.5,0 Z\" fill=\"#e2bd98\"/></g></g><g transform=\"translate(0,-28) rotate(3)\"><g filter=\"url(#vdnights2)\"><g transform=\"translate(-30.1,-105.2) rotate(0.4)\"><path d=\"M-10.6,3 C-9.6,-20.8 -17.5,-36.7 -14.5,-41.7 C-8.7,-30 10.1,-12.5 10.6,3 Z\" fill=\"#b88a5a\"/></g><g transform=\"translate(-20.3,-110.5) rotate(-4.1)\"><path d=\"M-14.6,3 C-13.1,-12.6 -11.5,-22.2 -8.5,-25.2 C-0.4,-18.2 13.9,-7.6 14.6,3 Z\" fill=\"#a7774c\"/></g><g transform=\"translate(-7.6,-114.4) rotate(-2.8)\"><path d=\"M-13.9,3 C-12.5,-23.2 -6.9,-40.9 -3.9,-46.4 C3.8,-33.4 13.2,-13.9 13.9,3 Z\" fill=\"#a7774c\"/></g><g transform=\"translate(3.5,-114.9) rotate(2)\"><path d=\"M-11.2,3 C-10.1,-16.7 -1.1,-29.4 1.9,-33.5 C8.1,-24.1 10.6,-10 11.2,3 Z\" fill=\"#b88a5a\"/></g><g transform=\"translate(13.8,-112.9) rotate(-1.8)\"><path d=\"M-13.6,3 C-12.2,-22.6 0.1,-39.8 3.1,-45.2 C10.6,-32.5 12.9,-13.6 13.6,3 Z\" fill=\"#b88a5a\"/></g><g transform=\"translate(28.1,-106.4) rotate(-4.1)\"><path d=\"M-11.1,3 C-10,-15.9 10.2,-28 13.2,-31.8 C19.3,-22.9 10.5,-9.5 11.1,3 Z\" fill=\"#a7774c\"/></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(-57,-58) scale(1)\"><path d=\"M0,-17 C-13,-18 -15,-4 -12,6 C-9,15 -3,18 0,15 Z\" fill=\"#d4aa85\"/><path d=\"M-2,-10 C-9,-11 -10,-2 -7,5 C-5,9 -3,9 -2,6\" fill=\"none\" stroke=\"#c4977a\" stroke-width=\"3\" stroke-linecap=\"round\" opacity=\".7\"/></g><g transform=\"translate(57,-58) scale(1)\"><path d=\"M0,-17 C13,-18 15,-4 12,6 C9,15 3,18 0,15 Z\" fill=\"#d4aa85\"/><path d=\"M2,-10 C9,-11 10,-2 7,5 C5,9 3,9 2,6\" fill=\"none\" stroke=\"#c4977a\" stroke-width=\"3\" stroke-linecap=\"round\" opacity=\".7\"/></g></g><g filter=\"url(#vdnights2)\"><defs><clipPath id=\"vdnighthc\"><path d=\"M0,-122 C34.7,-122 56,-96 56,-60 C56,-30 38.1,-4 12.3,6 Q0,10 -12.3,6 C-38.1,-4 -56,-30 -56,-60 C-56,-96 -34.7,-122 0,-122 Z\"/></clipPath></defs><path d=\"M0,-122 C34.7,-122 56,-96 56,-60 C56,-30 38.1,-4 12.3,6 Q0,10 -12.3,6 C-38.1,-4 -56,-30 -56,-60 C-56,-96 -34.7,-122 0,-122 Z\" fill=\"#e2bd98\"/><g clip-path=\"url(#vdnighthc)\"><path d=\"M8.4,-124 C47.6,-100 53.2,-50 30.8,-12 L11.2,12 L80,12 L80,-124 Z\" fill=\"#d4aa85\" opacity=\".8\"/><ellipse cx=\"-25.8\" cy=\"-34\" rx=\"9\" ry=\"6\" fill=\"#d9907a\" opacity=\"0.28\"/><ellipse cx=\"25.8\" cy=\"-34\" rx=\"9\" ry=\"6\" fill=\"#d9907a\" opacity=\"0.28\"/><defs><filter id=\"vdnightwb1\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feGaussianBlur stdDeviation=\"1.3\"/></filter><filter id=\"vdnightwb2\" x=\"-30%\" y=\"-30%\" width=\"160%\" height=\"160%\"><feGaussianBlur stdDeviation=\"3\"/></filter></defs></g></g><g transform=\"translate(0,-52)\"><g transform=\"translate(0,-17) scale(1,1) translate(0,17)\"><g filter=\"url(#vdnights2)\"><defs><clipPath id=\"vdnightnc\"><path d=\"M-4,-17 C-5,-5 -6,3 -7,10 C-12.5,12 -13.5,23 -7,26 Q0,30 8,26 C13.5,23 12.5,12 7,10 C6,3 5,-5 4,-17 Z\"/></clipPath></defs><path d=\"M-4,-17 C-5,-5 -6,3 -7,10 C-12.5,12 -13.5,23 -7,26 Q0,30 8,26 C13.5,23 12.5,12 7,10 C6,3 5,-5 4,-17 Z\" fill=\"#d9a682\"/><g clip-path=\"url(#vdnightnc)\"><path d=\"M1,-20 L2.5,8 C7,13 7,21 3,30 L40,40 L40,-20 Z\" fill=\"#c18b6a\" opacity=\".75\"/><path d=\"M-16,25 Q0,33 16,25 L16,34 L-16,34 Z\" fill=\"#c18b6a\" opacity=\".6\"/></g><ellipse cx=\"-4\" cy=\"15\" rx=\"3\" ry=\"2.4\" fill=\"#eccaa6\" opacity=\".55\"/><ellipse cx=\"-5\" cy=\"25\" rx=\"2.2\" ry=\"1.3\" fill=\"#99614b\" opacity=\".6\"/><ellipse cx=\"5\" cy=\"25\" rx=\"2.2\" ry=\"1.3\" fill=\"#99614b\" opacity=\".6\"/></g></g></g><g clip-path=\"url(#vdnighthc)\"><g transform=\"translate(-27,-62) scale(1,1)\"><defs><clipPath id=\"vdnighte0\"><ellipse cx=\"0\" cy=\"0\" rx=\"12.6\" ry=\"9\"/></clipPath></defs><ellipse cx=\"0\" cy=\"0\" rx=\"12.6\" ry=\"9\" fill=\"#f5f2ea\"/><g clip-path=\"url(#vdnighte0)\"><circle cx=\"5.2\" cy=\"0\" r=\"4.5\" fill=\"#1e1c22\"/><circle cx=\"3.8\" cy=\"-1.6\" r=\"1.3\" fill=\"#fff\" opacity=\".9\"/></g><path d=\"M-12,-0.5 Q0,-14.5 12,-0.5\" fill=\"none\" stroke=\"#4a3326\" stroke-width=\"2.6\" stroke-linecap=\"round\"/></g><g transform=\"translate(-27,-87) scale(1,1)\"><path d=\"M-16.4,4.4 Q0,-2.5 16.4,-4.4\" fill=\"none\" stroke=\"#6d4b31\" stroke-width=\"6.5\" stroke-linecap=\"round\"/></g><g transform=\"translate(27,-62) scale(1,1)\"><defs><clipPath id=\"vdnighte1\"><ellipse cx=\"0\" cy=\"0\" rx=\"12.6\" ry=\"9\"/></clipPath></defs><ellipse cx=\"0\" cy=\"0\" rx=\"12.6\" ry=\"9\" fill=\"#f5f2ea\"/><g clip-path=\"url(#vdnighte1)\"><circle cx=\"5.2\" cy=\"0\" r=\"4.5\" fill=\"#1e1c22\"/><circle cx=\"3.8\" cy=\"-1.6\" r=\"1.3\" fill=\"#fff\" opacity=\".9\"/></g><path d=\"M-12,-0.5 Q0,-14.5 12,-0.5\" fill=\"none\" stroke=\"#4a3326\" stroke-width=\"2.6\" stroke-linecap=\"round\"/></g><g transform=\"translate(27,-89) scale(1,1)\"><path d=\"M16.4,4.4 Q0,-2.5 -16.4,-4.4\" fill=\"none\" stroke=\"#6d4b31\" stroke-width=\"6.5\" stroke-linecap=\"round\"/></g></g><g transform=\"translate(0,-14)\"><path d=\"M-16.1,1 Q0,-0.8 16.2,1\" fill=\"none\" stroke=\"#8c4b3e\" stroke-width=\"3.4\" stroke-linecap=\"round\"/></g><g transform=\"translate(0,-62)\"><g filter=\"url(#vdnights2)\"><g transform=\"translate(0,1.6) rotate(-0.4 0 0)\"><path d=\"M-47.5,-3 L-60,-4\" stroke=\"#242a3a\" stroke-width=\"2.5\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M47.5,-3 L60,-4\" stroke=\"#242a3a\" stroke-width=\"2.5\" stroke-linecap=\"round\" fill=\"none\"/><g transform=\"translate(-27,0) scale(1,1)\"><defs><clipPath id=\"vdnightgl0\"><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\"/></clipPath></defs><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\" fill=\"#e8f3f8\" fill-opacity=\"0.1\"/><g clip-path=\"url(#vdnightgl0)\"><path d=\"M-18,14.5 L-4,-14.5 L6,-14.5 L-8,14.5 Z\" fill=\"#fff\" opacity=\"0.2\"/><path d=\"M4,14.5 L12,-14.5 L16,-14.5 L8,14.5 Z\" fill=\"#fff\" opacity=\"0.1\"/></g><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\" fill=\"none\" stroke=\"#242a3a\" stroke-width=\"2.4\"/></g><g transform=\"translate(27,0) scale(1,1)\"><defs><clipPath id=\"vdnightgl1\"><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\"/></clipPath></defs><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\" fill=\"#e8f3f8\" fill-opacity=\"0.1\"/><g clip-path=\"url(#vdnightgl1)\"><path d=\"M-18,14.5 L-4,-14.5 L6,-14.5 L-8,14.5 Z\" fill=\"#fff\" opacity=\"0.2\"/><path d=\"M4,14.5 L12,-14.5 L16,-14.5 L8,14.5 Z\" fill=\"#fff\" opacity=\"0.1\"/></g><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\" fill=\"none\" stroke=\"#242a3a\" stroke-width=\"2.4\"/></g><path d=\"M-6.5,-6 Q0,-12 6.5,-6\" fill=\"none\" stroke=\"#242a3a\" stroke-width=\"2.5\" stroke-linecap=\"round\"/></g></g></g><g filter=\"url(#vdnights2)\"><defs><clipPath id=\"vdnighthk\"><path d=\"M0,-122 C34.7,-122 56,-96 56,-60 C56,-30 38.1,-4 12.3,6 Q0,10 -12.3,6 C-38.1,-4 -56,-30 -56,-60 C-56,-96 -34.7,-122 0,-122 Z\"/><path d=\"M-61,-64 C-65,-108 -36,-128 0,-129 C36,-128 65,-108 61,-64 Z\" transform=\"translate(0,-64) scale(1,1) translate(0,64)\"/></clipPath></defs><g clip-path=\"url(#vdnighthk)\"><g transform=\"translate(0,0)\"><g transform=\"translate(0,-64) scale(1,1) translate(0,64)\"><path d=\"M-61,-64 C-65,-108 -36,-128 0,-129 C36,-128 65,-108 61,-64 C56,-80 48,-95 30,-100 C12,-92 -18,-93 -31.2,-101 C-49.2,-94 -56,-80 -61,-64 Z\" fill=\"#a7774c\"/><path d=\"M7.2,-127 C42,-124 63,-104 61,-64 C56,-80 48,-95 30,-100 C30,-112 21,-122 7.2,-127 Z\" fill=\"#8c603a\" opacity=\".55\"/></g></g></g></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(-70,233.6) rotate(1.3)\"><path d=\"M-11,-3 L11,-3 C15.5,10 15.5,32 8.5,43 Q0,50 -8.5,43 C-15.5,32 -15.5,10 -11,-3 Z\" fill=\"#e2bd98\"/><path d=\"M-4.5,30 L-4,42 M3.5,30 L3.8,42\" stroke=\"#c4977a\" stroke-width=\"1.8\" stroke-linecap=\"round\" opacity=\".55\"/><g transform=\"scale(1,1)\"><path d=\"M8,5 C17,7 21,17 18,27 Q14,32 10,26 C8.5,20 8,14 8,5 Z\" fill=\"#d4aa85\"/></g></g></g><g filter=\"url(#vdnights2)\"><g transform=\"translate(70,233.6) rotate(-1.3)\"><path d=\"M-11,-3 L11,-3 C15.5,10 15.5,32 8.5,43 Q0,50 -8.5,43 C-15.5,32 -15.5,10 -11,-3 Z\" fill=\"#e2bd98\"/><path d=\"M-4.5,30 L-4,42 M3.5,30 L3.8,42\" stroke=\"#c4977a\" stroke-width=\"1.8\" stroke-linecap=\"round\" opacity=\".55\"/><g transform=\"scale(-1,1)\"><path d=\"M8,5 C17,7 21,17 18,27 Q14,32 10,26 C8.5,20 8,14 8,5 Z\" fill=\"#d4aa85\"/></g></g></g></g></g></g>",
+   "svg_day": "",
+   "note": "cast only"
+  },
+  {
+   "id": "setD_server_light_crt_glow_wall",
+   "layer": "bg",
+   "z": 30,
+   "bbox": [
+    740,
+    170,
+    220,
+    260
+   ],
+   "desc": "cool CRT glow on the wall behind the monitor (night only)",
+   "lit": false,
+   "filtered": false,
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"40\" y=\"64\" width=\"176\" height=\"176\" rx=\"18\" fill=\"#7fd0d6\" fill-opacity=\".07\"/></g>",
+   "svg_day": ""
+  },
+  {
+   "id": "setD_server_light_lamp_wall",
+   "layer": "bg",
+   "z": 31,
+   "bbox": [
+    540,
+    180,
+    200,
+    170
+   ],
+   "desc": "warm lamp spill on the wall behind the desk (night only)",
+   "lit": false,
+   "filtered": false,
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"></g>",
+   "svg_day": ""
+  },
+  {
+   "id": "setD_server_light_lamp_cone",
+   "layer": "light",
+   "z": 32,
+   "bbox": [
+    520,
+    300,
+    260,
+    150
+   ],
+   "desc": "desk-lamp: soft rounded-trapezoid pool on the desk top (night only, low opacity, one tone)",
+   "lit": true,
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><path d=\"M-162 230 Q-162 224 -152 224 H14 Q24 224 27 232 L38 262 Q40 268 32 268 H-168 Q-178 268 -174 260Z\" fill=\"#f3c46a\" fill-opacity=\".27\"/></g>",
+   "svg_day": ""
+  },
+  {
+   "id": "setD_server_light_crt_desk",
+   "layer": "light",
+   "z": 33,
+   "bbox": [
+    760,
+    350,
+    160,
+    40
+   ],
+   "desc": "cool CRT patch on the desk in front of the monitor (night only)",
+   "lit": true,
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><path d=\"M66 228 H196 L212 268 H50Z\" fill=\"#7fd0d6\" fill-opacity=\".14\"/></g>",
+   "svg_day": ""
+  },
+  {
+   "id": "setD_server_light_led_tower",
+   "layer": "light",
+   "z": 34,
+   "bbox": [
+    760,
+    480,
+    120,
+    170
+   ],
+   "desc": "amber LED on the tower: one small rounded lens (1/6 of the tower width) + one soft flat glow; dead (grey) by day",
+   "lit": true,
+   "story": "amber LED = Зинаида alive",
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"90\" y=\"347\" width=\"34\" height=\"22\" rx=\"9\" fill=\"#f3b04a\" fill-opacity=\".16\"/><rect x=\"100\" y=\"354\" width=\"14\" height=\"8\" rx=\"3\" fill=\"#ffc468\"/></g>",
+   "svg_day": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><rect x=\"100\" y=\"354\" width=\"14\" height=\"8\" rx=\"3\" fill=\"#8a8a76\"/></g>"
+  },
+  {
+   "id": "setD_server_light_led_floor",
+   "layer": "bg",
+   "z": 35,
+   "bbox": [
+    700,
+    540,
+    300,
+    110
+   ],
+   "desc": "amber LED spill: wall glow behind the tower + floor patch (night only)",
+   "lit": false,
+   "filtered": false,
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><path d=\"M44 300 Q44 286 58 286 H122 Q136 286 136 300 L148 440 H32Z\" fill=\"#f3b04a\" fill-opacity=\".10\"/></g><path d=\"M786 650 H900 L930 666 H760Z\" fill=\"#f3b04a\" fill-opacity=\".13\"/>",
+   "svg_day": ""
+  },
+  {
+   "id": "setD_server_light_heater",
+   "layer": "light",
+   "z": 36,
+   "bbox": [
+    990,
+    510,
+    230,
+    160
+   ],
+   "desc": "heater: glowing slots (night only) + warm floor patch",
+   "lit": true,
+   "svg_night": "<g transform=\"translate(1125,644) scale(1.36) translate(-1128,-640)\"><rect x=\"1086\" y=\"578\" width=\"62\" height=\"14\" rx=\"4\" fill=\"#f08a3a\"/><rect x=\"1086\" y=\"598\" width=\"62\" height=\"14\" rx=\"4\" fill=\"#f08a3a\"/><path d=\"M1060 646 H1010 L1022 666 H1072Z\" fill=\"#f08a3a\" fill-opacity=\".16\"/></g>",
+   "svg_day": ""
+  },
+  {
+   "id": "setD_server_light_rim_vadik",
+   "layer": "light",
+   "z": 37,
+   "bbox": [
+    360,
+    100,
+    130,
+    560
+   ],
+   "desc": "warm rim light on Вадика, lamp side (desk lamp): amber silhouette edge, night only",
+   "lit": true,
+   "cast_light": true,
+   "svg_night": "<defs><clipPath id=\"rimclip\"><rect x=\"412\" y=\"0\" width=\"200\" height=\"440\"/></clipPath></defs><g clip-path=\"url(#rimclip)\"><g filter=\"url(#rimF)\"><g transform=\"translate(390,222) scale(0.7)\"><defs><filter id=\"vrs1\" x=\"-25%\" y=\"-25%\" width=\"150%\" height=\"150%\"><feDropShadow dx=\"2.5\" dy=\"4\" stdDeviation=\"3\" flood-color=\"#0b1020\" flood-opacity=\".38\"/></filter><filter id=\"vrs2\" x=\"-30%\" y=\"-30%\" width=\"160%\" height=\"160%\"><feDropShadow dx=\"1.5\" dy=\"2.5\" stdDeviation=\"2\" flood-color=\"#0b1020\" flood-opacity=\".34\"/></filter></defs><g transform=\"translate(0,0)\"><defs><filter id=\"vrcb\" x=\"-50%\" y=\"-200%\" width=\"200%\" height=\"500%\"><feGaussianBlur stdDeviation=\"4\"/></filter><filter id=\"vrcb2\" x=\"-50%\" y=\"-300%\" width=\"200%\" height=\"700%\"><feGaussianBlur stdDeviation=\"1.6\"/></filter></defs><ellipse cx=\"-53\" cy=\"614\" rx=\"44\" ry=\"8\" fill=\"#0b1020\" opacity=\".55\" filter=\"url(#vrcb)\"/><ellipse cx=\"-52\" cy=\"611.5\" rx=\"31\" ry=\"3.6\" fill=\"#0b1020\" opacity=\".7\" filter=\"url(#vrcb2)\"/><ellipse cx=\"53\" cy=\"614\" rx=\"44\" ry=\"8\" fill=\"#0b1020\" opacity=\".55\" filter=\"url(#vrcb)\"/><ellipse cx=\"52\" cy=\"611.5\" rx=\"31\" ry=\"3.6\" fill=\"#0b1020\" opacity=\".7\" filter=\"url(#vrcb2)\"/><g filter=\"url(#vrs2)\"><g transform=\"translate(0,272)\"><path d=\"M-45,-16 L45,-16 C46,6 44,20 39,34 Q0,52 -39,34 C-44,20 -46,6 -45,-16 Z\" fill=\"#5d5b66\"/><path d=\"M-44,9 Q0,13 44,9 L44,15 Q0,19 -44,15 Z\" fill=\"#4a4853\"/><rect x=\"-6\" y=\"9.5\" width=\"12\" height=\"8\" rx=\"2\" fill=\"#8a8f9b\" opacity=\".85\"/><rect x=\"-3\" y=\"12\" width=\"6\" height=\"3.5\" rx=\"1\" fill=\"#4a4853\"/></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(-45,594) rotate(-11) scale(-0.9,1)\"><path d=\"M-20,19 C-6,22 20,22 34,17 C38,15 41,12 42,9 L36,12 C24,17 0,18 -20,16 Z\" fill=\"#b9bcbc\"/><path d=\"M-25,11 C-27,17 -24,21 -17,21 L22,21 C31,21 38,17 43,8 L40,7 C34,13 26,15 18,15 L-20,15 C-23,15 -25,13 -25,11 Z\" fill=\"#f1ead8\"/><path d=\"M-24,13 C-27,3 -26,-9 -19,-15 C-14,-18 -6,-18 -1,-16 L6,-12 C14,-7 21,-5 30,-5 C39,-4 44,3 42,9 C41,13 35,15 26,15 L-20,15 C-22,15 -24,14 -24,13 Z\" fill=\"#dfe0dc\"/><path d=\"M-24,9 C-10,11 15,11 41,8 C41,11 37,14 30,15 L-20,15 C-23,15 -24,12 -24,9 Z\" fill=\"#b9bcbc\" opacity=\".45\"/><path d=\"M21,-4 C30,-5 39,-1 42,5 C44,10 40,14 32,15 L24,15 C20,9 19,2 21,-4 Z\" fill=\"#eceee9\"/><path d=\"M21,-4 C19,2 20,9 24,15\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><path d=\"M-24,11 C-27,3 -26,-9 -19,-15 L-16,-16 C-19,-6 -19,3 -17,11 Z\" fill=\"#c4673a\"/><path d=\"M-19,0 C-12,2 -6,4 2,4\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><path d=\"M-18,-14 C-13,-19 -5,-19 1,-15 C-4,-12 -12,-11 -18,-14 Z\" fill=\"#5d636c\"/><path d=\"M4,-12 C6,-24 13,-28 19,-25 C21,-19 19,-12 16,-7 L6,-8 Z\" fill=\"#f1ead8\"/><path d=\"M7,-17 C10,-24 14,-26 18,-24\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.4\" stroke-linecap=\"round\"/><path d=\"M0,-11 C8,-8 14,-5 21,-2 L19,2 C12,0 5,-3 -2,-6 Z\" fill=\"#b9bcbc\" opacity=\".55\"/><path d=\"M-0.5,-5 L5,-11.5\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M6,-2.4 L11.5,-8.9\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M12.5,0.2 L18,-6.3\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(-32.6,433) rotate(4.5)\"><path d=\"M-15.5,-6 C-17,41.5 -15,95.7 -12.5,130.5 C-13.5,138.5 -16.5,141.5 -17,145.5 Q0,152.5 17,145.5 C16.5,141.5 13.5,138.5 12.5,130.5 C15,95.7 17,41.5 15.5,-6 Z\" fill=\"#5d5b66\"/><path d=\"M-14,135.5 Q0,141.5 14,135.5\" fill=\"none\" stroke=\"#4a4853\" stroke-width=\"3\" opacity=\".75\" stroke-linecap=\"round\"/><path d=\"M-15,147.5 Q0,154.5 15,147.5 L15,144.5 Q0,151.5 -15,144.5 Z\" fill=\"#4a4853\" opacity=\".55\"/></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(-24,272) rotate(3)\"><path d=\"M-21,-8 C-22,48.4 -18.5,116.1 -15.5,165.2 Q0,172.2 15.5,165.2 C18.5,116.1 22,48.4 21,-8 Z\" fill=\"#5d5b66\"/><path d=\"M-5,148.2 Q1,155.2 8,149.2\" fill=\"none\" stroke=\"#4a4853\" stroke-width=\"2.4\" stroke-linecap=\"round\" opacity=\".7\"/></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(45,594) rotate(12) scale(0.8,1)\"><path d=\"M-20,19 C-6,22 20,22 34,17 C38,15 41,12 42,9 L36,12 C24,17 0,18 -20,16 Z\" fill=\"#b9bcbc\"/><path d=\"M-25,11 C-27,17 -24,21 -17,21 L22,21 C31,21 38,17 43,8 L40,7 C34,13 26,15 18,15 L-20,15 C-23,15 -25,13 -25,11 Z\" fill=\"#f1ead8\"/><path d=\"M-24,13 C-27,3 -26,-9 -19,-15 C-14,-18 -6,-18 -1,-16 L6,-12 C14,-7 21,-5 30,-5 C39,-4 44,3 42,9 C41,13 35,15 26,15 L-20,15 C-22,15 -24,14 -24,13 Z\" fill=\"#dfe0dc\"/><path d=\"M-24,9 C-10,11 15,11 41,8 C41,11 37,14 30,15 L-20,15 C-23,15 -24,12 -24,9 Z\" fill=\"#b9bcbc\" opacity=\".45\"/><path d=\"M21,-4 C30,-5 39,-1 42,5 C44,10 40,14 32,15 L24,15 C20,9 19,2 21,-4 Z\" fill=\"#eceee9\"/><path d=\"M21,-4 C19,2 20,9 24,15\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><path d=\"M-24,11 C-27,3 -26,-9 -19,-15 L-16,-16 C-19,-6 -19,3 -17,11 Z\" fill=\"#c4673a\"/><path d=\"M-19,0 C-12,2 -6,4 2,4\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><path d=\"M-18,-14 C-13,-19 -5,-19 1,-15 C-4,-12 -12,-11 -18,-14 Z\" fill=\"#5d636c\"/><path d=\"M4,-12 C6,-24 13,-28 19,-25 C21,-19 19,-12 16,-7 L6,-8 Z\" fill=\"#f1ead8\"/><path d=\"M7,-17 C10,-24 14,-26 18,-24\" fill=\"none\" stroke=\"#b9bcbc\" stroke-width=\"1.4\" stroke-linecap=\"round\"/><path d=\"M0,-11 C8,-8 14,-5 21,-2 L19,2 C12,0 5,-3 -2,-6 Z\" fill=\"#b9bcbc\" opacity=\".55\"/><path d=\"M-0.5,-5 L5,-11.5\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M6,-2.4 L11.5,-8.9\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M12.5,0.2 L18,-6.3\" stroke=\"#c4673a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(32.6,433) rotate(-4.5)\"><path d=\"M-15.5,-6 C-17,41.5 -15,95.7 -12.5,130.5 C-13.5,138.5 -16.5,141.5 -17,145.5 Q0,152.5 17,145.5 C16.5,141.5 13.5,138.5 12.5,130.5 C15,95.7 17,41.5 15.5,-6 Z\" fill=\"#5d5b66\"/><path d=\"M-14,135.5 Q0,141.5 14,135.5\" fill=\"none\" stroke=\"#4a4853\" stroke-width=\"3\" opacity=\".75\" stroke-linecap=\"round\"/><path d=\"M-15,147.5 Q0,154.5 15,147.5 L15,144.5 Q0,151.5 -15,144.5 Z\" fill=\"#4a4853\" opacity=\".55\"/></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(24,272) rotate(-3)\"><path d=\"M-21,-8 C-22,48.4 -18.5,116.1 -15.5,165.2 Q0,172.2 15.5,165.2 C18.5,116.1 22,48.4 21,-8 Z\" fill=\"#5d5b66\"/><path d=\"M-5,148.2 Q1,155.2 8,149.2\" fill=\"none\" stroke=\"#4a4853\" stroke-width=\"2.4\" stroke-linecap=\"round\" opacity=\".7\"/></g></g><g transform=\"translate(0,272) rotate(0) translate(0,-272) translate(0,0) scale(1)\"><g filter=\"url(#vrs1)\"><defs><clipPath id=\"vrtc\"><path d=\"M-24,-5 C-40,-3 -52,3 -62,21 C-65,90 -54,190 -55,274 Q0,279 55,274 C54,190 65,90 62,21 C52,3 40,-3 24,-5 Q0,9 -24,-5 Z\"/></clipPath></defs><path d=\"M-24,-5 C-40,-3 -52,3 -62,21 C-65,90 -54,190 -55,274 Q0,279 55,274 C54,190 65,90 62,21 C52,3 40,-3 24,-5 Q0,9 -24,-5 Z\" fill=\"#8d9299\"/><g clip-path=\"url(#vrtc)\"><path d=\"M11.2,-6 C31,60 18.6,200 21.7,292 L90,292 L90,-6 Z\" fill=\"#737a83\" opacity=\".5\"/><path d=\"M-90,257 Q0,262 90,257 L90,286 L-90,286 Z\" fill=\"#737a83\" opacity=\".5\"/></g><ellipse cx=\"0\" cy=\"2\" rx=\"26\" ry=\"10\" fill=\"#5d636c\"/><ellipse cx=\"0\" cy=\"2\" rx=\"26\" ry=\"10\" fill=\"none\" stroke=\"#737a83\" stroke-width=\"6\"/></g><g filter=\"url(#vrs2)\"><path d=\"M-14,-50 L14,-50 L16,2 Q0,9 -16,2 Z\" fill=\"#d4aa85\"/><path d=\"M-15,-30 L15,-30 L15,-19 Q0,-8 -15,-19 Z\" fill=\"#c4977a\" opacity=\".75\"/></g><path d=\"M-26,1 A26,10 0 0 0 26,1\" fill=\"none\" stroke=\"#737a83\" stroke-width=\"6\" stroke-linecap=\"round\"/><path d=\"M-24,-1 L2,78 M24,-1 L2,78\" fill=\"none\" stroke=\"#a5492f\" stroke-width=\"5.5\" stroke-linecap=\"round\"/><g filter=\"url(#vrs2)\"><g transform=\"translate(2,78) rotate(0.8)\"><path d=\"M0,0 L0,16\" stroke=\"#a5492f\" stroke-width=\"4\"/><rect x=\"-5\" y=\"12\" width=\"10\" height=\"7\" rx=\"2\" fill=\"#242a3a\"/><rect x=\"-20\" y=\"17\" width=\"40\" height=\"56\" rx=\"5\" fill=\"#efe8d6\"/><rect x=\"-13\" y=\"25\" width=\"26\" height=\"22\" rx=\"3\" fill=\"#b4c3d1\"/><path d=\"M-13,56 h26 M-13,63 h18\" stroke=\"#b4c3d1\" stroke-width=\"3\" stroke-linecap=\"round\"/></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(-50,19) rotate(9.1)\"><path d=\"M-11,0 L-9.5,112 A9.5,9.5 0 0 0 9.5,112 L11,0 A11,11 0 0 0 -11,0 Z\" fill=\"#e2bd98\"/><path d=\"M-17,6 Q-17,-13 0,-13 Q17,-13 17,6 L19.5,58 Q0,65 -19.5,58 Z\" fill=\"#8d9299\"/><path d=\"M-16,52 Q0,59 16,52\" fill=\"none\" stroke=\"#737a83\" stroke-width=\"4\" opacity=\".6\"/></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(-67.7,129.6) rotate(1.3)\"><path d=\"M-9.5,0 L-7.5,104 A7.5,7.5 0 0 0 7.5,104 L9.5,0 A9.5,9.5 0 0 0 -9.5,0 Z\" fill=\"#e2bd98\"/></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(50,19) rotate(-9.1)\"><path d=\"M-11,0 L-9.5,112 A9.5,9.5 0 0 0 9.5,112 L11,0 A11,11 0 0 0 -11,0 Z\" fill=\"#e2bd98\"/><path d=\"M-17,6 Q-17,-13 0,-13 Q17,-13 17,6 L19.5,58 Q0,65 -19.5,58 Z\" fill=\"#8d9299\"/><path d=\"M-16,52 Q0,59 16,52\" fill=\"none\" stroke=\"#737a83\" stroke-width=\"4\" opacity=\".6\"/></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(67.7,129.6) rotate(-1.3)\"><path d=\"M-9.5,0 L-7.5,104 A7.5,7.5 0 0 0 7.5,104 L9.5,0 A9.5,9.5 0 0 0 -9.5,0 Z\" fill=\"#e2bd98\"/></g></g><g transform=\"translate(0,-28) rotate(3)\"><g filter=\"url(#vrs2)\"><g transform=\"translate(-30.1,-105.2) rotate(0.4)\"><path d=\"M-10.6,3 C-9.6,-20.8 -17.5,-36.7 -14.5,-41.7 C-8.7,-30 10.1,-12.5 10.6,3 Z\" fill=\"#b88a5a\"/></g><g transform=\"translate(-20.3,-110.5) rotate(-4.1)\"><path d=\"M-14.6,3 C-13.1,-12.6 -11.5,-22.2 -8.5,-25.2 C-0.4,-18.2 13.9,-7.6 14.6,3 Z\" fill=\"#a7774c\"/></g><g transform=\"translate(-7.6,-114.4) rotate(-2.8)\"><path d=\"M-13.9,3 C-12.5,-23.2 -6.9,-40.9 -3.9,-46.4 C3.8,-33.4 13.2,-13.9 13.9,3 Z\" fill=\"#a7774c\"/></g><g transform=\"translate(3.5,-114.9) rotate(2)\"><path d=\"M-11.2,3 C-10.1,-16.7 -1.1,-29.4 1.9,-33.5 C8.1,-24.1 10.6,-10 11.2,3 Z\" fill=\"#b88a5a\"/></g><g transform=\"translate(13.8,-112.9) rotate(-1.8)\"><path d=\"M-13.6,3 C-12.2,-22.6 0.1,-39.8 3.1,-45.2 C10.6,-32.5 12.9,-13.6 13.6,3 Z\" fill=\"#b88a5a\"/></g><g transform=\"translate(28.1,-106.4) rotate(-4.1)\"><path d=\"M-11.1,3 C-10,-15.9 10.2,-28 13.2,-31.8 C19.3,-22.9 10.5,-9.5 11.1,3 Z\" fill=\"#a7774c\"/></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(-57,-58) scale(1)\"><path d=\"M0,-17 C-13,-18 -15,-4 -12,6 C-9,15 -3,18 0,15 Z\" fill=\"#d4aa85\"/><path d=\"M-2,-10 C-9,-11 -10,-2 -7,5 C-5,9 -3,9 -2,6\" fill=\"none\" stroke=\"#c4977a\" stroke-width=\"3\" stroke-linecap=\"round\" opacity=\".7\"/></g><g transform=\"translate(57,-58) scale(1)\"><path d=\"M0,-17 C13,-18 15,-4 12,6 C9,15 3,18 0,15 Z\" fill=\"#d4aa85\"/><path d=\"M2,-10 C9,-11 10,-2 7,5 C5,9 3,9 2,6\" fill=\"none\" stroke=\"#c4977a\" stroke-width=\"3\" stroke-linecap=\"round\" opacity=\".7\"/></g></g><g filter=\"url(#vrs2)\"><defs><clipPath id=\"vrhc\"><path d=\"M0,-122 C34.7,-122 56,-96 56,-60 C56,-30 38.1,-4 12.3,6 Q0,10 -12.3,6 C-38.1,-4 -56,-30 -56,-60 C-56,-96 -34.7,-122 0,-122 Z\"/></clipPath></defs><path d=\"M0,-122 C34.7,-122 56,-96 56,-60 C56,-30 38.1,-4 12.3,6 Q0,10 -12.3,6 C-38.1,-4 -56,-30 -56,-60 C-56,-96 -34.7,-122 0,-122 Z\" fill=\"#e2bd98\"/><g clip-path=\"url(#vrhc)\"><path d=\"M8.4,-124 C47.6,-100 53.2,-50 30.8,-12 L11.2,12 L80,12 L80,-124 Z\" fill=\"#d4aa85\" opacity=\".8\"/><ellipse cx=\"-25.8\" cy=\"-34\" rx=\"9\" ry=\"6\" fill=\"#d9907a\" opacity=\"0.28\"/><ellipse cx=\"25.8\" cy=\"-34\" rx=\"9\" ry=\"6\" fill=\"#d9907a\" opacity=\"0.28\"/><defs><filter id=\"vrwb1\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feGaussianBlur stdDeviation=\"1.3\"/></filter><filter id=\"vrwb2\" x=\"-30%\" y=\"-30%\" width=\"160%\" height=\"160%\"><feGaussianBlur stdDeviation=\"3\"/></filter></defs></g></g><g transform=\"translate(0,-52)\"><g transform=\"translate(0,-17) scale(1,1) translate(0,17)\"><g filter=\"url(#vrs2)\"><defs><clipPath id=\"vrnc\"><path d=\"M-4,-17 C-5,-5 -6,3 -7,10 C-12.5,12 -13.5,23 -7,26 Q0,30 8,26 C13.5,23 12.5,12 7,10 C6,3 5,-5 4,-17 Z\"/></clipPath></defs><path d=\"M-4,-17 C-5,-5 -6,3 -7,10 C-12.5,12 -13.5,23 -7,26 Q0,30 8,26 C13.5,23 12.5,12 7,10 C6,3 5,-5 4,-17 Z\" fill=\"#d9a682\"/><g clip-path=\"url(#vrnc)\"><path d=\"M1,-20 L2.5,8 C7,13 7,21 3,30 L40,40 L40,-20 Z\" fill=\"#c18b6a\" opacity=\".75\"/><path d=\"M-16,25 Q0,33 16,25 L16,34 L-16,34 Z\" fill=\"#c18b6a\" opacity=\".6\"/></g><ellipse cx=\"-4\" cy=\"15\" rx=\"3\" ry=\"2.4\" fill=\"#eccaa6\" opacity=\".55\"/><ellipse cx=\"-5\" cy=\"25\" rx=\"2.2\" ry=\"1.3\" fill=\"#99614b\" opacity=\".6\"/><ellipse cx=\"5\" cy=\"25\" rx=\"2.2\" ry=\"1.3\" fill=\"#99614b\" opacity=\".6\"/></g></g></g><g clip-path=\"url(#vrhc)\"><g transform=\"translate(-27,-62) scale(1,1)\"><defs><clipPath id=\"vre0\"><ellipse cx=\"0\" cy=\"0\" rx=\"12.6\" ry=\"9\"/></clipPath></defs><ellipse cx=\"0\" cy=\"0\" rx=\"12.6\" ry=\"9\" fill=\"#f5f2ea\"/><g clip-path=\"url(#vre0)\"><circle cx=\"5.2\" cy=\"0\" r=\"4.5\" fill=\"#1e1c22\"/><circle cx=\"3.8\" cy=\"-1.6\" r=\"1.3\" fill=\"#fff\" opacity=\".9\"/></g><path d=\"M-12,-0.5 Q0,-14.5 12,-0.5\" fill=\"none\" stroke=\"#4a3326\" stroke-width=\"2.6\" stroke-linecap=\"round\"/></g><g transform=\"translate(-27,-87) scale(1,1)\"><path d=\"M-16.4,4.4 Q0,-2.5 16.4,-4.4\" fill=\"none\" stroke=\"#6d4b31\" stroke-width=\"6.5\" stroke-linecap=\"round\"/></g><g transform=\"translate(27,-62) scale(1,1)\"><defs><clipPath id=\"vre1\"><ellipse cx=\"0\" cy=\"0\" rx=\"12.6\" ry=\"9\"/></clipPath></defs><ellipse cx=\"0\" cy=\"0\" rx=\"12.6\" ry=\"9\" fill=\"#f5f2ea\"/><g clip-path=\"url(#vre1)\"><circle cx=\"5.2\" cy=\"0\" r=\"4.5\" fill=\"#1e1c22\"/><circle cx=\"3.8\" cy=\"-1.6\" r=\"1.3\" fill=\"#fff\" opacity=\".9\"/></g><path d=\"M-12,-0.5 Q0,-14.5 12,-0.5\" fill=\"none\" stroke=\"#4a3326\" stroke-width=\"2.6\" stroke-linecap=\"round\"/></g><g transform=\"translate(27,-89) scale(1,1)\"><path d=\"M16.4,4.4 Q0,-2.5 -16.4,-4.4\" fill=\"none\" stroke=\"#6d4b31\" stroke-width=\"6.5\" stroke-linecap=\"round\"/></g></g><g transform=\"translate(0,-14)\"><path d=\"M-16.1,1 Q0,-0.8 16.2,1\" fill=\"none\" stroke=\"#8c4b3e\" stroke-width=\"3.4\" stroke-linecap=\"round\"/></g><g transform=\"translate(0,-62)\"><g filter=\"url(#vrs2)\"><g transform=\"translate(0,1.6) rotate(-0.4 0 0)\"><path d=\"M-47.5,-3 L-60,-4\" stroke=\"#242a3a\" stroke-width=\"2.5\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M47.5,-3 L60,-4\" stroke=\"#242a3a\" stroke-width=\"2.5\" stroke-linecap=\"round\" fill=\"none\"/><g transform=\"translate(-27,0) scale(1,1)\"><defs><clipPath id=\"vrgl0\"><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\"/></clipPath></defs><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\" fill=\"#e8f3f8\" fill-opacity=\"0.1\"/><g clip-path=\"url(#vrgl0)\"><path d=\"M-18,14.5 L-4,-14.5 L6,-14.5 L-8,14.5 Z\" fill=\"#fff\" opacity=\"0.2\"/><path d=\"M4,14.5 L12,-14.5 L16,-14.5 L8,14.5 Z\" fill=\"#fff\" opacity=\"0.1\"/></g><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\" fill=\"none\" stroke=\"#242a3a\" stroke-width=\"2.4\"/></g><g transform=\"translate(27,0) scale(1,1)\"><defs><clipPath id=\"vrgl1\"><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\"/></clipPath></defs><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\" fill=\"#e8f3f8\" fill-opacity=\"0.1\"/><g clip-path=\"url(#vrgl1)\"><path d=\"M-18,14.5 L-4,-14.5 L6,-14.5 L-8,14.5 Z\" fill=\"#fff\" opacity=\"0.2\"/><path d=\"M4,14.5 L12,-14.5 L16,-14.5 L8,14.5 Z\" fill=\"#fff\" opacity=\"0.1\"/></g><rect x=\"-20.5\" y=\"-14.5\" width=\"41\" height=\"29\" rx=\"9\" fill=\"none\" stroke=\"#242a3a\" stroke-width=\"2.4\"/></g><path d=\"M-6.5,-6 Q0,-12 6.5,-6\" fill=\"none\" stroke=\"#242a3a\" stroke-width=\"2.5\" stroke-linecap=\"round\"/></g></g></g><g filter=\"url(#vrs2)\"><defs><clipPath id=\"vrhk\"><path d=\"M0,-122 C34.7,-122 56,-96 56,-60 C56,-30 38.1,-4 12.3,6 Q0,10 -12.3,6 C-38.1,-4 -56,-30 -56,-60 C-56,-96 -34.7,-122 0,-122 Z\"/><path d=\"M-61,-64 C-65,-108 -36,-128 0,-129 C36,-128 65,-108 61,-64 Z\" transform=\"translate(0,-64) scale(1,1) translate(0,64)\"/></clipPath></defs><g clip-path=\"url(#vrhk)\"><g transform=\"translate(0,0)\"><g transform=\"translate(0,-64) scale(1,1) translate(0,64)\"><path d=\"M-61,-64 C-65,-108 -36,-128 0,-129 C36,-128 65,-108 61,-64 C56,-80 48,-95 30,-100 C12,-92 -18,-93 -31.2,-101 C-49.2,-94 -56,-80 -61,-64 Z\" fill=\"#a7774c\"/><path d=\"M7.2,-127 C42,-124 63,-104 61,-64 C56,-80 48,-95 30,-100 C30,-112 21,-122 7.2,-127 Z\" fill=\"#8c603a\" opacity=\".55\"/></g></g></g></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(-70,233.6) rotate(1.3)\"><path d=\"M-11,-3 L11,-3 C15.5,10 15.5,32 8.5,43 Q0,50 -8.5,43 C-15.5,32 -15.5,10 -11,-3 Z\" fill=\"#e2bd98\"/><path d=\"M-4.5,30 L-4,42 M3.5,30 L3.8,42\" stroke=\"#c4977a\" stroke-width=\"1.8\" stroke-linecap=\"round\" opacity=\".55\"/><g transform=\"scale(1,1)\"><path d=\"M8,5 C17,7 21,17 18,27 Q14,32 10,26 C8.5,20 8,14 8,5 Z\" fill=\"#d4aa85\"/></g></g></g><g filter=\"url(#vrs2)\"><g transform=\"translate(70,233.6) rotate(-1.3)\"><path d=\"M-11,-3 L11,-3 C15.5,10 15.5,32 8.5,43 Q0,50 -8.5,43 C-15.5,32 -15.5,10 -11,-3 Z\" fill=\"#e2bd98\"/><path d=\"M-4.5,30 L-4,42 M3.5,30 L3.8,42\" stroke=\"#c4977a\" stroke-width=\"1.8\" stroke-linecap=\"round\" opacity=\".55\"/><g transform=\"scale(-1,1)\"><path d=\"M8,5 C17,7 21,17 18,27 Q14,32 10,26 C8.5,20 8,14 8,5 Z\" fill=\"#d4aa85\"/></g></g></g></g></g></g></g></g>",
+   "svg_day": "",
+   "note": "cast only"
+  },
+  {
+   "id": "setD_server_overlay_crt_chat",
+   "layer": "overlay",
+   "z": 38,
+   "bbox": [
+    795,
+    264,
+    100,
+    92
+   ],
+   "desc": "CRT screen = the AI chat (neyroset chat_window, lines being typed), clipped to the glass; day: dead glass",
+   "lit": true,
+   "story_text": "AI chat: «Правило раз. Врать — только про опыт.» / «Записала. Правило раз.» / typing…",
+   "overlay": true,
+   "svg_night": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><defs><clipPath id=\"glassclip\"><rect x=\"77\" y=\"127\" width=\"90\" height=\"84\" rx=\"5\"/></clipPath></defs><g clip-path=\"url(#glassclip)\"><g transform=\"translate(77,127) scale(0.17307692307692307,0.19090909090909092)\"><g><g filter=\"url(#ney_s1)\"><rect x=\"0\" y=\"0\" width=\"520\" height=\"440\" rx=\"16\" fill=\"#1c2a4a\"/><path d=\"M0,16 Q0,0 16,0 L504,0 Q520,0 520,16 L520,44 L0,44Z\" fill=\"#2c3d66\"/></g><rect x=\"18\" y=\"16\" width=\"12\" height=\"12\" rx=\"4\" fill=\"#e0705f\"/><rect x=\"38\" y=\"16\" width=\"12\" height=\"12\" rx=\"4\" fill=\"#e0b341\"/><rect x=\"58\" y=\"16\" width=\"12\" height=\"12\" rx=\"4\" fill=\"#58d68d\"/><text x=\"260\" y=\"34\" font-size=\"16\" text-anchor=\"middle\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" fill=\"#b9c9e6\">Нейросеть · сеанс 1</text><g filter=\"url(#ney_s2)\"><rect x=\"468\" y=\"6\" width=\"36\" height=\"32\" rx=\"10\" fill=\"#e6edf9\"/></g><g transform=\"translate(486,24) scale(0.1)\"><g><g transform=\"rotate(0 0 80) translate(0,4.9)\"><g filter=\"url(#ney_s1)\"><path d=\"M-112,-8 C-118,-92 -60,-112 0,-112 C60,-112 118,-92 112,-8 L117,66 Q102,98 76,86 L-76,86 Q-102,98 -117,66Z\" fill=\"#172a54\"/></g><g filter=\"url(#ney_s1)\"><path d=\"M-95,-10 C-95,-72 -52,-90 0,-90 C52,-90 95,-72 95,-10 C95,50 62,86 0,86 C-62,86 -95,50 -95,-10Z\" fill=\"#fbdccb\"/></g><clipPath id=\"chath_hd\"><path d=\"M-95,-10 C-95,-72 -52,-90 0,-90 C52,-90 95,-72 95,-10 C95,50 62,86 0,86 C-62,86 -95,50 -95,-10Z\"/></clipPath><g clip-path=\"url(#chath_hd)\"><path d=\"M95,-30 C98,50 62,86 0,86 C34,78 74,44 76,-30Z\" fill=\"#efc0ae\"/></g><ellipse cx=\"-64\" cy=\"24\" rx=\"11.7\" ry=\"7.2\" fill=\"#f6a9a6\"/><ellipse cx=\"64\" cy=\"24\" rx=\"11.7\" ry=\"7.2\" fill=\"#f6a9a6\"/><path d=\"M-13,-34 Q-38,-40 -62,-34\" stroke=\"#1f3568\" stroke-width=\"9\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M13,-34 Q38,-40 62,-34\" stroke=\"#1f3568\" stroke-width=\"9\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><clipPath id=\"chath_el\"><rect x=\"-52.5\" y=\"-20\" width=\"29\" height=\"36\" rx=\"13.8\"/></clipPath><rect x=\"-52.5\" y=\"-20\" width=\"29\" height=\"36\" rx=\"13.774999999999999\" fill=\"#ffffff\"/><g clip-path=\"url(#chath_el)\"><rect x=\"-46.4\" y=\"-8.1\" width=\"18\" height=\"25.9\" rx=\"8.5405\" fill=\"#26407f\"/><rect x=\"-38.7\" y=\"-2.9\" width=\"4.5\" height=\"4.7\" rx=\"2\" fill=\"#fff\"/><path d=\"M-54.5,-22 L-21.5,-22 L-21.5,-9.9 L-54.5,-9.9Z\" fill=\"#efc0ae\"/></g><clipPath id=\"chath_er\"><rect x=\"23.5\" y=\"-20\" width=\"29\" height=\"36\" rx=\"13.8\"/></clipPath><rect x=\"23.5\" y=\"-20\" width=\"29\" height=\"36\" rx=\"13.774999999999999\" fill=\"#ffffff\"/><g clip-path=\"url(#chath_er)\"><rect x=\"29.6\" y=\"-8.1\" width=\"18\" height=\"25.9\" rx=\"8.5405\" fill=\"#26407f\"/><rect x=\"37.3\" y=\"-2.9\" width=\"4.5\" height=\"4.7\" rx=\"2\" fill=\"#fff\"/><path d=\"M21.5,-22 L54.5,-22 L54.5,-9.9 L21.5,-9.9Z\" fill=\"#efc0ae\"/></g><clipPath id=\"chath_mo\"><path d=\"M-11,43 Q0,45.6 11,43 C9,52 -9,52 -11,43Z\"/></clipPath><path d=\"M-11,43 Q0,45.6 11,43 C9,52 -9,52 -11,43Z\" fill=\"#b04a63\" stroke=\"#b04a63\" stroke-width=\"5\" stroke-linejoin=\"round\"/><g clip-path=\"url(#chath_hd)\" transform=\"translate(0,0)\"><g transform=\"translate(0,9)\"><path d=\"M-4,-100 C-40,-100 -92,-84 -99,-30 L-98,-14 C-84,-24 -62,-34 -34,-52 C-20,-62 -10,-76 -4,-100Z\" fill=\"#efc0ae\"/><path d=\"M4,-100 C40,-100 92,-84 99,-30 L98,-18 C80,-30 52,-40 26,-56 C14,-66 8,-80 4,-100Z\" fill=\"#efc0ae\"/></g></g><g filter=\"url(#ney_s2)\"><path d=\"M-4,-100 C-40,-100 -92,-84 -99,-30 L-98,-14 C-84,-24 -62,-34 -34,-52 C-20,-62 -10,-76 -4,-100Z\" fill=\"#1f3568\"/><path d=\"M4,-100 C40,-100 92,-84 99,-30 L98,-18 C80,-30 52,-40 26,-56 C14,-66 8,-80 4,-100Z\" fill=\"#1f3568\"/></g></g></g></g><clipPath id=\"chat_ca\"><rect x=\"0\" y=\"52\" width=\"520\" height=\"320\"/></clipPath><g clip-path=\"url(#chat_ca)\"><g filter=\"url(#ney_s2)\"><rect x=\"225.8\" y=\"190\" width=\"280.2\" height=\"34\" rx=\"14\" fill=\"#e6dcc4\"/><path d=\"M504,210 L516,224 L490,220Z\" fill=\"#e6dcc4\"/></g><text x=\"238.8\" y=\"212\" font-size=\"15\" text-anchor=\"start\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" fill=\"#2b2723\">Правило раз. Врать — только про опыт.</text><g filter=\"url(#ney_s2)\"><rect x=\"16\" y=\"230\" width=\"42\" height=\"40\" rx=\"13\" fill=\"#e6edf9\"/></g><g transform=\"translate(37,252) scale(0.165)\"><g><g transform=\"rotate(0 0 80) translate(0,-1.1)\"><g filter=\"url(#ney_s1)\"><path d=\"M-112,-8 C-118,-92 -60,-112 0,-112 C60,-112 118,-92 112,-8 L117,66 Q102,98 76,86 L-76,86 Q-102,98 -117,66Z\" fill=\"#172a54\"/></g><g filter=\"url(#ney_s1)\"><path d=\"M-95,-10 C-95,-72 -52,-90 0,-90 C52,-90 95,-72 95,-10 C95,50 62,86 0,86 C-62,86 -95,50 -95,-10Z\" fill=\"#fbdccb\"/></g><clipPath id=\"chata1_hd\"><path d=\"M-95,-10 C-95,-72 -52,-90 0,-90 C52,-90 95,-72 95,-10 C95,50 62,86 0,86 C-62,86 -95,50 -95,-10Z\"/></clipPath><g clip-path=\"url(#chata1_hd)\"><path d=\"M95,-30 C98,50 62,86 0,86 C34,78 74,44 76,-30Z\" fill=\"#efc0ae\"/></g><ellipse cx=\"-64\" cy=\"24\" rx=\"18.2\" ry=\"11.2\" fill=\"#f6a9a6\"/><ellipse cx=\"64\" cy=\"24\" rx=\"18.2\" ry=\"11.2\" fill=\"#f6a9a6\"/><path d=\"M-13,-37 Q-38,-46 -62,-42.4\" stroke=\"#1f3568\" stroke-width=\"9\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M13,-37 Q38,-46 62,-42.4\" stroke=\"#1f3568\" stroke-width=\"9\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M-53,3 Q-38,-23 -23,3 Q-38,-9 -53,3Z\" fill=\"#26407f\" stroke=\"#26407f\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M23,3 Q38,-23 53,3 Q38,-9 23,3Z\" fill=\"#26407f\" stroke=\"#26407f\" stroke-width=\"3\" stroke-linejoin=\"round\"/><clipPath id=\"chata1_mo\"><path d=\"M-38.4,34 Q0,57.8 38.4,34 C31.5,62.7 -31.5,62.7 -38.4,34Z\"/></clipPath><path d=\"M-38.4,34 Q0,57.8 38.4,34 C31.5,62.7 -31.5,62.7 -38.4,34Z\" fill=\"#5a1f3a\" stroke=\"#b04a63\" stroke-width=\"5\" stroke-linejoin=\"round\"/><g clip-path=\"url(#chata1_mo)\"><path d=\"M-38.4,34 Q0,57.8 38.4,34 Q0,73.8 -38.4,34Z\" fill=\"#fbf6ea\"/></g><g clip-path=\"url(#chata1_hd)\" transform=\"translate(0,0)\"><g transform=\"translate(0,9)\"><path d=\"M-4,-100 C-40,-100 -92,-84 -99,-30 L-98,-14 C-84,-24 -62,-34 -34,-52 C-20,-62 -10,-76 -4,-100Z\" fill=\"#efc0ae\"/><path d=\"M4,-100 C40,-100 92,-84 99,-30 L98,-18 C80,-30 52,-40 26,-56 C14,-66 8,-80 4,-100Z\" fill=\"#efc0ae\"/></g></g><g filter=\"url(#ney_s2)\"><path d=\"M-4,-100 C-40,-100 -92,-84 -99,-30 L-98,-14 C-84,-24 -62,-34 -34,-52 C-20,-62 -10,-76 -4,-100Z\" fill=\"#1f3568\"/><path d=\"M4,-100 C40,-100 92,-84 99,-30 L98,-18 C80,-30 52,-40 26,-56 C14,-66 8,-80 4,-100Z\" fill=\"#1f3568\"/></g></g></g></g><g filter=\"url(#ney_s2)\"><rect x=\"70\" y=\"236\" width=\"168.1\" height=\"34\" rx=\"14\" fill=\"#2f4f8f\"/><path d=\"M72,256 L60,270 L86,266Z\" fill=\"#2f4f8f\"/></g><text x=\"83\" y=\"258\" font-size=\"15\" text-anchor=\"start\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" fill=\"#eaf2ff\">Записала. Правило раз.</text><g filter=\"url(#ney_s2)\"><rect x=\"204.3\" y=\"282\" width=\"301.7\" height=\"34\" rx=\"14\" fill=\"#e6dcc4\"/><path d=\"M504,302 L516,316 L490,312Z\" fill=\"#e6dcc4\"/></g><text x=\"217.3\" y=\"304\" font-size=\"15\" text-anchor=\"start\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" fill=\"#2b2723\">Правило два. Мама звонит — бери трубку.</text><g filter=\"url(#ney_s2)\"><rect x=\"16\" y=\"320\" width=\"42\" height=\"40\" rx=\"13\" fill=\"#e6edf9\"/></g><g transform=\"translate(37,342) scale(0.165)\"><g><g transform=\"rotate(0 0 80) translate(0,4.9)\"><g filter=\"url(#ney_s1)\"><path d=\"M-112,-8 C-118,-92 -60,-112 0,-112 C60,-112 118,-92 112,-8 L117,66 Q102,98 76,86 L-76,86 Q-102,98 -117,66Z\" fill=\"#172a54\"/></g><g filter=\"url(#ney_s1)\"><path d=\"M-95,-10 C-95,-72 -52,-90 0,-90 C52,-90 95,-72 95,-10 C95,50 62,86 0,86 C-62,86 -95,50 -95,-10Z\" fill=\"#fbdccb\"/></g><clipPath id=\"chata3_hd\"><path d=\"M-95,-10 C-95,-72 -52,-90 0,-90 C52,-90 95,-72 95,-10 C95,50 62,86 0,86 C-62,86 -95,50 -95,-10Z\"/></clipPath><g clip-path=\"url(#chata3_hd)\"><path d=\"M95,-30 C98,50 62,86 0,86 C34,78 74,44 76,-30Z\" fill=\"#efc0ae\"/></g><ellipse cx=\"-64\" cy=\"24\" rx=\"11.7\" ry=\"7.2\" fill=\"#f6a9a6\"/><ellipse cx=\"64\" cy=\"24\" rx=\"11.7\" ry=\"7.2\" fill=\"#f6a9a6\"/><path d=\"M-13,-34 Q-38,-40 -62,-34\" stroke=\"#1f3568\" stroke-width=\"9\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M13,-34 Q38,-40 62,-34\" stroke=\"#1f3568\" stroke-width=\"9\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><clipPath id=\"chata3_el\"><rect x=\"-52.5\" y=\"-20\" width=\"29\" height=\"36\" rx=\"13.8\"/></clipPath><rect x=\"-52.5\" y=\"-20\" width=\"29\" height=\"36\" rx=\"13.774999999999999\" fill=\"#ffffff\"/><g clip-path=\"url(#chata3_el)\"><rect x=\"-46.4\" y=\"-8.1\" width=\"18\" height=\"25.9\" rx=\"8.5405\" fill=\"#26407f\"/><rect x=\"-38.7\" y=\"-2.9\" width=\"4.5\" height=\"4.7\" rx=\"2\" fill=\"#fff\"/><path d=\"M-54.5,-22 L-21.5,-22 L-21.5,-9.9 L-54.5,-9.9Z\" fill=\"#efc0ae\"/></g><clipPath id=\"chata3_er\"><rect x=\"23.5\" y=\"-20\" width=\"29\" height=\"36\" rx=\"13.8\"/></clipPath><rect x=\"23.5\" y=\"-20\" width=\"29\" height=\"36\" rx=\"13.774999999999999\" fill=\"#ffffff\"/><g clip-path=\"url(#chata3_er)\"><rect x=\"29.6\" y=\"-8.1\" width=\"18\" height=\"25.9\" rx=\"8.5405\" fill=\"#26407f\"/><rect x=\"37.3\" y=\"-2.9\" width=\"4.5\" height=\"4.7\" rx=\"2\" fill=\"#fff\"/><path d=\"M21.5,-22 L54.5,-22 L54.5,-9.9 L21.5,-9.9Z\" fill=\"#efc0ae\"/></g><clipPath id=\"chata3_mo\"><path d=\"M-11,43 Q0,45.6 11,43 C9,52 -9,52 -11,43Z\"/></clipPath><path d=\"M-11,43 Q0,45.6 11,43 C9,52 -9,52 -11,43Z\" fill=\"#b04a63\" stroke=\"#b04a63\" stroke-width=\"5\" stroke-linejoin=\"round\"/><g clip-path=\"url(#chata3_hd)\" transform=\"translate(0,0)\"><g transform=\"translate(0,9)\"><path d=\"M-4,-100 C-40,-100 -92,-84 -99,-30 L-98,-14 C-84,-24 -62,-34 -34,-52 C-20,-62 -10,-76 -4,-100Z\" fill=\"#efc0ae\"/><path d=\"M4,-100 C40,-100 92,-84 99,-30 L98,-18 C80,-30 52,-40 26,-56 C14,-66 8,-80 4,-100Z\" fill=\"#efc0ae\"/></g></g><g filter=\"url(#ney_s2)\"><path d=\"M-4,-100 C-40,-100 -92,-84 -99,-30 L-98,-14 C-84,-24 -62,-34 -34,-52 C-20,-62 -10,-76 -4,-100Z\" fill=\"#1f3568\"/><path d=\"M4,-100 C40,-100 92,-84 99,-30 L98,-18 C80,-30 52,-40 26,-56 C14,-66 8,-80 4,-100Z\" fill=\"#1f3568\"/></g></g></g></g><g filter=\"url(#ney_s2)\"><rect x=\"70\" y=\"328\" width=\"62\" height=\"32\" rx=\"14\" fill=\"#2f4f8f\"/><path d=\"M72,346 L60,360 L86,356Z\" fill=\"#2f4f8f\"/></g><rect x=\"86\" y=\"337.1\" width=\"10\" height=\"10\" rx=\"3\" fill=\"#cfe0ff\"/><rect x=\"100\" y=\"336.1\" width=\"10\" height=\"10\" rx=\"3\" fill=\"#cfe0ff\"/><rect x=\"114\" y=\"338.3\" width=\"10\" height=\"10\" rx=\"3\" fill=\"#cfe0ff\" opacity=\".7\"/></g><rect x=\"14\" y=\"384\" width=\"492\" height=\"42\" rx=\"13\" fill=\"#101a31\"/><text x=\"30\" y=\"411\" font-size=\"14\" text-anchor=\"start\" font-family=\"'Marker Felt','Marker Felt Wide',Helvetica,sans-serif\" fill=\"#6f83aa\">&gt; пожелание…</text><g><rect x=\"150\" y=\"392\" width=\"9\" height=\"22\" rx=\"1\" fill=\"#f3b04a\"/></g><g filter=\"url(#ney_s2)\"><rect x=\"464\" y=\"390\" width=\"34\" height=\"30\" rx=\"10\" fill=\"#f3b04a\"/><path d=\"M473,405 L489,397 L484,413 L481,406Z\" fill=\"#fff\"/></g></g></g></g></g>",
+   "svg_day": "<g transform=\"translate(710,124.19999999999993) scale(1.1)\"><path d=\"M84 134 L110 134 L90 160Z\" fill=\"#2c3a44\" fill-opacity=\".5\"/></g>"
+  }
+ ],
+ "scale_fix": {
+  "H_vadik_px": 560,
+  "rig_scale": {
+   "vadik": 0.7,
+   "zinaida": 1.1
+  },
+  "desk_top_H": 0.41,
+  "desk_width_H": 0.75,
+  "crt_H": 0.22,
+  "tower_H": 0.33,
+  "shelf_tin_H": 1.0,
+  "heater_H": 0.2,
+  "bucket_H": 0.2,
+  "extinguisher_H": 0.35,
+  "sill_H": 0.85,
+  "note": "props scaled up; Вадик frozen. Зинаида at 1.1 vs Вадик 0.7 by Denis's request"
+ },
+ "light_extra": "night: amber lamp pool on desk + cone, warm rim on Вадик's right edge (filter rimF), cast filter darker than props (castF)",
+ "polish_v3": "extinguisher scale 1.4, heater 1.36; lamp redrawn (mustard shade); soft lamp pool; warm window patch; LED floor/wall glow; dark corner; rim clipped to lit upper right; new: mug (on CRT top, tower is under desk), tower stickers, cable bundle, cable box, faded no-smoking sign"
+}
