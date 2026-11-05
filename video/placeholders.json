@@ -12,6 +12,18 @@
     "setC_palych_home": {
       "bg": "#3a2f2a",
       "floor": "#2a211c"
+    },
+    "setA_kitchen_morning": {
+      "bg": "#d9c7a0",
+      "floor": "#8a6b4a"
+    },
+    "setB_office_day": {
+      "bg": "#a9b6c6",
+      "floor": "#6b6f78"
+    },
+    "setC_meeting_room": {
+      "bg": "#9fa9a4",
+      "floor": "#5e5a55"
     }
   },
   "props": {
@@ -82,6 +94,29 @@
     },
     "whiteboard": {
       "fill": "#f4f6f8"
+    },
+    "table": {
+      "fill": "#7a5a3a"
+    },
+    "stove": {
+      "fill": "#bfc3c8"
+    },
+    "kettle": {
+      "fill": "#8a96a6"
+    },
+    "plate": {
+      "fill": "#efeade"
+    },
+    "zinaida": {
+      "fill": "#d8cfae",
+      "screen": true
+    },
+    "wallscreen": {
+      "fill": "#14181f",
+      "screen": true
+    },
+    "window_day": {
+      "fill": "#9fd0f0"
     }
   }
 }

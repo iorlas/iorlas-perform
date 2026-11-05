@@ -58,8 +58,12 @@ def _camera(
 def _frame_has(shot: dict[str, Any], solved: dict[str, dict[str, Any]], oid: str) -> bool:
     """The object, in the shot's set, lies inside the shot's starting camera."""
     o = solved.get(shot["set"], {}).get(oid)
-    x, y, w, h = shot["camera"]["viewBox"]
-    return bool(o) and x <= o["at"][0] and o["at"][0] + o["w"] <= x + w and y <= o["top"] and o["bottom"] <= y + h
+    if not o:
+        return False
+    for x, y, w, h in (shot["camera"]["viewBox"], shot["camera"].get("push_to") or shot["camera"]["viewBox"]):  # in frame at the start or at the end of a push/pull
+        if x <= o["at"][0] and o["at"][0] + o["w"] <= x + w and y <= o["top"] and o["bottom"] <= y + h:
+            return True
+    return False
 
 
 def _match_camera(prev_shot: dict[str, Any], prev_obj: dict[str, Any], obj: dict[str, Any]) -> list[float]:
@@ -180,8 +184,10 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             ids = [c if isinstance(c, str) else c["id"] for c in sh.get("cast", [])]
             focus = sh.get("focus") or (ids[0] if ids else None)
             fxy = focus_xy(sset, focus, sh)
-            out = {k: v for k, v in sh.items() if k not in {"beats", "frame", "focus", "push_in", "at_xy", "camera", "cast", "inset", "offset", "pull_out"}}
+            out = {k: v for k, v in sh.items() if k not in {"beats", "frame", "focus", "push_in", "at_xy", "camera", "cast", "inset", "offset", "pull_out", "pull_from"}}
             out |= {"at": at(sh["beats"][0], sh.get("offset", 0.0)), "frame": sh["frame"], "set": sset, "beats": sh["beats"], "camera": _camera(sh["frame"], fxy, layout, sh.get("push_in"), sh.get("camera"))}
+            if "pull_from" in sh:  # pull-out: start tight (another frame type on the same focus), end on this shot's frame
+                out["camera"] = {"viewBox": _camera(sh["pull_from"], fxy, layout, None, sh.get("camera"))["viewBox"], "push_to": out["camera"]["viewBox"]}
             out["cast"] = cast_entries(sset, sh.get("cast", []))
             match = design["scenes"].get(tl["scenes"][si - 1]["title"], {}).get("transition_out", {}).get("match") if si and not shots else None
             if match:  # match cut into this scene: the first shot starts framed so `to` sits where `from` ended the previous scene
@@ -233,6 +239,10 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
                 cues.append({**anchor, "actor": c["target"], "channel": "text", "value": c["text"]})
             if "visible" in c:
                 cues.append({**anchor, "actor": c["target"], "channel": "visible", "value": c["visible"]})
+            if "pose" in c and "actor" in c and "type" not in c:
+                cues.append({**anchor, "actor": c["actor"], "channel": "pose", "value": c["pose"]})
+        for who in sorted({c["actor"] for c in cues if c["channel"] == "pose"} - {i["actor"] for i in d.get("interactions", [])}):
+            cues.append({"at": 0, "actor": who, "channel": "pose", "value": stand(d["set"], who).get("pose", "stand_still")})  # the base pose the pose cues return from
         cues += [{"at": 0, "actor": t, "channel": "text", "value": ""} for t in sorted({c["actor"] for c in cues if c["channel"] == "text"})]  # a first text cue must not reach back to t=0: the phone would ring from the start
         cues += [{"at": 0, "actor": t, "channel": "visible", "value": True} for t in sorted({c["actor"] for c in cues if c["channel"] == "visible"} | {i["object"] for i in d.get("interactions", []) if i["type"] == "holds"})]
         cues += _interaction_cues(d.get("interactions", []), merged[d["set"]], solved[d["set"]], stand, d["set"], by_id, at, len(bl), s["title"])
