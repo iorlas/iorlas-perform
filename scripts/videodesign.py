@@ -62,6 +62,15 @@ def _frame_has(shot: dict[str, Any], solved: dict[str, dict[str, Any]], oid: str
     return bool(o) and x <= o["at"][0] and o["at"][0] + o["w"] <= x + w and y <= o["top"] and o["bottom"] <= y + h
 
 
+def _match_camera(prev_shot: dict[str, Any], prev_obj: dict[str, Any], obj: dict[str, Any]) -> list[float]:
+    """Match cut: a viewBox that puts `obj` where `prev_obj` ended up on screen in the previous scene's last shot (same width fraction, same centre)."""
+    pvb = (prev_shot["camera"].get("push_to") or prev_shot["camera"]["viewBox"])
+    rw, rcx, rcy = prev_obj["w"] / pvb[2], ((prev_obj["at"][0] + prev_obj["w"] / 2) - pvb[0]) / pvb[2], ((prev_obj["top"] + prev_obj["bottom"]) / 2 - pvb[1]) / pvb[3]
+    w = obj["w"] / rw
+    h = w * pvb[3] / pvb[2]
+    return [round((obj["at"][0] + obj["w"] / 2) - rcx * w, 1), round((obj["top"] + obj["bottom"]) / 2 - rcy * h, 1), round(w, 1), round(h, 1)]
+
+
 def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any]) -> dict[str, Any]:
     """Scene sheet from a design file. Voices on screen get their own rig (layout cast, overridden by the design); anything
     unlisted that is not off screen is an error. Positions come from videoscene (relations), never from pixels."""
@@ -72,8 +81,11 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
     stage = design["stage"]
     off = set(design.get("offscreen", layout.get("offscreen", ["narrator"])))
     cast = {v: {**layout["cast"][v], **ov} for v, ov in design.get("cast", {}).items() if v in layout["cast"]}
+    for v, ov in design.get("cast", {}).items():  # a stand-in: a character with no rig of its own, played by another rig, said so in the file
+        if v not in layout["cast"] and ov.get("stand_in") and "rig" in ov and "id" in ov:
+            cast[v] = ov
     missing = sorted({e["voice"] for e in tl["entries"] if "turn" in e} - set(cast) - off)
-    if missing or (bad := sorted(set(design.get("cast", {})) - set(layout["cast"]))):
+    if missing or (bad := sorted(set(design.get("cast", {})) - set(layout["cast"]) - set(cast))):
         msg = f"voices with no rig in video/layout.json (add a cast entry, or list under offscreen): {', '.join(missing or bad)}"
         raise ValueError(msg)
     by_id = {c["id"]: c for c in cast.values()}
@@ -147,6 +159,7 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
 
     scenes: dict[str, Any] = {}
     all_props: dict[str, Any] = {}
+    prev_last: tuple[dict[str, Any], str] | None = None  # the previous scene's last shot and its set, for match cuts
     for si, s in enumerate(tl["scenes"]):
         d = design["scenes"].get(s["title"])
         if d is None:
@@ -167,9 +180,17 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             ids = [c if isinstance(c, str) else c["id"] for c in sh.get("cast", [])]
             focus = sh.get("focus") or (ids[0] if ids else None)
             fxy = focus_xy(sset, focus, sh)
-            out = {k: v for k, v in sh.items() if k not in {"beats", "frame", "focus", "push_in", "at_xy", "camera", "cast", "inset", "offset"}}
+            out = {k: v for k, v in sh.items() if k not in {"beats", "frame", "focus", "push_in", "at_xy", "camera", "cast", "inset", "offset", "pull_out"}}
             out |= {"at": at(sh["beats"][0], sh.get("offset", 0.0)), "frame": sh["frame"], "set": sset, "beats": sh["beats"], "camera": _camera(sh["frame"], fxy, layout, sh.get("push_in"), sh.get("camera"))}
             out["cast"] = cast_entries(sset, sh.get("cast", []))
+            match = design["scenes"].get(tl["scenes"][si - 1]["title"], {}).get("transition_out", {}).get("match") if si and not shots else None
+            if match:  # match cut into this scene: the first shot starts framed so `to` sits where `from` ended the previous scene
+                if prev_last is None or match["from"] not in solved[prev_last[1]] or match["to"] not in solved[sset]:
+                    msg = f'scene "{s["title"]}": match cut {match} names an object that is not in the shots on either side'
+                    raise ValueError(msg)
+                start = _match_camera(prev_last[0], solved[prev_last[1]][match["from"]], solved[sset][match["to"]])
+                out["camera"] = {"viewBox": start, **({"push_to": out["camera"]["viewBox"]} if sh.get("pull_out") else {})}
+                out["match"] = match
             check_legs(sh["id"], sset, ids, out["camera"])
             if "inset" in sh:
                 ins = sh["inset"]
@@ -183,6 +204,7 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
             for i in ids:
                 used.setdefault(i, {k: v for k, v in by_id[i].items() if k not in {"expr", "expr_map", "offset"}})
             shots.append(out)
+        prev_last = (shots[-1], shots[-1]["set"])
         for b, ei in enumerate(bl, 1):  # mention test: a beat that names an object must show it
             said = (tl["entries"][ei].get("text") or "").casefold()
             for o in merged[d["set"]]["objects"]:
@@ -191,6 +213,8 @@ def emit_sheet(tl: dict[str, Any], layout: dict[str, Any], design: dict[str, Any
                 if not any(_frame_has(sh, solved, o["id"]) for sh in shots if b in sh["beats"]):
                     msg = f'scene "{s["title"]}" beat {b} says «{o["mentions"][0]}», but no shot of that beat shows "{o["id"]}" in frame'
                     raise ValueError(msg)
+        for i in d.get("assets", []):  # actors that are loaded for the scene but never placed on stage (the AI lives on screens)
+            used.setdefault(i, {k: v for k, v in by_id[i].items() if k not in {"expr", "expr_map", "offset"}})
         cues: list[dict[str, Any]] = []
         for i in used:
             c = by_id[i]

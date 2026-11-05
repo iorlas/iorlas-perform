@@ -124,7 +124,12 @@
         "nervous": "neutral_anxious",
         "whisper": "side_glance",
         "pleading": "shame",
-        "dry": "pretend"
+        "dry": "pretend",
+        "mumbling": "shame",
+        "desperate": "panic",
+        "forced": "pretend",
+        "dazed": "blank",
+        "calm": "pretend"
       }
     },
     "praporshchik": {
@@ -163,6 +168,42 @@
         "desk": 0
       },
       "expr": "tired_neutral"
+    },
+    "palych": {
+      "id": "palych",
+      "rig": "palych@1.0.1",
+      "layer": 2,
+      "pose": "stand_still",
+      "expr": "neutral_anxious",
+      "expr_map": {
+        "loud": "bark",
+        "booming": "bark",
+        "proud": "proud",
+        "delighted": "proud"
+      }
+    },
+    "kristina": {
+      "id": "kristina",
+      "rig": "kristina@1.0.1",
+      "layer": 2,
+      "pose": "sit_front",
+      "expr": "smile",
+      "expr_map": {
+        "upspeak": "smile",
+        "trendy": "smile"
+      }
+    },
+    "ai": {
+      "id": "neyroset",
+      "rig": "neyroset@1.0.0",
+      "kind": "asset",
+      "layer": 1,
+      "expr": "cheerful",
+      "expr_map": {
+        "cheerful": "cheerful",
+        "polite": "neutral_helpful",
+        "proud": "confident_wrong"
+      }
     }
   },
   "frames": {

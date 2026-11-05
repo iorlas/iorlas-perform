@@ -262,11 +262,11 @@
     return o;
   }
 
-  // The AI is never a body: its smiley / chat window (neyroset asset) is drawn into a screen, lip-synced from the `ai` actor's envelope.
+  // The AI is never a body: its smiley / chat window (neyroset asset) is drawn into a screen, lip-synced from the `neyroset` actor's envelope.
   function neyScreen(d, x, y, w, h, sc) {
     var N = window.NEY; if (!N) return label("neyroset?", x + w / 2, y + h / 2, h * 0.1, "#f66", 1);
-    var ex = track("ai", "expr"), e = (ex && keyAt(ex.keys, sc.t).value) || d.expr || "cheerful", chat = d.mode === "chat_window";
-    var st = chat ? { mode: "chat_window", chat_lines: d.lines || [], typing: !!d.typing, expr: e } : { mode: "monitor_smiley", frame: false, phrase: d.phrase || "", expr: e, mouth: mouthAt("ai", sc.t) };
+    var ex = track("neyroset", "expr"), e = (ex && keyAt(ex.keys, sc.t).value) || d.expr || "cheerful", chat = d.mode === "chat_window";
+    var st = chat ? { mode: "chat_window", chat_lines: d.lines || [], typing: !!d.typing, expr: e } : { mode: "monitor_smiley", frame: false, phrase: d.phrase || "", expr: e, mouth: mouthAt("neyroset", sc.t) };
     var bw = chat ? 520 : 460, bh = chat ? 440 : 264, k = Math.min(w / bw, h / bh), ox = chat ? 0 : 30, oy = chat ? 0 : 24;
     return N.defs() + '<g transform="translate(' + (x + (w - bw * k) / 2 - ox * k) + " " + (y + (h - bh * k) / 2 - oy * k) + ") scale(" + k + ')">' + N.draw(st, sc.t) + "</g>";
   }
